@@ -56,6 +56,7 @@ while nid is not None:
     nid = out["next_node"]
 
 print(sess.graph_score())
+print(sess.trusts())
 ```
 ## Embeddings / Meta-Analysis
 
