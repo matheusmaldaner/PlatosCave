@@ -3,30 +3,24 @@ import time
 import sys
 import os
 import json
+import argparse
 
-# --- Helper Functions for sending JSON messages ---
+# --- Helper Functions (Unchanged) ---
 def send_update(stage, text, flush=True):
-    """Sends a progress update message."""
     update_message = json.dumps({"type": "UPDATE", "stage": stage, "text": text})
     print(update_message, flush=flush)
 
 def send_final_score(score, flush=True):
-    """Sends the final score message."""
     score_message = json.dumps({"type": "DONE", "score": score})
     print(score_message, flush=flush)
 
 def send_graph_data(graph_string, flush=True):
-    """NEW: Sends the entire GraphML string directly to the frontend."""
     graph_message = json.dumps({"type": "GRAPH_DATA", "data": graph_string})
     print(graph_message, flush=flush)
 
-# --- NEW: Function to generate the GraphML string ---
 def generate_graphml_string():
-    """
-    Generates the GraphML content as a string. It does NOT save a file.
-    In a real application, this would be your dynamic graph generation logic.
-    """
-    graphml_content = """<?xml version='1.0' encoding='utf-8'?>
+    # This function remains the same
+    return """<?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
   <key id="d2" for="node" attr.name="text" attr.type="string" />
   <key id="d0" for="node" attr.name="role" attr.type="string" />
@@ -51,20 +45,22 @@ def generate_graphml_string():
     <edge source="c1" target="c2" />
   </graph>
 </graphml>"""
-    return graphml_content
 
-def process_pdf(file_path):
-    
-    # Stephen (Building Logic Tree Stage)
-    """The main processing pipeline."""
-    time.sleep(1)
+def process_pdf(file_path, args):
+    """
+    The main processing pipeline.
+    """
+    # --- MOVED and CORRECTED: Send settings info as a proper update ---
     stage_name = "Validate"
+    send_update(stage_name, f"Settings: Agents={args.agent_aggressiveness}, Threshold={args.evidence_threshold}")
+    time.sleep(2) # Give user time to see settings
+
+    # ... The rest of the stages are the same ...
     send_update(stage_name, "Validating PDF structure...")
     time.sleep(1.5)
     send_update(stage_name, "PDF structure is valid.")
     time.sleep(1)
 
-    # Kristian (Building Logic Tree Stage)
     stage_name = "Decomposing PDF"
     send_update(stage_name, "Decomposing document...")
     time.sleep(1.5)
@@ -75,15 +71,13 @@ def process_pdf(file_path):
     send_update(stage_name, "Parsing logical components...")
     time.sleep(2)
     graph_data_string = generate_graphml_string()
-
     send_update(stage_name, "Logic Tree constructed.")
     time.sleep(0.5)
     send_graph_data(graph_data_string)
     time.sleep(1)
     
-    # Matheus and Kristian (Agent Orchestration)
     stage_name = "Organizing Agents"
-    send_update(stage_name, "Initializing fact-checking agents...")
+    send_update(stage_name, f"Initializing {args.agent_aggressiveness} agents...")
     time.sleep(1.5)
     send_update(stage_name, "Tasks assigned.")
     time.sleep(1)
@@ -94,9 +88,8 @@ def process_pdf(file_path):
     send_update(stage_name, "Evidence compiled.")
     time.sleep(1)
 
-    # Raul and Jimmy 
     stage_name = "Evaluating Integrity"
-    send_update(stage_name, "Evaluating evidence integrity...")
+    send_update(stage_name, f"Evaluating with threshold {args.evidence_threshold}...")
     time.sleep(2)
     send_update(stage_name, "Calculating final score...")
     time.sleep(1.5)
@@ -104,8 +97,12 @@ def process_pdf(file_path):
     send_final_score(0.95)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        pdf_file = sys.argv[1]
-        process_pdf(pdf_file)
-    else:
-        print("Usage: python cli.py <path_to_pdf>")
+    parser = argparse.ArgumentParser(description="Process a research paper PDF.")
+    parser.add_argument("filepath", type=str, help="The path to the PDF file.")
+    parser.add_argument("--agent-aggressiveness", type=int, default=5, help="How many agents to use.")
+    parser.add_argument("--evidence-threshold", type=float, default=0.8, help="The threshold for evidence scoring.")
+    
+    args = parser.parse_args()
+    
+    # All print statements are now inside process_pdf
+    process_pdf(args.filepath, args)

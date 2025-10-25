@@ -1,4 +1,4 @@
-// PlatosCave/frontend/src/components/XmlGraphViewer.tsx
+// frontend/src/components/XmlGraphViewer.tsx
 import React, { useState, useEffect } from 'react';
 import ReactFlow, { Controls, Background, Node, Edge, MarkerType } from 'reactflow';
 import dagre from 'dagre';
@@ -70,9 +70,6 @@ const parseGraphML = (xmlString: string): { nodes: Node[], edges: Edge[] } => {
 };
 
 const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
-    // --- DEBUG LOGGING 3: See what prop the component is receiving ---
-    console.log("XmlGraphViewer receiving data:", graphmlData ? graphmlData.substring(0, 100) + '...' : graphmlData);
-
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
 
@@ -109,17 +106,19 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
     }
 
     return (
-        <div className="w-full h-full rounded-md relative">
-            <button
-                onClick={handleSaveGraph}
-                className="absolute top-2 right-2 z-10 bg-brand-green text-white font-bold py-2 px-4 rounded-md shadow-lg hover:bg-brand-green-dark transition"
-            >
-                Save GraphML
-            </button>
+        // The `relative` class on this parent div is essential for positioning the button.
+        <div className="w-full h-full rounded-md relative bg-gray-50">
             <ReactFlow nodes={nodes} edges={edges} fitView>
                 <Background />
                 <Controls />
             </ReactFlow>
+            {/* The `absolute`, `bottom-4`, and `right-4` classes anchor the button to the bottom right. */}
+            <button
+                onClick={handleSaveGraph}
+                className="absolute bottom-4 right-4 z-10 bg-brand-green text-white font-bold py-2 px-4 rounded-md shadow-lg hover:bg-brand-green-dark transition"
+            >
+                Save GraphML
+            </button>
         </div>
     );
 };
