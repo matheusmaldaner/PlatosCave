@@ -21,13 +21,16 @@ const INITIAL_STAGES: ProcessStep[] = [
 const IndexPage = () => {
     const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
     const [finalScore, setFinalScore] = useState<number | null>(null);
     const [graphmlData, setGraphmlData] = useState<string | null>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [settings, setSettings] = useState<Settings>({ agentAggressiveness: 5, evidenceThreshold: 0.8 });
 
+    // WebSocket connection for real-time updates
     useEffect(() => {
-        if (!uploadedFile) return;
+        if (!uploadedFile && !submittedUrl) return;
+
         const socket: Socket = io('http://localhost:5000');
         socket.on('connect', () => console.log('Connected to WebSocket server!'));
         socket.on('status_update', (msg: { data: string }) => {
@@ -53,7 +56,7 @@ const IndexPage = () => {
             } catch (e) { console.error('Failed to parse JSON from server:', msg.data, e); }
         });
         return () => { socket.disconnect(); };
-    }, [uploadedFile]);
+    }, [uploadedFile, submittedUrl]);
 
     const handleFileUpload = async (file: File) => {
         const formData = new FormData();
@@ -64,9 +67,25 @@ const IndexPage = () => {
         setFinalScore(null);
         setGraphmlData(null);
         setUploadedFile(file);
+        setSubmittedUrl(null);  // Clear URL if file is uploaded
         try {
             await axios.post('http://localhost:5000/api/upload', formData);
         } catch (error) { console.error('Error uploading file:', error); }
+    };
+
+    const handleUrlSubmit = async (url: string) => {
+        setProcessSteps(INITIAL_STAGES);
+        setFinalScore(null);
+        setGraphmlData(null);
+        setSubmittedUrl(url);
+        setUploadedFile(null);  // Clear file if URL is submitted
+        try {
+            await axios.post('http://localhost:5000/api/analyze-url', {
+                url,
+                agentAggressiveness: settings.agentAggressiveness,
+                evidenceThreshold: settings.evidenceThreshold
+            });
+        } catch (error) { console.error('Error analyzing URL:', error); }
     };
 
     return (
@@ -75,10 +94,10 @@ const IndexPage = () => {
             <main className="flex flex-col h-screen font-sans bg-white">
                 <header className="w-full p-4 border-b border-gray-200 flex justify-between items-center">
                     <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-10" />
-                    
-                    {uploadedFile && (
+
+                    {(uploadedFile || submittedUrl) && (
                         <div className="flex items-center space-x-4">
-                            {/* --- NEW: Final Score Display --- */}
+                            {/* --- Final Score Display --- */}
                             {finalScore !== null && (
                                 <div className="text-right">
                                     <span className="text-sm text-gray-500 font-semibold">Integrity Score</span>
@@ -86,7 +105,9 @@ const IndexPage = () => {
                                 </div>
                             )}
 
-                            <span className="font-mono text-sm text-gray-500">{uploadedFile.name}</span>
+                            <span className="font-mono text-sm text-gray-500">
+                                {uploadedFile ? uploadedFile.name : submittedUrl}
+                            </span>
                             <button onClick={() => setIsSettingsOpen(true)} className="text-gray-500 hover:text-gray-800">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </button>
@@ -94,9 +115,9 @@ const IndexPage = () => {
                     )}
                 </header>
 
-                {!uploadedFile ? (
+                {(!uploadedFile && !submittedUrl) ? (
                     <div className="flex-grow flex items-center justify-center p-4">
-                        <FileUploader onFileUpload={handleFileUpload} />
+                        <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
                     </div>
                 ) : (
                     <>

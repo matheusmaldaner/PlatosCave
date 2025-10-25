@@ -4,9 +4,10 @@ import { useDropzone } from 'react-dropzone';
 
 interface FileUploaderProps {
     onFileUpload: (file: File) => void;
+    onUrlSubmit: (url: string) => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }) => {
     const [url, setUrl] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,10 +30,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
     const handleSubmit = () => {
         if (selectedFile) {
             onFileUpload(selectedFile);
-        } else if (url) {
-            // Future logic to handle URL submission
-            console.log('Submitting URL:', url);
-            alert("URL submission is not yet implemented.");
+        } else if (url.trim()) {
+            onUrlSubmit(url.trim());
         }
     };
 
@@ -88,6 +87,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
                         onChange={(e) => {
                             setUrl(e.target.value);
                             if (selectedFile) setSelectedFile(null); // Clear file if user starts typing
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && (selectedFile || url.trim())) {
+                                handleSubmit();
+                            }
                         }}
                         placeholder={getDisplayText()}
                         className="flex-grow bg-transparent outline-none border-none text-gray-700 mx-2 placeholder:text-gray-400"
