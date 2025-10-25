@@ -101,7 +101,13 @@ const IndexPage = () => {
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} settings={settings} onSave={setSettings} />
             <main className="flex flex-col h-screen font-sans bg-white">
                 <header className="w-full p-4 border-b border-gray-200 flex justify-between items-center">
-                    <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-10" />
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="cursor-pointer hover:opacity-80 transition-opacity"
+                        aria-label="Return to home"
+                    >
+                        <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-10" />
+                    </button>
 
                     {(uploadedFile || submittedUrl) && (
                         <div className="flex items-center space-x-4">
