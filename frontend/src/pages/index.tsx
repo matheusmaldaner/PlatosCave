@@ -1,5 +1,5 @@
 // PlatosCave/frontend/src/pages/index.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 import FileUploader from '../components/FileUploader';
@@ -10,6 +10,7 @@ import SettingsModal, { Settings } from '../components/SettingsModal';
 import ProgressBar from '../components/ProgressBar';
 import ParticleBackground from '../components/ParticleBackground';
 import platosCaveLogo from '../images/platos-cave-logo.png';
+import caveVideo from '../videos/Cave_Background_With_White_Center.mp4';
 
 const INITIAL_STAGES: ProcessStep[] = [
     { name: "Validate", displayText: "Pending...", status: 'pending' },
@@ -21,6 +22,10 @@ const INITIAL_STAGES: ProcessStep[] = [
 ];
 
 const IndexPage = () => {
+    const [introPhase, setIntroPhase] = useState<'video' | 'expand' | 'done'>("video");
+    const expandTimeoutRef = useRef<number | null>(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const [expandScale, setExpandScale] = useState(1);
     const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
@@ -81,6 +86,25 @@ const IndexPage = () => {
         return () => { socket.disconnect(); };
     }, [uploadedFile, submittedUrl]);
 
+    // Cleanup pending timers
+    useEffect(() => {
+        return () => {
+            if (expandTimeoutRef.current) window.clearTimeout(expandTimeoutRef.current);
+        };
+    }, []);
+
+    // Kick off expansion animation when entering expand phase
+    useEffect(() => {
+        if (introPhase === 'expand') {
+            setExpandScale(1);
+            // trigger with slight delay, use larger final scale for full cover
+            const id = window.setTimeout(() => setExpandScale(180), 60);
+            // allow transform to complete, then dissolve main in
+            expandTimeoutRef.current = window.setTimeout(() => setIntroPhase('done'), 1100);
+            return () => { window.clearTimeout(id); };
+        }
+    }, [introPhase]);
+
     const handleFileUpload = async (file: File) => {
         const formData = new FormData();
         formData.append('file', file);
@@ -122,7 +146,7 @@ const IndexPage = () => {
             {/* Particle background only on landing page */}
             {!uploadedFile && !submittedUrl && <ParticleBackground />}
 
-            <main className="flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans" style={{ minHeight: '100dvh' }}>
+            <main className={`flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans transition-opacity duration-400 ease-out ${introPhase === 'done' ? 'opacity-100' : 'opacity-0'}`} style={{ minHeight: '100dvh' }}>
                 <header className="relative z-10 flex w-full flex-wrap items-center justify-between gap-4 border-b border-gray-100 bg-white/50 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
                     <button
                         onClick={() => window.location.reload()}
@@ -176,6 +200,51 @@ const IndexPage = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Intro overlay: video then expanding white box */}
+            {introPhase !== 'done' && (
+                <div className={`fixed inset-0 z-50 overflow-hidden ${introPhase === 'video' ? 'bg-black' : 'bg-white'}` }>
+                    {/* Keep video visible for both phases so box aligns with last frame */}
+                    <video
+                        ref={videoRef}
+                        src={caveVideo}
+                        className="absolute inset-0 h-full w-full object-contain bg-black"
+                        autoPlay={introPhase === 'video'}
+                        muted
+                        playsInline
+                        style={{ transform: 'scale(1.12)', transformOrigin: 'center bottom', opacity: introPhase === 'expand' ? 0 : 1, transition: 'opacity 200ms ease-out' }}
+                        onLoadedMetadata={() => {
+                            try { if (videoRef.current) videoRef.current.playbackRate = 3.0; } catch {}
+                        }}
+                        onPlay={() => {
+                            try { if (videoRef.current) videoRef.current.playbackRate = 3.0; } catch {}
+                        }}
+                        onEnded={() => {
+                            setIntroPhase('expand');
+                        }}
+                        onError={() => setIntroPhase('done')}
+                    />
+
+                    {/* Expanding white box aligned to video coordinates (based on 1280x720) */}
+                    {introPhase === 'expand' && (
+                        <div className="absolute inset-0">
+                            <div
+                                className="bg-white transition-transform duration-1000 ease-in"
+                                style={{
+                                    // Coords mapped as percentages relative to 1280x720: left~30.1%, top~29.0%, width~48.6%, height~68.2%
+                                    position: 'absolute',
+                                    left: '26.2%',
+                                    top: '22.06%',
+                                    width: '48.6%',
+                                    height: '68.2%',
+                                    transformOrigin: '50% 50%',
+                                    transform: `scale(${expandScale})`,
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
 
             <BrowserViewer
                 isOpen={isBrowserViewerOpen && !!browserSession?.novncUrl}

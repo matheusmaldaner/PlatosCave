@@ -47,7 +47,9 @@ This will start the development server at `http://localhost:8000`
 ## Getting Started (Backend)
 
 ```bash
-uv venv --python 3.12
+# install uv
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
 source .venv/bin/activate
 uv pip install browser-use
 uvx playwright install chromium --with-deps
