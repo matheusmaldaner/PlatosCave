@@ -34,3 +34,25 @@ This folder contains the backend logic for scoring knowledge-graph (KG) edges as
     { "id": 3, "text": "…", "role": "Conclusion", "parents": [1,2], "children": [] }
   ]
 }
+```
+## Minimal Usage (Agent Loop)
+
+```
+from service_adapter import KGSession
+
+sess = KGSession(graph_json)
+print(sess.validation_report())
+
+nid = sess.current()
+while nid is not None:
+    # agent produces 6 metrics in [0,1]
+    m = {
+      "credibility": 0.8, "relevance": 0.7, "evidence_strength": 0.6,
+      "method_rigor": 0.5, "reproducibility": 0.4, "citation_support": 0.3
+    }
+    out = sess.set_metrics_and_advance(nid, m)
+    print("updated_edges:", out["updated_edges"])
+    nid = out["next_node"]
+
+print(sess.graph_score())
+```
