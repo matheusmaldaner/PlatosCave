@@ -1,17 +1,36 @@
-How your frontend would use it
+# Paper Rater: KG Real-Time Scoring & Service Adapter
 
-Create session from the LLM’s JSON KG:
+This folder contains the backend logic for scoring knowledge-graph (KG) edges as an agent fills node metrics, plus a thin service adapter that exposes an easy API for a frontend/agent loop.
 
-sess = KGSession(graph_json)  # returns validation info
+## Files
 
+- `kg_realtime_scoring.py` — Core library:
+  - Validate KG JSON into a DAG (`DAGValidation.validate_and_build_from_json`)
+  - Maintain nodes, recompute **edge confidences** when ready (`KGScorer.update_node_metrics`)
+  - Compute **graph-level score** (`KGScorer.graph_score`)
+  - Export **embeddings/features** for meta-analysis:
+    - `export_edge_features()`
+    - `export_node_feature_matrix(...)`
+    - `random_walk_corpus(...)` (node2vec)
+    - `paper_fingerprint()`
 
-Loop:
+- `service_adapter.py` — Small API over `KGScorer` for your frontend/agent:
+  - `KGSession(graph_json)` — build + validate
+  - `validation_report()` — errors/warnings/stats
+  - `current()` — node id to score next (BFS from Hypothesis roots)
+  - `set_metrics_and_advance(node_id, metrics)` — update node metrics, receive
+    `updated_edges` (u,v,confidence), and `next_node`
+  - `graph_score()` — overall score + components
+  - (Optional helpers you can add) `state()`, `snapshot()`, `reset()`
 
-node_id = sess.current() → frontend asks your agent to score that node
+## JSON Schema (input)
 
-resp = sess.set_metrics_and_advance(node_id, metrics_dict)
-→ returns updated_edges (u,v,confidence) and the next_node
-
-(Optional) Score graph: sess.graph_score() when you want a final number.
-
-This exactly matches your flow: start at hypothesis, update metrics, move to the next. Metrics are validated to be in [0,1]; if a key is wrong or out of range, update_node_metrics raises (so your API can return a clean 4xx). Edge updates are pushed through the edge callback, so you can stream those to the UI if you want.
+```json
+{
+  "nodes": [
+    { "id": 0, "text": "…", "role": "Hypothesis", "parents": [], "children": [1,2] },
+    { "id": 1, "text": "…", "role": "Evidence",   "parents": [0], "children": [3] },
+    { "id": 2, "text": "…", "role": "Method",     "parents": [0], "children": [3] },
+    { "id": 3, "text": "…", "role": "Conclusion", "parents": [1,2], "children": [] }
+  ]
+}
