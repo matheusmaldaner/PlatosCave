@@ -5,12 +5,19 @@ from dotenv import load_dotenv
 import asyncio
 import argparse
 import json
+import sys
+import os
 from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt
 
 # remove langchain after
 #from langchain_core.messages import HumanMessage
 
 load_dotenv()
+
+# Suppress browser-use logs by redirecting stderr when running from server
+# (browser-use logs go to stderr, we only want JSON on stdout)
+if os.environ.get('SUPPRESS_LOGS') == 'true':
+    sys.stderr = open(os.devnull, 'w')
 
 # WebSocket update helpers (for server.py to stream to frontend)
 def send_update(stage: str, text: str, flush: bool = True):
@@ -222,6 +229,13 @@ async def main(url):
 
         # Send GraphML data to frontend via WebSocket
         send_graph_data(graphml_output)
+
+        # Debug: confirm GraphML was sent (only to stderr if logs enabled)
+        if os.environ.get('SUPPRESS_LOGS') != 'true':
+            print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
+
+        # Small delay to ensure WebSocket transmission completes
+        await asyncio.sleep(0.5)
 
         send_update("Compiling Evidence", "Evidence compiled.")
 

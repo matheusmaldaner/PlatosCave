@@ -59,6 +59,10 @@ def run_url_analysis_and_stream_output(url, settings):
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
 
+    # Set environment to suppress browser-use logs
+    env = os.environ.copy()
+    env['SUPPRESS_LOGS'] = 'true'
+
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
@@ -66,7 +70,8 @@ def run_url_analysis_and_stream_output(url, settings):
         text=True,
         bufsize=1,
         encoding='utf-8',
-        cwd=os.path.dirname(os.path.abspath(__file__))  # Run from backend directory
+        cwd=os.path.dirname(os.path.abspath(__file__)),  # Run from backend directory
+        env=env  # Pass modified environment
     )
 
     for line in process.stdout:

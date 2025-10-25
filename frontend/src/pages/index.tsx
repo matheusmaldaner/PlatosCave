@@ -47,13 +47,21 @@ const IndexPage = () => {
                         });
                     });
                 } else if (update.type === 'GRAPH_DATA') {
+                    console.log('📊 Received graph data, length:', update.data?.length);
                     setGraphmlData(update.data);
                 } else if (update.type === 'DONE') {
                     setFinalScore(update.score);
                     setProcessSteps(prev => prev.map(s => ({...s, status: 'completed'})));
                     socket.disconnect();
                 }
-            } catch (e) { console.error('Failed to parse JSON from server:', msg.data, e); }
+            } catch (e) {
+                // Skip non-JSON lines (like browser-use logs) silently
+                if (!msg.data.startsWith('{')) {
+                    console.debug('Skipping non-JSON message:', msg.data);
+                } else {
+                    console.error('Failed to parse JSON from server:', msg.data, e);
+                }
+            }
         });
         return () => { socket.disconnect(); };
     }, [uploadedFile, submittedUrl]);
