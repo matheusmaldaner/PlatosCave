@@ -1,178 +1,118 @@
-import React, { useState, useRef, DragEvent, useCallback, memo } from "react";
-import { Upload, ArrowUp } from "lucide-react";
+// PlatosCave/frontend/src/components/FileUploader.tsx
+import React, { useCallback, useState, useRef } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 interface FileUploaderProps {
-  onSubmit: (data: { url?: string; file?: File }) => void;
+    onFileUpload: (file: File) => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = memo(({ onSubmit }) => {
-  const [url, setUrl] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
+    const [url, setUrl] = useState('');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDragEnter = useCallback((e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        if (acceptedFiles.length > 0) {
+            setSelectedFile(acceptedFiles[0]);
+            // For immediate upload on drop, uncomment the next line
+            // onFileUpload(acceptedFiles[0]);
+        }
+    }, [onFileUpload]);
 
-  const handleDragLeave = useCallback((e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  }, []);
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: { 'application/pdf': ['.pdf'] },
+        multiple: false,
+        noClick: true, // We will trigger the click manually
+    });
 
-  const handleDragOver = useCallback((e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
+    const handleSubmit = () => {
+        if (selectedFile) {
+            onFileUpload(selectedFile);
+        } else if (url) {
+            // Future logic to handle URL submission
+            console.log('Submitting URL:', url);
+            alert("URL submission is not yet implemented.");
+        }
+    };
 
-  const handleDrop = useCallback((e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
+    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            setSelectedFile(event.target.files[0]);
+        }
+    };
+    
+    // Get the display text for the input
+    const getDisplayText = () => {
+        if (selectedFile) {
+            return selectedFile.name;
+        }
+        if (isDragActive) {
+            return "Drop the PDF here...";
+        }
+        return "Enter research paper URL or upload PDF...";
+    };
 
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      if (file.type === "application/pdf") {
-        setSelectedFile(file);
-        setUrl("");
-      } else {
-        alert("Please upload a PDF file");
-      }
-    }
-  }, []);
+    return (
+        <div className="flex flex-col items-center justify-center h-full w-full text-center">
+            <h1 className="text-4xl font-bold text-text-primary mb-2">
+                Analyze research papers instantly
+            </h1>
+            <p className="text-lg text-text-secondary mb-8">
+                Upload a PDF or paste a URL to extract insights from research papers
+            </p>
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      if (file.type === "application/pdf") {
-        setSelectedFile(file);
-        setUrl("");
-      } else {
-        alert("Please upload a PDF file");
-      }
-    }
-  }, []);
+            {/* Main Input Area */}
+            <div {...getRootProps()} className="w-full max-w-2xl mx-auto">
+                <div className={`relative flex items-center w-full p-2 bg-white rounded-xl shadow-md border transition-all ${isDragActive ? 'border-brand-green ring-2 ring-brand-green-light' : 'border-gray-200'}`}>
+                    {/* Hidden file input for react-dropzone */}
+                    <input {...getInputProps()} />
+                    {/* Hidden file input for manual selection */}
+                    <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept=".pdf" style={{ display: 'none' }} />
 
-  const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setUrl(value);
-    if (value) {
-      setSelectedFile(null);
-    }
-  }, []);
+                    {/* Upload Icon */}
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 text-gray-400 hover:text-gray-600"
+                        aria-label="Upload PDF"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                    </button>
 
-  const handleSubmit = useCallback(() => {
-    if (selectedFile) {
-      onSubmit({ file: selectedFile });
-    } else if (url.trim()) {
-      onSubmit({ url: url.trim() });
-    }
-  }, [selectedFile, url, onSubmit]);
+                    {/* Text Input / File Name Display */}
+                    <input
+                        type="text"
+                        value={selectedFile ? '' : url} // Clear URL input if a file is selected
+                        onChange={(e) => {
+                            setUrl(e.target.value);
+                            if (selectedFile) setSelectedFile(null); // Clear file if user starts typing
+                        }}
+                        placeholder={getDisplayText()}
+                        className="flex-grow bg-transparent outline-none border-none text-gray-700 mx-2 placeholder:text-gray-400"
+                        readOnly={!!selectedFile} // Make input readonly if a file is selected
+                    />
 
-  const handleFileButtonClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const hasInput = url.trim() || selectedFile;
-
-  return (
-    <div className="w-full max-w-3xl mx-auto">
-      {/* Input Container - ChatGPT style */}
-      <div
-        className={`
-          relative rounded-3xl transition-colors shadow-sm
-          ${isDragging ? "border-2 border-emerald-400 bg-emerald-50/30" : "border border-gray-300 bg-white"}
-          ${selectedFile ? "border-emerald-400" : ""}
-        `}
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <div className="flex items-center p-4 pr-2">
-          {/* File Upload Button (Left side) */}
-          <button
-            type="button"
-            onClick={handleFileButtonClick}
-            className="mr-3 p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
-            title="Upload PDF"
-          >
-            <Upload className="w-5 h-5 text-gray-600" />
-          </button>
-
-          {/* Hidden File Input */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,application/pdf"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          {/* URL Input */}
-          <input
-            type="text"
-            placeholder={selectedFile ? selectedFile.name : "Enter research paper URL or upload PDF..."}
-            value={url}
-            onChange={handleUrlChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && hasInput) {
-                handleSubmit();
-              }
-            }}
-            className="flex-1 outline-none text-gray-800 placeholder-gray-400 bg-transparent text-base py-2"
-            disabled={!!selectedFile}
-          />
-
-          {/* Submit Button (Right side, circular) */}
-          <button
-            onClick={handleSubmit}
-            disabled={!hasInput}
-            className={`
-              ml-3 p-2.5 rounded-full transition-colors flex-shrink-0
-              ${
-                hasInput
-                  ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }
-            `}
-            title="Analyze"
-          >
-            <ArrowUp className="w-5 h-5" strokeWidth={2} />
-          </button>
-        </div>
-
-        {/* File Selected Indicator */}
-        {selectedFile && (
-          <div className="px-4 pb-3">
-            <div className="flex items-center justify-between bg-emerald-50 rounded-xl p-3 border border-emerald-200">
-              <span className="text-sm text-emerald-800 truncate font-medium">
-                📄 {selectedFile.name}
-              </span>
-              <button
-                onClick={() => setSelectedFile(null)}
-                className="ml-2 text-emerald-600 hover:text-emerald-800 transition-colors"
-              >
-                ✕
-              </button>
+                    {/* Submit Button */}
+                    <button
+                        onClick={handleSubmit}
+                        disabled={!selectedFile && !url}
+                        className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg transition hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        aria-label="Submit"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-          </div>
-        )}
-      </div>
 
-      {/* Subtle hint text below input */}
-      <p className="text-center text-xs text-gray-400 mt-3">
-        Logos can analyze research papers from URLs or PDF files
-      </p>
-    </div>
-  );
-});
-
-FileUploader.displayName = 'FileUploader';
+            <p className="text-sm text-gray-400 mt-4">
+                Logos can analyze research papers from URLs or PDF files
+            </p>
+        </div>
+    );
+};
 
 export default FileUploader;

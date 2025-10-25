@@ -1,77 +1,114 @@
-import React from "react";
-import type { HeadFC, PageProps } from "gatsby";
-import FileUploader from "../components/FileUploader";
-import { extractFactDAGWithLLM, type FactDAG } from "../utils/factDagLLM";
-import { ApiDagLLM } from "../utils/factDagClient";
-import { extractPdfText } from "../utils/pdfText";
+// PlatosCave/frontend/src/pages/index.tsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { io, Socket } from 'socket.io-client';
+import FileUploader from '../components/FileUploader';
+import { ProcessStep } from '../components/Sidebar';
+import XmlGraphViewer from '../components/XmlGraphViewer';
+import SettingsModal, { Settings } from '../components/SettingsModal';
+import ProgressBar from '../components/ProgressBar';
+import platosCaveLogo from '../images/platos-cave-logo.png';
 
-const IndexPage: React.FC<PageProps> = () => {
-  const handleSubmit = async (data: { url?: string; file?: File }) => {
-    if (data.url) {
-      console.log("📄 Analyzing URL:", data.url);
-    } else if (data.file) {
-      console.log("📄 Analyzing PDF:", data.file.name);
-      console.log("   File size:", (data.file.size / 1024).toFixed(2), "KB");
-      console.log("   File type:", data.file.type);
+const INITIAL_STAGES: ProcessStep[] = [
+    { name: "Validate", displayText: "Pending...", status: 'pending' },
+    { name: "Decomposing PDF", displayText: "Pending...", status: 'pending' },
+    { name: "Building Logic Tree", displayText: "Pending...", status: 'pending' },
+    { name: "Organizing Agents", displayText: "Pending...", status: 'pending' },
+    { name: "Compiling Evidence", displayText: "Pending...", status: 'pending' },
+    { name: "Evaluating Integrity", displayText: "Pending...", status: 'pending' },
+];
 
-      // Convert PDF to text using PDF.js
-      const extractedText = await extractPdfText(data.file);
+const IndexPage = () => {
+    const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [finalScore, setFinalScore] = useState<number | null>(null);
+    const [graphmlData, setGraphmlData] = useState<string | null>(null);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [settings, setSettings] = useState<Settings>({ agentAggressiveness: 5, evidenceThreshold: 0.8 });
 
-      // LLM-driven single global DAG of facts (via backend API)
-      const dagLlm = new ApiDagLLM();
-      const factDag: FactDAG = await extractFactDAGWithLLM(extractedText, dagLlm);
-      console.log("🔗 Fact DAG:", { nodes: factDag.nodes.length, edges: factDag.edges.length });
-      console.table(factDag.nodes.map(n => ({ id: n.id, text: n.text })));
-      console.log(factDag.edges);
-    }
-  };
+    useEffect(() => {
+        if (!uploadedFile) return;
+        const socket: Socket = io('http://localhost:5000');
+        socket.on('connect', () => console.log('Connected to WebSocket server!'));
+        socket.on('status_update', (msg: { data: string }) => {
+            try {
+                const update = JSON.parse(msg.data);
+                if (update.type === 'UPDATE') {
+                    setProcessSteps(prevSteps => {
+                        let activeStageIndex = prevSteps.findIndex(s => s.name === update.stage);
+                        if (activeStageIndex === -1) return prevSteps;
+                        return prevSteps.map((step, index) => {
+                            if (index === activeStageIndex) return { ...step, displayText: update.text, status: 'active' };
+                            if (index < activeStageIndex && step.status !== 'completed') return { ...step, status: 'completed' };
+                            return step;
+                        });
+                    });
+                } else if (update.type === 'GRAPH_DATA') {
+                    setGraphmlData(update.data);
+                } else if (update.type === 'DONE') {
+                    setFinalScore(update.score);
+                    setProcessSteps(prev => prev.map(s => ({...s, status: 'completed'})));
+                    socket.disconnect();
+                }
+            } catch (e) { console.error('Failed to parse JSON from server:', msg.data, e); }
+        });
+        return () => { socket.disconnect(); };
+    }, [uploadedFile]);
 
-  return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Top Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          {/* Logo on the left */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">L</span>
-            </div>
-            <span className="font-semibold text-gray-800 text-lg">Logos</span>
-          </div>
+    const handleFileUpload = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('agentAggressiveness', settings.agentAggressiveness.toString());
+        formData.append('evidenceThreshold', settings.evidenceThreshold.toString());
+        setProcessSteps(INITIAL_STAGES);
+        setFinalScore(null);
+        setGraphmlData(null);
+        setUploadedFile(file);
+        try {
+            await axios.post('http://localhost:5000/api/upload', formData);
+        } catch (error) { console.error('Error uploading file:', error); }
+    };
 
-          {/* Right side controls (placeholder for future additions) */}
-          <div className="flex items-center space-x-3">
-            {/* Add menu/profile icons here if needed */}
-          </div>
-        </div>
-      </nav>
+    return (
+        <>
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} settings={settings} onSave={setSettings} />
+            <main className="flex flex-col h-screen font-sans bg-white">
+                <header className="w-full p-4 border-b border-gray-200 flex justify-between items-center">
+                    <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-10" />
+                    
+                    {uploadedFile && (
+                        <div className="flex items-center space-x-4">
+                            {/* --- NEW: Final Score Display --- */}
+                            {finalScore !== null && (
+                                <div className="text-right">
+                                    <span className="text-sm text-gray-500 font-semibold">Integrity Score</span>
+                                    <p className="font-bold text-2xl text-brand-green">{finalScore.toFixed(2)}</p>
+                                </div>
+                            )}
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 pt-16">
-        {/* Center Message */}
-        <div className="text-center mb-8 max-w-2xl">
-          <h1 className="text-3xl font-medium text-gray-800 mb-3">
-            Analyze research papers instantly
-          </h1>
-          <p className="text-gray-500">
-            Upload a PDF or paste a URL to extract insights from research papers
-          </p>
-        </div>
+                            <span className="font-mono text-sm text-gray-500">{uploadedFile.name}</span>
+                            <button onClick={() => setIsSettingsOpen(true)} className="text-gray-500 hover:text-gray-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            </button>
+                        </div>
+                    )}
+                </header>
 
-        {/* File Uploader Component */}
-        <div className="w-full max-w-3xl">
-          <FileUploader onSubmit={handleSubmit} />
-        </div>
-      </main>
-    </div>
-  );
+                {!uploadedFile ? (
+                    <div className="flex-grow flex items-center justify-center p-4">
+                        <FileUploader onFileUpload={handleFileUpload} />
+                    </div>
+                ) : (
+                    <>
+                        <ProgressBar steps={processSteps} />
+                        <div className="flex-grow p-4" style={{ height: 'calc(100vh - 150px)' }}>
+                            <XmlGraphViewer graphmlData={graphmlData} />
+                        </div>
+                    </>
+                )}
+            </main>
+        </>
+    );
 };
 
 export default IndexPage;
-
-export const Head: HeadFC = () => (
-  <>
-    <title>Logos - Research Paper Summarizer</title>
-    <meta name="description" content="Analyze research papers from URLs or PDFs" />
-  </>
-);
