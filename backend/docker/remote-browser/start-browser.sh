@@ -55,7 +55,11 @@ chromium \
   &
 CHROME_PID=$!
 
-# Note: No need for socat port forwarding since Chrome is listening on CDP_PORT directly
+# Chrome binds to localhost (may be IPv4 or IPv6), so we need socat to make it accessible from outside container
+log "Starting socat forwarder for CDP port ${INTERNAL_CDP_PORT}"
+# Use [::1] (IPv6 localhost) as Chrome often binds to IPv6 first
+socat TCP-LISTEN:${INTERNAL_CDP_PORT},bind=0.0.0.0,fork,reuseaddr TCP:[::1]:${INTERNAL_CDP_PORT} &
+SOCAT_PID=$!
 
 # Start VNC server
 log "Starting x11vnc on port ${VNC_PORT}"
@@ -72,12 +76,12 @@ log " - CDP:    http://localhost:${CDP_PORT}"
 log " - noVNC:  http://localhost:${NOVNC_PORT}/vnc.html?autoconnect=1&resize=scale"
 
 # Forward CTRL+C to subprocesses
-trap 'log "Shutting down"; kill ${WEBSOCKIFY_PID} ${VNC_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true; wait' INT TERM
+trap 'log "Shutting down"; kill ${WEBSOCKIFY_PID} ${VNC_PID} ${SOCAT_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true; wait' INT TERM
 
 # Wait for any process to exit, then clean up
 wait -n
 STATUS=$?
 trap - INT TERM
-kill ${WEBSOCKIFY_PID} ${VNC_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true
+kill ${WEBSOCKIFY_PID} ${VNC_PID} ${SOCAT_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true
 wait || true
 exit ${STATUS}
