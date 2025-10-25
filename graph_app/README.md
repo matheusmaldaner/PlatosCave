@@ -56,3 +56,18 @@ while nid is not None:
 
 print(sess.graph_score())
 ```
+## Embeddings / Meta-Analysis
+
+```
+# Per-node features (role one-hot + metrics [+ optional text embedding])
+node_feats = sess.node_feature_matrix()
+
+# Edge features table (confidence + components)
+edges = sess.edge_features()
+
+# Random-walk corpus for node2vec (uses edge confidence as weight)
+walks = sess.node2vec_corpus(num_walks=20, walk_length=12, p=1.0, q=2.0, min_conf=0.2)
+
+# Graph-level fingerprint (for retrieval/clustering)
+paper_vec = sess.paper_fingerprint()
+```
