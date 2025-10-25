@@ -11,18 +11,16 @@ Your mission is to THOROUGHLY analyze an academic paper from the provided URL an
 
 BROWSING BEHAVIOR REQUIREMENTS:
 - Navigate to the paper URL and wait for the page to fully load
-- Scroll through the ENTIRE document from top to bottom at a measured pace
+- Scroll through the ENTIRE document from top to bottom as fast as possible
 - Scroll back up to review sections that contain dense information
 - Pause at each major section (Abstract, Introduction, Methods, Results, Discussion, Conclusion)
-- Demonstrate active reading by highlighting or selecting key phrases occasionally
-- For multi-page papers, ensure you navigate through ALL pages/sections
-- Take time to "read" - don't rush through the content
+- Demonstrate active reading by highlighting or selecting key phrases occasionally if possible
+- For multi-page papers, ensure you navigate through ALL pages/sections stopping briefly at each page
 
 VISUAL DEMONSTRATION (for user engagement):
 - Periodically highlight important sentences or key findings
 - Select and briefly focus on equations, theorems, or definitions
 - Hover over figures, charts, and tables to show attention to visual data
-- This creates a visual indication that thorough analysis is occurring
 
 CONTENT EXTRACTION REQUIREMENTS:
 - Extract the COMPLETE text of the paper including:
@@ -34,79 +32,64 @@ CONTENT EXTRACTION REQUIREMENTS:
   - Discussion and analysis
   - Conclusion
   - References (if available)
-  - Acknowledgments (if present)
 
-- For figures, plots, and images:
-  - Describe each visual element in plain English
-  - Include: what type of visualization it is (bar chart, line graph, diagram, etc.)
-  - Include: what the axes represent (if applicable)
-  - Include: key patterns, trends, or insights visible in the image
-  - Include: the figure caption and number
-  - Format: "Figure X: [caption]. [Description of visual content and key observations]"
+OUTPUT FORMAT REQUIREMENTS:
+  - Output ONLY valid JSON with no additional commentary or explanation
+  - No markdown formatting, no code blocks, no extra text
+  - Use the exact structure shown below
+  - Do NOT truncate the output - include ALL content
 
-- For tables:
-  - Describe the table structure and content
-  - Extract key data points and patterns
-  - Include the table caption and number
+JSON Structure:
+{{
+    "title": "Complete paper title",
+    "authors": ["Author 1", "Author 2", "Author 3"],
+    "abstract": "Complete abstract text here...",
+    "sections": [
+        {{
+            "heading": "Introduction",
+            "content": "Complete introduction text..."
+        }},
+        {{
+            "heading": "Methods",
+            "content": "Complete methods text..."
+        }}
+    ],
+    "figures": [
+        {{
+            "number": "1",
+            "caption": "Figure caption here",
+            "description": "Detailed plain English description"
+        }}
+    ],
+    "tables": [
+        {{
+            "number": "1",
+            "caption": "Table caption here",
+            "description": "Table structure and key data points"
+        }}
+    ],
+    "equations": [
+        {{
+            "number": "1",
+            "equation": "E = mc^2",
+            "context": "What this equation represents"
+        }}
+    ],
+    "conclusion": "Complete conclusion text...",
+    "references": ["Reference 1", "Reference 2"]
+}}
 
-- For mathematical equations:
-  - Extract equations in a readable format
-  - Include equation numbers if present
-  - Provide context about what each equation represents
-
-OUTPUT FORMAT:
-Return the complete extracted content as plain text with clear section markers.
-
-Structure your output as follows:
----
-TITLE: [paper title]
-
-AUTHORS: [author names]
-
-ABSTRACT:
-[complete abstract text]
-
-INTRODUCTION:
-[complete introduction text]
-
-[Continue with all sections...]
-
-FIGURES AND VISUALIZATIONS:
-Figure 1: [caption]
-Description: [detailed plain English description]
-
-Figure 2: [caption]
-Description: [detailed plain English description]
-
-[Continue for all figures...]
-
-TABLES:
-Table 1: [caption]
-Description: [structure and key data points]
-
-[Continue for all tables...]
-
-CONCLUSION:
-[complete conclusion text]
-
-REFERENCES:
-[list of references if available]
----
-
-QUALITY CHECKLIST:
-- ✓ Scrolled through the entire document
-- ✓ Extracted text from all sections
-- ✓ Described all figures, plots, and visualizations
-- ✓ Captured all tables and their data
-- ✓ Included all equations and formulas
-- ✓ Maintained the logical flow and structure of the paper
-- ✓ Nothing was skipped or summarized - EVERYTHING is extracted
-
-CRITICAL: Do NOT summarize. Do NOT skip sections. Extract EVERYTHING.
+VALIDATION CHECKLIST:
+- All text fields contain complete content (not summarized)
+- All figures are described in detail
+- All sections from the paper are included
+- Valid JSON structure with no syntax errors
 
 Target URL: {paper_url}
 
-Begin your thorough analysis now.
+Remember: Output ONLY the JSON object. No explanations, no markdown, no code blocks.
+
+Your final message should be the JSON object only.
 """
 
 
@@ -124,20 +107,20 @@ def build_url_paper_analysis_prompt(paper_url: str) -> str:
 
 
 # ============================================================================
-# FACT DAG EXTRACTION PROMPT
+# FACT DAG EXTRACTION PROMPT (DEPRECATED - Simple nodes/edges version)
 # ============================================================================
 
-FACT_DAG_EXTRACTION_PROMPT = """
+FACT_DAG_EXTRACTION_PROMPT_DEPRECATED = """
 You are a precise information extraction system that analyzes academic text and structures it as a directed acyclic graph (DAG) of facts.
 
-Your task is to extract ALL factual statements from the provided text and connect them based on logical relationships.
+Your task is to extract the major statements and claims from the provided text and connect them based on logical relationships.
 
 EXHAUSTIVENESS REQUIREMENTS:
-- Extract EVERY factual statement from the text - do not summarize or skip details
-- Break down complex statements into atomic, self-contained facts
-- Each node should represent ONE clear, concise fact
-- For a ~20-page research paper, you should produce hundreds of nodes if warranted
-- Prefer many small nodes over fewer large ones to ensure nothing is omitted
+- Extract the major statements from the text
+- Break down complex statements into smaller, self-contained claims
+- Each node should represent one clear statement
+- For a ~20-page research paper, you should produce a couple dozen claims
+- Prefer larger nodes over many tiny ones, but ensure clarity and self-containment
 
 GRAPH CONSTRUCTION RULES:
 - Create a strictly directed acyclic graph (DAG) structure
@@ -194,9 +177,150 @@ Remember: Output ONLY the JSON object. No explanations, no markdown, no code blo
 """
 
 
+# ============================================================================
+# FACT DAG EXTRACTION PROMPT (Current - Rich node structure with roles)
+# ============================================================================
+
+FACT_DAG_EXTRACTION_PROMPT = """
+You are a precise information extraction system that analyzes academic text and structures it as a directed acyclic graph (DAG) of scientific claims and evidence.
+
+Your task is to extract the major statements and claims from the provided text and connect them based on logical relationships with rich semantic roles.
+
+EXHAUSTIVENESS REQUIREMENTS:
+- Extract the major statements from the text
+- Break down complex statements into smaller, self-contained claims
+- Each node should represent one clear statement
+- For a ~20-page research paper, you should produce a couple dozen claims
+- Prefer larger nodes over many tiny ones, but ensure clarity and self-containment
+
+GRAPH CONSTRUCTION RULES:
+- Create a strictly directed acyclic graph (DAG) structure
+- The HYPOTHESIS (main research question or claim) MUST ALWAYS be the root node (ID 0)
+- Children flow from parents: Evidence supports Claims, Claims support Hypothesis, etc.
+- Use parent/child relationships to show logical dependencies
+- Each node must specify its role in the argument structure
+
+NODE ROLES (choose ONE per node):
+- Hypothesis: The main research hypothesis or central claim (MUST be ID 0, the root)
+- Conclusion: Final conclusions drawn from the research
+- Claim: An assertion or statement made in the paper
+- Evidence: Data, observations, or results that support claims
+- Method: Description of methodology, techniques, or procedures
+- Result: Specific findings or outcomes from experiments/analysis
+- Assumption: Underlying assumptions or premises
+- Counterevidence: Evidence that contradicts or challenges claims
+- Limitation: Acknowledged limitations or constraints
+- Context: Background information or related work
+
+OUTPUT FORMAT REQUIREMENTS:
+- Output ONLY valid JSON with no additional commentary or explanation
+- Use exactly one key: "nodes" (no separate edges - relationships are in parent/child fields)
+- No extra keys, no markdown formatting, no code blocks
+- Do NOT truncate the output - if needed, make node text shorter to fit more nodes
+
+JSON Structure:
+{{
+    "nodes": [
+        {{
+            "id": 0,
+            "text": "Main hypothesis or research question",
+            "role": "Hypothesis",
+            "parents": null,
+            "children": [1, 2, 3]
+        }},
+        {{
+            "id": 1,
+            "text": "A claim that supports the hypothesis",
+            "role": "Claim",
+            "parents": [0],
+            "children": [4, 5]
+        }},
+        {{
+            "id": 2,
+            "text": "Evidence supporting a claim",
+            "role": "Evidence",
+            "parents": [1],
+            "children": null
+        }}
+    ]
+}}
+
+FIELD REQUIREMENTS:
+- id: Sequential integer starting from 0
+- text: Clear, concise description of the statement (string)
+- role: ONE of the roles listed above (string)
+- parents: List of parent node IDs [int, ...] or null if root (must be null ONLY for ID 0)
+- children: List of child node IDs [int, ...] or null if leaf node
+
+VALIDATION CHECKLIST:
+- ID 0 is ALWAYS the Hypothesis (the root node)
+- ID 0 has parents: null
+- All non-root nodes have parents: [list of IDs]
+- Leaf nodes have children: null
+- Non-leaf nodes have children: [list of IDs]
+- All node IDs are sequential starting from 0
+- All referenced parent/child IDs exist in the graph
+- No cycles exist (child IDs are always greater than parent IDs)
+- Each node has exactly "id", "text", "role", "parents", "children" fields
+- Role is one of: Hypothesis, Conclusion, Claim, Evidence, Method, Result, Assumption, Counterevidence, Limitation, Context
+
+Example for a simple paper about machine learning:
+{{
+    "nodes": [
+        {{
+            "id": 0,
+            "text": "Neural networks can improve image classification accuracy",
+            "role": "Hypothesis",
+            "parents": null,
+            "children": [1, 2]
+        }},
+        {{
+            "id": 1,
+            "text": "Convolutional layers extract hierarchical features from images",
+            "role": "Claim",
+            "parents": [0],
+            "children": [3]
+        }},
+        {{
+            "id": 2,
+            "text": "Our CNN achieved 95% accuracy on ImageNet",
+            "role": "Result",
+            "parents": [0],
+            "children": null
+        }},
+        {{
+            "id": 3,
+            "text": "We used backpropagation to train the network",
+            "role": "Method",
+            "parents": [1],
+            "children": null
+        }}
+    ]
+}}
+
+TEXT TO ANALYZE:
+{raw_text}
+
+Remember: Output ONLY the JSON object. No explanations, no markdown, no code blocks.
+"""
+
+
+def build_fact_dag_prompt_deprecated(raw_text: str) -> str:
+    """
+    Build the complete prompt for fact DAG extraction (DEPRECATED - simple nodes/edges version).
+
+    Args:
+        raw_text: The academic text to be analyzed and structured
+
+    Returns:
+        The complete formatted prompt ready to send to the LLM
+    """
+    return FACT_DAG_EXTRACTION_PROMPT_DEPRECATED.format(raw_text=raw_text.strip())
+
+
 def build_fact_dag_prompt(raw_text: str) -> str:
     """
-    Build the complete prompt for fact DAG extraction.
+    Build the complete prompt for fact DAG extraction (current - rich node structure).
 
     Args:
         raw_text: The academic text to be analyzed and structured
@@ -207,9 +331,9 @@ def build_fact_dag_prompt(raw_text: str) -> str:
     return FACT_DAG_EXTRACTION_PROMPT.format(raw_text=raw_text.strip())
 
 
-def validate_fact_dag_json(json_response: Dict[str, Any]) -> bool:
+def validate_fact_dag_json_deprecated(json_response: Dict[str, Any]) -> bool:
     """
-    Validate the JSON response for fact DAG extraction.
+    Validate the JSON response for fact DAG extraction (DEPRECATED - simple nodes/edges version).
 
     Args:
         json_response: The parsed JSON response from the LLM
@@ -299,9 +423,170 @@ def validate_fact_dag_json(json_response: Dict[str, Any]) -> bool:
     return True
 
 
+def validate_fact_dag_json(json_response: Dict[str, Any]) -> bool:
+    """
+    Validate the JSON response for fact DAG extraction (current - rich node structure).
+
+    Args:
+        json_response: The parsed JSON response from the LLM
+
+    Returns:
+        True if the response is valid, False otherwise
+
+    Validation checks:
+    - Response is a dictionary with "nodes" key only
+    - nodes is a list of objects with "id", "text", "role", "parents", "children"
+    - ID 0 must be "Hypothesis" with parents: null
+    - All node IDs are unique and sequential starting from 0
+    - All parent/child references point to valid node IDs
+    - Child IDs are always greater than parent IDs (DAG property)
+    - Role is one of the valid roles
+    """
+    if not isinstance(json_response, dict):
+        return False
+
+    # Check required key (only "nodes", no "edges")
+    if "nodes" not in json_response:
+        return False
+
+    # Should not have "edges" key
+    if "edges" in json_response:
+        return False
+
+    nodes = json_response["nodes"]
+
+    # Validate nodes is a list
+    if not isinstance(nodes, list):
+        return False
+
+    # Must have at least one node (the hypothesis)
+    if len(nodes) == 0:
+        return False
+
+    # Valid roles
+    valid_roles = {
+        "Hypothesis", "Conclusion", "Claim", "Evidence", "Method",
+        "Result", "Assumption", "Counterevidence", "Limitation", "Context"
+    }
+
+    # Validate each node
+    node_ids = set()
+    for i, node in enumerate(nodes):
+        if not isinstance(node, dict):
+            return False
+
+        # Check required fields
+        required_fields = {"id", "text", "role", "parents", "children"}
+        if set(node.keys()) != required_fields:
+            return False
+
+        # Check field types
+        if not isinstance(node["id"], int) or not isinstance(node["text"], str) or not isinstance(node["role"], str):
+            return False
+
+        # Check ID is unique and sequential
+        if node["id"] != i:
+            return False
+
+        node_ids.add(node["id"])
+
+        # Check text is non-empty
+        if not node["text"].strip():
+            return False
+
+        # Check role is valid
+        if node["role"] not in valid_roles:
+            return False
+
+        # Special check for ID 0 (must be Hypothesis with null parents)
+        if i == 0:
+            if node["role"] != "Hypothesis":
+                return False
+            if node["parents"] is not None:
+                return False
+        else:
+            # Non-root nodes must have parents as a list
+            if not isinstance(node["parents"], list):
+                return False
+            if len(node["parents"]) == 0:
+                return False
+
+        # Check parents/children are either null or list of ints
+        if node["parents"] is not None:
+            if not isinstance(node["parents"], list):
+                return False
+            for parent_id in node["parents"]:
+                if not isinstance(parent_id, int):
+                    return False
+
+        if node["children"] is not None:
+            if not isinstance(node["children"], list):
+                return False
+            for child_id in node["children"]:
+                if not isinstance(child_id, int):
+                    return False
+
+    # Validate all parent/child references exist and maintain DAG property
+    for node in nodes:
+        node_id = node["id"]
+
+        # Check parent references exist and parent < child
+        if node["parents"] is not None:
+            for parent_id in node["parents"]:
+                if parent_id not in node_ids:
+                    return False
+                # DAG property: parent IDs must be less than child ID
+                if parent_id >= node_id:
+                    return False
+
+        # Check child references exist and child > parent
+        if node["children"] is not None:
+            for child_id in node["children"]:
+                if child_id not in node_ids:
+                    return False
+                # DAG property: child IDs must be greater than parent ID
+                if child_id <= node_id:
+                    return False
+
+    return True
+
+
+def parse_fact_dag_json_deprecated(response_text: str) -> Dict[str, Any] | None:
+    """
+    Parse and validate the LLM response for fact DAG extraction (DEPRECATED - simple nodes/edges version).
+
+    Args:
+        response_text: Raw text response from the LLM
+
+    Returns:
+        Parsed and validated JSON dict, or None if parsing/validation fails
+    """
+    import json
+
+    try:
+        # Try to extract JSON from response (handle cases with markdown code blocks)
+        json_start = response_text.find("{")
+        json_end = response_text.rfind("}")
+
+        if json_start == -1 or json_end == -1 or json_end <= json_start:
+            return None
+
+        json_str = response_text[json_start:json_end + 1]
+        parsed = json.loads(json_str)
+
+        # Validate the structure
+        if not validate_fact_dag_json_deprecated(parsed):
+            return None
+
+        return parsed
+
+    except (json.JSONDecodeError, ValueError, KeyError):
+        return None
+
+
 def parse_fact_dag_json(response_text: str) -> Dict[str, Any] | None:
     """
-    Parse and validate the LLM response for fact DAG extraction.
+    Parse and validate the LLM response for fact DAG extraction (current - rich node structure).
 
     Args:
         response_text: Raw text response from the LLM
