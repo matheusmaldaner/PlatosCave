@@ -119,8 +119,8 @@ const IndexPage = () => {
             {/* Particle background only on landing page */}
             {!uploadedFile && !submittedUrl && <ParticleBackground />}
 
-            <main className="flex flex-col h-screen font-sans bg-gradient-to-b from-white via-gray-50 to-white">
-                <header className="w-full px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-sm relative z-10">
+            <main className="flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans" style={{ minHeight: '100dvh' }}>
+                <header className="relative z-10 flex w-full flex-wrap items-center justify-between gap-4 border-b border-gray-100 bg-white/50 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
                     <button
                         onClick={() => window.location.reload()}
                         className="cursor-pointer hover:opacity-70 transition-opacity duration-200"
@@ -130,23 +130,23 @@ const IndexPage = () => {
                     </button>
 
                     {(uploadedFile || submittedUrl) && (
-                        <div className="flex items-center space-x-6">
+                        <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-6">
                             {/* --- Final Score Display --- */}
                             {finalScore !== null && (
-                                <div className="text-right">
-                                    <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">Integrity Score</span>
-                                    <p className="font-semibold text-3xl bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
+                                <div className="text-left sm:text-right">
+                                    <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">Integrity Score</span>
+                                    <p className="text-2xl font-semibold text-transparent bg-gradient-to-r from-green-500 to-green-600 bg-clip-text sm:text-3xl">
                                         {finalScore.toFixed(2)}
                                     </p>
                                 </div>
                             )}
 
-                            <span className="font-mono text-sm text-gray-600 max-w-md truncate">
+                            <span className="max-w-full truncate font-mono text-xs text-gray-600 sm:max-w-md sm:text-sm">
                                 {uploadedFile ? uploadedFile.name : submittedUrl}
                             </span>
                             <button
                                 onClick={() => setIsSettingsOpen(true)}
-                                className="text-gray-400 hover:text-gray-700 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
+                                className="rounded-lg p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-700"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </button>
@@ -154,20 +154,20 @@ const IndexPage = () => {
                     )}
                 </header>
 
-                <div className="relative flex-grow">
+                <div className="relative flex-grow overflow-hidden">
                     <div
-                        className={`absolute inset-0 flex items-center justify-center p-4 transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+                        className={`absolute inset-0 flex overflow-y-auto p-4 transition-all duration-500 ease-in-out sm:p-8 ${(!uploadedFile && !submittedUrl) ? 'pointer-events-auto opacity-100 translate-y-0' : 'pointer-events-none opacity-0 -translate-y-4'}`}
                     >
-                        <div className="relative z-10 w-full">
+                        <div className="relative z-10 flex w-full items-start justify-center">
                             <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
                         </div>
                     </div>
 
                     <div
-                        className={`absolute inset-0 flex flex-col transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'opacity-0 translate-y-4 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}
+                        className={`absolute inset-0 flex flex-col overflow-hidden transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'pointer-events-none opacity-0 translate-y-4' : 'pointer-events-auto opacity-100 translate-y-0'}`}
                     >
                         <ProgressBar steps={processSteps} />
-                        <div className="flex-grow p-4" style={{ height: 'calc(100vh - 150px)' }}>
+                        <div className="flex-grow px-3 pb-24 pt-3 sm:px-6 sm:pb-6" style={{ minHeight: '55vh' }}>
                             <XmlGraphViewer graphmlData={graphmlData} />
                         </div>
                     </div>

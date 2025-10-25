@@ -39,8 +39,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ steps }) => {
     const activeIndex = activeStep ? steps.indexOf(activeStep) : -1;
 
     return (
-        <div className="w-full max-w-3xl mx-auto my-4">
-            <div className="flex items-center">
+        <div className="mx-auto my-4 w-full max-w-4xl px-4 md:px-6">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 md:overflow-visible md:pb-0">
                 {steps.map((step, index) => {
                     const isCompleted = step.status === 'completed';
                     const isActive = step.status === 'active';
@@ -68,7 +68,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ steps }) => {
                             {!isLast && (
                                 <div
                                     className={[
-                                        'flex-1 h-1 rounded-full transition-all duration-500',
+                                        'flex-1 h-1 min-w-[40px] rounded-full transition-all duration-500',
                                         isCompleted
                                             ? 'bg-brand-green'
                                             : isActive
@@ -83,7 +83,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ steps }) => {
             </div>
             {/* Step Text */}
             {activeStep && (
-                <p className="text-center text-gray-500 mt-2">
+                <p className="mt-2 text-center text-sm text-gray-500 md:text-base">
                     Step {activeIndex + 1} of {steps.length}: {activeStep.displayText}
                 </p>
             )}
