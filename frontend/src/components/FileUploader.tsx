@@ -1,5 +1,5 @@
 // PlatosCave/frontend/src/components/FileUploader.tsx
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 interface FileUploaderProps {
@@ -121,15 +121,59 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         return "Enter research paper URL or upload PDF...";
     };
 
+    // Typewriter rotating titles for subtitle
+    const titles = [
+        'Attention Is All You Need',
+        'BERT: Pre-training of Deep Bidirectional Transformers',
+        'GPT-3: Language Models are Few-Shot Learners',
+        'ResNet: Deep Residual Learning for Image Recognition',
+        'Neural Ordinary Differential Equations',
+        'Diffusion Models Beat GANs on Image Synthesis',
+        'Playing Atari with Deep Reinforcement Learning',
+        'U-Net: Convolutional Networks for Biomedical Image Segmentation'
+    ];
+
+    const [typedText, setTypedText] = useState('');
+    const [titleIndex, setTitleIndex] = useState(0);
+    const [charIndex, setCharIndex] = useState(0);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const current = titles[titleIndex % titles.length];
+        const typingSpeed = isDeleting ? 30 : 65; // ms per char
+        const pauseAtEnd = 1200; // pause when full word typed
+
+        let timer: number;
+
+        if (!isDeleting && charIndex < current.length) {
+            timer = window.setTimeout(() => {
+                setTypedText(current.slice(0, charIndex + 1));
+                setCharIndex(charIndex + 1);
+            }, typingSpeed);
+        } else if (!isDeleting && charIndex === current.length) {
+            timer = window.setTimeout(() => setIsDeleting(true), pauseAtEnd);
+        } else if (isDeleting && charIndex > 0) {
+            timer = window.setTimeout(() => {
+                setTypedText(current.slice(0, charIndex - 1));
+                setCharIndex(charIndex - 1);
+            }, typingSpeed);
+        } else if (isDeleting && charIndex === 0) {
+            setIsDeleting(false);
+            setTitleIndex((titleIndex + 1) % titles.length);
+        }
+
+        return () => window.clearTimeout(timer);
+    }, [charIndex, isDeleting, titleIndex, titles]);
+
     return (
         <div className="flex h-full w-full flex-col items-center justify-center px-4 py-12 sm:py-16">
             <div className="mx-auto w-full max-w-3xl space-y-12">
                 {/* Hero Section */}
                 <div className="space-y-6 text-center">
-                    <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+                    <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl animate-dissolve-up">
                         Analyze research papers
                     </h1>
-                    <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg">
+                    <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg animate-dissolve-up-delayed">
                         Upload a PDF or enter a URL to extract insights and evaluate research integrity
                     </p>
                 </div>
@@ -170,7 +214,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                         )}
 
                         {/* Text Input / File Name Display */}
-                        <div className={`flex w-full items-center rounded-xl border border-transparent bg-white px-3 py-2 shadow-inner focus-within:border-brand-green/60 ${isMultiline ? '' : 'flex-1'}`}>
+                        <div className={`relative flex w-full items-center rounded-xl border border-transparent bg-white px-3 py-2 shadow-inner focus-within:border-brand-green/60 ${isMultiline ? '' : 'flex-1'}`}>
                             <textarea
                                 ref={textareaRef}
                                 value={selectedFile ? '' : url}
@@ -185,11 +229,16 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                                         handleSubmit();
                                     }
                                 }}
-                                placeholder={getDisplayText()}
+                                placeholder={(!selectedFile && url.trim() === '') ? '' : getDisplayText()}
                                 className="w-full resize-none border-none bg-transparent text-base text-gray-800 placeholder:text-gray-400 focus:outline-none min-h-[24px]"
                                 readOnly={!!selectedFile}
                                 rows={1}
                             />
+                            {!selectedFile && url.trim() === '' && (
+                                <span className="pointer-events-none absolute left-3 top-2 text-base text-gray-400 typing-caret">
+                                    {typedText}
+                                </span>
+                            )}
                             {selectedFile && (
                                 <span className="ml-3 hidden max-w-[200px] truncate text-sm font-medium text-gray-600 sm:inline" title={selectedFile.name}>
                                     {selectedFile.name}

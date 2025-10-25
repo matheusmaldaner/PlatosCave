@@ -6,3 +6,41 @@
 body {
     background-color: #FFFFFF;
 }
+
+@keyframes dissolveUp {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+        filter: blur(4px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+.animate-dissolve-up {
+    animation: dissolveUp 700ms ease-out both;
+}
+
+.animate-dissolve-up-delayed {
+    animation: dissolveUp 900ms ease-out both;
+    animation-delay: 120ms;
+}
+
+@keyframes caretBlink {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: currentColor; }
+}
+
+.typing-caret {
+    border-right: 2px solid rgba(75, 85, 99, 0.8); /* gray-600 */
+    animation: caretBlink 1s step-end infinite;
+    white-space: nowrap;
+}
