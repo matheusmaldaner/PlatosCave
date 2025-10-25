@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  remote-browser:
+    build:
+      context: ./docker/remote-browser
+    ports:
+      - "9222:9222"
+      - "7900:7900"
+    environment:
+      CDP_PORT: 9222
+      VNC_PORT: 5900
+      NOVNC_PORT: 7900
+      CHROME_START_URL: "about:blank"
+    shm_size: "2gb"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9222/json/version || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s

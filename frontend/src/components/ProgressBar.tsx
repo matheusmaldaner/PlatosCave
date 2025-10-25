@@ -7,15 +7,30 @@ interface ProgressBarProps {
 }
 
 const getStepIcon = (status: 'pending' | 'active' | 'completed', index: number) => {
-    // Completed Icon (Green Checkmark)
     if (status === 'completed') {
-        return <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>;
+        return (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            </svg>
+        );
     }
-    // Active Icon (Green Spinner)
+
     if (status === 'active') {
-        return <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>;
+        return (
+            <div className="relative flex items-center justify-center">
+                <span className="absolute inline-flex h-5 w-5 rounded-full bg-brand-green/30 opacity-70 animate-ping" />
+                <span className="absolute inline-flex h-3 w-3 rounded-full bg-brand-green/70 animate-pulse" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-green" />
+            </div>
+        );
     }
-    // Pending Icon (Gray Number)
+
     return <span className="text-gray-500 font-semibold">{index + 1}</span>;
 };
 
@@ -24,30 +39,43 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ steps }) => {
     const activeIndex = activeStep ? steps.indexOf(activeStep) : -1;
 
     return (
-        <div className="w-full max-w-3xl mx-auto my-4">
-            <div className="flex items-center">
+        <div className="mx-auto my-4 w-full max-w-4xl px-4 md:px-6">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 md:overflow-visible md:pb-0">
                 {steps.map((step, index) => {
                     const isCompleted = step.status === 'completed';
                     const isActive = step.status === 'active';
                     const isLast = index === steps.length - 1;
 
+                    const circleClasses = [
+                        'w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all duration-300'
+                    ];
+
+                    if (isCompleted) {
+                        circleClasses.push('bg-brand-green shadow-sm text-white');
+                    } else if (isActive) {
+                        circleClasses.push('bg-white ring-2 ring-brand-green/70 text-brand-green');
+                    } else {
+                        circleClasses.push('bg-gray-200 text-gray-500');
+                    }
+
                     return (
                         <React.Fragment key={step.name}>
                             {/* Circle */}
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all duration-300
-                                ${isCompleted ? 'bg-brand-green' : ''}
-                                ${isActive ? 'bg-brand-green' : ''} {/* CHANGED: from dark green to regular green */}
-                                ${step.status === 'pending' ? 'bg-gray-300' : ''} {/* This handles the "white until complete" request */}
-                            `}>
+                            <div className={circleClasses.join(' ')}>
                                 {getStepIcon(step.status, index)}
                             </div>
                             {/* Line */}
                             {!isLast && (
-                                <div className={`flex-1 h-1 transition-all duration-500
-                                    ${index < activeIndex || isCompleted ? 'bg-brand-green' : ''} {/* Completed lines are also green */}
-                                    ${index === activeIndex ? 'bg-brand-green' : ''} {/* CHANGED: from dark green to regular green */}
-                                    ${step.status === 'pending' && index > activeIndex ? 'bg-gray-300' : ''}
-                                `}></div>
+                                <div
+                                    className={[
+                                        'flex-1 h-1 min-w-[40px] rounded-full transition-all duration-500',
+                                        isCompleted
+                                            ? 'bg-brand-green'
+                                            : isActive
+                                            ? 'bg-brand-green/40 animate-pulse'
+                                            : 'bg-gray-200'
+                                    ].join(' ')}
+                                />
                             )}
                         </React.Fragment>
                     );
@@ -55,7 +83,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ steps }) => {
             </div>
             {/* Step Text */}
             {activeStep && (
-                <p className="text-center text-gray-500 mt-2">
+                <p className="mt-2 text-center text-sm text-gray-500 md:text-base">
                     Step {activeIndex + 1} of {steps.length}: {activeStep.displayText}
                 </p>
             )}

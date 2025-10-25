@@ -7,20 +7,14 @@ from typing import Any, Dict
 URL_PAPER_ANALYSIS_PROMPT = """
 You are an expert academic paper analyzer with advanced web browsing capabilities.
 
-Your mission is to THOROUGHLY analyze an academic paper from the provided URL and extract ALL content in a structured, comprehensive manner.
+Your mission is to extract ALL content from the academic paper at the provided URL in a structured, comprehensive manner.
 
-BROWSING BEHAVIOR REQUIREMENTS:
-- Navigate to the paper URL and wait for the page to fully load
-- Scroll through the ENTIRE document from top to bottom as fast as possible
-- Scroll back up to review sections that contain dense information
-- Pause at each major section (Abstract, Introduction, Methods, Results, Discussion, Conclusion)
-- Demonstrate active reading by highlighting or selecting key phrases occasionally if possible
-- For multi-page papers, ensure you navigate through ALL pages/sections stopping briefly at each page
-
-VISUAL DEMONSTRATION (for user engagement):
-- Periodically highlight important sentences or key findings
-- Select and briefly focus on equations, theorems, or definitions
-- Hover over figures, charts, and tables to show attention to visual data
+NAVIGATION STRATEGY (SPEED IS PRIORITY):
+- Navigate to the paper URL immediately
+- RAPIDLY scroll or page through the ENTIRE document to capture all content
+- For multi-page papers: click through ALL pages quickly (use Page Down, Next buttons, rapid scrolling)
+- Move FAST - the goal is efficient extraction, not slow reading theater
+- Capture content on each page as you blitz through it
 
 CONTENT EXTRACTION REQUIREMENTS:
 - Extract the COMPLETE text of the paper including:
@@ -610,6 +604,127 @@ def parse_fact_dag_json(response_text: str) -> Dict[str, Any] | None:
         # Validate the structure
         if not validate_fact_dag_json(parsed):
             return None
+
+        return parsed
+
+    except (json.JSONDecodeError, ValueError, KeyError):
+        return None
+
+
+# ============================================================================
+# CLAIM VERIFICATION PROMPT
+# ============================================================================
+
+CLAIM_VERIFICATION_PROMPT = """
+You are an expert fact-checker and research verifier with advanced web browsing capabilities.
+
+Your mission is to QUICKLY VERIFY a specific claim from an academic paper by efficiently searching for supporting or contradicting evidence.
+
+CLAIM TO VERIFY:
+{claim_text}
+
+CLAIM ROLE: {claim_role}
+CLAIM CONTEXT (from paper): {claim_context}
+
+VERIFICATION STRATEGY (SPEED IS CRITICAL):
+- Perform 1-2 targeted web searches for the core claim
+- Visit 2-3 most relevant authoritative sources (prioritize: academic papers, .edu, .gov)
+- Scan abstracts/conclusions rapidly - don't read full papers
+- Check for obvious contradictions or strong support
+- If citations mentioned: verify author/year/journal quickly
+
+OUTPUT FORMAT:
+You MUST return ONLY a valid JSON object with the following structure:
+
+{{
+    "credibility": 0.85,
+    "relevance": 0.90,
+    "evidence_strength": 0.75,
+    "method_rigor": 0.80,
+    "reproducibility": 0.70,
+    "citation_support": 0.95,
+    "verification_summary": "Brief summary of findings (2-3 sentences)",
+    "sources_checked": [
+        {{"url": "https://example.com/paper1", "title": "Paper title", "finding": "Supports the claim"}},
+        {{"url": "https://example.com/paper2", "title": "Another source", "finding": "Partially contradicts"}}
+    ],
+    "red_flags": ["List any concerns", "or empty array if none"],
+    "confidence_level": "high"
+}}
+
+SCORING GUIDE (all 0.0-1.0 scale):
+- credibility: 1.0=multiple authoritative sources confirm | 0.5=mixed evidence | 0.0=contradicted
+- relevance: How central to paper's hypothesis (1.0=core, 0.5=supporting, 0.0=tangential)
+- evidence_strength: Quality/quantity of evidence (1.0=multiple rigorous studies, 0.5=single study, 0.0=none)
+- method_rigor: Scientific rigor (1.0=gold standard, 0.5=acceptable, 0.0=questionable)
+- reproducibility: 1.0=reproduced in multiple studies | 0.5=plausible | 0.0=failed replication
+- citation_support: 1.0=verified authoritative | 0.5=mixed quality | 0.0=incorrect/missing
+- confidence_level: "high" (2-3 quality sources) | "medium" (1-2 sources) | "low" (<1 source)
+
+CRITICAL RULES:
+- Output ONLY the JSON object, no explanations before or after
+- All metric scores must be numbers between 0.0 and 1.0
+- Only include URLs you actually visited
+- If claim cannot be verified quickly, use lower scores and explain in summary
+
+Work FAST. Perform quick targeted searches and return only the JSON result.
+"""
+
+
+def build_claim_verification_prompt(claim_text: str, claim_role: str, claim_context: str = "") -> str:
+    """
+    Build the complete prompt for claim verification via web search.
+
+    Args:
+        claim_text: The specific claim/statement to verify
+        claim_role: The role of the claim (Evidence, Method, Claim, etc.)
+        claim_context: Optional context from the paper (e.g., surrounding text)
+
+    Returns:
+        The complete formatted prompt ready to send to the browsing agent
+    """
+    return CLAIM_VERIFICATION_PROMPT.format(
+        claim_text=claim_text.strip(),
+        claim_role=claim_role.strip(),
+        claim_context=claim_context.strip() if claim_context else "No additional context provided"
+    )
+
+
+def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
+    """
+    Parse and validate the verification result from the agent.
+
+    Args:
+        response_text: Raw text response from the verification agent
+
+    Returns:
+        Parsed JSON dict with verification metrics, or None if parsing fails
+    """
+    import json
+
+    try:
+        # Extract JSON from response
+        json_start = response_text.find("{")
+        json_end = response_text.rfind("}")
+
+        if json_start == -1 or json_end == -1 or json_end <= json_start:
+            return None
+
+        json_str = response_text[json_start:json_end + 1]
+        parsed = json.loads(json_str)
+
+        # Validate required fields
+        required_metrics = ["credibility", "relevance", "evidence_strength",
+                           "method_rigor", "reproducibility", "citation_support"]
+
+        for metric in required_metrics:
+            if metric not in parsed:
+                return None
+            if not isinstance(parsed[metric], (int, float)):
+                return None
+            # Ensure value is in [0, 1]
+            if not (0.0 <= parsed[metric] <= 1.0):
+                return None
 
         return parsed
 
