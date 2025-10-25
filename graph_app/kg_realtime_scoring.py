@@ -471,6 +471,8 @@ class KGScorer:
         self.role_prior = role_prior or RoleTransitionPrior()
         self.pair_syn = pair_synergy or PairSynergyWeights()
         self.graph_w = graph_score_weights or GraphScoreWeights()
+        self.default_edge_confidence = 0.5  # set to None to forbid fallback
+
 
     # --- Build / update API ---
 
@@ -616,6 +618,11 @@ class KGScorer:
 
         if not nx.is_directed_acyclic_graph(self.G):
             raise ValueError("Graph score expects a DAG")
+
+        total_e = self.G.number_of_edges() or 1
+        weighted_e = sum(1 for u,v in self.G.edges() if "confidence" in self.G[u][v])
+        if self.default_edge_confidence is None and weighted_e < total_e:
+            raise ValueError("Not enough edges have confidence; defer scoring.")
 
         # reachability from H
         paths_from_H = {n: 0 for n in self.G.nodes()}
