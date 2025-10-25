@@ -140,76 +140,93 @@ def reset_browser_session() -> bool:
     """
     print("[SERVER DEBUG] ========== RESETTING BROWSER SESSION ==========", flush=True)
 
-    try:
-        # Get list of all pages/tabs with timeout
-        list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
-        print(f"[SERVER DEBUG] Fetching tab list from: {list_url}", flush=True)
+    # Retry logic for connection resets (browser may be busy/restarting)
+    max_attempts = 3
+    for attempt in range(max_attempts):
+        try:
+            # Get list of all pages/tabs with timeout
+            list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
+            print(f"[SERVER DEBUG] Fetching tab list from: {list_url} (attempt {attempt + 1}/{max_attempts})", flush=True)
 
-        with urllib_request.urlopen(list_url, timeout=3) as response:
-            tabs = json.loads(response.read().decode('utf-8'))
+            with urllib_request.urlopen(list_url, timeout=3) as response:
+                tabs = json.loads(response.read().decode('utf-8'))
 
-        pages = [tab for tab in tabs if tab.get('type') == 'page']
-        print(f"[SERVER DEBUG] Found {len(pages)} pages", flush=True)
+            pages = [tab for tab in tabs if tab.get('type') == 'page']
+            print(f"[SERVER DEBUG] Found {len(pages)} pages", flush=True)
 
-        # Check if we already have a blank tab
-        blank_tabs = [tab for tab in pages if tab.get('url', '').startswith('about:blank')]
-        non_blank_tabs = [tab for tab in pages if not tab.get('url', '').startswith('about:blank')]
+            # Check if we already have a blank tab
+            blank_tabs = [tab for tab in pages if tab.get('url', '').startswith('about:blank')]
+            non_blank_tabs = [tab for tab in pages if not tab.get('url', '').startswith('about:blank')]
 
-        # Close all non-blank tabs (with shorter timeout per tab)
-        for tab in non_blank_tabs:
-            tab_id = tab.get('id')
-            tab_url = tab.get('url', '')
-            print(f"[SERVER DEBUG] Closing non-blank tab {tab_id}: {tab_url[:60]}", flush=True)
-
-            close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
-            try:
-                req = urllib_request.Request(close_url, method='GET')
-                with urllib_request.urlopen(req, timeout=2) as close_response:
-                    result = close_response.read().decode('utf-8')
-                    print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
-            except Exception as e:
-                print(f"[SERVER DEBUG] ✗ Failed to close tab {tab_id}: {e} (continuing...)", flush=True)
-
-        # If there are multiple blank tabs, keep only one
-        if len(blank_tabs) > 1:
-            print(f"[SERVER DEBUG] Found {len(blank_tabs)} blank tabs, keeping only one", flush=True)
-            tabs_to_close = blank_tabs[1:]  # Keep first, close rest
-            for tab in tabs_to_close:
+            # Close all non-blank tabs (with shorter timeout per tab)
+            for tab in non_blank_tabs:
                 tab_id = tab.get('id')
+                tab_url = tab.get('url', '')
+                print(f"[SERVER DEBUG] Closing non-blank tab {tab_id}: {tab_url[:60]}", flush=True)
+
                 close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
                 try:
                     req = urllib_request.Request(close_url, method='GET')
                     with urllib_request.urlopen(req, timeout=2) as close_response:
-                        print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
+                        print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
                 except Exception as e:
-                    print(f"[SERVER DEBUG] ✗ Failed to close blank tab {tab_id}: {e} (continuing...)", flush=True)
+                    print(f"[SERVER DEBUG] ✗ Failed to close tab {tab_id}: {e} (continuing...)", flush=True)
 
-        # If no blank tabs exist, create one
-        if len(blank_tabs) == 0:
-            print(f"[SERVER DEBUG] No blank tabs found, creating one...", flush=True)
-            time.sleep(0.2)  # Brief pause
+            # If there are multiple blank tabs, keep only one
+            if len(blank_tabs) > 1:
+                print(f"[SERVER DEBUG] Found {len(blank_tabs)} blank tabs, keeping only one", flush=True)
+                tabs_to_close = blank_tabs[1:]  # Keep first, close rest
+                for tab in tabs_to_close:
+                    tab_id = tab.get('id')
+                    close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
+                    try:
+                        req = urllib_request.Request(close_url, method='GET')
+                        with urllib_request.urlopen(req, timeout=2) as close_response:
+                            print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
+                    except Exception as e:
+                        print(f"[SERVER DEBUG] ✗ Failed to close blank tab {tab_id}: {e} (continuing...)", flush=True)
 
-            new_tab_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/new"
-            req = urllib_request.Request(new_tab_url, method='PUT')
-            with urllib_request.urlopen(req, timeout=3) as response:
-                if 200 <= response.status < 300:
-                    tab_data = json.loads(response.read().decode('utf-8'))
-                    print(f"[SERVER DEBUG] ✓ Created blank tab with ID: {tab_data.get('id')}", flush=True)
-        else:
-            print(f"[SERVER DEBUG] ✓ Kept existing blank tab", flush=True)
+            # If no blank tabs exist, create one
+            if len(blank_tabs) == 0:
+                print(f"[SERVER DEBUG] No blank tabs found, creating one...", flush=True)
+                time.sleep(0.2)  # Brief pause
 
-        print("[SERVER DEBUG] Browser session reset completed", flush=True)
-        return True
+                new_tab_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/new"
+                req = urllib_request.Request(new_tab_url, method='PUT')
+                with urllib_request.urlopen(req, timeout=3) as response:
+                    if 200 <= response.status < 300:
+                        tab_data = json.loads(response.read().decode('utf-8'))
+                        print(f"[SERVER DEBUG] ✓ Created blank tab with ID: {tab_data.get('id')}", flush=True)
+            else:
+                print(f"[SERVER DEBUG] ✓ Kept existing blank tab", flush=True)
 
-    except (URLError, HTTPError, TimeoutError) as e:
-        print(f"[SERVER DEBUG] Browser connection error during reset: {e}", flush=True)
-        print("[SERVER DEBUG] Browser may be restarting or unresponsive", flush=True)
-        return False
-    except Exception as e:
-        print(f"[SERVER DEBUG] Error resetting browser session: {e}", flush=True)
-        import traceback
-        traceback.print_exc()
-        return False
+            print("[SERVER DEBUG] Browser session reset completed", flush=True)
+            return True
+
+        except ConnectionResetError as e:
+            if attempt < max_attempts - 1:
+                wait_time = 1.0 * (2 ** attempt)  # Exponential backoff: 1s, 2s, 4s
+                print(f"[SERVER DEBUG] Connection reset by browser, retrying in {wait_time}s... (attempt {attempt + 1}/{max_attempts})", flush=True)
+                time.sleep(wait_time)
+                continue
+            else:
+                print(f"[SERVER DEBUG] Browser connection failed after {max_attempts} attempts - browser may be overwhelmed", flush=True)
+                return False
+        except (URLError, HTTPError, TimeoutError) as e:
+            print(f"[SERVER DEBUG] Browser connection error during reset: {e}", flush=True)
+            if attempt < max_attempts - 1:
+                print(f"[SERVER DEBUG] Retrying... (attempt {attempt + 1}/{max_attempts})", flush=True)
+                time.sleep(1.0)
+                continue
+            print("[SERVER DEBUG] Browser may be restarting or unresponsive", flush=True)
+            return False
+        except Exception as e:
+            print(f"[SERVER DEBUG] Error resetting browser session: {e}", flush=True)
+            import traceback
+            traceback.print_exc()
+            return False
+    
+    return False
 
 
 def kill_process_safely(process, timeout: float = 5.0) -> bool:
