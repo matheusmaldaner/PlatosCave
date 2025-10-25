@@ -33,26 +33,30 @@ from typing import Dict, Tuple, Callable, Iterable, List, Optional, Set, Any
 import re
 import math
 import networkx as nx
+import numpy as np
 
 # --------- Roles & helpers ---------
 
 _CANON_ROLE = {
-    "hypothesis": "Hypothesis",
-    "hypothesisroot": "Hypothesis",
-    "h": "Hypothesis",
-    "conclusion": "Conclusion",
-    "conclusionroot": "Conclusion",
-    "c": "Conclusion",
-    "claim": "Claim",
-    "evidence": "Evidence",
-    "method": "Method",
-    "result": "Result",
-    "assumption": "Assumption",
-    "counterevidence": "Counterevidence",
-    "limitation": "Limitation",
-    "context": "Context",
-    "contex": "Context",  # accept the misspelling
+    "hypothesis": "Hypothesis", "hypothesisroot": "Hypothesis", "h": "Hypothesis",
+    "conclusion": "Conclusion", "conclusionroot": "Conclusion", "c": "Conclusion",
+    "claim": "Claim", "evidence": "Evidence", "method": "Method", "result": "Result",
+    "assumption": "Assumption", "counterevidence": "Counterevidence",
+    "limitation": "Limitation", "context": "Context", "contex": "Context",
 }
+
+# Make role list independent of class definition order
+_CANON_ROLES = ["Assumption","Claim","Conclusion","Context","Counterevidence",
+                "Evidence","Hypothesis","Limitation","Method","Result"]
+_ROLE_LIST = _CANON_ROLES
+_ROLE_TO_IDX = {r: i for i, r in enumerate(_ROLE_LIST)}
+
+def _role_one_hot(role: str):
+    vec = [0.0] * len(_ROLE_LIST)
+    i = _ROLE_TO_IDX.get(role)
+    if i is not None:
+        vec[i] = 1.0
+    return vec
 
 def canon_role(role: str) -> str:
     r = _CANON_ROLE.get(role.strip().lower())
@@ -709,6 +713,213 @@ class KGScorer:
             "graph_score": score
         }
         return score, details
+
+    # ---------- Embedding exports ----------
+
+    def export_edge_features(self) -> list[dict]:
+        """
+        Return a list of edge feature dicts:
+          {'u','v','confidence', 'role_prior','parent_quality','child_quality','alignment','synergy'}
+        Uses cached features when present; otherwise computes with defaults.
+        """
+        feats = []
+        for u, v in self.G.edges():
+            d = self.G[u][v]
+            conf = d.get("confidence", self.default_edge_confidence)
+            f = d.get("features")
+            if not f:
+                w, f = self._compute_edge_confidence(u, v)
+                conf = w
+            feats.append({
+                "u": u, "v": v,
+                "confidence": float(conf),
+                "role_prior": float(f["role_prior"]),
+                "parent_quality": float(f["parent_quality"]),
+                "child_quality": float(f["child_quality"]),
+                "alignment": float(f["alignment"]),
+                "synergy": float(f["synergy"]),
+            })
+        return feats
+
+    def export_node_feature_matrix(
+        self,
+        text_embeddings: dict[str, "np.ndarray"] | None = None,
+        include_role_onehot: bool = True,
+        include_metrics: bool = True
+    ):
+        """
+        Build per-node feature vectors in consistent id order.
+        Returns (X, ids, feature_names)
+        - X: np.ndarray [N, D] if numpy is available, else List[List[float]]
+        - feature_names: names matching columns in X
+        """
+        ids = sorted(self.nodes.keys(), key=lambda x: str(x))
+        feat_names = []
+        X = []
+
+        base_role_names = [f"role::{r}" for r in _ROLE_LIST] if include_role_onehot else []
+        base_metric_names = ["credibility","relevance","evidence_strength",
+                             "method_rigor","reproducibility","citation_support"] if include_metrics else []
+        text_dim = None
+
+        # If text embeddings provided, infer dimension and column names
+        if text_embeddings:
+            # Grab first available vector to infer dim
+            for nid in ids:
+                vec = text_embeddings.get(nid)
+                if vec is not None:
+                    text_dim = len(vec.tolist() if hasattr(vec, "tolist") else vec)
+                    break
+
+        feat_names = []
+        feat_names += base_role_names
+        feat_names += base_metric_names
+        if text_dim:
+            feat_names += [f"text_emb_{i}" for i in range(text_dim)]
+
+        for nid in ids:
+            node = self.nodes[nid]
+            row = []
+            if include_role_onehot:
+                row.extend(_role_one_hot(node.role))
+            if include_metrics:
+                md = node.metric_dict()
+                row.extend([md[k] for k in base_metric_names])
+            if text_dim:
+                vec = text_embeddings.get(nid)
+                if vec is None:
+                    row.extend([0.0]*text_dim)
+                else:
+                    row.extend(vec.tolist() if hasattr(vec, "tolist") else list(vec))
+            X.append(row)
+
+        if np is not None:
+            X = np.asarray(X, dtype=float)
+        return X, ids, feat_names
+
+    def random_walk_corpus(
+        self,
+        num_walks: int = 10,
+        walk_length: int = 8,
+        bias_p: float = 1.0,
+        bias_q: float = 1.0,
+        min_conf: float = 0.0
+    ) -> list[list[str]]:
+        """
+        Weighted, second-order random-walk corpus (node2vec flavor) over the DAG.
+        Uses 'confidence' as edge weights (falls back to default_edge_confidence).
+        Returns a list of walks (each a list of node ids as strings).
+        """
+        import random
+        G = self.G
+        # Precompute neighbor lists with weights
+        nbrs = {}
+        for u in G.nodes():
+            outs = []
+            for v in G.successors(u):
+                w = G[u][v].get("confidence", self.default_edge_confidence)
+                if w is None: 
+                    continue
+                if w >= min_conf:
+                    outs.append((v, float(w)))
+            nbrs[u] = outs
+
+        def weighted_choice(options):
+            if not options: return None
+            vs, ws = zip(*options)
+            s = sum(ws)
+            if s <= 0: return random.choice(vs)
+            r = random.random() * s
+            acc = 0.0
+            for v, w in options:
+                acc += w
+                if acc >= r:
+                    return v
+            return vs[-1]
+
+        walks = []
+        nodes = list(G.nodes())
+        for _ in range(num_walks):
+            random.shuffle(nodes)
+            for start in nodes:
+                walk = [start]
+                if not nbrs[start]:
+                    walks.append(walk); continue
+                # first step: simple weighted pick
+                v1 = weighted_choice(nbrs[start])
+                if v1 is None:
+                    walks.append(walk); continue
+                walk.append(v1)
+                # subsequent steps: biased by p,q around previous hop
+                while len(walk) < walk_length:
+                    t, v = walk[-2], walk[-1]
+                    cand = []
+                    for x, w in nbrs.get(v, []):
+                        # node2vec bias:
+                        # backtrack t -> v -> x gets weight /p
+                        # if x connected to t (here, use DAG structure: treat equality as "backtrack")
+                        alpha = (1.0/bias_p) if (x == t) else (1.0 if (t in G.predecessors(x) or x in G.successors(t)) else 1.0/bias_q)
+                        cand.append((x, w * alpha))
+                    nxt = weighted_choice(cand)
+                    if nxt is None:
+                        break
+                    walk.append(nxt)
+                walks.append([str(z) for z in walk])
+        return walks
+
+    def paper_fingerprint(self) -> tuple[list[float], list[str]]:
+        """
+        Deterministic 'graph embedding' for a whole paper using:
+          - graph_score details (bridge_coverage, best_path, redundancy, fragility, coherence, coverage)
+          - role counts (normalized)
+          - role-pair edge histogram weighted by confidence (normalized)
+          - edge confidence histogram (5 bins)
+        Returns (vector, names)
+        """
+        # 1) graph_score details
+        _, det = self.graph_score()
+        keys = ["bridge_coverage","best_path","redundancy","fragility","coherence","coverage"]
+        vec = [float(det[k]) for k in keys]
+        names = [f"score::{k}" for k in keys]
+
+        # 2) role counts
+        total_nodes = max(1, self.G.number_of_nodes())
+        role_counts = {r: 0 for r in _ROLE_LIST}
+        for n in self.G.nodes():
+            role_counts[self.nodes[n].role] += 1
+        for r in _ROLE_LIST:
+            names.append(f"role_frac::{r}")
+            vec.append(role_counts[r] / total_nodes)
+
+        # 3) role-pair histogram (weighted by confidence)
+        pair_sum = 0.0
+        pair_counts = {(ru, rv): 0.0 for ru in _ROLE_LIST for rv in _ROLE_LIST}
+        for u, v in self.G.edges():
+            ru, rv = self.nodes[u].role, self.nodes[v].role
+            w = self.G[u][v].get("confidence", 0.5)
+            pair_counts[(ru, rv)] += float(w)
+            pair_sum += float(w)
+        denom = max(pair_sum, 1e-6)
+        for ru in _ROLE_LIST:
+            for rv in _ROLE_LIST:
+                names.append(f"pairW::{ru}->{rv}")
+                vec.append(pair_counts[(ru, rv)] / denom)
+
+        # 4) confidence histogram (coarse)
+        bins = [0, 0, 0, 0, 0]
+        for u, v in self.G.edges():
+            w = self.G[u][v].get("confidence", 0.5)
+            if   w < 0.2: bins[0]+=1
+            elif w < 0.4: bins[1]+=1
+            elif w < 0.6: bins[2]+=1
+            elif w < 0.8: bins[3]+=1
+            else:         bins[4]+=1
+        total_e = max(1, self.G.number_of_edges())
+        for i, c in enumerate(bins):
+            names.append(f"conf_bin_{i}")
+            vec.append(c/total_e)
+
+        return vec, names
 
 # --------- Example usage (remove or keep for a quick smoke test) ---------
 if __name__ == "__main__":

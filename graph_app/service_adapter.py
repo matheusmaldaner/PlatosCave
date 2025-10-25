@@ -70,3 +70,59 @@ class KGSession:
     def graph_score(self) -> Dict[str, Any]:
         score, details = self.kg.graph_score()
         return {"score": score, "details": details}
+    
+        # --- Embedding helpers for the frontend ---
+
+    def node_feature_matrix(self, text_embeddings: Dict[str, Any] | None = None):
+        """
+        Returns {'ids': [...], 'features': 2D list/array, 'names': [...]}
+        text_embeddings: optional dict node_id -> vector (list or np.ndarray)
+        """
+        X, ids, names = self.kg.export_node_feature_matrix(text_embeddings=text_embeddings)
+        # Convert np to Python list for JSON if needed
+        try:
+            X_out = X.tolist()
+        except AttributeError:
+            X_out = X
+        return {"ids": ids, "features": X_out, "names": names}
+
+    def edge_features(self):
+        return self.kg.export_edge_features()
+
+    def node2vec_corpus(self, num_walks=10, walk_length=8, p=1.0, q=1.0, min_conf=0.0):
+        return self.kg.random_walk_corpus(num_walks=num_walks, walk_length=walk_length,
+                                          bias_p=p, bias_q=q, min_conf=min_conf)
+
+    def paper_fingerprint(self):
+        vec, names = self.kg.paper_fingerprint()
+        return {"vector": vec, "names": names}
+
+    def state(self) -> Dict[str, Any]:
+        return {"order": self.order, "index": self.i, "current": self.current()}
+    
+    def snapshot(self) -> Dict[str, Any]:
+        nodes = []
+        for nid in sorted(self.kg.nodes.keys(), key=str):
+            n = self.kg.nodes[nid]
+            md = n.metric_dict()
+            status = ("complete" if all(v > 0 for v in md.values())
+                    else "partial" if any(v > 0 for v in md.values())
+                    else "empty")
+            nodes.append({"id": nid, "role": n.role, "status": status, "metrics": md})
+        edges = []
+        for u, v in self.kg.G.edges():
+            edges.append({"u": u, "v": v, "confidence": self.kg.G[u][v].get("confidence")})
+        return {"nodes": nodes, "edges": edges, **self.state()}
+
+    def reset(self):
+        if self.report.errors:
+            self.order, self.i = [], 0
+            return self.state()
+        H = [n for n in self.kg.G.nodes() if self.kg.nodes[n].role == "Hypothesis" and self.kg.G.in_degree(n) == 0]
+        if not H:
+            H = [n for n in self.kg.G.nodes() if self.kg.nodes[n].role == "Hypothesis"]
+        self.order = bfs_order(self.kg.G, H or list(self.kg.G.nodes())[:1])
+        self.i = 0
+        return self.state()
+
+
