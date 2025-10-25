@@ -23,7 +23,7 @@ Acceptance notes
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Iterable, Union
+from typing import Dict, List, Tuple, Optional, Iterable, Union, Any
 
 from .schemas import PaperGraph, KGNode, KGEdge  # pydantic models
 import networkx as nx
@@ -113,6 +113,40 @@ def json_to_nx(pg: Union[PaperGraph, dict]) -> Tuple[nx.DiGraph, Dict[str, KGNod
         G.add_edge(e.source, e.target, relation=rel, priority=prio)
 
     return G, id_to_node
+
+def minimal_to_papergraph(
+    data: Dict[str, Any],
+    *,
+    paper_id: str = "unknown",
+    title: str = "Untitled",
+    default_role: str = "other",
+    default_relation: str = "supports"
+) -> PaperGraph:
+    nodes = []
+    for n in data.get("nodes", []):
+        nodes.append({
+            "id": str(n["id"]),                 # cast ints to str
+            "role": default_role,               # required by your schema
+            "level": 0,                         # will be normalized later
+            "text": n.get("text", ""),
+        })
+
+    edges = []
+    for e in data.get("edges", []):
+        edges.append({
+            "source": str(e["source"]),
+            "target": str(e["target"]),
+            "relation": default_relation,       # required by your schema
+        })
+
+    pg_dict = {
+        "paper_id": paper_id,
+        "title": title,
+        "nodes": nodes,
+        "edges": edges,
+        "meta": {}
+    }
+    return PaperGraph(**pg_dict)
 
 # ---- DAG repair --------------------------------------------------------------
 
@@ -523,149 +557,99 @@ def build_graph_and_bfs(
 
 # ---- Example usage (manual smoke test) --------------------------------------
 
-# if __name__ == "__main__":
-#     # Minimal inline example for quick sanity check
-#     example = {
-#         "paper_id": "demo-001",
-#         "title": "Demo Paper",
-#         "nodes": [
-#             {"id": "h1", "role": "hypothesis", "level": 0, "text": "Main hypothesis."},
-#             {"id": "c1", "role": "claim", "level": 1, "text": "Claim A."},
-#             {"id": "m1", "role": "method", "level": 2, "text": "Method X."},
-#             {"id": "e1", "role": "evidence", "level": 2, "text": "Evidence 1."},
-#             {"id": "r1", "role": "result", "level": 3, "text": "Result alpha."},
-#             {"id": "z1", "role": "conclusion", "level": 4, "text": "Conclusion."},
-#         ],
-#         "edges": [
-#             {"source": "h1", "target": "c1", "relation": "supports"},
-#             {"source": "c1", "target": "m1", "relation": "based_on"},
-#             {"source": "m1", "target": "e1", "relation": "leads_to"},
-#             {"source": "e1", "target": "r1", "relation": "supports"},
-#             {"source": "r1", "target": "z1", "relation": "leads_to"},
-#             # create a tiny cycle to test repair:
-#             {"source": "z1", "target": "c1", "relation": "qualifies"},
-#         ],
-#         "meta": {},
-#     }
-
-#     G, id_map, root, order, removed = build_graph_and_bfs(example)
-#     print("Root:", root)
-#     print("Removed edges (for DAG):", removed)
-#     print("BFS order:", order)
-#     try:
-#         out = export_pyvis(G, "demo_graph.html", root=root)
-#         print("Wrote:", out)
-#     except RuntimeError as e:
-#         print("PyVis not installed; skipping HTML export.")
-
 if __name__ == "__main__":
     """
-    Complex demo:
-      • Multiple roots (h1, h2)
-      • Bad/handwavy levels (will be normalized)
-      • Cycles:
-          - z1 → c1 (qualifies)
-          - c2 → h1 (leads_to) back-edge
-          - c1 ↔ c2 (contradicts/supports)
-      • Self-loop on m2 (ignored)
-    Exports:
-      demo_out/graph_before.html (raw)
-      demo_out/graph_after.html  (repaired + re-leveled)
-    Prints:
-      - chosen root
-      - removed edges for DAG repair
-      - BFS order after repair
+    CLI driver that accepts either:
+      • Minimal JSON: {"nodes":[{"id":0,"text":"..."},...], "edges":[{"source":0,"target":1},...]}
+      • Full PaperGraph-shaped JSON (paper_id/title/nodes/edges with roles/relations)
+
+    Usage examples:
+      python -m app.graph_build minimal.json --out-dir demo_out --paper-id platos-cave-001 --title "Plato's Cave"
+      python -m app.graph_build papergraph.json --out-dir demo_out --out-xml graph.gexf
+      cat minimal.json | python -m app.graph_build - --no-html
+
+    Notes:
+      • XML export format is chosen by extension via export_xml: .graphml (default) or .gexf
+      • HTML export requires `pyvis`; pass --no-html to skip if not installed.
     """
+    import argparse, json, sys
     from pathlib import Path
-    out_dir = Path("demo_out")
+
+    parser = argparse.ArgumentParser(description="Build graph, repair DAG, relevel, BFS, and export.")
+    parser.add_argument("input", help="Path to JSON file, or '-' to read JSON from stdin.")
+    parser.add_argument("--out-dir", default="demo_out", help="Output directory (will be created).")
+    parser.add_argument("--out-xml", default="graph.graphml",
+                        help="XML filename (.graphml or .gexf) inside out-dir.")
+    parser.add_argument("--out-html", default="graph.html",
+                        help="PyVis HTML filename inside out-dir (requires pyvis).")
+    parser.add_argument("--no-html", action="store_true", help="Skip HTML export.")
+    # Defaults used only when we detect the minimal schema:
+    parser.add_argument("--paper-id", default="unknown", help="Paper id (for minimal schema).")
+    parser.add_argument("--title", default="Untitled", help="Title (for minimal schema).")
+    parser.add_argument("--default-role", default="other",
+                        help="Role to assign to minimal nodes (schema requires a role).")
+    parser.add_argument("--default-relation", default="supports",
+                        choices=["supports","based_on","leads_to","contradicts","qualifies"],
+                        help="Relation to assign to minimal edges (schema requires a relation).")
+    args = parser.parse_args()
+
+    # ---- Load input JSON
+    try:
+        raw_text = sys.stdin.read() if args.input == "-" else Path(args.input).read_text(encoding="utf-8")
+        raw = json.loads(raw_text)
+    except Exception as e:
+        print(f"[error] Failed to read/parse JSON: {e}", file=sys.stderr)
+        sys.exit(2)
+
+    # ---- Detect schema (minimal vs full)
+    def _is_minimal_schema(d: dict) -> bool:
+        if not isinstance(d, dict):
+            return False
+        nodes = d.get("nodes")
+        edges = d.get("edges")
+        if not isinstance(nodes, list) or not isinstance(edges, list):
+            return False
+        # If nodes lack 'role' or edges lack 'relation', treat as minimal.
+        has_any_role = any(isinstance(n, dict) and ("role" in n) for n in nodes)
+        has_any_relation = any(isinstance(e, dict) and ("relation" in e) for e in edges)
+        return (not has_any_role) or (not has_any_relation)
+
+    if _is_minimal_schema(raw):
+        # Adapt minimal → PaperGraph using helper already in this module
+        pg = minimal_to_papergraph(
+            raw,
+            paper_id=args.paper_id,
+            title=args.title,
+            default_role=args.default_role,
+            default_relation=args.default_relation,
+        )
+    else:
+        # Assume it's already PaperGraph-shaped; your json_to_nx will validate via pydantic
+        pg = raw
+
+    # ---- Pipeline: build, repair, root, relevel, BFS
+    out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    complex_pg = {
-        "paper_id": "demo-002",
-        "title": "A Complex Study with Messy Graph",
-        "nodes": [
-            {"id": "h1", "role": "hypothesis", "level": 0, "text": "H1: X improves Y under condition Z."},
-            {"id": "c1", "role": "claim", "level": 3, "text": "C1: X increases metric A."},              # bad level
-            {"id": "m1", "role": "method", "level": 1, "text": "M1: Randomized trial with 200 subjects."},
-            {"id": "e1", "role": "evidence", "level": 5, "text": "E1: Table 2 shows ΔA=+12% (p<0.05)."},  # bad level
-            {"id": "r1", "role": "result", "level": 2, "text": "R1: Primary endpoint met."},              # bad level
-            {"id": "z1", "role": "conclusion", "level": 4, "text": "Z1: Moderate benefit of X vs control."},
+    G, id_map, root, order, removed = build_graph_and_bfs(pg)
 
-            {"id": "c2", "role": "claim", "level": 2, "text": "C2: X reduces metric B variability."},
-            {"id": "m2", "role": "method", "level": 2, "text": "M2: Cross-validation on 5 datasets."},
-            {"id": "e2", "role": "evidence", "level": 9, "text": "E2: External benchmark shows similar trend."},  # bad level
-            {"id": "r2", "role": "result", "level": 1, "text": "R2: Secondary endpoint mixed."},                 # bad level
-            {"id": "z2", "role": "conclusion", "level": 6, "text": "Z2: Evidence is suggestive, not conclusive."},
+    # ---- Exports
+    xml_path = out_dir / args.out_xml
+    export_xml(G, xml_path, root=root)
 
-            # Second root candidate
-            {"id": "h2", "role": "hypothesis", "level": 0, "text": "H2: X has no effect on Y."},
-        ],
-        "edges": [
-            # main chain 1
-            {"source": "h1", "target": "c1", "relation": "supports"},
-            {"source": "c1", "target": "m1", "relation": "based_on"},
-            {"source": "m1", "target": "e1", "relation": "leads_to"},
-            {"source": "e1", "target": "r1", "relation": "supports"},
-            {"source": "r1", "target": "z1", "relation": "leads_to"},
+    if not args.no_html:
+        try:
+            html_path = out_dir / args.out_html
+            export_pyvis(G, html_path, root=root, hierarchical=True, physics=True)
+        except RuntimeError:
+            print("[warn] pyvis not installed; skipping HTML export.", file=sys.stderr)
 
-            # cross links & cycles
-            {"source": "z1", "target": "c1", "relation": "qualifies"},     # creates cycle
-            {"source": "c2", "target": "h1", "relation": "leads_to"},      # back-edge cycle
-            {"source": "c1", "target": "c2", "relation": "supports"},
-            {"source": "c2", "target": "c1", "relation": "contradicts"},   # 2-way w/ contradicts
-
-            # chain 2 (mostly separate)
-            {"source": "h1", "target": "c2", "relation": "supports"},
-            {"source": "c2", "target": "m2", "relation": "based_on"},
-            {"source": "m2", "target": "e2", "relation": "leads_to"},
-            {"source": "e2", "target": "r2", "relation": "supports"},
-            {"source": "r2", "target": "z2", "relation": "leads_to"},
-
-            # self-loop (ignored by builder)
-            {"source": "m2", "target": "m2", "relation": "qualifies"},
-
-            # second root tiny tail (will remain disconnected; shows unreachable leveling)
-            {"source": "h2", "target": "r2", "relation": "qualifies"},
-        ],
-        "meta": {},
-    }
-
-    # 1) Build raw graph
-    G_raw, id_map = json_to_nx(complex_pg)
-
-    # 2) Export BEFORE (raw, with cycles & bad levels). Hierarchical layout by best-guess root.
-    try:
-        root_guess = pick_root(G_raw, id_map)
-        before_path = export_pyvis(G_raw, out_dir / "graph_before.html", root=root_guess, hierarchical=True, physics=True)
-        print("Wrote BEFORE visualization:", before_path)
-    except RuntimeError:
-        print("PyVis not installed; run: pip install pyvis")
-
-    # 3) Copy, repair cycles, pick root, re-level, BFS, export AFTER
-    G = G_raw.copy()
-    removed = ensure_dag(G)
-
-    import networkx as nx
-    assert nx.is_directed_acyclic_graph(G), "After ensure_dag, graph is not acyclic!"
-
-    root = pick_root(G, id_map)
-    relevel_from_root(G, root, id_map)
-    order = bfs_order(G, root)
-
-    print("Chosen root:", root)
-    print("Removed edges (to ensure DAG):", removed)
-    print("BFS order (after repair):", order)
-
-    # BEFORE XML
-    export_xml(G_raw, out_dir / "graph_before.graphml", root=root_guess)
-    # AFTER XML
-    export_xml(G, out_dir / "graph_after.graphml", root=root)
-
-
-    try:
-        after_path = export_pyvis(G, out_dir / "graph_after.html", root=root, hierarchical=True, physics=True)
-        # after_path = export_pyvis(G, out_dir / "graph_after.html", root=None, hierarchical=False, physics=True)
-        print("Wrote AFTER visualization:", after_path)
-        print("\nOpen both files in a browser to compare:\n  -", before_path, "\n  -", after_path)
-    except RuntimeError:
-        print("PyVis not installed; skipping AFTER export.")
+    # ---- Console summary
+    print(f"Root: {root}")
+    print(f"Nodes: {G.number_of_nodes()} | Edges (after repair): {G.number_of_edges()}")
+    if removed:
+        print("Removed edges for DAG repair:", removed)
+    print("BFS order:", order)
+    print(f"Wrote XML to: {xml_path}")
+    if not args.no_html:
+        print(f"Wrote HTML to: {out_dir / args.out_html}")
