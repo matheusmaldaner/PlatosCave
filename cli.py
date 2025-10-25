@@ -61,10 +61,10 @@ def process_pdf(file_path, args):
     send_update(stage_name, "Decomposing document...")
     send_update(stage_name, "Document decomposed.")
 
-    stage_name = "Building Logic Tree"
+    stage_name = "Building Knowledge Graph"
     send_update(stage_name, "Parsing logical components...")
     graph_data_string = generate_graphml_string()
-    send_update(stage_name, "Logic Tree constructed.")
+    send_update(stage_name, "Knowledge Graph constructed.")
     send_graph_data(graph_data_string)
 
     stage_name = "Organizing Agents"

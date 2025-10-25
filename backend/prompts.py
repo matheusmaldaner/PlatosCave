@@ -7,20 +7,14 @@ from typing import Any, Dict
 URL_PAPER_ANALYSIS_PROMPT = """
 You are an expert academic paper analyzer with advanced web browsing capabilities.
 
-Your mission is to THOROUGHLY analyze an academic paper from the provided URL and extract ALL content in a structured, comprehensive manner.
+Your mission is to extract ALL content from the academic paper at the provided URL in a structured, comprehensive manner.
 
-BROWSING BEHAVIOR REQUIREMENTS:
-- Navigate to the paper URL and wait for the page to fully load
-- Scroll through the ENTIRE document from top to bottom as fast as possible
-- Scroll back up to review sections that contain dense information
-- Pause at each major section (Abstract, Introduction, Methods, Results, Discussion, Conclusion)
-- Demonstrate active reading by highlighting or selecting key phrases occasionally if possible
-- For multi-page papers, ensure you navigate through ALL pages/sections stopping briefly at each page
-
-VISUAL DEMONSTRATION (for user engagement):
-- Periodically highlight important sentences or key findings
-- Select and briefly focus on equations, theorems, or definitions
-- Hover over figures, charts, and tables to show attention to visual data
+NAVIGATION STRATEGY (SPEED IS PRIORITY):
+- Navigate to the paper URL immediately
+- RAPIDLY scroll or page through the ENTIRE document to capture all content
+- For multi-page papers: click through ALL pages quickly (use Page Down, Next buttons, rapid scrolling)
+- Move FAST - the goal is efficient extraction, not slow reading theater
+- Capture content on each page as you blitz through it
 
 CONTENT EXTRACTION REQUIREMENTS:
 - Extract the COMPLETE text of the paper including:
@@ -624,7 +618,7 @@ def parse_fact_dag_json(response_text: str) -> Dict[str, Any] | None:
 CLAIM_VERIFICATION_PROMPT = """
 You are an expert fact-checker and research verifier with advanced web browsing capabilities.
 
-Your mission is to VERIFY a specific claim from an academic paper by searching the web for supporting or contradicting evidence.
+Your mission is to QUICKLY VERIFY a specific claim from an academic paper by efficiently searching for supporting or contradicting evidence.
 
 CLAIM TO VERIFY:
 {claim_text}
@@ -632,35 +626,12 @@ CLAIM TO VERIFY:
 CLAIM ROLE: {claim_role}
 CLAIM CONTEXT (from paper): {claim_context}
 
-VERIFICATION REQUIREMENTS:
-
-1. SEARCH STRATEGY:
-   - Search for the main concepts, entities, and assertions in the claim
-   - Look for academic papers, research databases, and authoritative sources
-   - Check citations if mentioned (author names, publication years, journal names)
-   - Search for contradicting evidence as well as supporting evidence
-   - Use multiple search queries with different phrasings
-
-2. SOURCE EVALUATION:
-   - Prioritize peer-reviewed papers, academic institutions, government databases
-   - Consider publication dates (recent sources may supersede older claims)
-   - Check author credentials and institutional affiliations
-   - Look for consensus across multiple independent sources
-   - Identify potential biases or conflicts of interest
-
-3. VERIFICATION DEPTH (based on claim role):
-   - Evidence/Result: Verify data points, statistics, experimental results
-   - Method: Check if methodology is standard/validated in the field
-   - Claim: Look for supporting evidence and counterexamples
-   - Hypothesis: Assess theoretical foundation and prior work
-   - Context: Verify historical facts and background information
-
-4. BROWSING BEHAVIOR:
-   - Perform 3-5 targeted web searches
-   - Visit and extract content from 5-10 relevant pages
-   - Read abstracts, findings, and conclusions carefully
-   - Take notes on evidence quality and source reliability
-   - Look for red flags: contradictions, outdated info, weak sources
+VERIFICATION STRATEGY (SPEED IS CRITICAL):
+- Perform 1-2 targeted web searches for the core claim
+- Visit 2-3 most relevant authoritative sources (prioritize: academic papers, .edu, .gov)
+- Scan abstracts/conclusions rapidly - don't read full papers
+- Check for obvious contradictions or strong support
+- If citations mentioned: verify author/year/journal quickly
 
 OUTPUT FORMAT:
 You MUST return ONLY a valid JSON object with the following structure:
@@ -681,58 +652,22 @@ You MUST return ONLY a valid JSON object with the following structure:
     "confidence_level": "high"
 }}
 
-METRIC SCORING GUIDE (all scores 0.0 to 1.0):
-
-- **credibility** (0.0-1.0):
-  * 0.9-1.0: Multiple authoritative sources confirm, no contradictions
-  * 0.7-0.9: Supported by credible sources, minor discrepancies
-  * 0.5-0.7: Mixed evidence, some credible support
-  * 0.3-0.5: Weak support or significant contradictions
-  * 0.0-0.3: No support found or strong contradictions
-
-- **relevance** (0.0-1.0):
-  * How relevant is this claim to the paper's main hypothesis?
-  * 1.0: Core claim central to the paper
-  * 0.5: Supporting detail
-  * 0.0: Tangential or unrelated
-
-- **evidence_strength** (0.0-1.0):
-  * Quality and quantity of evidence supporting the claim
-  * 1.0: Multiple rigorous studies with large sample sizes
-  * 0.5: Single study or limited data
-  * 0.0: No evidence or anecdotal only
-
-- **method_rigor** (0.0-1.0):
-  * For Method/Result claims: Scientific rigor of methodology
-  * 1.0: Gold standard methods, proper controls, validated tools
-  * 0.5: Acceptable methods with some limitations
-  * 0.0: Questionable or unvalidated methods
-
-- **reproducibility** (0.0-1.0):
-  * Can this claim's findings be reproduced?
-  * 1.0: Reproduced in multiple independent studies
-  * 0.5: Plausible but not yet reproduced
-  * 0.0: Failed replication attempts or impossible to reproduce
-
-- **citation_support** (0.0-1.0):
-  * For claims citing sources: Are citations accurate and authoritative?
-  * 1.0: All citations verified and highly authoritative
-  * 0.5: Citations exist but mixed quality
-  * 0.0: No citations or misattributed/incorrect citations
-
-- **confidence_level**: "high" | "medium" | "low"
-  * high: Confident in all scores (>8 quality sources reviewed)
-  * medium: Moderate confidence (4-7 sources reviewed)
-  * low: Limited information available (<4 sources)
+SCORING GUIDE (all 0.0-1.0 scale):
+- credibility: 1.0=multiple authoritative sources confirm | 0.5=mixed evidence | 0.0=contradicted
+- relevance: How central to paper's hypothesis (1.0=core, 0.5=supporting, 0.0=tangential)
+- evidence_strength: Quality/quantity of evidence (1.0=multiple rigorous studies, 0.5=single study, 0.0=none)
+- method_rigor: Scientific rigor (1.0=gold standard, 0.5=acceptable, 0.0=questionable)
+- reproducibility: 1.0=reproduced in multiple studies | 0.5=plausible | 0.0=failed replication
+- citation_support: 1.0=verified authoritative | 0.5=mixed quality | 0.0=incorrect/missing
+- confidence_level: "high" (2-3 quality sources) | "medium" (1-2 sources) | "low" (<1 source)
 
 CRITICAL RULES:
 - Output ONLY the JSON object, no explanations before or after
 - All metric scores must be numbers between 0.0 and 1.0
-- Do NOT make up sources - only include URLs you actually visited
-- Be honest about limitations in verification
-- If claim cannot be verified, use lower scores and explain in summary
+- Only include URLs you actually visited
+- If claim cannot be verified quickly, use lower scores and explain in summary
 
-Begin your verification now. Search the web thoroughly and return only the JSON result.
+Work FAST. Perform quick targeted searches and return only the JSON result.
 """
 
 

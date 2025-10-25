@@ -105,7 +105,6 @@ def dag_to_graphml(dag_json: dict) -> str:
 async def main(url):
     # Stage 1: Validate
     send_update("Validate", f"Validating URL: {url}")
-    await asyncio.sleep(0.5)
 
     remote_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
     remote_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
@@ -132,7 +131,6 @@ async def main(url):
     # this would require OPENAI_API_KEY=... , GOOGLE_API_KEY=... , ANTHROPIC_API_KEY=... ,
 
     send_update("Validate", "URL validated. Initializing browser agent...")
-    await asyncio.sleep(0.5)
 
     # Stage 2: Decomposing PDF (actually browsing and extracting)
     send_update("Decomposing PDF", "Navigating to paper and extracting content...")
@@ -182,9 +180,8 @@ async def main(url):
       f.write("\nLast Action:\n")
       f.write(str(last_action))
 
-    # Stage 3: Building Logic Tree (generating DAG)
-    send_update("Building Logic Tree", "Analyzing paper structure...")
-    await asyncio.sleep(0.5)
+    # stage 3: Building Knowledge Graph (generating DAG)
+    send_update("Building Knowledge Graph", "Analyzing paper structure...")
 
     # we got all the info about the paper stored in url (all text), extract payload later
     dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text)
@@ -240,9 +237,6 @@ async def main(url):
         # Debug: confirm GraphML was sent (only to stderr if logs enabled)
         if os.environ.get('SUPPRESS_LOGS') != 'true':
             print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
-
-        # Small delay to ensure WebSocket transmission completes
-        await asyncio.sleep(0.5)
 
         send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
 

@@ -198,7 +198,7 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
     if (!graphmlData) {
         return (
             <div className="flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white/60 p-6 text-center text-sm text-gray-500">
-                Waiting for the logical graph to be generated...
+                Waiting for the knowledge graph to be generated...
             </div>
         );
     }

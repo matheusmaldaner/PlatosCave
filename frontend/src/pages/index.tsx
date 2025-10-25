@@ -14,7 +14,7 @@ import platosCaveLogo from '../images/platos-cave-logo.png';
 const INITIAL_STAGES: ProcessStep[] = [
     { name: "Validate", displayText: "Pending...", status: 'pending' },
     { name: "Decomposing PDF", displayText: "Pending...", status: 'pending' },
-    { name: "Building Logic Tree", displayText: "Pending...", status: 'pending' },
+    { name: "Building Knowledge Graph", displayText: "Pending...", status: 'pending' },
     { name: "Organizing Agents", displayText: "Pending...", status: 'pending' },
     { name: "Compiling Evidence", displayText: "Pending...", status: 'pending' },
     { name: "Evaluating Integrity", displayText: "Pending...", status: 'pending' },
@@ -40,6 +40,7 @@ const IndexPage = () => {
         socket.on('status_update', (msg: { data: string }) => {
             try {
                 const update = JSON.parse(msg.data);
+                console.log('[WebSocket]', update.type, update);
                 if (update.type === 'UPDATE') {
                     setProcessSteps(prevSteps => {
                         let activeStageIndex = prevSteps.findIndex(s => s.name === update.stage);
@@ -54,11 +55,13 @@ const IndexPage = () => {
                     console.log('📊 Received graph data, length:', update.data?.length);
                     setGraphmlData(update.data);
                 } else if (update.type === 'BROWSER_ADDRESS') {
+                    console.log('🌐 BROWSER_ADDRESS received:', update);
                     setBrowserSession({
                         novncUrl: update.novnc_url,
                         cdpUrl: update.cdp_url,
                         cdpWebSocket: update.cdp_websocket
                     });
+                    console.log('🌐 Opening browser viewer with:', update.novnc_url);
                     setIsBrowserViewerOpen(true);
                 } else if (update.type === 'DONE') {
                     setFinalScore(update.score);
