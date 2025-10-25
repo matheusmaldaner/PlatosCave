@@ -1,64 +1,114 @@
-import React from "react";
-import type { HeadFC, PageProps } from "gatsby";
-import FileUploader from "../components/FileUploader";
+// PlatosCave/frontend/src/pages/index.tsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { io, Socket } from 'socket.io-client';
+import FileUploader from '../components/FileUploader';
+import Sidebar, { ProcessStep } from '../components/Sidebar';
+import XmlGraphViewer from '../components/XmlGraphViewer';
 
-const IndexPage: React.FC<PageProps> = () => {
-  const handleSubmit = (data: { url?: string; file?: File }) => {
-    if (data.url) {
-      console.log("📄 Analyzing URL:", data.url);
-    } else if (data.file) {
-      console.log("📄 Analyzing PDF:", data.file.name);
-      console.log("   File size:", (data.file.size / 1024).toFixed(2), "KB");
-      console.log("   File type:", data.file.type);
-    }
-  };
+const INITIAL_STAGES: ProcessStep[] = [
+    { name: "Validate", displayText: "Pending...", status: 'pending' },
+    { name: "Decomposing PDF", displayText: "Pending...", status: 'pending' },
+    { name: "Building Logic Tree", displayText: "Pending...", status: 'pending' },
+    { name: "Organizing Agents", displayText: "Pending...", status: 'pending' },
+    { name: "Compiling Evidence", displayText: "Pending...", status: 'pending' },
+    { name: "Evaluating Integrity", displayText: "Pending...", status: 'pending' },
+];
 
-  return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Top Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          {/* Logo on the left */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">L</span>
+const IndexPage = () => {
+    const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [viewMode, setViewMode] = useState<'uploader' | 'graph'>('uploader');
+    const [finalScore, setFinalScore] = useState<number | null>(null);
+    const [graphmlData, setGraphmlData] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!uploadedFile) return;
+        const socket: Socket = io('http://localhost:5000');
+        socket.on('connect', () => console.log('Connected to WebSocket server!'));
+
+        socket.on('status_update', (msg: { data: string }) => {
+            // --- DEBUG LOGGING 1: See the raw message from the server ---
+            console.log("Received raw message from server:", msg.data);
+
+            try {
+                const update = JSON.parse(msg.data);
+
+                if (update.type === 'UPDATE') {
+                    setProcessSteps(prevSteps => {
+                        let activeStageIndex = prevSteps.findIndex(s => s.name === update.stage);
+                        if (activeStageIndex === -1) return prevSteps;
+                        return prevSteps.map((step, index) => {
+                            if (index === activeStageIndex) {
+                                return { ...step, displayText: update.text, status: 'active' };
+                            }
+                            if (index < activeStageIndex && step.status !== 'completed') {
+                                return { ...step, status: 'completed' };
+                            }
+                            return step;
+                        });
+                    });
+                } else if (update.type === 'GRAPH_DATA') {
+                    // --- DEBUG LOGGING 2: Confirm we are entering the correct block ---
+                    console.log('GRAPH_DATA block entered. Setting state with data:', update.data.substring(0, 100) + '...');
+                    setGraphmlData(update.data);
+                } else if (update.type === 'DONE') {
+                    setFinalScore(update.score);
+                    setProcessSteps(prev => prev.map(s => ({...s, status: 'completed'})))
+                    socket.disconnect();
+                }
+            } catch (e) { console.error('Failed to parse JSON:', msg.data, e); }
+        });
+
+        return () => { socket.disconnect(); };
+    }, [uploadedFile]);
+
+    const handleFileUpload = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        setProcessSteps(INITIAL_STAGES);
+        setFinalScore(null);
+        setGraphmlData(null);
+        setViewMode('graph');
+        setUploadedFile(file);
+        try {
+            await axios.post('http://localhost:5000/api/upload', formData);
+        } catch (error) { console.error('Error uploading file:', error); }
+    };
+    
+    const renderMainContent = () => {
+        if (viewMode === 'graph' && uploadedFile) {
+            return <XmlGraphViewer graphmlData={graphmlData} />;
+        }
+        if (!uploadedFile) {
+            return <FileUploader onFileUpload={handleFileUpload} />;
+        }
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-text-secondary">
+                <h2 className="text-2xl">Processing: {uploadedFile?.name}</h2>
+                <p>The logical graph is being displayed.</p>
             </div>
-            <span className="font-semibold text-gray-800 text-lg">Logos</span>
-          </div>
+        );
+    };
 
-          {/* Right side controls (placeholder for future additions) */}
-          <div className="flex items-center space-x-3">
-            {/* Add menu/profile icons here if needed */}
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 pt-16">
-        {/* Center Message */}
-        <div className="text-center mb-8 max-w-2xl">
-          <h1 className="text-3xl font-medium text-gray-800 mb-3">
-            Analyze research papers instantly
-          </h1>
-          <p className="text-gray-500">
-            Upload a PDF or paste a URL to extract insights from research papers
-          </p>
-        </div>
-
-        {/* File Uploader Component */}
-        <div className="w-full max-w-3xl">
-          <FileUploader onSubmit={handleSubmit} />
-        </div>
-      </main>
-    </div>
-  );
+    return (
+        <main className="flex h-screen font-sans">
+            <div className="w-1/4 max-w-sm bg-base-gray p-4 flex flex-col">
+                <h1 className="text-2xl font-bold text-brand-green mb-8">Logos</h1>
+                {uploadedFile && <Sidebar steps={processSteps} finalScore={finalScore} />}
+            </div>
+            <div className="flex-1 flex flex-col relative">
+                <header className="absolute top-4 right-4 z-10">
+                    {uploadedFile && (
+                        <div className="flex space-x-2">
+                            <button onClick={() => setViewMode('graph')} className={`w-10 h-10 rounded-md font-bold text-white transition ${viewMode === 'graph' ? 'bg-brand-green-dark' : 'bg-brand-green'}`}>G</button>
+                        </div>
+                    )}
+                </header>
+                <div className="flex-1 p-8">{renderMainContent()}</div>
+            </div>
+        </main>
+    );
 };
 
 export default IndexPage;
-
-export const Head: HeadFC = () => (
-  <>
-    <title>Logos - Research Paper Summarizer</title>
-    <meta name="description" content="Analyze research papers from URLs or PDFs" />
-  </>
-);

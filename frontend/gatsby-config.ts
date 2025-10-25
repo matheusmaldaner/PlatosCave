@@ -1,45 +1,25 @@
+// PlatosCave/frontend/gatsby-config.ts
 import type { GatsbyConfig } from "gatsby";
 
 const config: GatsbyConfig = {
   siteMetadata: {
-    title: `Research Paper Summarizer`,
-    description: `Analyze research papers from URLs or PDFs`,
-    siteUrl: `http://localhost:8000`,
+    title: `Plato's Cave`,
+    siteUrl: `https://www.yourdomain.tld`,
   },
   graphqlTypegen: true,
   plugins: [
-    "gatsby-plugin-postcss",
-    "gatsby-plugin-image",
+    'gatsby-plugin-postcss',
+    'gatsby-plugin-image',
+    'gatsby-plugin-sharp',
     {
-      resolve: "gatsby-plugin-manifest",
+      resolve: 'gatsby-source-filesystem',
       options: {
-        name: "Research Paper Summarizer",
-        short_name: "ResearchSummarizer",
-        start_url: "/",
-        background_color: "#ffffff",
-        theme_color: "#000000",
-        display: "minimal-ui",
-        icon: "src/images/icon.svg",
+        "name": "images",
+        "path": "./src/images/"
       },
+      __key: "images"
     },
-    "gatsby-plugin-sharp",
-    "gatsby-transformer-sharp",
-    {
-      resolve: "gatsby-source-filesystem",
-      options: {
-        name: "images",
-        path: "./src/images/",
-      },
-      __key: "images",
-    },
-    {
-      resolve: "gatsby-source-filesystem",
-      options: {
-        name: "pages",
-        path: "./src/pages/",
-      },
-      __key: "pages",
-    },
+    // The gatsby-plugin-static-folders block has been removed
   ],
 };
 
