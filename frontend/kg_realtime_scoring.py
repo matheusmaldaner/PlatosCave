@@ -770,6 +770,48 @@ class KGScorer:
         self.metric_w.weights = curr
         self.recompute_all_confidences()
 
+    def set_convex_metric_weights(self, weights: Dict[str, float], *, apply_to_synergy: bool = False):
+        """
+        Use a single global vector over the six metrics as a CONVEX combination
+        for node quality across ALL roles. Optionally apply the same convex
+        vector to pair synergy (parent/child) too.
+
+        Convex definition (non-negative, normalized):
+        quality = sum_i w_i * m_i / sum_i w_i
+        """
+        valid = ("credibility","relevance","evidence_strength",
+                "method_rigor","reproducibility","citation_support")
+
+        # 1) Validate and normalize to a convex vector (sum to 1)
+        raw = {k: float(max(0.0, weights.get(k, 0.0))) for k in valid}
+        s = sum(raw.values())
+        if s <= 0.0:
+            # Default to uniform if caller gave all zeros
+            raw = {k: 1.0 for k in valid}
+            s = float(len(valid))
+        convex = {k: (v / s) for k, v in raw.items()}
+
+        # 2) Apply SAME convex mix to every role's node-quality weights.
+        # Node quality code already divides by sum(abs(w)), so this yields
+        #   sum(w_i m_i) / sum(w_i)  with our non-negative weights.
+        for role in _ROLE_LIST:
+            self.node_q.per_role[role] = dict(convex)
+
+        # 3) (Optional) Also use this convex mix for synergy parent/child
+        if apply_to_synergy:
+            self.pair_syn.per_pair.clear()
+            self.pair_syn.per_pair.update({
+                (ru, rv): {"parent": dict(convex), "child": dict(convex)}
+                for ru in _ROLE_LIST for rv in _ROLE_LIST
+            })
+
+        # 4) (Optional but recommended) neutralize any prior global scaling
+        # so only the convex mix drives quality/synergy.
+        self.metric_w.weights = {k: 1.0 for k in valid}
+
+        # 5) Recompute everything under the new convex scheme
+        self.recompute_all_confidences()
+
     # --------- Graph score (optional; configurable) ---------
 
     def graph_score(self) -> Tuple[float, Dict[str, float]]:

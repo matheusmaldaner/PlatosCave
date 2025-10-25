@@ -157,3 +157,22 @@ class KGSession:
         """
         self.kg.set_metric_weights(weights, normalize=normalize)
         return {"ok": True, "weights": dict(self.kg.metric_w.weights)}
+
+    def set_convex_metric_weights(self, weights: Dict[str, float], apply_to_synergy: bool = False):
+        """
+        Frontend/API: set a single global CONVEX weight vector for all nodes.
+        Example payload:
+        {
+            "credibility": 1.0,
+            "relevance": 0.8,
+            "evidence_strength": 1.2,
+            "method_rigor": 1.1,
+            "reproducibility": 0.9,
+            "citation_support": 1.0
+        }
+        Notes:
+        • We normalize to sum=1 (convex).
+        • Set apply_to_synergy=True to also use this vector in pair synergy.
+        """
+        self.kg.set_convex_metric_weights(weights, apply_to_synergy=apply_to_synergy)
+        return {"ok": True, "weights": weights, "apply_to_synergy": apply_to_synergy}

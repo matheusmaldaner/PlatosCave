@@ -8,6 +8,7 @@ import json
 import sys
 import os
 from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt
+from verification_pipeline import run_verification_pipeline
 
 # remove langchain after
 #from langchain_core.messages import HumanMessage
@@ -104,35 +105,48 @@ def dag_to_graphml(dag_json: dict) -> str:
 async def main(url):
     # Stage 1: Validate
     send_update("Validate", f"Validating URL: {url}")
-    await asyncio.sleep(0.5)
 
-    # unused, will be implemented for the frontend
-    browser = Browser(
-       cdp_url="http://localhost:9222", # cdp endpoint from noVNC container wip
-       headless=False,
-       is_local=False,
-       keep_alive=True
-    )
+    remote_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
+    remote_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
+    if remote_cdp_ws or remote_cdp_url:
+        browser_endpoint = remote_cdp_ws or remote_cdp_url
+        send_update("Validate", f"Connecting to remote browser at {browser_endpoint}")
+        browser = Browser(
+            cdp_url=browser_endpoint,
+            headless=False,
+            is_local=False,
+            keep_alive=True
+        )
+    else:
+        send_update("Validate", "No remote browser endpoint provided; running with local session.")
+        browser = Browser(
+            cdp_url="",
+            headless=False,
+            is_local=True,
+            keep_alive=False
+        )
 
     llm = ChatBrowserUse() # optimized for browser automation w 3-5x speedup
     # alternatively you could use ChatOpenAI(model='o3'), ChatOllama(model="qwen32.1:8b")
     # this would require OPENAI_API_KEY=... , GOOGLE_API_KEY=... , ANTHROPIC_API_KEY=... ,
 
     send_update("Validate", "URL validated. Initializing browser agent...")
-    await asyncio.sleep(0.5)
 
     # Stage 2: Decomposing PDF (actually browsing and extracting)
     send_update("Decomposing PDF", "Navigating to paper and extracting content...")
 
     browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
-    agent = Agent(
+    agent_kwargs = dict(
        task=browsing_url_prompt,
        llm=llm,
-       #browser=browser, # remote or local browser
        vision_detail_level='high',
        generate_gif=True,
-       #save_conversation_path='conversation.json',
-       use_vision=True)
+       use_vision=True
+    )
+    if browser is not None:
+        agent_kwargs['browser'] = browser
+
+    agent = Agent(**agent_kwargs)
     #agent = Agent(task="browse matheus.wiki, tell his current school", llm=llm)
 
     # TODO: make sure it shows interactive elements during the browsing
@@ -166,9 +180,8 @@ async def main(url):
       f.write("\nLast Action:\n")
       f.write(str(last_action))
 
-    # Stage 3: Building Logic Tree (generating DAG)
-    send_update("Building Logic Tree", "Analyzing paper structure...")
-    await asyncio.sleep(0.5)
+    # stage 3: Building Knowledge Graph (generating DAG)
+    send_update("Building Knowledge Graph", "Analyzing paper structure...")
 
     # we got all the info about the paper stored in url (all text), extract payload later
     dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text)
@@ -191,15 +204,6 @@ async def main(url):
 
     with open('final_dag.json', 'w', encoding='utf-8') as f:
       f.write(response.completion)
-
-    # Stage 4: Organizing Agents (placeholder for now)
-    send_update("Organizing Agents", "Initializing verification agents...")
-    await asyncio.sleep(1)
-    send_update("Organizing Agents", "Tasks assigned.")
-
-    # Stage 5: Compiling Evidence (placeholder for now)
-    send_update("Compiling Evidence", "Agents are gathering evidence...")
-    await asyncio.sleep(1)
 
     # Convert DAG JSON to GraphML for frontend visualization
     try:
@@ -234,37 +238,44 @@ async def main(url):
         if os.environ.get('SUPPRESS_LOGS') != 'true':
             print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
 
-        # Small delay to ensure WebSocket transmission completes
-        await asyncio.sleep(0.5)
+        send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
 
-        send_update("Compiling Evidence", "Evidence compiled.")
+        # Stage 4 & 5 & 6: Run Verification Pipeline
+        # This will handle:
+        # - Organizing Agents
+        # - Compiling Evidence (sequential verification)
+        # - Evaluating Integrity (graph scoring)
 
-        # Stage 6: Evaluating Integrity
-        send_update("Evaluating Integrity", "Evaluating paper integrity...")
-        await asyncio.sleep(1)
+        kg_scorer, verification_summary = await run_verification_pipeline(
+            dag_json=dag_json,
+            llm=llm,
+            browser=browser,
+            send_update_fn=None  # Use default progress updates
+        )
 
-        # Calculate integrity score (placeholder - based on DAG structure for now)
-        num_nodes = len(dag_json['nodes'])
-        num_evidence = sum(1 for n in dag_json['nodes'] if n['role'] == 'Evidence')
-        num_claims = sum(1 for n in dag_json['nodes'] if n['role'] == 'Claim')
+        # Get final integrity score from verification pipeline
+        integrity_score = verification_summary['graph_score']
 
-        # Simple scoring: more evidence relative to claims = higher score
-        if num_claims > 0:
-            integrity_score = min(0.95, 0.5 + (num_evidence / num_claims) * 0.3)
-        else:
-            integrity_score = 0.5
-
-        send_update("Evaluating Integrity", f"Calculating final score... Found {num_claims} claims and {num_evidence} evidence nodes.")
-        await asyncio.sleep(0.5)
+        send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
 
         # Send final score
         send_final_score(integrity_score)
+
+        # Debug: Print verification summary (only to stderr if logs enabled)
+        # if os.environ.get('SUPPRESS_LOGS') != 'true':
+        print(f"✅ Verification complete: {verification_summary['total_nodes_verified']} nodes verified", file=sys.stderr)
+        print(f"   Graph score: {integrity_score:.3f}", file=sys.stderr)
+        for key, value in verification_summary['graph_details'].items():
+            print(f"   - {key}: {value:.3f}", file=sys.stderr)
 
     except json.JSONDecodeError as e:
         send_update("Evaluating Integrity", f"Error parsing DAG JSON: {e}")
         send_final_score(0.0)
     except Exception as e:
-        send_update("Evaluating Integrity", f"Error converting to GraphML: {e}")
+        send_update("Evaluating Integrity", f"Error in verification pipeline: {e}")
+        print(f"Full error: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
         send_final_score(0.0)
 
     # all the data is being stored in temp md files

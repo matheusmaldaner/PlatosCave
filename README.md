@@ -38,22 +38,11 @@ npm install
 ### Development
 
 ```bash
-npm run dev
+gatsby develop
 ```
 
 This will start the development server at `http://localhost:8000`
 
-### Build
-
-```bash
-npm run build
-```
-
-### Serve Production Build
-
-```bash
-npm run serve
-```
 
 ## Getting Started (Backend)
 
@@ -87,6 +76,36 @@ google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
 
 cd backend
 python server.py
+```
+
+
+### Killing Processes
+
+
+```bash
+# Kill all Python processes (main.py and server.py)
+pkill -f "python main.py"
+pkill -f "python server.py"
+
+# Kill Gatsby and all Node processes for this project
+pkill -f "gatsby develop"
+pkill -f "gatsby-worker"
+```
+
+2. Clear caches
+ 
+```bash
+# Clear Python cache
+find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
+find . -type f -name "*.pyc" -delete
+
+# Clear Gatsby cache (frontend)
+cd frontend
+rm -rf .cache public node_modules/.cache
+
+# Clear backend cache
+cd ../backend
+rm -rf __pycache__ .pytest_cache
 ```
 
 ### Agent Logic
