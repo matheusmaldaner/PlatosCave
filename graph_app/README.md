@@ -73,3 +73,17 @@ walks = sess.node2vec_corpus(num_walks=20, walk_length=12, p=1.0, q=2.0, min_con
 # Graph-level fingerprint (for retrieval/clustering)
 paper_vec = sess.paper_fingerprint()
 ```
+## Hyper-Parameters
+
+```
+# Make evidence-related metrics count more *convexly* everywhere (node quality),
+# leave synergy pair-specific (apply_to_synergy=False):
+session.set_convex_metric_weights({
+    "credibility": 1.0,
+    "relevance": 0.9,
+    "evidence_strength": 1.4,
+    "method_rigor": 1.1,
+    "reproducibility": 1.0,
+    "citation_support": 1.2,
+}, apply_to_synergy=False)
+```
