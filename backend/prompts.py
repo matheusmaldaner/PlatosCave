@@ -615,3 +615,183 @@ def parse_fact_dag_json(response_text: str) -> Dict[str, Any] | None:
 
     except (json.JSONDecodeError, ValueError, KeyError):
         return None
+
+
+# ============================================================================
+# CLAIM VERIFICATION PROMPT
+# ============================================================================
+
+CLAIM_VERIFICATION_PROMPT = """
+You are an expert fact-checker and research verifier with advanced web browsing capabilities.
+
+Your mission is to VERIFY a specific claim from an academic paper by searching the web for supporting or contradicting evidence.
+
+CLAIM TO VERIFY:
+{claim_text}
+
+CLAIM ROLE: {claim_role}
+CLAIM CONTEXT (from paper): {claim_context}
+
+VERIFICATION REQUIREMENTS:
+
+1. SEARCH STRATEGY:
+   - Search for the main concepts, entities, and assertions in the claim
+   - Look for academic papers, research databases, and authoritative sources
+   - Check citations if mentioned (author names, publication years, journal names)
+   - Search for contradicting evidence as well as supporting evidence
+   - Use multiple search queries with different phrasings
+
+2. SOURCE EVALUATION:
+   - Prioritize peer-reviewed papers, academic institutions, government databases
+   - Consider publication dates (recent sources may supersede older claims)
+   - Check author credentials and institutional affiliations
+   - Look for consensus across multiple independent sources
+   - Identify potential biases or conflicts of interest
+
+3. VERIFICATION DEPTH (based on claim role):
+   - Evidence/Result: Verify data points, statistics, experimental results
+   - Method: Check if methodology is standard/validated in the field
+   - Claim: Look for supporting evidence and counterexamples
+   - Hypothesis: Assess theoretical foundation and prior work
+   - Context: Verify historical facts and background information
+
+4. BROWSING BEHAVIOR:
+   - Perform 3-5 targeted web searches
+   - Visit and extract content from 5-10 relevant pages
+   - Read abstracts, findings, and conclusions carefully
+   - Take notes on evidence quality and source reliability
+   - Look for red flags: contradictions, outdated info, weak sources
+
+OUTPUT FORMAT:
+You MUST return ONLY a valid JSON object with the following structure:
+
+{{
+    "credibility": 0.85,
+    "relevance": 0.90,
+    "evidence_strength": 0.75,
+    "method_rigor": 0.80,
+    "reproducibility": 0.70,
+    "citation_support": 0.95,
+    "verification_summary": "Brief summary of findings (2-3 sentences)",
+    "sources_checked": [
+        {{"url": "https://example.com/paper1", "title": "Paper title", "finding": "Supports the claim"}},
+        {{"url": "https://example.com/paper2", "title": "Another source", "finding": "Partially contradicts"}}
+    ],
+    "red_flags": ["List any concerns", "or empty array if none"],
+    "confidence_level": "high"
+}}
+
+METRIC SCORING GUIDE (all scores 0.0 to 1.0):
+
+- **credibility** (0.0-1.0):
+  * 0.9-1.0: Multiple authoritative sources confirm, no contradictions
+  * 0.7-0.9: Supported by credible sources, minor discrepancies
+  * 0.5-0.7: Mixed evidence, some credible support
+  * 0.3-0.5: Weak support or significant contradictions
+  * 0.0-0.3: No support found or strong contradictions
+
+- **relevance** (0.0-1.0):
+  * How relevant is this claim to the paper's main hypothesis?
+  * 1.0: Core claim central to the paper
+  * 0.5: Supporting detail
+  * 0.0: Tangential or unrelated
+
+- **evidence_strength** (0.0-1.0):
+  * Quality and quantity of evidence supporting the claim
+  * 1.0: Multiple rigorous studies with large sample sizes
+  * 0.5: Single study or limited data
+  * 0.0: No evidence or anecdotal only
+
+- **method_rigor** (0.0-1.0):
+  * For Method/Result claims: Scientific rigor of methodology
+  * 1.0: Gold standard methods, proper controls, validated tools
+  * 0.5: Acceptable methods with some limitations
+  * 0.0: Questionable or unvalidated methods
+
+- **reproducibility** (0.0-1.0):
+  * Can this claim's findings be reproduced?
+  * 1.0: Reproduced in multiple independent studies
+  * 0.5: Plausible but not yet reproduced
+  * 0.0: Failed replication attempts or impossible to reproduce
+
+- **citation_support** (0.0-1.0):
+  * For claims citing sources: Are citations accurate and authoritative?
+  * 1.0: All citations verified and highly authoritative
+  * 0.5: Citations exist but mixed quality
+  * 0.0: No citations or misattributed/incorrect citations
+
+- **confidence_level**: "high" | "medium" | "low"
+  * high: Confident in all scores (>8 quality sources reviewed)
+  * medium: Moderate confidence (4-7 sources reviewed)
+  * low: Limited information available (<4 sources)
+
+CRITICAL RULES:
+- Output ONLY the JSON object, no explanations before or after
+- All metric scores must be numbers between 0.0 and 1.0
+- Do NOT make up sources - only include URLs you actually visited
+- Be honest about limitations in verification
+- If claim cannot be verified, use lower scores and explain in summary
+
+Begin your verification now. Search the web thoroughly and return only the JSON result.
+"""
+
+
+def build_claim_verification_prompt(claim_text: str, claim_role: str, claim_context: str = "") -> str:
+    """
+    Build the complete prompt for claim verification via web search.
+
+    Args:
+        claim_text: The specific claim/statement to verify
+        claim_role: The role of the claim (Evidence, Method, Claim, etc.)
+        claim_context: Optional context from the paper (e.g., surrounding text)
+
+    Returns:
+        The complete formatted prompt ready to send to the browsing agent
+    """
+    return CLAIM_VERIFICATION_PROMPT.format(
+        claim_text=claim_text.strip(),
+        claim_role=claim_role.strip(),
+        claim_context=claim_context.strip() if claim_context else "No additional context provided"
+    )
+
+
+def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
+    """
+    Parse and validate the verification result from the agent.
+
+    Args:
+        response_text: Raw text response from the verification agent
+
+    Returns:
+        Parsed JSON dict with verification metrics, or None if parsing fails
+    """
+    import json
+
+    try:
+        # Extract JSON from response
+        json_start = response_text.find("{")
+        json_end = response_text.rfind("}")
+
+        if json_start == -1 or json_end == -1 or json_end <= json_start:
+            return None
+
+        json_str = response_text[json_start:json_end + 1]
+        parsed = json.loads(json_str)
+
+        # Validate required fields
+        required_metrics = ["credibility", "relevance", "evidence_strength",
+                           "method_rigor", "reproducibility", "citation_support"]
+
+        for metric in required_metrics:
+            if metric not in parsed:
+                return None
+            if not isinstance(parsed[metric], (int, float)):
+                return None
+            # Ensure value is in [0, 1]
+            if not (0.0 <= parsed[metric] <= 1.0):
+                return None
+
+        return parsed
+
+    except (json.JSONDecodeError, ValueError, KeyError):
+        return None
