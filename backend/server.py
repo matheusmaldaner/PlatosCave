@@ -61,15 +61,28 @@ def wait_for_http_ok(url: str, timeout: float = 30.0, interval: float = 1.5) -> 
     return False
 
 
-def fetch_cdp_metadata(url: str, timeout: float = 5.0) -> Optional[dict]:
-    """Retrieve Chrome DevTools metadata JSON from the remote browser."""
-    try:
-        with urllib_request.urlopen(url, timeout=timeout) as response:
-            if 200 <= response.status < 300:
-                raw = response.read().decode('utf-8')
-                return json.loads(raw)
-    except (URLError, HTTPError, json.JSONDecodeError):
-        return None
+def fetch_cdp_metadata(url: str, timeout: float = 5.0, retries: int = 3) -> Optional[dict]:
+    """
+    Retrieve Chrome DevTools metadata JSON from the remote browser.
+    Retries on connection errors (browser may be restarting/busy).
+    """
+    for attempt in range(retries):
+        try:
+            with urllib_request.urlopen(url, timeout=timeout) as response:
+                if 200 <= response.status < 300:
+                    raw = response.read().decode('utf-8')
+                    return json.loads(raw)
+        except ConnectionResetError as e:
+            if attempt < retries - 1:
+                wait_time = 0.5 * (2 ** attempt)  # Exponential backoff: 0.5s, 1s, 2s
+                print(f"[SERVER DEBUG] Connection reset, retrying in {wait_time}s (attempt {attempt + 1}/{retries})", flush=True)
+                time.sleep(wait_time)
+            else:
+                print(f"[SERVER DEBUG] Connection reset after {retries} attempts", flush=True)
+                return None
+        except (URLError, HTTPError, json.JSONDecodeError) as e:
+            print(f"[SERVER DEBUG] CDP metadata fetch error: {e}", flush=True)
+            return None
     return None
 
 
@@ -128,11 +141,11 @@ def reset_browser_session() -> bool:
     print("[SERVER DEBUG] ========== RESETTING BROWSER SESSION ==========", flush=True)
 
     try:
-        # Get list of all pages/tabs
+        # Get list of all pages/tabs with timeout
         list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
         print(f"[SERVER DEBUG] Fetching tab list from: {list_url}", flush=True)
 
-        with urllib_request.urlopen(list_url, timeout=5) as response:
+        with urllib_request.urlopen(list_url, timeout=3) as response:
             tabs = json.loads(response.read().decode('utf-8'))
 
         pages = [tab for tab in tabs if tab.get('type') == 'page']
@@ -142,7 +155,7 @@ def reset_browser_session() -> bool:
         blank_tabs = [tab for tab in pages if tab.get('url', '').startswith('about:blank')]
         non_blank_tabs = [tab for tab in pages if not tab.get('url', '').startswith('about:blank')]
 
-        # Close all non-blank tabs
+        # Close all non-blank tabs (with shorter timeout per tab)
         for tab in non_blank_tabs:
             tab_id = tab.get('id')
             tab_url = tab.get('url', '')
@@ -151,49 +164,47 @@ def reset_browser_session() -> bool:
             close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
             try:
                 req = urllib_request.Request(close_url, method='GET')
-                with urllib_request.urlopen(req, timeout=3) as close_response:
+                with urllib_request.urlopen(req, timeout=2) as close_response:
                     result = close_response.read().decode('utf-8')
-                    print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}, result: {result[:50]}", flush=True)
+                    print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
             except Exception as e:
-                print(f"[SERVER DEBUG] ✗ Failed to close tab {tab_id}: {e}", flush=True)
-                import traceback
-                traceback.print_exc()
+                print(f"[SERVER DEBUG] ✗ Failed to close tab {tab_id}: {e} (continuing...)", flush=True)
 
         # If there are multiple blank tabs, keep only one
         if len(blank_tabs) > 1:
             print(f"[SERVER DEBUG] Found {len(blank_tabs)} blank tabs, keeping only one", flush=True)
             tabs_to_close = blank_tabs[1:]  # Keep first, close rest
-            print(f"[SERVER DEBUG] Closing {len(tabs_to_close)} extra blank tabs", flush=True)
-            for i, tab in enumerate(tabs_to_close, 1):
+            for tab in tabs_to_close:
                 tab_id = tab.get('id')
                 close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
-                print(f"[SERVER DEBUG] Closing blank tab {i}/{len(tabs_to_close)}: {tab_id}", flush=True)
                 try:
                     req = urllib_request.Request(close_url, method='GET')
-                    with urllib_request.urlopen(req, timeout=3) as close_response:
-                        result = close_response.read().decode('utf-8')
-                        print(f"[SERVER DEBUG] ✓ Closed tab {tab_id}, result: {result[:50]}", flush=True)
+                    with urllib_request.urlopen(req, timeout=2) as close_response:
+                        print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
                 except Exception as e:
-                    print(f"[SERVER DEBUG] ✗ Failed to close blank tab {tab_id}: {e}", flush=True)
-                    import traceback
-                    traceback.print_exc()
+                    print(f"[SERVER DEBUG] ✗ Failed to close blank tab {tab_id}: {e} (continuing...)", flush=True)
 
         # If no blank tabs exist, create one
         if len(blank_tabs) == 0:
             print(f"[SERVER DEBUG] No blank tabs found, creating one...", flush=True)
-            time.sleep(0.3)  # Give browser time to process closures
+            time.sleep(0.2)  # Brief pause
 
             new_tab_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/new"
             req = urllib_request.Request(new_tab_url, method='PUT')
-            with urllib_request.urlopen(req, timeout=5) as response:
+            with urllib_request.urlopen(req, timeout=3) as response:
                 if 200 <= response.status < 300:
                     tab_data = json.loads(response.read().decode('utf-8'))
                     print(f"[SERVER DEBUG] ✓ Created blank tab with ID: {tab_data.get('id')}", flush=True)
         else:
             print(f"[SERVER DEBUG] ✓ Kept existing blank tab", flush=True)
 
+        print("[SERVER DEBUG] Browser session reset completed", flush=True)
         return True
 
+    except (URLError, HTTPError, TimeoutError) as e:
+        print(f"[SERVER DEBUG] Browser connection error during reset: {e}", flush=True)
+        print("[SERVER DEBUG] Browser may be restarting or unresponsive", flush=True)
+        return False
     except Exception as e:
         print(f"[SERVER DEBUG] Error resetting browser session: {e}", flush=True)
         import traceback
@@ -267,18 +278,22 @@ def ensure_remote_browser_service() -> Optional[dict]:
         })
         return None
 
-    if not wait_for_http_ok(BROWSER_NOVNC_HEALTH_URL):
-        emit_json_message({
-            'type': 'ERROR',
-            'message': 'Remote browser noVNC endpoint did not become ready in time.'
-        })
-        return None
+    # Check noVNC but don't fail if unavailable (it's for viewing only)
+    print("[SERVER DEBUG] Checking noVNC endpoint (optional)...", flush=True)
+    if wait_for_http_ok(BROWSER_NOVNC_HEALTH_URL, timeout=5.0):
+        print("[SERVER DEBUG] noVNC endpoint is accessible", flush=True)
+    else:
+        print("[SERVER DEBUG] noVNC endpoint not accessible (continuing - not critical)", flush=True)
+        # Don't return None - noVNC is optional for viewing, CDP is what matters
 
+    # Wait for CDP endpoint (this is critical)
+    print("[SERVER DEBUG] Waiting for CDP endpoint (required)...", flush=True)
     metadata = None
     deadline = time.monotonic() + 30.0
     while time.monotonic() < deadline:
         metadata = fetch_cdp_metadata(BROWSER_CDP_HEALTH_URL)
         if metadata:
+            print("[SERVER DEBUG] CDP endpoint is ready", flush=True)
             break
         socketio.sleep(1.5)
 
@@ -524,24 +539,14 @@ def upload_file():
 @app.route('/api/cleanup', methods=['POST'])
 def cleanup():
     """
-    Cleanup endpoint: Kill all running main.py processes and reset browser state
+    Cleanup endpoint: Reset browser state to prepare for new analysis
     Called when user refreshes or clicks logo
+    
+    Simply resets browser tabs - the next analysis will handle process management
     """
     print("[SERVER DEBUG] ========== /api/cleanup ENDPOINT HIT ==========", flush=True)
     try:
-        # 1. Kill all main.py processes
-        result = subprocess.run(['pkill', '-9', '-f', 'main.py'],
-                              capture_output=True,
-                              text=True,
-                              timeout=3)
-        print(f"[SERVER DEBUG] Killed main.py processes, return code: {result.returncode}", flush=True)
-
-        # 2. Clear any tracked processes
-        num_tracked = len(active_processes)
-        active_processes.clear()
-        print(f"[SERVER DEBUG] Cleared {num_tracked} tracked processes", flush=True)
-
-        # 3. Reset browser session (close all tabs)
+        # Reset browser session (close all tabs, return to blank state)
         print("[SERVER DEBUG] Resetting browser session...", flush=True)
         reset_browser_session()
 
@@ -552,6 +557,7 @@ def cleanup():
         import traceback
         traceback.print_exc()
         return {'error': str(e)}, 500
+
 
 @app.route('/api/analyze-url', methods=['POST'])
 def analyze_url():
