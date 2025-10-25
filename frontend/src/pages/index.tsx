@@ -30,18 +30,37 @@ const IndexPage = () => {
     const [settings, setSettings] = useState<Settings>({ agentAggressiveness: 5, evidenceThreshold: 0.8 });
     const [isBrowserViewerOpen, setIsBrowserViewerOpen] = useState(false);
     const [browserSession, setBrowserSession] = useState<{ novncUrl?: string; cdpUrl?: string; cdpWebSocket?: string } | null>(null);
+    const [sessionId, setSessionId] = useState<string | null>(null);
 
     // WebSocket connection for real-time updates
     useEffect(() => {
-        if (!uploadedFile && !submittedUrl) return;
+        console.log('[FRONTEND DEBUG] ========== useEffect TRIGGERED ==========');
+        console.log('[FRONTEND DEBUG] uploadedFile:', uploadedFile?.name);
+        console.log('[FRONTEND DEBUG] submittedUrl:', submittedUrl);
 
+        if (!uploadedFile && !submittedUrl) {
+            console.log('[FRONTEND DEBUG] No file or URL, skipping WebSocket connection');
+            return;
+        }
+
+        console.log('[FRONTEND DEBUG] Creating WebSocket connection...');
         const socket: Socket = io('http://localhost:5000');
-        socket.on('connect', () => console.log('Connected to WebSocket server!'));
+        socket.on('connect', () => {
+            console.log('[FRONTEND DEBUG] ========== WEBSOCKET CONNECTED ==========');
+            console.log('[FRONTEND DEBUG] Socket ID:', socket.id);
+            setSessionId(socket.id || null);
+        });
         socket.on('status_update', (msg: { data: string }) => {
+            console.log('[FRONTEND DEBUG] ========== STATUS_UPDATE RECEIVED ==========');
+            console.log('[FRONTEND DEBUG] Raw message:', msg.data.substring(0, 200));
             try {
                 const update = JSON.parse(msg.data);
-                console.log('[WebSocket]', update.type, update);
+                console.log('[FRONTEND DEBUG] Parsed message type:', update.type);
+                console.log('[FRONTEND DEBUG] Full update object:', update);
+
                 if (update.type === 'UPDATE') {
+                    console.log('[FRONTEND DEBUG] Processing UPDATE message');
+                    console.log('[FRONTEND DEBUG] Stage:', update.stage, 'Text:', update.text);
                     setProcessSteps(prevSteps => {
                         let activeStageIndex = prevSteps.findIndex(s => s.name === update.stage);
                         if (activeStageIndex === -1) return prevSteps;
@@ -52,18 +71,28 @@ const IndexPage = () => {
                         });
                     });
                 } else if (update.type === 'GRAPH_DATA') {
-                    console.log('📊 Received graph data, length:', update.data?.length);
+                    console.log('[FRONTEND DEBUG] ========== GRAPH_DATA RECEIVED ==========');
+                    console.log('[FRONTEND DEBUG] Graph data length:', update.data?.length);
                     setGraphmlData(update.data);
                 } else if (update.type === 'BROWSER_ADDRESS') {
-                    console.log('🌐 BROWSER_ADDRESS received:', update);
+                    console.log('[FRONTEND DEBUG] ========== BROWSER_ADDRESS RECEIVED ==========');
+                    console.log('[FRONTEND DEBUG] Full browser info:', update);
+                    console.log('[FRONTEND DEBUG] noVNC URL:', update.novnc_url);
+                    console.log('[FRONTEND DEBUG] CDP URL:', update.cdp_url);
+                    console.log('[FRONTEND DEBUG] CDP WebSocket:', update.cdp_websocket);
+
                     setBrowserSession({
                         novncUrl: update.novnc_url,
                         cdpUrl: update.cdp_url,
                         cdpWebSocket: update.cdp_websocket
                     });
-                    console.log('🌐 Opening browser viewer with:', update.novnc_url);
+                    console.log('[FRONTEND DEBUG] Browser session state updated');
+                    console.log('[FRONTEND DEBUG] Opening browser viewer modal...');
                     setIsBrowserViewerOpen(true);
+                    console.log('[FRONTEND DEBUG] Browser viewer should now be open!');
                 } else if (update.type === 'DONE') {
+                    console.log('[FRONTEND DEBUG] ========== DONE MESSAGE RECEIVED ==========');
+                    console.log('[FRONTEND DEBUG] Final score:', update.score);
                     setFinalScore(update.score);
                     setProcessSteps(prev => prev.map(s => ({...s, status: 'completed'})));
                     setIsBrowserViewerOpen(false);
@@ -72,13 +101,23 @@ const IndexPage = () => {
             } catch (e) {
                 // Skip non-JSON lines (like browser-use logs) silently
                 if (!msg.data.startsWith('{')) {
-                    console.debug('Skipping non-JSON message:', msg.data);
+                    console.debug('[FRONTEND DEBUG] Skipping non-JSON message:', msg.data.substring(0, 100));
                 } else {
-                    console.error('Failed to parse JSON from server:', msg.data, e);
+                    console.error('[FRONTEND DEBUG] ========== JSON PARSE ERROR ==========');
+                    console.error('[FRONTEND DEBUG] Failed to parse:', msg.data.substring(0, 200));
+                    console.error('[FRONTEND DEBUG] Error:', e);
                 }
             }
         });
-        return () => { socket.disconnect(); };
+
+        socket.on('disconnect', () => {
+            console.log('[FRONTEND DEBUG] ========== WEBSOCKET DISCONNECTED ==========');
+        });
+
+        return () => {
+            console.log('[FRONTEND DEBUG] Cleaning up WebSocket connection');
+            socket.disconnect();
+        };
     }, [uploadedFile, submittedUrl]);
 
     const handleFileUpload = async (file: File) => {
@@ -99,20 +138,43 @@ const IndexPage = () => {
     };
 
     const handleUrlSubmit = async (url: string) => {
+        console.log('[FRONTEND DEBUG] ========== handleUrlSubmit CALLED ==========');
+        console.log('[FRONTEND DEBUG] URL:', url);
+        console.log('[FRONTEND DEBUG] Settings:', settings);
+
+        // First, cleanup any existing processes
+        console.log('[FRONTEND DEBUG] Calling cleanup endpoint first...');
+        try {
+            await axios.post('http://localhost:5000/api/cleanup');
+            console.log('[FRONTEND DEBUG] Cleanup completed');
+        } catch (error) {
+            console.error('[FRONTEND DEBUG] Cleanup error (continuing anyway):', error);
+        }
+
+        // Small delay to ensure cleanup completes
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         setProcessSteps(INITIAL_STAGES);
         setFinalScore(null);
         setGraphmlData(null);
-    setBrowserSession(null);
-    setIsBrowserViewerOpen(false);
+        setBrowserSession(null);
+        setIsBrowserViewerOpen(false);
         setSubmittedUrl(url);
         setUploadedFile(null);  // Clear file if URL is submitted
+
+        console.log('[FRONTEND DEBUG] Sending POST to /api/analyze-url...');
+        console.log('[FRONTEND DEBUG] Session ID:', sessionId);
         try {
-            await axios.post('http://localhost:5000/api/analyze-url', {
+            const response = await axios.post('http://localhost:5000/api/analyze-url', {
                 url,
                 agentAggressiveness: settings.agentAggressiveness,
-                evidenceThreshold: settings.evidenceThreshold
+                evidenceThreshold: settings.evidenceThreshold,
+                sessionId: sessionId  // Send session ID to associate with process
             });
-        } catch (error) { console.error('Error analyzing URL:', error); }
+            console.log('[FRONTEND DEBUG] POST response:', response.data);
+        } catch (error) {
+            console.error('[FRONTEND DEBUG] Error analyzing URL:', error);
+        }
     };
 
     return (
@@ -125,7 +187,15 @@ const IndexPage = () => {
             <main className="flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans" style={{ minHeight: '100dvh' }}>
                 <header className="relative z-10 flex w-full flex-wrap items-center justify-between gap-4 border-b border-gray-100 bg-white/50 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
                     <button
-                        onClick={() => window.location.reload()}
+                        onClick={() => {
+                            console.log('[FRONTEND DEBUG] Logo clicked - cleaning up...');
+                            // Call cleanup endpoint before reload
+                            axios.post('http://localhost:5000/api/cleanup').catch(err =>
+                                console.error('[FRONTEND DEBUG] Cleanup error:', err)
+                            );
+                            // Give cleanup a moment, then reload
+                            setTimeout(() => window.location.reload(), 500);
+                        }}
                         className="cursor-pointer hover:opacity-70 transition-opacity duration-200"
                         aria-label="Return to home"
                     >

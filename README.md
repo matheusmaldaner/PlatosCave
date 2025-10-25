@@ -15,17 +15,9 @@ Plato's Cave is a **learning-focused research tool** that helps you understand c
 
 Like emerging from Plato's allegorical cave into enlightenment, this tool illuminates the dense shadows of academic literature, extracting key insights, visualizations, and summaries through progressive AI assistance.
 
-## 🚀 Quick Start
+# Quick Start
 
-A simple, self-contained web application for analyzing research papers from URLs or PDF files.
-
-## Tech Stack
-
-- **Gatsby** - Static site generator
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **Lucide React** - Icons
+You have to run the frontend and backend on two separate terminal sessions. Follow the commands below:
 
 ## Getting Started (FrontEnd)
 
@@ -33,23 +25,18 @@ A simple, self-contained web application for analyzing research papers from URLs
 
 ```bash
 npm install
-```
-
-### Development
-
-```bash
 gatsby develop
 ```
 
 This will start the development server at `http://localhost:8000`
 
-
 ## Getting Started (Backend)
 
 ```bash
-uv venv --python 3.12
+# install uv 
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
 source .venv/bin/activate
-uv pip install browser-use
 uvx playwright install chromium --with-deps
 ```
 
@@ -61,6 +48,11 @@ touch .env
 Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/dashboard/api))
 ```
 BROWSER_USE_API_KEY="bu_YOURKEY"
+```
+
+```bash 
+# start the docker
+docker compose -f docker-compose.browser.yaml up --build remote-browser
 ```
 
 ```bash
