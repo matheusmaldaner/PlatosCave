@@ -21,9 +21,19 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 BROWSER_COMPOSE_FILE = Path(__file__).parent / 'docker-compose.browser.yaml'
-BROWSER_NOVNC_URL = os.environ.get('REMOTE_BROWSER_NOVNC_URL', 'http://localhost:7900/vnc.html?autoconnect=1&resize=scale')
-BROWSER_CDP_HEALTH_URL = os.environ.get('REMOTE_BROWSER_CDP_HEALTH_URL', 'http://localhost:9222/json/version')
-BROWSER_CDP_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_CDP_URL', 'http://localhost:9222')
+
+# Separate internal (for health checks) and public (for client access) URLs
+# Internal URLs: used by server.py to check Docker container health
+BROWSER_CDP_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_CDP_INTERNAL_URL', 'http://localhost:9222')
+BROWSER_NOVNC_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_NOVNC_INTERNAL_URL', 'http://localhost:7900')
+
+# Public URLs: sent to frontend and used by main.py to connect
+BROWSER_CDP_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_CDP_PUBLIC_URL', 'http://localhost:9222')
+BROWSER_NOVNC_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_NOVNC_PUBLIC_URL', 'http://localhost:7900/vnc.html?autoconnect=1&resize=scale')
+
+# Construct health check URLs from internal bases
+BROWSER_CDP_HEALTH_URL = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/version"
+BROWSER_NOVNC_HEALTH_URL = BROWSER_NOVNC_INTERNAL_URL
 
 # Global dictionary to track running processes per session
 # session_id -> process object
@@ -257,7 +267,7 @@ def ensure_remote_browser_service() -> Optional[dict]:
         })
         return None
 
-    if not wait_for_http_ok(BROWSER_NOVNC_URL):
+    if not wait_for_http_ok(BROWSER_NOVNC_HEALTH_URL):
         emit_json_message({
             'type': 'ERROR',
             'message': 'Remote browser noVNC endpoint did not become ready in time.'
@@ -279,25 +289,30 @@ def ensure_remote_browser_service() -> Optional[dict]:
         })
         return None
 
-    # Normalise the advertised WebSocket endpoint so the host machine can reach it
+    # Rewrite the advertised WebSocket endpoint to use public URL
     ws_url = metadata.get('webSocketDebuggerUrl')
     if ws_url:
+        print(f"[SERVER DEBUG] Original WebSocket URL from metadata: {ws_url}", flush=True)
+        
         parsed_ws = urlparse(ws_url)
-        parsed_cdp = urlparse(BROWSER_CDP_PUBLIC_URL)
-
-        # Prefer externally configured hostname/port if provided
-        hostname = parsed_cdp.hostname or parsed_ws.hostname
-        port = parsed_cdp.port or parsed_ws.port
-
-        # Use ws/wss scheme mirroring the public CDP URL (default to ws)
-        scheme = 'wss' if parsed_cdp.scheme == 'https' else 'ws'
-
-        netloc = f"{hostname}:{port}" if port else hostname
-        ws_url = urlunparse((scheme, netloc, parsed_ws.path, '', '', ''))
+        parsed_cdp_public = urlparse(BROWSER_CDP_PUBLIC_URL)
+        
+        # Use public hostname and port
+        public_hostname = parsed_cdp_public.hostname or 'localhost'
+        public_port = parsed_cdp_public.port or 9222
+        
+        # Determine WebSocket scheme based on public CDP URL (ws for http, wss for https)
+        ws_scheme = 'wss' if parsed_cdp_public.scheme == 'https' else 'ws'
+        
+        # Rebuild WebSocket URL with public hostname/port
+        ws_netloc = f"{public_hostname}:{public_port}"
+        ws_url = urlunparse((ws_scheme, ws_netloc, parsed_ws.path, '', '', ''))
+        
+        print(f"[SERVER DEBUG] Rewritten WebSocket URL: {ws_url}", flush=True)
 
     browser_payload = {
         'type': 'BROWSER_ADDRESS',
-        'novnc_url': BROWSER_NOVNC_URL,
+        'novnc_url': BROWSER_NOVNC_PUBLIC_URL,
         'cdp_url': BROWSER_CDP_PUBLIC_URL,
         'cdp_websocket': ws_url
     }
@@ -388,9 +403,16 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
     print("[SERVER DEBUG] Calling ensure_remote_browser_service()...", flush=True)
     browser_info = ensure_remote_browser_service()
     if browser_info is None:
-        print("[SERVER DEBUG] ERROR: ensure_remote_browser_service() returned None!", flush=True)
-        return
-    print(f"[SERVER DEBUG] Browser info received: {browser_info}", flush=True)
+        print("[SERVER DEBUG] Remote browser failed, falling back to local browser", flush=True)
+        emit_json_message({
+            'type': 'WARNING',
+            'message': 'Remote browser unavailable, using local browser fallback'
+        })
+        # Don't set CDP environment variables - let main.py use local browser
+        # Continue with process launch without remote browser config
+        browser_info = {}  # Empty dict to signal local browser mode
+    else:
+        print(f"[SERVER DEBUG] Browser info received: {browser_info}", flush=True)
 
     command = [
         'python', 'main.py', '--url', url,
@@ -403,15 +425,23 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
     env = os.environ.copy()
     env['SUPPRESS_LOGS'] = 'true'
 
-    cdp_url = browser_info.get('cdp_url')
-    cdp_ws = browser_info.get('cdp_websocket')
-    if cdp_url:
-        env['REMOTE_BROWSER_CDP_URL'] = cdp_url
-    if cdp_ws:
-        env['REMOTE_BROWSER_CDP_WS'] = cdp_ws
-    novnc_url = browser_info.get('novnc_url')
-    if novnc_url:
-        env['REMOTE_BROWSER_NOVNC_URL'] = novnc_url
+    # Only set remote browser environment variables if we successfully got browser info
+    if browser_info:
+        cdp_url = browser_info.get('cdp_url')
+        cdp_ws = browser_info.get('cdp_websocket')
+        if cdp_url:
+            env['REMOTE_BROWSER_CDP_URL'] = cdp_url
+        if cdp_ws:
+            env['REMOTE_BROWSER_CDP_WS'] = cdp_ws
+        novnc_url = browser_info.get('novnc_url')
+        if novnc_url:
+            env['REMOTE_BROWSER_NOVNC_URL'] = novnc_url
+    else:
+        # Ensure remote browser env vars are not set for local browser fallback
+        env.pop('REMOTE_BROWSER_CDP_URL', None)
+        env.pop('REMOTE_BROWSER_CDP_WS', None)
+        env.pop('REMOTE_BROWSER_NOVNC_URL', None)
+        print("[SERVER DEBUG] Using local browser - no remote CDP environment variables set", flush=True)
 
     print(f"[SERVER DEBUG] Starting subprocess with command: {' '.join(command)}", flush=True)
     process = subprocess.Popen(
@@ -432,11 +462,14 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
         print(f"[SERVER DEBUG] Tracking process {process.pid} for session {session_id}", flush=True)
 
     # Re-emit browser info to ensure frontend WebSocket has connected and receives it
-    if browser_info:
+    # Only emit if we have actual remote browser info
+    if browser_info and browser_info.get('cdp_url'):
         print(f"[SERVER DEBUG] Re-emitting BROWSER_ADDRESS to frontend: {browser_info}", flush=True)
         socketio.emit('status_update', {'data': json.dumps(browser_info)})
         socketio.sleep(0.1)  # Small delay to ensure delivery
         print("[SERVER DEBUG] BROWSER_ADDRESS re-emitted!", flush=True)
+    else:
+        print("[SERVER DEBUG] Using local browser, no BROWSER_ADDRESS to emit", flush=True)
 
     print("[SERVER DEBUG] Starting to read subprocess stdout...", flush=True)
     for line in process.stdout:

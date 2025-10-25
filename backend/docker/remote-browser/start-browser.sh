@@ -13,11 +13,8 @@ chmod 1777 /tmp/.X11-unix
 lock_file="/tmp/.X${DISPLAY#:}.lock"
 rm -f "$lock_file"
 
-if [[ -n "${CDP_INTERNAL_PORT:-}" ]]; then
-  INTERNAL_CDP_PORT="${CDP_INTERNAL_PORT}"
-else
-  INTERNAL_CDP_PORT=$((CDP_PORT + 100))
-fi
+# Use the same port internally and externally (no offset needed)
+INTERNAL_CDP_PORT="${CDP_PORT}"
 
 # Start the virtual framebuffer
 log "Starting Xvfb on display ${DISPLAY}"
@@ -58,10 +55,7 @@ chromium \
   &
 CHROME_PID=$!
 
-# Expose the DevTools Protocol port to the outside world
-log "Forwarding external CDP port ${CDP_PORT} -> ${INTERNAL_CDP_PORT}"
-socat TCP-LISTEN:${CDP_PORT},fork,reuseaddr TCP:127.0.0.1:${INTERNAL_CDP_PORT} &
-SOCAT_PID=$!
+# Note: No need for socat port forwarding since Chrome is listening on CDP_PORT directly
 
 # Start VNC server
 log "Starting x11vnc on port ${VNC_PORT}"
@@ -78,12 +72,12 @@ log " - CDP:    http://localhost:${CDP_PORT}"
 log " - noVNC:  http://localhost:${NOVNC_PORT}/vnc.html?autoconnect=1&resize=scale"
 
 # Forward CTRL+C to subprocesses
-trap 'log "Shutting down"; kill ${WEBSOCKIFY_PID} ${VNC_PID} ${SOCAT_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true; wait' INT TERM
+trap 'log "Shutting down"; kill ${WEBSOCKIFY_PID} ${VNC_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true; wait' INT TERM
 
 # Wait for any process to exit, then clean up
 wait -n
 STATUS=$?
 trap - INT TERM
-kill ${WEBSOCKIFY_PID} ${VNC_PID} ${SOCAT_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true
+kill ${WEBSOCKIFY_PID} ${VNC_PID} ${CHROME_PID} ${FLUXBOX_PID} ${XVFB_PID} 2>/dev/null || true
 wait || true
 exit ${STATUS}
