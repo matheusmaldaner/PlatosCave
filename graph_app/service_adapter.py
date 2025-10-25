@@ -125,4 +125,19 @@ class KGSession:
         self.i = 0
         return self.state()
 
+    def set_penalty(self, **kwargs):
+        """e.g., set_penalty(enabled=True, agg='min'|'mean'|'lse', alpha=1.0, eta=0.05)"""
+        for k, v in kwargs.items():
+            if hasattr(self.kg.penalty, k):
+                setattr(self.kg.penalty, k, v)
 
+    def trusts(self):
+        """Return current node trust map (computed lazily on next edge recompute)."""
+        # ensure trusts exist for at least current frontier
+        for nid in self.kg.G.nodes():
+            if nid not in self.kg.trust and self.kg.nodes[nid].has_all_metrics():
+                try:
+                    self.kg._compute_node_trust(nid)  # safe: DAG + memoization
+                except Exception:
+                    pass
+        return {nid: float(val) for nid, val in self.kg.trust.items()}

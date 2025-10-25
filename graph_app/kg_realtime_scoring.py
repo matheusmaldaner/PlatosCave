@@ -115,6 +115,14 @@ class NodeQualityWeights:
     })
 
 @dataclass
+class PropagationPenalty:
+    enabled: bool = True
+    agg: str = "min"      # "min" | "mean" | "lse"
+    alpha: float = 1.0    # exponent on parent trust
+    eta: float = 0.05     # floor in the gating factor
+    default_raw_conf: float = 0.5  # used if a raw conf isn't known yet
+
+@dataclass
 class RoleTransitionPrior:
     """Coarse prior on how sensible an edge (role_u -> role_v) is, in [0,1]."""
     table: Dict[Tuple[str, str], float] = field(default_factory=lambda: {
@@ -476,6 +484,9 @@ class KGScorer:
         self.pair_syn = pair_synergy or PairSynergyWeights()
         self.graph_w = graph_score_weights or GraphScoreWeights()
         self.default_edge_confidence = 0.5  # set to None to forbid fallback
+        self.penalty = PropagationPenalty()
+        self.trust: Dict[str, float] = {}
+
 
 
     # --- Build / update API ---
@@ -529,12 +540,38 @@ class KGScorer:
         if not all(self.nodes[u].has_all_metrics() for u in parents):
             return
 
+        # 1) compute RAW edge confidences first (no propagation penalty)
+        raw_by_u = {}
+        feats_by_u = {}
         for u in parents:
-            w, feats = self._compute_edge_confidence(u, v)
-            self.G[u][v]["confidence"] = w
+            w_raw, feats = self._compute_edge_confidence(u, v)  # existing features
+            self.G[u][v]["confidence_raw"] = w_raw
+            raw_by_u[u] = w_raw
+            feats_by_u[u] = feats
+
+        # 2) compute TRUST for parent(s) and the child, based on RAW confs
+        tv = self._compute_node_trust(v)  # fills self.trust recursively
+        # ensure parent trusts cached
+        for u in parents:
+            if u not in self.trust:
+                self._compute_node_trust(u)
+
+        # 3) set FINAL edge confidences with gating by parent trust
+        eta = min(max(self.penalty.eta, 0.0), 1.0)
+        for u in parents:
+            tu = self.trust.get(u, self._node_quality(u))
+            w_raw = raw_by_u[u]
+            w_final = clip01(w_raw * (eta + (1.0 - eta) * (tu ** max(0.0, self.penalty.alpha))))
+            self.G[u][v]["confidence"] = w_final
+
+            feats = feats_by_u[u].copy()
+            feats["confidence_raw"] = w_raw
+            feats["trust_parent"] = tu
+            feats["trust_child"]  = tv
             self.G[u][v]["features"] = feats
+
             for cb in self.edge_update_callbacks:
-                cb(u, v, w, feats)
+                cb(u, v, w_final, feats)
 
     def _node_quality(self, node_id: str) -> float:
         node = self.nodes[node_id]
@@ -603,6 +640,47 @@ class KGScorer:
             "confidence": w
         }
         return w, feats
+
+    def _get_raw_conf(self, u: str, v: str) -> float:
+        return float(self.G[u][v].get("confidence_raw", self.penalty.default_raw_conf))
+
+    def _compute_node_trust(self, v: str, _memo: Optional[Dict[str,float]] = None) -> float:
+        if not self.penalty.enabled:
+            # fall back: local quality only
+            return clip01(self._node_quality(v))
+        if _memo is None: _memo = {}
+        if v in _memo: return _memo[v]
+
+        qv = clip01(self._node_quality(v))
+        parents = list(self.G.predecessors(v))
+        if not parents:
+            tv = qv
+        else:
+            vals = []
+            for u in parents:
+                # compute parent trust recursively
+                tu = self.trust.get(u)
+                if tu is None:
+                    tu = self._compute_node_trust(u, _memo)
+                c_raw = self._get_raw_conf(u, v)
+                vals.append( (max(1e-6, tu) ** max(0.0, self.penalty.alpha)) * c_raw )
+            if self.penalty.agg == "min":
+                agg_val = min(vals) if vals else 0.0
+            elif self.penalty.agg == "mean":
+                agg_val = sum(vals)/len(vals) if vals else 0.0
+            else:  # "lse" softmax-like (log-sum-exp on logs)
+                import math
+                if not vals:
+                    agg_val = 0.0
+                else:
+                    logs = [math.log(max(1e-6, x)) for x in vals]
+                    m = max(logs)
+                    agg_val = math.exp(m) * sum(math.exp(l - m) for l in logs) / len(logs)
+            tv = clip01(qv * agg_val)
+
+        _memo[v] = tv
+        self.trust[v] = tv
+        return tv
 
     # --------- Graph score (optional; configurable) ---------
 
@@ -730,9 +808,15 @@ class KGScorer:
             if not f:
                 w, f = self._compute_edge_confidence(u, v)
                 conf = w
+            conf_raw = d.get("confidence_raw", self.default_edge_confidence)
+            tp = d.get("features", {}).get("trust_parent")
+            tc = d.get("features", {}).get("trust_child")
             feats.append({
-                "u": u, "v": v,
-                "confidence": float(conf),
+            "u": u, "v": v,
+            "confidence_raw": float(conf_raw),
+            "confidence": float(conf),
+            "trust_parent": None if tp is None else float(tp),
+            "trust_child": None if tc is None else float(tc),
                 "role_prior": float(f["role_prior"]),
                 "parent_quality": float(f["parent_quality"]),
                 "child_quality": float(f["child_quality"]),
