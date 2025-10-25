@@ -41,6 +41,7 @@ This folder contains the backend logic for scoring knowledge-graph (KG) edges as
 from service_adapter import KGSession
 
 sess = KGSession(graph_json)
+sess.set_penalty(enabled=True, agg="min", alpha=1.0, eta=0.05)  # optional
 print(sess.validation_report())
 
 nid = sess.current()
