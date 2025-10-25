@@ -1,15 +1,28 @@
 import React from "react";
 import type { HeadFC, PageProps } from "gatsby";
 import FileUploader from "../components/FileUploader";
+import { extractFactDAGWithLLM, type FactDAG } from "../utils/factDagLLM";
+import { ApiDagLLM } from "../utils/factDagClient";
+import { extractPdfText } from "../utils/pdfText";
 
 const IndexPage: React.FC<PageProps> = () => {
-  const handleSubmit = (data: { url?: string; file?: File }) => {
+  const handleSubmit = async (data: { url?: string; file?: File }) => {
     if (data.url) {
       console.log("📄 Analyzing URL:", data.url);
     } else if (data.file) {
       console.log("📄 Analyzing PDF:", data.file.name);
       console.log("   File size:", (data.file.size / 1024).toFixed(2), "KB");
       console.log("   File type:", data.file.type);
+
+      // Convert PDF to text using PDF.js
+      const extractedText = await extractPdfText(data.file);
+
+      // LLM-driven single global DAG of facts (via backend API)
+      const dagLlm = new ApiDagLLM();
+      const factDag: FactDAG = await extractFactDAGWithLLM(extractedText, dagLlm);
+      console.log("🔗 Fact DAG:", { nodes: factDag.nodes.length, edges: factDag.edges.length });
+      console.table(factDag.nodes.map(n => ({ id: n.id, text: n.text })));
+      console.log(factDag.edges);
     }
   };
 
