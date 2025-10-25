@@ -27,7 +27,7 @@ A simple, self-contained web application for analyzing research papers from URLs
 - **Tailwind CSS** - Styling
 - **Lucide React** - Icons
 
-## Getting Started
+## Getting Started (FrontEnd)
 
 ### Installation
 
@@ -55,47 +55,21 @@ npm run build
 npm run serve
 ```
 
-## Features
+## Getting Started (Backend)
 
-- ✅ Clean ChatGPT-like landing page
-- ✅ URL input support
-- ✅ PDF file upload (drag-and-drop + file picker)
-- ✅ PDF-only validation
-- ✅ Responsive design
-- ✅ Console logging for debugging
-
-## Project Structure
-
-```
-research_summarizer/
-├── src/
-│   ├── components/
-│   │   └── FileUploader.tsx    # Main input component
-│   ├── pages/
-│   │   └── index.tsx            # Landing page
-│   ├── styles/
-│   │   └── global.css           # Global styles
-│   └── images/
-│       └── icon.svg             # App icon
-├── gatsby-config.ts             # Gatsby configuration
-├── gatsby-browser.tsx           # Browser APIs
-├── tailwind.config.js           # Tailwind configuration
-├── tsconfig.json                # TypeScript configuration
-└── package.json                 # Dependencies
+```bash
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install browser-use
+uvx playwright install chromium --with-deps
 ```
 
-## Next Steps
+Create a .env file
+```
+touch .env
+```
 
-1. Add backend API integration
-2. Implement PDF processing
-3. Add URL content fetching
-4. Display analysis results
-5. Add loading states
-
-## Self-Contained
-
-This project is completely self-contained with its own:
-- Dependencies (package.json)
-- Configuration files
-- Source code
-- No external dependencies from parent directories
+Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/dashboard/api))
+```
+BROWSER_USE_API_KEY="bu_YOURKEY"
+```
