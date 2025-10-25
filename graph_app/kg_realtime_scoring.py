@@ -119,7 +119,7 @@ class PropagationPenalty:
     enabled: bool = True
     agg: str = "min"      # "min" | "mean" | "lse"
     alpha: float = 1.0    # exponent on parent trust
-    eta: float = 0.05     # floor in the gating factor
+    eta: float = 2**(-1/8)     # floor in the gating factor
     default_raw_conf: float = 0.5  # used if a raw conf isn't known yet
 
 @dataclass
