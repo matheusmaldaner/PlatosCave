@@ -2,7 +2,7 @@
 <img src="docs/img/banner.png" alt="Plato's Cave Logo">
 
 
-_Escape the Cave of Complexity_
+_Appeal to Logos_
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-prototype-yellow)]()
