@@ -530,6 +530,67 @@ def export_xml(G: nx.DiGraph, path: Union[str, Path], root: Optional[str] = None
     # default to GraphML
     return export_graphml(G, path, root=root)
 
+def write_pc_payload(pg_or_dict, out_json: str | Path) -> str:
+    """
+    Build graph, repair DAG, pick root, relevel, BFS, then write a frontend-friendly payload:
+      {
+        "paper_id": "...",
+        "title": "...",
+        "root": "<root-id>",
+        "bfs_order": ["<id0>", "<id1>", ...],
+        "nodes": [{"id": "...", "text": "...", "role": "...", "level": 0}, ...],
+        "edges": [{"source": "...", "target": "...", "relation": "supports"}, ...]
+      }
+    """
+    import json
+    from pathlib import Path
+
+    # Accept dict or PaperGraph
+    if isinstance(pg_or_dict, dict):
+        # If it's the minimal schema (no roles/relations), adapt it:
+        nodes = pg_or_dict.get("nodes", [])
+        edges = pg_or_dict.get("edges", [])
+        has_role = any(isinstance(n, dict) and ("role" in n) for n in nodes)
+        has_rel = any(isinstance(e, dict) and ("relation" in e) for e in edges)
+        if not has_role or not has_rel:
+            pg = minimal_to_papergraph(pg_or_dict)
+        else:
+            pg = pg_or_dict
+    else:
+        pg = pg_or_dict
+
+    G, id_map, root, order, removed = build_graph_and_bfs(pg)  # BFS, root, etc. already defined
+
+    payload = {
+        "paper_id": getattr(pg, "paper_id", getattr(pg, "get", lambda k, d=None: d)("paper_id", "unknown")),
+        "title": getattr(pg, "title", getattr(pg, "get", lambda k, d=None: d)("title", "Untitled")),
+        "root": root,
+        "bfs_order": order,
+        "nodes": [
+            {
+                "id": nid,
+                "text": G.nodes[nid].get("text", ""),
+                "role": G.nodes[nid].get("role", "other"),
+                "level": int(G.nodes[nid].get("level", 0)),
+            }
+            for nid in G.nodes
+        ],
+        "edges": [
+            {
+                "source": u,
+                "target": v,
+                "relation": G.edges[u, v].get("relation", "supports")
+            }
+            for (u, v) in G.edges
+        ],
+        "removed_edges_for_dag": removed,
+    }
+
+    out_json = str(Path(out_json))
+    Path(out_json).parent.mkdir(parents=True, exist_ok=True)
+    Path(out_json).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return out_json
+
 # ---- Convenience: end-to-end builder ----------------------------------------
 
 def build_graph_and_bfs(
