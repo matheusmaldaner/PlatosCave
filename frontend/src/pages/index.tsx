@@ -1,15 +1,27 @@
 import React from "react";
 import type { HeadFC, PageProps } from "gatsby";
 import FileUploader from "../components/FileUploader";
+import { extractFactDAGWithLLM, type FactDAG } from "../utils/factDagLLM";
+import { ApiDagLLM } from "../utils/factDagClient";
 
 const IndexPage: React.FC<PageProps> = () => {
-  const handleSubmit = (data: { url?: string; file?: File }) => {
+  const handleSubmit = async (data: { url?: string; file?: File }) => {
     if (data.url) {
       console.log("📄 Analyzing URL:", data.url);
     } else if (data.file) {
       console.log("📄 Analyzing PDF:", data.file.name);
       console.log("   File size:", (data.file.size / 1024).toFixed(2), "KB");
       console.log("   File type:", data.file.type);
+
+      // Convert PDF to text (stubbed for now). Replace with real PDF.js extraction.
+      const extractedText = await fakeExtractPdfText(data.file);
+
+      // LLM-driven single global DAG of facts (via backend API)
+      const dagLlm = new ApiDagLLM();
+      const factDag: FactDAG = await extractFactDAGWithLLM(extractedText, dagLlm);
+      console.log("🔗 Fact DAG:", { nodes: factDag.nodes.length, edges: factDag.edges.length });
+      console.log(factDag.nodes.slice(0, 3));
+      console.log(factDag.edges.slice(0, 5));
     }
   };
 
@@ -62,3 +74,9 @@ export const Head: HeadFC = () => (
     <meta name="description" content="Analyze research papers from URLs or PDFs" />
   </>
 );
+
+// Temporary PDF-to-text stub. Replace with actual PDF parsing (e.g., PDF.js) later.
+async function fakeExtractPdfText(file: File): Promise<string> {
+  // In production, use a real extractor and return the full text content
+  return `Title: Example Paper\n\nThis is a sample paragraph introducing the topic. It contains several sentences.\n\nMethods: We apply a straightforward approach. Results show improvements of 12%.\n\nConclusion: The proposed method is effective.`;
+}
