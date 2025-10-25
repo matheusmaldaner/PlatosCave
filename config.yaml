@@ -1,0 +1,23 @@
+model_config_claude: &client_claude
+    provider: autogen_ext.models.anthropic.AnthropicChatCompletionClient
+    config:
+      model: claude-3-5-sonnet
+      api_key: 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
+      #max_tokens: 4096
+      model_info:
+        vendor: anthropic
+        family: claude-3-5-sonnet
+        api: chat_completions
+        vision: true
+        function_calling: true
+        json_output: true
+        structured_output: true
+    max_retries: 5
+
+orchestrator_client: *client_claude
+coder_client: *client_claude
+web_surfer_client: *client_claude
+file_surfer_client: *client_claude
+action_guard_client: *client_claude
+user_proxy_client: *client_claude
+model_client: *client_claude
