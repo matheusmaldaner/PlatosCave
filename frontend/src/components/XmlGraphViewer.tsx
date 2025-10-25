@@ -70,7 +70,6 @@ const parseGraphML = (xml: string): { nodes: Node[]; edges: Edge[] } => {
   return getLayoutedElements(nodes, edges);
 };
 
-// ✅ Vertical toolbar (slides when drawer open)
 const VerticalControls: React.FC<{ isDrawerOpen: boolean }> = ({ isDrawerOpen }) => {
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
@@ -78,7 +77,7 @@ const VerticalControls: React.FC<{ isDrawerOpen: boolean }> = ({ isDrawerOpen })
     <div
       className={`absolute bottom-4 z-10 flex flex-col gap-2 bg-white/80 p-2 rounded-lg shadow-md transition-all duration-300`}
       style={{
-        left: isDrawerOpen ? "21rem" : "1rem", // slide horizontally
+        left: isDrawerOpen ? "21rem" : "1rem",
       }}
     >
       <button
