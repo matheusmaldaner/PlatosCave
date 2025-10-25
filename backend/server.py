@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Optional
 from urllib import request as urllib_request
 from urllib.error import URLError, HTTPError
+from urllib.parse import urlparse, urlunparse
 from flask import Flask, request
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -108,11 +109,27 @@ def ensure_remote_browser_service() -> Optional[dict]:
         })
         return None
 
+    # Normalise the advertised WebSocket endpoint so the host machine can reach it
+    ws_url = metadata.get('webSocketDebuggerUrl')
+    if ws_url:
+        parsed_ws = urlparse(ws_url)
+        parsed_cdp = urlparse(BROWSER_CDP_PUBLIC_URL)
+
+        # Prefer externally configured hostname/port if provided
+        hostname = parsed_cdp.hostname or parsed_ws.hostname
+        port = parsed_cdp.port or parsed_ws.port
+
+        # Use ws/wss scheme mirroring the public CDP URL (default to ws)
+        scheme = 'wss' if parsed_cdp.scheme == 'https' else 'ws'
+
+        netloc = f"{hostname}:{port}" if port else hostname
+        ws_url = urlunparse((scheme, netloc, parsed_ws.path, '', '', ''))
+
     browser_payload = {
         'type': 'BROWSER_ADDRESS',
         'novnc_url': BROWSER_NOVNC_URL,
         'cdp_url': BROWSER_CDP_PUBLIC_URL,
-        'cdp_websocket': metadata.get('webSocketDebuggerUrl')
+        'cdp_websocket': ws_url
     }
     emit_json_message(browser_payload)
 
@@ -201,9 +218,14 @@ def run_url_analysis_and_stream_output(url, settings):
     for line in process.stdout:
         line = line.strip()
         if line:
-            # Stream real-time updates from main.py
-            socketio.emit('status_update', {'data': line})
-            socketio.sleep(0)
+            # Only send valid JSON to frontend (filter out browser-use debug logs)
+            try:
+                json.loads(line)  # Validate it's JSON
+                socketio.emit('status_update', {'data': line})
+                socketio.sleep(0)
+            except json.JSONDecodeError:
+                # Ignore non-JSON output (debug logs from browser-use/LLM)
+                pass
 
     process.wait()
 

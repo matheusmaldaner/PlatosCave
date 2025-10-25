@@ -1,5 +1,4 @@
 # PlatosCave/cli.py
-import time
 import sys
 import os
 import json
@@ -53,46 +52,32 @@ def process_pdf(file_path, args):
     # --- MOVED and CORRECTED: Send settings info as a proper update ---
     stage_name = "Validate"
     send_update(stage_name, f"Settings: Agents={args.agent_aggressiveness}, Threshold={args.evidence_threshold}")
-    time.sleep(2) # Give user time to see settings
 
     # ... The rest of the stages are the same ...
     send_update(stage_name, "Validating PDF structure...")
-    time.sleep(1.5)
     send_update(stage_name, "PDF structure is valid.")
-    time.sleep(1)
 
     stage_name = "Decomposing PDF"
     send_update(stage_name, "Decomposing document...")
-    time.sleep(1.5)
     send_update(stage_name, "Document decomposed.")
-    time.sleep(1)
 
     stage_name = "Building Logic Tree"
     send_update(stage_name, "Parsing logical components...")
-    time.sleep(2)
     graph_data_string = generate_graphml_string()
     send_update(stage_name, "Logic Tree constructed.")
-    time.sleep(0.5)
     send_graph_data(graph_data_string)
-    time.sleep(1)
-    
+
     stage_name = "Organizing Agents"
     send_update(stage_name, f"Initializing {args.agent_aggressiveness} agents...")
-    time.sleep(1.5)
     send_update(stage_name, "Tasks assigned.")
-    time.sleep(1)
 
     stage_name = "Compiling Evidence"
     send_update(stage_name, "Agents are gathering evidence...")
-    time.sleep(2)
     send_update(stage_name, "Evidence compiled.")
-    time.sleep(1)
 
     stage_name = "Evaluating Integrity"
     send_update(stage_name, f"Evaluating with threshold {args.evidence_threshold}...")
-    time.sleep(2)
     send_update(stage_name, "Calculating final score...")
-    time.sleep(1.5)
 
     send_final_score(0.95)
 

@@ -5,7 +5,8 @@ log() {
   printf '[remote-browser] %s\n' "$1"
 }
 
-# Ensure runtime directories exist
+# Ensure runtime directories exist (fresh profile each run)
+rm -rf "$HOME/chrome-profile" "$HOME/.config/chromium" "$HOME/.cache/chromium"
 mkdir -p "$HOME/chrome-profile"
 mkdir -p /tmp/.X11-unix
 chmod 1777 /tmp/.X11-unix
@@ -43,12 +44,15 @@ chromium \
   --disable-gpu \
   --no-first-run \
   --no-default-browser-check \
+  --disable-session-crashed-bubble \
+  --disable-features=InfiniteSessionRestore \
   --start-maximized \
   --force-device-scale-factor=1 \
   --allow-insecure-localhost \
   --autoplay-policy=no-user-gesture-required \
   --test-type \
   --noerrdialogs \
+  --incognito \
   --class=RemoteBrowser \
   "${CHROME_START_URL}" \
   &

@@ -38,22 +38,11 @@ npm install
 ### Development
 
 ```bash
-npm run dev
+gatsby develop
 ```
 
 This will start the development server at `http://localhost:8000`
 
-### Build
-
-```bash
-npm run build
-```
-
-### Serve Production Build
-
-```bash
-npm run serve
-```
 
 ## Getting Started (Backend)
 
