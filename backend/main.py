@@ -106,13 +106,25 @@ async def main(url):
     send_update("Validate", f"Validating URL: {url}")
     await asyncio.sleep(0.5)
 
-    # unused, will be implemented for the frontend
-    browser = Browser(
-       cdp_url="http://localhost:9222", # cdp endpoint from noVNC container wip
-       headless=False,
-       is_local=False,
-       keep_alive=True
-    )
+    remote_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
+    remote_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
+    if remote_cdp_ws or remote_cdp_url:
+        browser_endpoint = remote_cdp_ws or remote_cdp_url
+        send_update("Validate", f"Connecting to remote browser at {browser_endpoint}")
+        browser = Browser(
+            cdp_url=browser_endpoint,
+            headless=False,
+            is_local=False,
+            keep_alive=True
+        )
+    else:
+        send_update("Validate", "No remote browser endpoint provided; running with local session.")
+        browser = Browser(
+            cdp_url="",
+            headless=False,
+            is_local=True,
+            keep_alive=False
+        )
 
     llm = ChatBrowserUse() # optimized for browser automation w 3-5x speedup
     # alternatively you could use ChatOpenAI(model='o3'), ChatOllama(model="qwen32.1:8b")
@@ -125,14 +137,17 @@ async def main(url):
     send_update("Decomposing PDF", "Navigating to paper and extracting content...")
 
     browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
-    agent = Agent(
+    agent_kwargs = dict(
        task=browsing_url_prompt,
        llm=llm,
-       #browser=browser, # remote or local browser
        vision_detail_level='high',
        generate_gif=True,
-       #save_conversation_path='conversation.json',
-       use_vision=True)
+       use_vision=True
+    )
+    if browser is not None:
+        agent_kwargs['browser'] = browser
+
+    agent = Agent(**agent_kwargs)
     #agent = Agent(task="browse matheus.wiki, tell his current school", llm=llm)
 
     # TODO: make sure it shows interactive elements during the browsing

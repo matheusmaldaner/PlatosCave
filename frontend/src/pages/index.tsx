@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import FileUploader from '../components/FileUploader';
 import { ProcessStep } from '../components/Sidebar';
 import XmlGraphViewer from '../components/XmlGraphViewer';
+import BrowserViewer from '../components/BrowserViewer';
 import SettingsModal, { Settings } from '../components/SettingsModal';
 import ProgressBar from '../components/ProgressBar';
 import ParticleBackground from '../components/ParticleBackground';
@@ -27,6 +28,8 @@ const IndexPage = () => {
     const [graphmlData, setGraphmlData] = useState<string | null>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [settings, setSettings] = useState<Settings>({ agentAggressiveness: 5, evidenceThreshold: 0.8 });
+    const [isBrowserViewerOpen, setIsBrowserViewerOpen] = useState(false);
+    const [browserSession, setBrowserSession] = useState<{ novncUrl?: string; cdpUrl?: string; cdpWebSocket?: string } | null>(null);
 
     // WebSocket connection for real-time updates
     useEffect(() => {
@@ -50,9 +53,17 @@ const IndexPage = () => {
                 } else if (update.type === 'GRAPH_DATA') {
                     console.log('📊 Received graph data, length:', update.data?.length);
                     setGraphmlData(update.data);
+                } else if (update.type === 'BROWSER_ADDRESS') {
+                    setBrowserSession({
+                        novncUrl: update.novnc_url,
+                        cdpUrl: update.cdp_url,
+                        cdpWebSocket: update.cdp_websocket
+                    });
+                    setIsBrowserViewerOpen(true);
                 } else if (update.type === 'DONE') {
                     setFinalScore(update.score);
                     setProcessSteps(prev => prev.map(s => ({...s, status: 'completed'})));
+                    setIsBrowserViewerOpen(false);
                     socket.disconnect();
                 }
             } catch (e) {
@@ -75,6 +86,8 @@ const IndexPage = () => {
         setProcessSteps(INITIAL_STAGES);
         setFinalScore(null);
         setGraphmlData(null);
+    setBrowserSession(null);
+    setIsBrowserViewerOpen(false);
         setUploadedFile(file);
         setSubmittedUrl(null);  // Clear URL if file is uploaded
         try {
@@ -86,6 +99,8 @@ const IndexPage = () => {
         setProcessSteps(INITIAL_STAGES);
         setFinalScore(null);
         setGraphmlData(null);
+    setBrowserSession(null);
+    setIsBrowserViewerOpen(false);
         setSubmittedUrl(url);
         setUploadedFile(null);  // Clear file if URL is submitted
         try {
@@ -139,19 +154,33 @@ const IndexPage = () => {
                     )}
                 </header>
 
-                {(!uploadedFile && !submittedUrl) ? (
-                    <div className="flex-grow flex items-center justify-center p-4 relative z-10">
-                        <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
+                <div className="relative flex-grow">
+                    <div
+                        className={`absolute inset-0 flex items-center justify-center p-4 transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+                    >
+                        <div className="relative z-10 w-full">
+                            <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
+                        </div>
                     </div>
-                ) : (
-                    <>
+
+                    <div
+                        className={`absolute inset-0 flex flex-col transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'opacity-0 translate-y-4 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}
+                    >
                         <ProgressBar steps={processSteps} />
                         <div className="flex-grow p-4" style={{ height: 'calc(100vh - 150px)' }}>
                             <XmlGraphViewer graphmlData={graphmlData} />
                         </div>
-                    </>
-                )}
+                    </div>
+                </div>
             </main>
+
+            <BrowserViewer
+                isOpen={isBrowserViewerOpen && !!browserSession?.novncUrl}
+                onClose={() => setIsBrowserViewerOpen(false)}
+                novncUrl={browserSession?.novncUrl}
+                cdpUrl={browserSession?.cdpUrl}
+                cdpWebSocket={browserSession?.cdpWebSocket}
+            />
         </>
     );
 };
