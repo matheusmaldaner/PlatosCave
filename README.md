@@ -1,4 +1,21 @@
-# Research Paper Summarizer
+<div align="center">
+<img src="docs/img/banner.png" alt="Plato's Cave Logo">
+
+
+_Escape the Cave of Complexity_
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-prototype-yellow)]()
+![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
+</div>
+
+---
+
+Plato's Cave is a **learning-focused research tool** that helps you understand complex academic papers by analyzing PDFs and URLs. 
+
+Like emerging from Plato's allegorical cave into enlightenment, this tool illuminates the dense shadows of academic literature, extracting key insights, visualizations, and summaries through progressive AI assistance.
+
+## 🚀 Quick Start
 
 A simple, self-contained web application for analyzing research papers from URLs or PDF files.
 
