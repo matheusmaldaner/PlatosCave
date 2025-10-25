@@ -74,6 +74,20 @@ Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/
 BROWSER_USE_API_KEY="bu_YOURKEY"
 ```
 
+```bash
+# install VNC server
+sudo apt-get install x11vnc
+
+# start VNC server
+x11vnc -display :0 -forever -shared
+
+sudo apt update
+sudo apt install chromium-browser
+google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
+
+cd backend
+python server.py
+```
 
 ### Agent Logic
 Make an acyliclical graph of the paper in the following structure:
