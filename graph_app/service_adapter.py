@@ -141,3 +141,19 @@ class KGSession:
                 except Exception:
                     pass
         return {nid: float(val) for nid, val in self.kg.trust.items()}
+
+    def set_metric_weights(self, weights: Dict[str, float], normalize: bool = False):
+        """
+        Frontend/API entry point to set a single global weight vector over the six metrics.
+        Example payload:
+        {
+            "credibility": 1.0,
+            "relevance": 0.8,
+            "evidence_strength": 1.2,
+            "method_rigor": 1.1,
+            "reproducibility": 0.9,
+            "citation_support": 1.0
+        }
+        """
+        self.kg.set_metric_weights(weights, normalize=normalize)
+        return {"ok": True, "weights": dict(self.kg.metric_w.weights)}

@@ -84,6 +84,26 @@ def clip01(x: float) -> float:
     return 0.0 if x < 0.0 else 1.0 if x > 1.0 else x
 
 # --------- Config dataclasses ---------
+# --------- Config dataclasses ---------
+from dataclasses import dataclass, field
+from typing import Dict, Tuple, List, Set, Any, Optional, Callable
+
+@dataclass
+class GlobalMetricWeights:
+    """
+    Global per-metric weights applied to raw agent metrics before any mixing.
+    Keys must be from:
+      {'credibility','relevance','evidence_strength',
+       'method_rigor','reproducibility','citation_support'}
+    """
+    weights: Dict[str, float] = field(default_factory=lambda: {
+        "credibility":        1.0,
+        "relevance":          1.0,
+        "evidence_strength":  1.0,
+        "method_rigor":       1.0,
+        "reproducibility":    1.0,
+        "citation_support":   1.0,
+    })
 
 @dataclass
 class EdgeCombineWeights:
@@ -472,7 +492,8 @@ class KGScorer:
                  node_quality: NodeQualityWeights | None = None,
                  role_prior: RoleTransitionPrior | None = None,
                  pair_synergy: PairSynergyWeights | None = None,
-                 graph_score_weights: GraphScoreWeights | None = None):
+                 graph_score_weights: GraphScoreWeights | None = None,
+                 global_metric_weights: GlobalMetricWeights | None = None):
         self.G = nx.DiGraph()
         self.nodes: Dict[str, Node] = {}
         self.tokens: Dict[str, Set[str]] = {}
@@ -483,6 +504,7 @@ class KGScorer:
         self.role_prior = role_prior or RoleTransitionPrior()
         self.pair_syn = pair_synergy or PairSynergyWeights()
         self.graph_w = graph_score_weights or GraphScoreWeights()
+        self.metric_w = global_metric_weights or GlobalMetricWeights()
         self.default_edge_confidence = 0.5  # set to None to forbid fallback
         self.penalty = PropagationPenalty()
         self.trust: Dict[str, float] = {}
@@ -579,11 +601,11 @@ class KGScorer:
         weights = self.node_q.per_role.get(role, {})
         if not weights:
             # fallback: average of available metrics
-            vals = node.metric_dict().values()
+            vals = self._weighted_metrics(node_id).values()
             return sum(vals) / 6.0
         total = sum(abs(v) for v in weights.values()) or 1.0
         q = 0.0
-        md = node.metric_dict()
+        md = self._weighted_metrics(node_id)   # <— was node.metric_dict()
         for m, w in weights.items():
             q += w * md.get(m, 0.0)
         return clip01(q / total)
@@ -591,8 +613,8 @@ class KGScorer:
     def _pair_synergy(self, u: str, v: str) -> float:
         ru, rv = self.nodes[u].role, self.nodes[v].role
         spec = self.pair_syn.per_pair.get((ru, rv))
-        parent_md = self.nodes[u].metric_dict()
-        child_md = self.nodes[v].metric_dict()
+        parent_md = self._weighted_metrics(u)
+        child_md = self._weighted_metrics(v)
 
         if not spec:
             # default: average parent+child with equal weights over all metrics
@@ -681,6 +703,72 @@ class KGScorer:
         _memo[v] = tv
         self.trust[v] = tv
         return tv
+
+    def _weighted_metrics(self, node_id: str) -> Dict[str, float]:
+        """
+        Return this node's six metrics after applying the global weights.
+        Multiplicative weighting, clipped to [0,1] per component.
+        """
+        md = self.nodes[node_id].metric_dict().copy()
+        w  = self.metric_w.weights or {}
+        if not w:
+            return md
+        for k in ("credibility","relevance","evidence_strength",
+                "method_rigor","reproducibility","citation_support"):
+            if k in md:
+                wk = float(w.get(k, 1.0))
+                # clip to keep metric semantics ∈ [0,1]
+                v = md[k] * wk
+                md[k] = 0.0 if v < 0.0 else (1.0 if v > 1.0 else v)
+        return md
+
+    def recompute_all_confidences(self):
+        """
+        Recompute all edge confidences (and trusts) under current weights.
+        Safe for DAGs; uses existing readiness checks.
+        """
+        if not self.G.nodes:
+            return
+        self.trust.clear()
+        for v in nx.topological_sort(self.G):
+            self._try_update_incoming_edges(v)
+
+    def set_metric_weights(self, weights: Dict[str, float], *, normalize: bool = False):
+        """
+        Update the global per-metric weights (single vector for all nodes).
+        Example:
+            set_metric_weights({
+                "credibility": 1.0,
+                "relevance": 0.8,
+                "evidence_strength": 1.2,
+                "method_rigor": 1.1,
+                "reproducibility": 0.9,
+                "citation_support": 1.0
+            }, normalize=False)
+        Notes:
+        • Values are nonnegative; we clip their effect on metrics to keep [0,1].
+        • If normalize=True, we scale so the mean weight is 1.0 (keeps overall
+            scale roughly stable across mixes).
+        """
+        valid = {"credibility","relevance","evidence_strength",
+                "method_rigor","reproducibility","citation_support"}
+        # Merge+validate
+        curr = dict(self.metric_w.weights)
+        for k, v in weights.items():
+            if k not in valid:
+                raise KeyError(f"Unknown metric '{k}'")
+            fv = float(v)
+            if fv < 0:
+                raise ValueError(f"Metric weight '{k}' must be >= 0")
+            curr[k] = fv
+
+        if normalize and curr:
+            avg = sum(curr.values()) / len(curr.values())
+            avg = avg if avg > 0 else 1.0
+            curr = {k: (x / avg) for k, x in curr.items()}
+
+        self.metric_w.weights = curr
+        self.recompute_all_confidences()
 
     # --------- Graph score (optional; configurable) ---------
 
