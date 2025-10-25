@@ -20,11 +20,16 @@ export interface LLMClient {
 export function buildFactDagPrompt(rawText: string): string {
   return [
     "Extract factual statements and connect related facts as a single acyclic directed graph (DAG).",
-    "Rules:",
+    "EXHAUSTIVENESS REQUIREMENT:",
+    "- Cover EVERY factual statement in the text (do not summarize).",
+    "- Prefer MANY short, atomic nodes so nothing is omitted.",
+    "- For a ~20-page paper, target hundreds of nodes if warranted.",
+    "GRAPH RULES:",
     "- Output STRICT JSON ONLY with keys: nodes, edges.",
     "- nodes: array of { id: number (0..N-1), text: string } (concise, self-contained facts).",
     "- edges: array of { source: number, target: number } with target > source to enforce DAG.",
     "- Connect a fact to all directly related subsequent facts; omit unrelated links.",
+    "- Do NOT truncate output; prefer shorter node text to include more nodes.",
     "- No commentary, no extra keys.",
     "Example:\n{\n  \"nodes\": [ { \"id\": 0, \"text\": \"...\" }, { \"id\": 1, \"text\": \"...\" } ],\n  \"edges\": [ { \"source\": 0, \"target\": 1 } ]\n}",
     "TEXT:",

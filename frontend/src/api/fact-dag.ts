@@ -46,7 +46,7 @@ export default async function handler(req: any, res: any) {
           },
           body: JSON.stringify({
             model,
-            max_tokens: 2000,
+            max_tokens: 8000,
             temperature: 0.2,
             messages: [
               { role: "user", content: `Return STRICT JSON only.\n\n${finalPrompt}` },
@@ -92,6 +92,7 @@ export default async function handler(req: any, res: any) {
           ],
           temperature: 0.2,
           response_format: { type: "json_object" },
+          max_tokens: 8000,
         }),
       });
       if (!response.ok) {
