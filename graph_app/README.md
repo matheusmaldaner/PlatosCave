@@ -130,17 +130,15 @@ We combine **five interpretable factors** in $[0,1]$:
 
 **Raw edge confidence (convex blend).**
 
-$c^{\text{raw}}_{ u \to v} = \lambda_r , r_{u \to v} + \lambda_p , q_u + \lambda_c ,q_v + \lambda_a , a_{u \to v} + \lambda_s , s_{u \to v}, \lambda \in \Delta_5.$
+$c^{\mathrm{raw}}_{u\to v}=\lambda_r\,r_{u\to v}+\lambda_p\,q_u+\lambda_c\,q_v+\lambda_a\,a_{u\to v}+\lambda_s\,s_{u\to v},\ \lambda\in\Delta_5.$
 
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
 > **Alternative (multiplicative).** \quad $c^{\mathrm{raw}}=\prod_k x_k^{\gamma_k}$ with $\gamma_k\ge 0$.
 > **Intuition.** Penalizes weak factors more aggressively; learnable choice between additive vs. multiplicative.
 
-**Trust gate from parents.** Aggregate parent trust with $\text{Agg}\in{\min,\ \mathrm{mean},\ \mathrm{LSE}*\alpha}$ where
-$\mathrm{LSE}*\alpha(S)=\tfrac{1}{\alpha}\log!\sum_{x\in S}e^{\alpha x}, \text{ & } (\alpha>0\ \text{soft-max},\ \alpha<0\ \text{soft-min}).$
-Then apply a sigmoid gate with cutoff $\eta$ and sharpness $\beta$:
-$\tau_{P(v)}=\sigma!\big(\beta,[,\text{Agg}({q_p:p\in P(v)})-\eta,]\big),\text{ such that } \sigma(z)=\frac{1}{1+e^{-z}}.$
+**Trust gate from parents.** $\textbf{Trust gate from parents.}$ Aggregate parent trust with $\mathrm{Agg}\in\{\min,\ \mathrm{mean},\ \mathrm{LSE}_\alpha\}$ where $\mathrm{LSE}_\alpha(S)=\frac{1}{\alpha}\,\log\!\left(\sum_{x\in S} e^{\alpha x}\right)$ (soft-max if $\alpha>0$, soft-min if $\alpha<0$).
+Then apply a sigmoid gate with cutoff $\eta$ and sharpness $\beta$: $\tau_{P(v)}=\sigma\big(\beta\,(\mathrm{Agg}(\{q_p:\ p\in P(v)\})-\eta)\big)$, where $\sigma(z)=\frac{1}{1+e^{-z}}$.
 **Intuition.** **Noisy/weak parents** should **down-weight** downstream edges. $\beta$ governs gate steepness; $\eta$ is the minimum acceptable upstream quality.
 
 **Final edge confidence.**
@@ -159,7 +157,7 @@ $S_{\text{path}}=\max_{\pi\in\Pi}\ \prod_{(i\to j)\in\pi} C_{i\to j}.$
 
 * **Coverage** over roles $\mathcal R$: $S_{\text{cov}}=\sum_{\rho\in\mathcal R}\bar q_\rho$, with $\bar q_\rho=\text{mean}{q_v:\rho(v)=\rho}$.
 * **Coherence** (role-prior compliance): $\mathbb E_{(u\to v)}[,r_{u\to v},]$.
-* **Redundancy**: mean of top-$k$ disjoint path reliabilities.
+* **Redundancy**: mean of top- $k$ disjoint path reliabilities.
 * **Fragility**: $1-\text{min-cut}$ computed on costs $1-C_{u\to v}$.
 
 **Graph score (convex).**
