@@ -143,11 +143,19 @@ You are a precise information extraction system that analyzes academic text and 
 Your task is to extract the major statements and claims from the provided text and connect them based on logical relationships with rich semantic roles.
 
 EXHAUSTIVENESS REQUIREMENTS:
-- Extract the major statements from the text
+- Extract the major SCIENTIFIC statements from the text (hypotheses, evidence, methods, results)
 - Break down complex statements into smaller, self-contained claims
 - Each node should represent one clear statement
 - LIMIT: Maximum of 10 nodes total (including the hypothesis)
 - Prefer larger, comprehensive nodes over many tiny ones
+
+EXCLUDE THE FOLLOWING (DO NOT extract these as nodes):
+- Formatting instructions (APA style, citation format, page layout, margins, fonts)
+- Style guidelines (headings, indentation, spacing)
+- Structural requirements (abstract length, section order)
+- Writing tips or general advice
+- Meta-commentary about the paper itself
+FOCUS ONLY ON: Scientific claims, hypotheses, evidence, methodology, results, conclusions
 
 GRAPH CONSTRUCTION RULES:
 - Create a strictly directed acyclic graph (DAG) structure
