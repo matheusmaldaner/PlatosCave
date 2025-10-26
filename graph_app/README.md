@@ -119,8 +119,7 @@ $q_v=\langle w,m_v\rangle=\sum_{i=1}^{6}w_i m_{v,i},\text{ with } w\in\Delta_6.$
 
 ## 2) Edges: Interpretable Confidence with Trust Gating
 
-Edges are scored **only when ready**:
-$\mathbf 1_{\mathrm{ready}}(u!\to!v)=\mathbf 1_{\mathrm{ready}}(v)\cdot\prod_{p\in P(v)}\mathbf 1_{\mathrm{ready}}(p).$
+Edges are scored **only when ready**: $\mathbf 1_{\mathrm{ready}}(u!\to!v)=\mathbf 1_{\mathrm{ready}}(v)\cdot\prod_{p\in P(v)}\mathbf 1_{\mathrm{ready}}(p).$
 
 We combine **five interpretable factors** in $[0,1]$:
 
@@ -131,7 +130,7 @@ We combine **five interpretable factors** in $[0,1]$:
 
 **Raw edge confidence (convex blend).**
 
-$c^{\mathrm{raw}}_{u\to v}=\lambda_r\,r_{u\to v}+\lambda_p\,q_u+\lambda_c\,q_v+\lambda_a\,a_{u\to v}+\lambda_s\,s_{u\to v},\ \lambda\in\Delta_5.$
+$ c^{\text{raw}}_{ u \to v} = \lambda_r , r_{u \to v} + \lambda_p , q_u + \lambda_c ,q_v + \lambda_a , a_{u \to v} + \lambda_s , s_{u \to v}, \lambda \in \Delta_5.$
 
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
