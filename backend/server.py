@@ -55,7 +55,7 @@ def wait_for_http_ok(url: str, timeout: float = 30.0, interval: float = 1.5) -> 
             with urllib_request.urlopen(url, timeout=interval) as response:
                 if 200 <= response.status < 300:
                     return True
-        except (URLError, HTTPError):
+        except (URLError, HTTPError, OSError, ConnectionResetError):
             pass
         socketio.sleep(interval)
     return False
