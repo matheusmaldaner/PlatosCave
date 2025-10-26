@@ -24,9 +24,11 @@ STEP 2: NAVIGATE TO PAPER
 - Target: Get to the actual paper content within 5 steps total
 
 STEP 3: RAPID CONTENT EXTRACTION (MAXIMUM SPEED)
-- RAPID scroll through the ENTIRE document (Page Down, fast scrolling)
+- IMPORTANT: You MUST visibly scroll/click through the paper even if you can extract text from DOM
+- RAPID scroll through the ENTIRE document (Page Down, fast scrolling) - make it visible!
+- Scroll from top to bottom so viewers can see you "reading" the paper
 - Capture key content as you scan
-- Extract text efficiently
+- Extract text efficiently (DOM extraction is fine, but SCROLL VISIBLY while doing it)
 - Target: Complete extraction in under 20 steps total (including search)
 
 CONTENT TO EXTRACT (CORE ONLY):
@@ -194,6 +196,13 @@ OUTPUT FORMAT REQUIREMENTS:
 - Use exactly one key: "nodes" (no separate edges - relationships are in parent/child fields)
 - No extra keys, no markdown formatting, no code blocks
 - Do NOT truncate the output - if needed, make node text shorter to fit more nodes
+
+CRITICAL JSON RULES (to ensure valid parsing):
+- Convert all LaTeX notation to plain text (e.g., "$\\mathcal{{D}}$" becomes "dataset D")
+- Replace all mathematical symbols with words (e.g., "α" becomes "alpha", "∑" becomes "sum")
+- Never include backslashes in text fields except valid JSON escapes: \\n, \\t, \\", \\\\
+- Remove or describe all special formatting from the original paper
+- All text must be valid JSON string content - no unescaped special characters
 
 JSON Structure:
 {{
