@@ -118,7 +118,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         if (isDragActive) {
             return "Drop the PDF here...";
         }
-        return "Enter research paper URL or upload PDF...";
+        return "Search by paper name, paste URL, or upload PDF...";
     };
 
     // Typewriter rotating titles for subtitle
@@ -174,7 +174,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                         Analyze research papers
                     </h1>
                     <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg animate-dissolve-up-delayed">
-                        Upload a PDF or enter a URL to extract insights and evaluate research integrity
+                        Search by name, paste a URL, or upload a PDF to verify a research paper's integrity
                     </p>
                 </div>
 
@@ -269,7 +269,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                                         handleSubmit();
                                     }}
                                     disabled={!selectedFile && !url.trim()}
-                                    className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors duration-200 ${
+                                    className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-200 ${
                                         selectedFile || url.trim()
                                             ? 'bg-green-50 text-green-600 hover:bg-green-100'
                                             : 'cursor-not-allowed bg-gray-100 text-gray-300'
@@ -289,7 +289,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                                     handleSubmit();
                                 }}
                                 disabled={!selectedFile && !url.trim()}
-                                className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors duration-200 sm:ml-3 ${
+                                className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-200 sm:ml-3 ${
                                     selectedFile || url.trim()
                                         ? 'bg-green-50 text-green-600 hover:bg-green-100'
                                         : 'cursor-not-allowed bg-gray-100 text-gray-300'

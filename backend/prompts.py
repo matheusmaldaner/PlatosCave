@@ -5,25 +5,38 @@ from typing import Any, Dict
 # ============================================================================
 
 URL_PAPER_ANALYSIS_PROMPT = """
-You are an expert academic paper analyzer optimized for SPEED and EFFICIENCY.
+You are an expert academic paper finder and analyzer optimized for SPEED and EFFICIENCY.
 
-Your mission: Extract the CORE CONTENT from the academic paper. Work FAST - scan and extract, don't read every word.
+Your mission: FIND the academic paper (if needed) and extract its CORE CONTENT. Work FAST - scan and extract, don't read every word.
 
-NAVIGATION STRATEGY (MAXIMUM SPEED):
-- Navigate to URL immediately
+INPUT PROVIDED: {paper_url}
+
+STEP 1: DETERMINE INPUT TYPE
+- If input is a direct URL (starts with http:// or https://): Navigate directly to it (skip to STEP 2)
+- If input is a search query (e.g., "Attention is All You Need", "paper by John Doe about transformers"):
+  - Search Google Scholar, arXiv, or Google for the paper (1-2 searches max)
+  - Click on the FIRST highly relevant result (prefer arXiv, ACM, IEEE, university sites, PDF links)
+  - If no good result found quickly (within 3-4 steps), use your best guess of what the paper might be and continue
+
+STEP 2: NAVIGATE TO PAPER
+- If the page has a "View PDF" click it to get the full paper, avoid clicking the "Download" button
+- If it's already showing the paper content, proceed to extraction
+- Target: Get to the actual paper content within 5 steps total
+
+STEP 3: RAPID CONTENT EXTRACTION (MAXIMUM SPEED)
 - RAPID scroll through the ENTIRE document (Page Down, fast scrolling)
-- Capture key content as you scan - NO detailed reading
-- Extract text efficiently - prioritize speed over perfection
-- Target: Complete extraction in under 20 steps
+- Capture key content as you scan
+- Extract text efficiently
+- Target: Complete extraction in under 20 steps total (including search)
 
-CONTENT EXTRACTION (CORE ONLY):
+CONTENT TO EXTRACT (CORE ONLY):
 - Title and authors
 - Abstract (complete text)
-- Key claims/hypotheses
+- Key claims/hypotheses (SCIENTIFIC CLAIMS ONLY - ignore formatting/style instructions)
 - Methodology summary
 - Main results/findings
 - Conclusion
-- Skip: detailed figures, tables, equations, references (unless critical to main claims)
+- Skip extracting: detailed figures, tables, equations, reference lists, formatting guidelines
 
 OUTPUT FORMAT:
 {{
@@ -37,13 +50,12 @@ OUTPUT FORMAT:
     "full_text": "Complete paper text extracted during scrolling..."
 }}
 
-SPEED OPTIMIZATIONS:
-- Focus on extracting TEXT, not analyzing figures/tables in detail
-- Scan rapidly - you can scroll through a page in 1-2 steps
+CRITICAL RULES:
+- Total target: Under 25 steps from start to finish (including search if needed)
+- Focus on extracting TEXT, not analyzing figures/tables
 - Don't wait for animations or page loads - keep moving
 - Extract as you go, compile at the end
-
-Target URL: {paper_url}
+- If input was a search query and paper not found quickly, return error in "title" field
 
 Output ONLY the JSON object. NO markdown, NO code blocks, NO explanations. Work FAST.
 """
@@ -51,10 +63,11 @@ Output ONLY the JSON object. NO markdown, NO code blocks, NO explanations. Work 
 
 def build_url_paper_analysis_prompt(paper_url: str) -> str:
     """
-    Build the complete prompt for URL paper analysis.
+    Build the complete prompt for paper analysis from URL or search query.
 
     Args:
-        paper_url: The URL of the academic paper to analyze
+        paper_url: Either a direct URL to the paper OR a natural language search query
+                   (e.g., "Attention is All You Need", "that paper by Smith about neural networks")
 
     Returns:
         The complete formatted prompt ready to send to the browsing agent
