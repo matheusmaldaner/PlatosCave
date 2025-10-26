@@ -164,7 +164,7 @@ $S_{\text{path}}=\max_{\pi\in\Pi}\ \prod_{(i\to j)\in\pi} C_{i\to j}.$
 
 **Graph score (convex).**
 $S_{\text{graph}}=\sum_{t\in{\text{path},\text{cov},\text{coh},\text{red},\text{frag}}}\mu_t,S_t,
-\qquad \mu\in\Delta_5.$
+\text{ for } \mu\in\Delta_5.$
 **Intuition.** A single scalar with **decomposable** components for transparency/ablation.
 
 **Confidence-weighted random walks (node2vec-style).** Directed transition kernel
