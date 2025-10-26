@@ -15,7 +15,8 @@ Plato's Cave is a **learning-focused research tool** that helps you understand c
 
 Like emerging from Plato's allegorical cave into enlightenment, this tool illuminates the dense shadows of academic literature, extracting key insights, visualizations, and summaries through progressive AI assistance.
 
-![Green Cave](https://github.com/matheusmaldaner/PlatosCave/green_cave.gif)
+![Green Cave](https://github.com/matheusmaldaner/PlatosCave/blob/main/green_cave.gif)
+
 
 # Quick Start
 
