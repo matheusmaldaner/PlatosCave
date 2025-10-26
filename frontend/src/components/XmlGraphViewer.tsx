@@ -5,7 +5,8 @@ import dagre from 'dagre';
 import 'reactflow/dist/style.css';
 
 interface XmlGraphViewerProps {
-    graphmlData: string | null;
+  graphmlData: string | null;
+  isDrawerOpen?: boolean;
 }
 
 type GraphNodeData = {
@@ -130,6 +131,7 @@ const parseGraphML = (xmlString: string, config: LayoutConfig): { nodes: GraphNo
             targetPosition: Position.Top,
         });
     });
+  });
 
     Array.from(edgeElements).forEach((edgeEl, index) => {
         const source = edgeEl.getAttribute('source')!;
@@ -143,6 +145,7 @@ const parseGraphML = (xmlString: string, config: LayoutConfig): { nodes: GraphNo
             style: { stroke: brandGreen, strokeWidth: config.strokeWidth, opacity: 0.85 },
         });
     });
+  });
 
     return getLayoutedElements(nodes, edges, config);
 };
@@ -202,6 +205,21 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
             </div>
         );
     }
+  }, [graphmlData]);
+
+  const handleSaveGraph = () => {
+    if (!graphmlData) return;
+    const blob = new Blob([graphmlData], { type: "application/xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "logic_graph.graphml";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (!graphmlData)
+    return <div className="p-4 text-center">Waiting for logical graph to be generated...</div>;
 
     return (
         // The `relative` class on this parent div is essential for positioning the button.

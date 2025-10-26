@@ -1,4 +1,3 @@
-// PlatosCave/frontend/src/pages/index.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
@@ -10,6 +9,7 @@ import SettingsModal, { Settings } from '../components/SettingsModal';
 import ProgressBar from '../components/ProgressBar';
 import ParticleBackground from '../components/ParticleBackground';
 import platosCaveLogo from '../images/platos-cave-logo.png';
+import { computePaperScore } from '../lib/aggregate';
 
 const INITIAL_STAGES: ProcessStep[] = [
     { name: "Validate", displayText: "Pending...", status: 'pending' },
@@ -258,6 +258,132 @@ const IndexPage = () => {
             </main>
         </>
     );
+
+    setProcessSteps(INITIAL_STAGES);
+    setFinalScore(null);
+    setGraphmlData(null);
+    setUploadedFile(file);
+    setSubmittedUrl(null);
+
+    try {
+      await axios.post('http://localhost:5000/api/upload', formData);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
+  const handleUrlSubmit = async (url: string) => {
+    setProcessSteps(INITIAL_STAGES);
+    setFinalScore(null);
+    setGraphmlData(null);
+    setSubmittedUrl(url);
+    setUploadedFile(null);
+
+    try {
+      await axios.post('http://localhost:5000/api/analyze-url', { url, ...settings });
+    } catch (error) {
+      console.error('Error analyzing URL:', error);
+    }
+  };
+
+  const handleSettingsChange = (newSettings: Settings) => {
+    setSettings(newSettings);
+
+    const weightedNodes = exampleNodes.map(n => ({
+      ...n,
+      credibility: n.credibility * newSettings.credibility,
+      relevance: n.relevance * newSettings.relevance,
+      evidence_strength: n.evidence_strength * newSettings.evidenceStrength,
+      method_rigor: n.method_rigor * newSettings.methodRigor,
+      reproducibility: n.reproducibility * newSettings.reproducibility,
+      citation_support: n.citation_support * newSettings.citationSupport,
+    }));
+
+    const newScore = computePaperScore(weightedNodes, newSettings.agentAggressiveness / 10, {
+      hypothesis: newSettings.hypothesis,
+      claim: newSettings.claim,
+      method: newSettings.method,
+      evidence: newSettings.evidence,
+      result: newSettings.result,
+      conclusion: newSettings.conclusion,
+      limitation: newSettings.limitation,
+    });
+
+    setFinalScore(newScore);
+  };
+
+  return (
+    <>
+      {!uploadedFile && !submittedUrl && <ParticleBackground />}
+
+      <main className="flex flex-col h-screen font-sans bg-gradient-to-b from-white via-gray-50 to-white">
+        <header className="w-full px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-sm relative z-10">
+          <button
+            onClick={() => window.location.reload()}
+            className="cursor-pointer hover:opacity-70 transition-opacity duration-200"
+            aria-label="Return to home"
+          >
+            <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-20" />
+          </button>
+
+          {(uploadedFile || submittedUrl) && (
+            <div className="flex items-center space-x-6">
+              {finalScore !== null && (
+                <div className="text-right">
+                  <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                    Integrity Score
+                  </span>
+                  <p className="font-semibold text-3xl bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
+                    {finalScore.toFixed(2)}
+                  </p>
+                </div>
+              )}
+              <span className="font-mono text-sm text-gray-600 max-w-md truncate">
+                {uploadedFile ? uploadedFile.name : submittedUrl}
+              </span>
+            </div>
+          )}
+        </header>
+
+        {/* ✅ Only show the drawer tab after upload or submission */}
+        {(uploadedFile || submittedUrl) && (
+          <button
+            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            className={`fixed top-1/2 left-0 transform -translate-y-1/2 z-40 flex flex-col items-center justify-center bg-green-300 text-white w-10 h-32 rounded-r-2xl shadow-xl hover:bg-green-400 transition-transform duration-300 ${
+              isSettingsOpen ? "translate-x-80" : "translate-x-0"
+            }`}
+          >
+            <span className="text-4xl font-bold leading-none">
+              {isSettingsOpen ? "◁" : "▷"}
+            </span>
+          </button>
+        )}
+
+        {/* Drawer component */}
+        <SettingsDrawer
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          settings={settings}
+          onSave={handleSettingsChange}
+          graphmlData={graphmlData} 
+        />
+
+        {(!uploadedFile && !submittedUrl) ? (
+          <div className="flex-grow flex items-center justify-center p-4 relative z-10">
+            <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
+          </div>
+        ) : (
+          <>
+            <ProgressBar steps={processSteps} />
+            <div className="flex-grow p-4" style={{ height: 'calc(100vh - 150px)' }}>
+              <XmlGraphViewer graphmlData={graphmlData} isDrawerOpen={isSettingsOpen} />
+
+            </div>
+          </>
+        )}
+      </main>
+    </>
+  );
 };
 
 export default IndexPage;
