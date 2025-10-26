@@ -106,10 +106,10 @@ This system is a **validated DAG** whose **nodes** carry agent-extracted, normal
 ## 1) Nodes: Agent-Extracted Features + Convex Quality
 
 **Node readiness.** The agent fills metrics in **BFS order** from Hypothesis roots. A node is *ready* iff all six metrics are present:
-$\mathbf 1_{\mathrm{ready}}(v);=;\prod_{i=1}^{6}\mathbf 1{,m_{v,i}\ \text{is present},}.$
+$\mathbf 1_{\mathrm{ready}}(v)=\prod_{i=1}^{6}\mathbf 1_{,m_{v,i}\ \text{is present},}.$
 
 **Node quality (convex).** A node’s scalar quality is a convex blend:
-$q_v;=;\langle w,m_v\rangle;=;\sum_{i=1}^{6}w_i,m_{v,i},\qquad w\in\Delta_6.$
+$q_v=\langle w,m_v\rangle=\sum_{i=1}^{6}w_i m_{v,i},\text{ with } w\in\Delta_6.$
 **Intuition.** Convexity keeps $q_v$ in $[0,1]$, **interpretable**, and **comparable** across roles/graphs. If some metrics are missing, either impute or **renormalize** $w$ over present components.
 
 **Role-aware option.** For role $\rho(v)$, use $q_v=\langle w^{(\rho(v))},m_v\rangle$ with $w^{(\rho)}\in\Delta_6$.
