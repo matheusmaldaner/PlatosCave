@@ -53,6 +53,8 @@ BROWSER_USE_API_KEY="bu_YOURKEY"
 ```bash 
 # start the docker
 docker compose -f docker-compose.browser.yaml up --build remote-browser
+# alternatively you can run it detached:
+# docker compose -f docker-compose.browser.yaml up -d
 ```
 
 ```bash
