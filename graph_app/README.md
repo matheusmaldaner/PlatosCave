@@ -129,7 +129,7 @@ We combine **five interpretable factors** in $[0,1]$:
 4. **Pairwise synergy** $s_{u\to v}$ (role-pair-specific mix of parent/child metrics).
 
 **Raw edge confidence (convex blend).**
-$c^{r}_{u\to v} = \sum_{\alpha} \lambda_{a\lpha}\phi_{\alpha}$
+$c^{\text{raw}} = \sum_{\alpha}\lambda_{\alpha}\phi_{\alpha}$
 
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
