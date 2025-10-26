@@ -7,22 +7,28 @@ _Appeal to Logos_
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-prototype-yellow)]()
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
+
+---
+
+### 🕯️ **Plato’s Cave**
+> *A learning-focused research tool that helps you illuminate complex academic papers.*
+
 </div>
 
 ---
 
-Plato's Cave is a **learning-focused research tool** that helps you understand complex academic papers by analyzing PDFs and URLs. 
+### 🧠 Overview
 
-Like emerging from Plato's allegorical cave into enlightenment, this tool illuminates the dense shadows of academic literature, extracting key insights, visualizations, and summaries through progressive AI assistance.
+Plato’s Cave helps you **comprehend dense academic material** by analyzing PDFs and URLs using progressive AI assistance.  
+Like emerging from Plato’s allegorical cave into enlightenment, this tool illuminates the **shadows of academic literature**, uncovering key insights, visualizations, and summaries.  
 
 ![Green Cave](https://github.com/matheusmaldaner/PlatosCave/blob/main/green_cave.gif)
 
-
-# Quick Start
+## 🚀 Quick Start
 
 You have to run the frontend, backend and docker image on **three** separate terminal sessions. Follow the commands below:
 
-## (1) Getting Started (FrontEnd)
+### (1) 🪶 Frontend Setup
 
 ```bash
 cd frontend
@@ -32,7 +38,7 @@ gatsby develop
 
 This will start the development server at `http://localhost:8000`
 
-## (2) Getting Started (Backend)
+### (2) 🖥️ Backend Setup
 
 On a separate terminal, while the frontend is still running, run the following commands:
 
@@ -69,7 +75,7 @@ google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
 python server.py
 ```
 
-## (3) Docker Image for Web Agent
+### (3) 🐳 Docker Image for Web Agent
 
 Also an "image" here is not to be interpreted as a picture. You can think of a Docker image as a package that has everything you need to run some software (it has the libraries, code, envs, configs...)
 
@@ -79,3 +85,20 @@ docker compose -f docker-compose.browser.yaml up --build remote-browser
 # alternatively you can run it detached:
 # docker compose -f docker-compose.browser.yaml up -d
 ```
+
+
+## 🧩 Tech Stack
+
+
+| Component         | Technology            |
+| ----------------- | --------------------- |
+| 🖼️ Frontend      | Gatsby.js             |
+| 🧠 Backend        | Python (FastAPI)      |
+| 🌐 Web Automation | Playwright + Chromium |
+| 🤖 AI Integration | Browser-Use API       |
+| 🐳 Environment    | Docker                |
+
+
+
+
+
