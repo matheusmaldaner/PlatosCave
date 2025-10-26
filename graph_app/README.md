@@ -133,10 +133,10 @@ $c^{\text{raw}} = \sum_{\alpha}\lambda_{\alpha}\phi_{\alpha}$
 
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
-> **Alternative (multiplicative).** $c^{\text{raw}}=\prod_k x_k^{\gamma_k} \text{ with } $\gamma_k\ge 0$.
+> **Alternative (multiplicative).** $c^{\text{raw}}=\prod_k x_k^{\gamma_k} \text{ with } \gamma_k \ge 0$.
 > **Intuition.** Penalizes weak factors more aggressively; learnable choice between additive vs. multiplicative.
 
-**Trust gate from parents.** Aggregate parent trust with $\phi_{\alpha(S)}$ where $\phi_{\alpha(S)} = \frac{1}{\alpha} \log( \frac{1}{|S|} \sum_{x\in S} e^{\alpha x} )$ (soft-max if $\alpha>0$, soft-min if $\alpha<0$).
+**Trust gate from parents.** Aggregate parent trust with $\phi_{\alpha(S)}$ where $\phi_{\alpha(S)} = \frac{1}{\alpha} \log \big( \frac{1}{|S|} \sum_{x\in S} e^{\alpha x} \big)$ (soft-max if $\alpha>0$, soft-min if $\alpha<0$).
 Then apply a sigmoid gate with cutoff $\eta$ and sharpness $\beta$: $\tau_{P(v)}=\sigma\big(\beta(\phi_{\alpha(S)}-\eta)\big)$, where $\sigma(z)=\frac{1}{1+e^{-z}}$.
 **Intuition.** **Noisy/weak parents** should **down-weight** downstream edges. $\beta$ governs gate steepness; $\eta$ is the minimum acceptable upstream quality.
 
