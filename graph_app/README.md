@@ -138,14 +138,14 @@ $c^{\mathrm{raw}}_{u\to v}=\lambda_r\,r_{u\to v}+\lambda_p\,q_u+\lambda_c\,q_v+\
 > **Alternative (multiplicative).** \quad $c^{\mathrm{raw}}=\prod_k x_k^{\gamma_k}$ with $\gamma_k\ge 0$.
 > **Intuition.** Penalizes weak factors more aggressively; learnable choice between additive vs. multiplicative.
 
-**Trust gate from parents.** Aggregate parent trust with $\operatorname{Agg}\in{\min,\ \mathrm{mean},\ \mathrm{LSE}*\alpha}$ where
+**Trust gate from parents.** Aggregate parent trust with $\text{Agg}\in{\min,\ \mathrm{mean},\ \mathrm{LSE}*\alpha}$ where
 $\mathrm{LSE}*\alpha(S)=\tfrac{1}{\alpha}\log!\sum_{x\in S}e^{\alpha x}, \text{ & } (\alpha>0\ \text{soft-max},\ \alpha<0\ \text{soft-min}).$
 Then apply a sigmoid gate with cutoff $\eta$ and sharpness $\beta$:
-$\tau_{P(v)}=\sigma!\big(\beta,[,\operatorname{Agg}({q_p:p\in P(v)})-\eta,]\big),\text{ such that } \sigma(z)=\frac{1}{1+e^{-z}}.$
+$\tau_{P(v)}=\sigma!\big(\beta,[,\text{Agg}({q_p:p\in P(v)})-\eta,]\big),\text{ such that } \sigma(z)=\frac{1}{1+e^{-z}}.$
 **Intuition.** **Noisy/weak parents** should **down-weight** downstream edges. $\beta$ governs gate steepness; $\eta$ is the minimum acceptable upstream quality.
 
 **Final edge confidence.**
-$C_{u\to v};=;\mathbf 1_{\mathrm{ready}}(u!\to!v)\cdot\tau_{P(v)}\cdot c^{\mathrm{raw}}_{u\to v}.$
+$C_{u\to v}=\mathbf 1_{\mathrm{ready}}(u!\to!v)\cdot\tau_{P(v)}\cdot c^{\mathrm{raw}}_{u\to v}.$
 **Intuition.** Readiness avoids stale scores; the gate $\tau$ protects against **over-crediting** chains with weak ancestors.
 
 ---
@@ -158,18 +158,18 @@ $S_{\text{path}}=\max_{\pi\in\Pi}\ \prod_{(i\to j)\in\pi} C_{i\to j}.$
 
 **Coverage / coherence / redundancy / fragility.**
 
-* **Coverage** over roles $\mathcal R$: $S_{\text{cov}}=\sum_{\rho\in\mathcal R}\bar q_\rho$, with $\bar q_\rho=\operatorname{mean}{q_v:\rho(v)=\rho}$.
+* **Coverage** over roles $\mathcal R$: $S_{\text{cov}}=\sum_{\rho\in\mathcal R}\bar q_\rho$, with $\bar q_\rho=\text{mean}{q_v:\rho(v)=\rho}$.
 * **Coherence** (role-prior compliance): $\mathbb E_{(u\to v)}[,r_{u\to v},]$.
 * **Redundancy**: mean of top-$k$ disjoint path reliabilities.
 * **Fragility**: $1-\text{min-cut}$ computed on costs $1-C_{u\to v}$.
 
 **Graph score (convex).**
-$S_{\text{graph}};=;\sum_{t\in{\text{path},\text{cov},\text{coh},\text{red},\text{frag}}}\mu_t,S_t,
+$S_{\text{graph}}=\sum_{t\in{\text{path},\text{cov},\text{coh},\text{red},\text{frag}}}\mu_t,S_t,
 \qquad \mu\in\Delta_5.$
 **Intuition.** A single scalar with **decomposable** components for transparency/ablation.
 
 **Confidence-weighted random walks (node2vec-style).** Directed transition kernel
-$P(v!\to!w);=;\frac{C_{v\to w}^{,\kappa}\cdot\phi_{p,q}(\text{2nd-order bias})}{\sum_{w':(v\to w')\in E}C_{v\to w'}^{,\kappa}\cdot\phi_{p,q}(\cdot)},$
+$P(v!\to!w)=\frac{C_{v\to w}^{,\kappa}\cdot\phi_{p,q}(\text{2nd-order bias})}{\sum_{w':(v\to w')\in E}C_{v\to w'}^{,\kappa}\cdot\phi_{p,q}(\cdot)},$
 with standard node2vec bias $\phi_{p,q}$ (return/outward control) and temperature $\kappa>0$.
 **Intuition.** Walks concentrate on **trustworthy subgraphs**, yielding corpora for node/graph embeddings.
 
@@ -202,7 +202,7 @@ We expose a **differentiable** parameter surface:
 
 **Targets & losses (choose per label granularity).**
 
-* **Per-edge** labels $\hat C_{u\to v}$: MSE or calibrated cross-entropy on $\operatorname{logit}(C)$.
+* **Per-edge** labels $\hat C_{u\to v}$: MSE or calibrated cross-entropy on $\text{logit}(C)$.
 * **Per-node** labels $\hat q_v$: MSE on $q_v$.
 * **Per-paper** ratings $\hat S$: MSE on $S_{\text{graph}}$ + ranking losses for pairwise comparisons.
 * **Regularization:** $\ell_2$, simplex via softmax, monotonicity priors (e.g., enforce $\partial C/\partial q_u\ge 0$).
