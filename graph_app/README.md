@@ -130,14 +130,8 @@ We combine **five interpretable factors** in $[0,1]$:
 4. **Pairwise synergy** $s_{u\to v}$ (role-pair-specific mix of parent/child metrics).
 
 **Raw edge confidence (convex blend).**
-$$
-c^{\mathrm{raw}}_{u\to v}
-= \lambda_r\, r_{u\to v}
-+ \lambda_p\, q_u
-+ \lambda_c\, q_v
-+ \lambda_a\, a_{u\to v}
-+ \lambda_s\, s_{u\to v},\qquad \lambda\in\Delta_5.
-$$
+
+$c^{\mathrm{raw}}_{u\to v}=\lambda_r\,r_{u\to v}+\lambda_p\,q_u+\lambda_c\,q_v+\lambda_a\,a_{u\to v}+\lambda_s\,s_{u\to v},\ \lambda\in\Delta_5.$
 
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
@@ -145,15 +139,9 @@ $$
 > **Intuition.** Penalizes weak factors more aggressively; learnable choice between additive vs. multiplicative.
 
 **Trust gate from parents.** Aggregate parent trust with $\operatorname{Agg}\in{\min,\ \mathrm{mean},\ \mathrm{LSE}*\alpha}$ where
-$
-\mathrm{LSE}*\alpha(S);=;\tfrac{1}{\alpha}\log!\sum_{x\in S}e^{\alpha x}
-\quad(\alpha>0\ \text{soft-max},\ \alpha<0\ \text{soft-min}).
-$
+$\mathrm{LSE}*\alpha(S)=\tfrac{1}{\alpha}\log!\sum_{x\in S}e^{\alpha x}, \text{ & } (\alpha>0\ \text{soft-max},\ \alpha<0\ \text{soft-min}).$
 Then apply a sigmoid gate with cutoff $\eta$ and sharpness $\beta$:
-$
-\tau_{P(v)};=;\sigma!\big(\beta,[,\operatorname{Agg}({q_p:p\in P(v)})-\eta,]\big),\qquad
-\sigma(z)=\frac{1}{1+e^{-z}}.
-$
+$\tau_{P(v)}=\sigma!\big(\beta,[,\operatorname{Agg}({q_p:p\in P(v)})-\eta,]\big),\text{ such that } \sigma(z)=\frac{1}{1+e^{-z}}.$
 **Intuition.** **Noisy/weak parents** should **down-weight** downstream edges. $\beta$ governs gate steepness; $\eta$ is the minimum acceptable upstream quality.
 
 **Final edge confidence.**
