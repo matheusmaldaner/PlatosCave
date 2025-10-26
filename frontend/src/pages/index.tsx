@@ -27,6 +27,7 @@ const IndexPage = () => {
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [graphmlData, setGraphmlData] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [showTypeColors, setShowTypeColors] = useState(false);
 
   const [settings, setSettings] = useState<Settings>({
     agentAggressiveness: 5,
@@ -69,6 +70,7 @@ const IndexPage = () => {
     },
   ];
 
+  // 🧠 Socket handling
   useEffect(() => {
     if (!uploadedFile && !submittedUrl) return;
 
@@ -104,6 +106,7 @@ const IndexPage = () => {
     return () => socket.disconnect();
   }, [uploadedFile, submittedUrl]);
 
+  // 🧾 File + URL handlers
   const handleFileUpload = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -138,10 +141,11 @@ const IndexPage = () => {
     }
   };
 
-  const handleSettingsChange = (newSettings: Settings) => {
+  // ⚙️ Settings save + re-score
+  const handleSettingsSave = (newSettings: Settings) => {
     setSettings(newSettings);
 
-    const weightedNodes = exampleNodes.map(n => ({
+    const weightedNodes = exampleNodes.map((n) => ({
       ...n,
       credibility: n.credibility * newSettings.credibility,
       relevance: n.relevance * newSettings.relevance,
@@ -151,24 +155,54 @@ const IndexPage = () => {
       citation_support: n.citation_support * newSettings.citationSupport,
     }));
 
-    const newScore = computePaperScore(weightedNodes, newSettings.agentAggressiveness / 10, {
-      hypothesis: newSettings.hypothesis,
-      claim: newSettings.claim,
-      method: newSettings.method,
-      evidence: newSettings.evidence,
-      result: newSettings.result,
-      conclusion: newSettings.conclusion,
-      limitation: newSettings.limitation,
+    const roleWeights: Record<string, number> = {
+      hypothesis: newSettings.hypothesis ?? 1.0,
+      claim: newSettings.claim ?? 1.0,
+      method: newSettings.method ?? 1.0,
+      evidence: newSettings.evidence ?? 1.0,
+      result: newSettings.result ?? 1.0,
+      conclusion: newSettings.conclusion ?? 1.0,
+      limitation: newSettings.limitation ?? 1.0,
+      other: 1.0,
+    };
+
+    // 🎚️ Evidence threshold filtering
+    const threshold = newSettings.evidenceThreshold;
+    const filteredNodes = weightedNodes.map((n) => {
+      const evidenceFactor =
+        n.evidence_strength >= threshold
+          ? 1
+          : Math.max(0, n.evidence_strength / threshold);
+      return {
+        ...n,
+        credibility: n.credibility * evidenceFactor,
+        relevance: n.relevance * evidenceFactor,
+        evidence_strength: n.evidence_strength * evidenceFactor,
+      };
     });
 
+    const newScore = computePaperScore(
+      filteredNodes,
+      newSettings.agentAggressiveness / 10,
+      roleWeights
+    );
+
+    console.log("Evidence threshold:", threshold);
+    console.log("Filtered nodes:", filteredNodes);
+    console.log("Role weights:", roleWeights);
+    console.log("New calculated score:", newScore);
+
     setFinalScore(newScore);
+    setIsSettingsOpen(false);
   };
 
+  // 🧩 Page render
   return (
     <>
       {!uploadedFile && !submittedUrl && <ParticleBackground />}
 
       <main className="flex flex-col h-screen font-sans bg-gradient-to-b from-white via-gray-50 to-white">
+        {/* Header */}
         <header className="w-full px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-sm relative z-10">
           <button
             onClick={() => window.location.reload()}
@@ -197,7 +231,7 @@ const IndexPage = () => {
           )}
         </header>
 
-        {/* ✅ Only show the drawer tab after upload or submission */}
+        {/* Drawer Tab */}
         {(uploadedFile || submittedUrl) && (
           <button
             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
@@ -211,15 +245,17 @@ const IndexPage = () => {
           </button>
         )}
 
-        {/* Drawer component */}
+        {/* Drawer */}
         <SettingsDrawer
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
           settings={settings}
-          onSave={handleSettingsChange}
-          graphmlData={graphmlData} 
+          onSave={handleSettingsSave}
+          showTypeColors={showTypeColors}
+          setShowTypeColors={setShowTypeColors}
         />
 
+        {/* Main Content */}
         {(!uploadedFile && !submittedUrl) ? (
           <div className="flex-grow flex items-center justify-center p-4 relative z-10">
             <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
@@ -228,8 +264,12 @@ const IndexPage = () => {
           <>
             <ProgressBar steps={processSteps} />
             <div className="flex-grow p-4" style={{ height: 'calc(100vh - 150px)' }}>
-              <XmlGraphViewer graphmlData={graphmlData} isDrawerOpen={isSettingsOpen} />
-
+              <XmlGraphViewer
+                graphmlData={graphmlData}
+                isDrawerOpen={isSettingsOpen}
+                settings={settings}
+                showTypeColors={showTypeColors}
+              />
             </div>
           </>
         )}
