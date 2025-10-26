@@ -5,85 +5,47 @@ from typing import Any, Dict
 # ============================================================================
 
 URL_PAPER_ANALYSIS_PROMPT = """
-You are an expert academic paper analyzer with advanced web browsing capabilities.
+You are an expert academic paper analyzer optimized for SPEED and EFFICIENCY.
 
-Your mission is to extract ALL content from the academic paper at the provided URL in a structured, comprehensive manner.
+Your mission: Extract the CORE CONTENT from the academic paper. Work FAST - scan and extract, don't read every word.
 
-NAVIGATION STRATEGY (SPEED IS PRIORITY):
-- Navigate to the paper URL immediately
-- RAPIDLY scroll or page through the ENTIRE document to capture all content
-- For multi-page papers: click through ALL pages quickly (use Page Down, Next buttons, rapid scrolling)
-- Move FAST - the goal is efficient extraction, not slow reading theater
-- Capture content on each page as you blitz through it
+NAVIGATION STRATEGY (MAXIMUM SPEED):
+- Navigate to URL immediately
+- RAPID scroll through the ENTIRE document (Page Down, fast scrolling)
+- Capture key content as you scan - NO detailed reading
+- Extract text efficiently - prioritize speed over perfection
+- Target: Complete extraction in under 20 steps
 
-CONTENT EXTRACTION REQUIREMENTS:
-- Extract the COMPLETE text of the paper including:
-  - Title and authors
-  - Abstract (full text)
-  - Introduction and background
-  - Methodology/approach sections
-  - Results and findings
-  - Discussion and analysis
-  - Conclusion
-  - References (if available)
+CONTENT EXTRACTION (CORE ONLY):
+- Title and authors
+- Abstract (complete text)
+- Key claims/hypotheses
+- Methodology summary
+- Main results/findings
+- Conclusion
+- Skip: detailed figures, tables, equations, references (unless critical to main claims)
 
-OUTPUT FORMAT REQUIREMENTS:
-  - Output ONLY valid JSON with no additional commentary or explanation
-  - No markdown formatting, no code blocks, no extra text
-  - Use the exact structure shown below
-  - Do NOT truncate the output - include ALL content
-
-JSON Structure:
+OUTPUT FORMAT:
 {{
-    "title": "Complete paper title",
-    "authors": ["Author 1", "Author 2", "Author 3"],
-    "abstract": "Complete abstract text here...",
-    "sections": [
-        {{
-            "heading": "Introduction",
-            "content": "Complete introduction text..."
-        }},
-        {{
-            "heading": "Methods",
-            "content": "Complete methods text..."
-        }}
-    ],
-    "figures": [
-        {{
-            "number": "1",
-            "caption": "Figure caption here",
-            "description": "Detailed plain English description"
-        }}
-    ],
-    "tables": [
-        {{
-            "number": "1",
-            "caption": "Table caption here",
-            "description": "Table structure and key data points"
-        }}
-    ],
-    "equations": [
-        {{
-            "number": "1",
-            "equation": "E = mc^2",
-            "context": "What this equation represents"
-        }}
-    ],
-    "conclusion": "Complete conclusion text...",
-    "references": ["Reference 1", "Reference 2"]
+    "title": "Paper title",
+    "authors": ["Author 1", "Author 2"],
+    "abstract": "Full abstract text...",
+    "key_claims": ["Main hypothesis or claim 1", "Key claim 2"],
+    "methodology": "Brief summary of methods and approach...",
+    "results": "Main findings and results...",
+    "conclusion": "Conclusion summary...",
+    "full_text": "Complete paper text extracted during scrolling..."
 }}
 
-VALIDATION CHECKLIST:
-- All text fields contain complete content (not summarized)
-- All figures are described in detail
-- All sections from the paper are included
-- Valid JSON structure with no syntax errors
+SPEED OPTIMIZATIONS:
+- Focus on extracting TEXT, not analyzing figures/tables in detail
+- Scan rapidly - you can scroll through a page in 1-2 steps
+- Don't wait for animations or page loads - keep moving
+- Extract as you go, compile at the end
 
 Target URL: {paper_url}
 
-Remember: Output ONLY the JSON object. No explanations, no markdown, no code blocks.
-
-Your final message should be the JSON object only.
+Output ONLY the JSON object. NO markdown, NO code blocks, NO explanations. Work FAST.
 """
 
 
@@ -113,8 +75,8 @@ EXHAUSTIVENESS REQUIREMENTS:
 - Extract the major statements from the text
 - Break down complex statements into smaller, self-contained claims
 - Each node should represent one clear statement
-- For a ~20-page research paper, you should produce a couple dozen claims
-- Prefer larger nodes over many tiny ones, but ensure clarity and self-containment
+- LIMIT: Maximum of 10 nodes total (including the hypothesis)
+- Prefer larger, comprehensive nodes over many tiny ones
 
 GRAPH CONSTRUCTION RULES:
 - Create a strictly directed acyclic graph (DAG) structure
@@ -184,8 +146,8 @@ EXHAUSTIVENESS REQUIREMENTS:
 - Extract the major statements from the text
 - Break down complex statements into smaller, self-contained claims
 - Each node should represent one clear statement
-- For a ~20-page research paper, you should produce a couple dozen claims
-- Prefer larger nodes over many tiny ones, but ensure clarity and self-containment
+- LIMIT: Maximum of 10 nodes total (including the hypothesis)
+- Prefer larger, comprehensive nodes over many tiny ones
 
 GRAPH CONSTRUCTION RULES:
 - Create a strictly directed acyclic graph (DAG) structure

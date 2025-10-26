@@ -10,9 +10,6 @@ import os
 from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt
 from verification_pipeline import run_verification_pipeline
 
-# remove langchain after
-#from langchain_core.messages import HumanMessage
-
 load_dotenv()
 
 # Suppress browser-use logs by redirecting stderr when running from server
@@ -21,10 +18,13 @@ if os.environ.get('SUPPRESS_LOGS') == 'true':
     sys.stderr = open(os.devnull, 'w')
 
 # WebSocket update helpers (for server.py to stream to frontend)
+# this update is what the socket.IO listens for
 def send_update(stage: str, text: str, flush: bool = True):
     """Send progress update to frontend via WebSocket"""
     update_message = json.dumps({"type": "UPDATE", "stage": stage, "text": text})
+    print(f"[MAIN.PY DEBUG] Sending UPDATE - Stage: {stage}, Text: {text}", file=sys.stderr, flush=True)
     print(update_message, flush=flush)
+    print(f"[MAIN.PY DEBUG] UPDATE sent", file=sys.stderr, flush=True)
 
 def send_graph_data(graph_string: str, flush: bool = True):
     """Send GraphML data to frontend"""
@@ -103,13 +103,20 @@ def dag_to_graphml(dag_json: dict) -> str:
     return graphml_content
 
 async def main(url):
+    print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] URL: {url}", file=sys.stderr, flush=True)
+
     # Stage 1: Validate
     send_update("Validate", f"Validating URL: {url}")
+    await asyncio.sleep(0.5)
 
     remote_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
     remote_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
+    print(f"[MAIN.PY DEBUG] Remote CDP WS: {remote_cdp_ws}", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Remote CDP URL: {remote_cdp_url}", file=sys.stderr, flush=True)
     if remote_cdp_ws or remote_cdp_url:
         browser_endpoint = remote_cdp_ws or remote_cdp_url
+        print(f"[MAIN.PY DEBUG] Using remote browser endpoint: {browser_endpoint}", file=sys.stderr, flush=True)
         send_update("Validate", f"Connecting to remote browser at {browser_endpoint}")
         browser = Browser(
             cdp_url=browser_endpoint,
@@ -117,7 +124,9 @@ async def main(url):
             is_local=False,
             keep_alive=True
         )
+        print(f"[MAIN.PY DEBUG] Remote browser created successfully", file=sys.stderr, flush=True)
     else:
+        print(f"[MAIN.PY DEBUG] No remote browser endpoint, using local", file=sys.stderr, flush=True)
         send_update("Validate", "No remote browser endpoint provided; running with local session.")
         browser = Browser(
             cdp_url="",
@@ -131,26 +140,33 @@ async def main(url):
     # this would require OPENAI_API_KEY=... , GOOGLE_API_KEY=... , ANTHROPIC_API_KEY=... ,
 
     send_update("Validate", "URL validated. Initializing browser agent...")
+    await asyncio.sleep(0.5)
 
     # Stage 2: Decomposing PDF (actually browsing and extracting)
+    print(f"[MAIN.PY DEBUG] ========== STAGE 2: DECOMPOSING PDF ==========", file=sys.stderr, flush=True)
     send_update("Decomposing PDF", "Navigating to paper and extracting content...")
 
     browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
+    print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
     agent_kwargs = dict(
        task=browsing_url_prompt,
        llm=llm,
-       vision_detail_level='high',
-       generate_gif=True,
+       vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
+       generate_gif=False,            # Optimized: disabled to reduce overhead
        use_vision=True
     )
     if browser is not None:
         agent_kwargs['browser'] = browser
+        print(f"[MAIN.PY DEBUG] Browser added to agent", file=sys.stderr, flush=True)
 
     agent = Agent(**agent_kwargs)
+    print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=25", file=sys.stderr, flush=True)
     #agent = Agent(task="browse matheus.wiki, tell his current school", llm=llm)
 
     # TODO: make sure it shows interactive elements during the browsing
-    history = await agent.run(max_steps=100)
+    # Optimized: reduced from 100 to 25 steps for faster execution
+    history = await agent.run(max_steps=25)
+    print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
 
     send_update("Decomposing PDF", "Paper content extracted successfully.")
     
@@ -180,10 +196,13 @@ async def main(url):
       f.write("\nLast Action:\n")
       f.write(str(last_action))
 
-    # stage 3: Building Knowledge Graph (generating DAG)
-    send_update("Building Knowledge Graph", "Analyzing paper structure...")
+    # Stage 3: Building Logic Tree (generating DAG)
+    print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
+    send_update("Building Logic Tree", "Analyzing paper structure...")
+    await asyncio.sleep(0.5)
 
     # we got all the info about the paper stored in url (all text), extract payload later
+    print(f"[MAIN.PY DEBUG] Building DAG prompt from extracted text ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
     dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text)
 
     # create the dag from the raw text of the paper, need to pass Message objects
@@ -195,7 +214,9 @@ async def main(url):
     send_update("Building Logic Tree", "Extracting claims, evidence, and hypotheses...")
 
     # need to invoke llm with Message objects
+    print(f"[MAIN.PY DEBUG] Invoking LLM for DAG generation", file=sys.stderr, flush=True)
     response = await llm.ainvoke(messages=[user_message])
+    print(f"[MAIN.PY DEBUG] LLM response received", file=sys.stderr, flush=True)
 
     send_update("Building Logic Tree", "Logic tree constructed.")
 
@@ -232,11 +253,16 @@ async def main(url):
             f.write(graphml_output)
 
         # Send GraphML data to frontend via WebSocket
+        print(f"[MAIN.PY DEBUG] Sending GraphML data ({len(graphml_output)} bytes)", file=sys.stderr, flush=True)
         send_graph_data(graphml_output)
 
         # Debug: confirm GraphML was sent (only to stderr if logs enabled)
+        print(f"[MAIN.PY DEBUG] ✅ GraphML sent successfully", file=sys.stderr, flush=True)
         if os.environ.get('SUPPRESS_LOGS') != 'true':
             print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
+
+        # Small delay to ensure WebSocket transmission completes
+        await asyncio.sleep(0.5)
 
         send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
 
@@ -246,20 +272,25 @@ async def main(url):
         # - Compiling Evidence (sequential verification)
         # - Evaluating Integrity (graph scoring)
 
+        print(f"[MAIN.PY DEBUG] ========== STAGE 4-6: VERIFICATION PIPELINE ==========", file=sys.stderr, flush=True)
         kg_scorer, verification_summary = await run_verification_pipeline(
             dag_json=dag_json,
             llm=llm,
             browser=browser,
             send_update_fn=None  # Use default progress updates
         )
+        print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
 
         # Get final integrity score from verification pipeline
         integrity_score = verification_summary['graph_score']
 
+        print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
         send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
 
         # Send final score
+        print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
         send_final_score(integrity_score)
+        print(f"[MAIN.PY DEBUG] ========== MAIN() COMPLETED SUCCESSFULLY ==========", file=sys.stderr, flush=True)
 
         # Debug: Print verification summary (only to stderr if logs enabled)
         # if os.environ.get('SUPPRESS_LOGS') != 'true':

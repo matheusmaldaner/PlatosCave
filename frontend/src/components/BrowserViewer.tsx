@@ -16,46 +16,36 @@ const BrowserViewer: React.FC<BrowserViewerProps> = ({
   cdpWebSocket
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  // Add scaling parameters to noVNC URL to fit container perfectly
+  const getScaledVncUrl = (url?: string) => {
+    if (!url) return url;
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}resize=scale&autoconnect=true`;
+  };
 
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
+      if (e.key === "Escape") {
+        if (isFullscreen) {
+          setIsFullscreen(false);
+        }
       }
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
+  }, [isFullscreen]);
 
   if (!isOpen) return null;
 
-  return (
-    <>
-      {/* Backdrop */}
-      <div
-        className={`fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-40 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={onClose}
-      />
-
-      {/* Centered Viewer Shell */}
-      <div
-        className={`fixed inset-0 z-50 flex items-center justify-center p-6 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <div
-          className={`relative flex flex-col overflow-hidden border border-white/30 bg-white/95 shadow-2xl transition-all duration-300 ${
-            isFullscreen
-              ? "h-full w-full rounded-none"
-              : "h-[75vh] w-full max-w-5xl rounded-3xl"
-          }`}
-          style={isFullscreen ? undefined : { backdropFilter: "blur(6px)" }}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/40 bg-white/80">
+  // Fullscreen overlay
+  if (isFullscreen) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col bg-white">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-white">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="font-medium text-gray-700 text-sm">
@@ -64,60 +54,139 @@ const BrowserViewer: React.FC<BrowserViewerProps> = ({
           </div>
 
           <div className="flex items-center space-x-2">
+            {/* Exit Fullscreen */}
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+              title="Exit fullscreen"
+            >
+              Exit Fullscreen
+            </button>
+          </div>
+        </div>
+
+        {/* Browser Content */}
+        <div className="flex-1 bg-slate-950/90">
+          {novncUrl ? (
+            <iframe
+              key={novncUrl}
+              src={getScaledVncUrl(novncUrl)}
+              className="h-full w-full border-0 block"
+              title="Browser Automation View"
+              allowFullScreen
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-slate-200">
+              Waiting for remote browser session...
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Minimized state - floating indicator in top-left
+  if (isMinimized) {
+    return (
+      <div className="fixed top-20 left-4 z-30">
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="flex items-center space-x-2 px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+        >
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-medium text-gray-700 text-sm">
+            Browser Active
+          </span>
+          <svg 
+            className="w-4 h-4 text-gray-500" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </div>
+    );
+  }
+
+  // Inline expanded view
+  return (
+    <div className="w-[70vw] mx-auto mb-6">
+      <div className="relative flex flex-col overflow-hidden border border-gray-200 bg-white rounded-2xl" style={{ height: '80vh' }}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-medium text-gray-700 text-sm">
+              Browser Automation
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            {/* Minimize Button */}
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Minimize"
+            >
+              Minimize
+            </button>
+
             {/* Fullscreen Toggle */}
             <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-                className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
-              title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+              onClick={() => setIsFullscreen(true)}
+              className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Fullscreen"
             >
-                {isFullscreen ? "Exit" : "Full"}
+              Fullscreen
             </button>
 
             {/* Close Button */}
             <button
               onClick={onClose}
-                className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               title="Close"
             >
-                Close
+              Close
             </button>
           </div>
         </div>
 
-          {/* Browser Content */}
-          <div className="flex-1 bg-slate-950/90">
-            {novncUrl ? (
-              <iframe
-                key={novncUrl}
-                src={novncUrl}
-                className="h-full w-full border-0"
-                title="Browser Automation View"
-                allowFullScreen
-                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-sm text-slate-200">
-                Waiting for remote browser session...
-              </div>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="px-5 py-3 border-t border-white/40 bg-white/80 text-xs text-gray-600">
-            <div className="flex flex-col space-y-1">
-              {cdpUrl && (
-                <span>
-                  CDP Endpoint: <a className="text-blue-600 underline" href={cdpUrl} target="_blank" rel="noreferrer">{cdpUrl}</a>
-                </span>
-              )}
-              {cdpWebSocket && (
-                <span className="break-all">WebSocket: {cdpWebSocket}</span>
-              )}
+        {/* Browser Content */}
+        <div className="flex-1 bg-slate-950/90 overflow-hidden">
+          {novncUrl ? (
+            <iframe
+              key={novncUrl}
+              src={getScaledVncUrl(novncUrl)}
+              className="h-full w-full border-0 block"
+              title="Browser Automation View"
+              allowFullScreen
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-slate-200">
+              Waiting for remote browser session...
             </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 text-xs text-gray-600">
+          <div className="flex flex-col space-y-1">
+            {cdpUrl && (
+              <span>
+                CDP: <a className="text-blue-600 underline" href={cdpUrl} target="_blank" rel="noreferrer">{cdpUrl}</a>
+              </span>
+            )}
+            {cdpWebSocket && (
+              <span className="break-all">WS: {cdpWebSocket}</span>
+            )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

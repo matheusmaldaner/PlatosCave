@@ -13,11 +13,8 @@ chmod 1777 /tmp/.X11-unix
 lock_file="/tmp/.X${DISPLAY#:}.lock"
 rm -f "$lock_file"
 
-if [[ -n "${CDP_INTERNAL_PORT:-}" ]]; then
-  INTERNAL_CDP_PORT="${CDP_INTERNAL_PORT}"
-else
-  INTERNAL_CDP_PORT=$((CDP_PORT + 100))
-fi
+# Use the same port internally and externally (no offset needed)
+INTERNAL_CDP_PORT="${CDP_PORT}"
 
 # Start the virtual framebuffer
 log "Starting Xvfb on display ${DISPLAY}"
@@ -58,9 +55,10 @@ chromium \
   &
 CHROME_PID=$!
 
-# Expose the DevTools Protocol port to the outside world
-log "Forwarding external CDP port ${CDP_PORT} -> ${INTERNAL_CDP_PORT}"
-socat TCP-LISTEN:${CDP_PORT},fork,reuseaddr TCP:127.0.0.1:${INTERNAL_CDP_PORT} &
+# Chrome binds to localhost (may be IPv4 or IPv6), so we need socat to make it accessible from outside container
+log "Starting socat forwarder for CDP port ${INTERNAL_CDP_PORT}"
+# Use [::1] (IPv6 localhost) as Chrome often binds to IPv6 first
+socat TCP-LISTEN:${INTERNAL_CDP_PORT},bind=0.0.0.0,fork,reuseaddr TCP:[::1]:${INTERNAL_CDP_PORT} &
 SOCAT_PID=$!
 
 # Start VNC server
