@@ -30,7 +30,6 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
   return { nodes, edges };
 };
 
-// 🎨 ROYGBIV node outline colors
 const getRoleColor = (role: string) => {
   switch (role.toLowerCase()) {
     case "hypothesis": return "#E53935"; // red
@@ -102,13 +101,12 @@ const parseGraphML = (
   return getLayoutedElements(nodes, edges);
 };
 
-// 🧭 Custom control bar (zoom, fit)
 const GraphControls: React.FC<{ isDrawerOpen: boolean }> = ({ isDrawerOpen }) => {
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   return (
     <div
-      className="absolute bottom-4 z-10 flex flex-row gap-2 bg-white/80 p-2 rounded-lg shadow-md transition-all duration-300"
+      className="absolute bottom-4 z-10 flex flex-col gap-2 bg-white/80 p-2 rounded-lg shadow-md transition-all duration-300"
       style={{
         left: isDrawerOpen ? "21rem" : "1rem",
       }}
