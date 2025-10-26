@@ -130,7 +130,7 @@ We combine **five interpretable factors** in $[0,1]$:
 
 **Raw edge confidence (convex blend).**
 
-$c^{\mathrm{raw}}_{u\to v}=\lambda_r\,r_{u\to v}+\lambda_p\,q_u+\lambda_c\,q_v+\lambda_a\,a_{u\to v}+\lambda_s\,s_{u\to v},\ \lambda\in\Delta_5.$
+$c^{r}_{u\to v}=\lambda_r r_{u\to v} + \lambda_p q_u + \lambda_c q_v + \lambda_a a_{u\to v} + \lambda_s s_{u\to v},\text{ with } \lambda\in\Delta_5.$
 
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
