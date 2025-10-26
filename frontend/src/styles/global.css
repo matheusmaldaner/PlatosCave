@@ -5,6 +5,7 @@
 
 body {
     background-color: #FFFFFF;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 @keyframes dissolveUp {
@@ -43,4 +44,73 @@ body {
     border-right: 2px solid rgba(75, 85, 99, 0.8); /* gray-600 */
     animation: caretBlink 1s step-end infinite;
     white-space: nowrap;
+}
+
+/* Aurora-style animated gradient text */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.aurora-text {
+    background: linear-gradient(90deg,
+        #22d3ee 0%, /* cyan-400 */
+        #6366f1 25%, /* indigo-500 */
+        #a855f7 50%, /* purple-500 */
+        #10b981 75%, /* emerald-500 */
+        #22d3ee 100%
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 6s ease-in-out infinite;
+}
+
+.text-soft-glow {
+    text-shadow: 0 1px 6px rgba(16, 185, 129, 0.18), 0 0 18px rgba(99, 102, 241, 0.12);
+}
+
+/* Sleek, neutral gradient text (no rainbow) */
+.sleek-text {
+    background: linear-gradient(180deg, #0f172a 0%, #334155 100%); /* slate-900 → slate-700 */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+@keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+    animation: fadeUp 400ms ease-out both;
+}
+
+@keyframes floatInUp {
+    0% { opacity: 0; transform: translateY(10px); filter: blur(2px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes floatOutUp {
+    0% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    100% { opacity: 0; transform: translateY(-10px); filter: blur(2px); }
+}
+
+.rotate-in {
+    animation: floatInUp 700ms ease-out both;
+}
+
+.rotate-out {
+    animation: floatOutUp 700ms ease-in both;
+}
+
+.rotator {
+    position: relative;
+    display: inline-block;
+    height: 1.2em; /* lock height to keep layout from shifting */
+    overflow: hidden;
+    vertical-align: baseline;
 }

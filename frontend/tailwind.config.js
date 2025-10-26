@@ -7,6 +7,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          'Trajan Pro 3',
+          'Trajan Pro',
+          'Trajan',
+          'Cormorant Garamond',
+          'Cinzel',
+          'serif'
+        ],
+      },
       colors: {
         'base-white': '#FFFFFF',
         'base-gray': '#F7F7F7', // Sidebar background
