@@ -1,21 +1,15 @@
 // PlatosCave/frontend/src/components/FileUploader.tsx
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 interface FileUploaderProps {
     onFileUpload: (file: File) => void;
-    onUrlSubmit: (url: string) => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }) => {
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
     const [url, setUrl] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isMultiline, setIsMultiline] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const lastTextLengthRef = useRef<number>(0);
-    const lastStateChangeRef = useRef<number>(0);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
@@ -25,56 +19,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         }
     }, [onFileUpload]);
 
-    // Auto-resize textarea as user types
-    const autoResizeTextarea = useCallback(() => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
-
-        const currentText = textarea.value;
-        const currentLength = currentText.length;
-
-        // Always resize the textarea height instantly (no transition)
-        textarea.style.height = 'auto';
-        const scrollHeight = textarea.scrollHeight;
-        textarea.style.height = `${scrollHeight}px`;
-
-        // Get line height for comparison
-        const computedStyle = window.getComputedStyle(textarea);
-        const lineHeight = parseInt(computedStyle.lineHeight);
-
-        // Clear any pending timeout
-        if (resizeTimeoutRef.current) {
-            clearTimeout(resizeTimeoutRef.current);
-        }
-
-        // Debounce the layout state change
-        resizeTimeoutRef.current = setTimeout(() => {
-            const now = Date.now();
-            const timeSinceLastChange = now - lastStateChangeRef.current;
-
-            // Prevent rapid state changes - must wait at least 400ms between switches
-            if (timeSinceLastChange < 400) {
-                return;
-            }
-
-            const lengthDiff = Math.abs(currentLength - lastTextLengthRef.current);
-
-            // Only switch layouts if there's been a text change
-            // Use clear thresholds with hysteresis to prevent oscillation
-            if (!isMultiline && scrollHeight > lineHeight * 1.35 && lengthDiff >= 2) {
-                // Switching to multiline
-                setIsMultiline(true);
-                lastStateChangeRef.current = now;
-                lastTextLengthRef.current = currentLength;
-            } else if (isMultiline && scrollHeight <= lineHeight * 1.1 && lengthDiff >= 2) {
-                // Switching back to single line
-                setIsMultiline(false);
-                lastStateChangeRef.current = now;
-                lastTextLengthRef.current = currentLength;
-            }
-        }, 100);
-    }, [isMultiline]);
-
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: { 'application/pdf': ['.pdf'] },
@@ -82,25 +26,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         noClick: true, // We will trigger the click manually
     });
 
-    // Initialize textarea size on mount and when URL changes
-    React.useEffect(() => {
-        autoResizeTextarea();
-    }, [url, autoResizeTextarea]);
-
-    // Cleanup timeout on unmount
-    React.useEffect(() => {
-        return () => {
-            if (resizeTimeoutRef.current) {
-                clearTimeout(resizeTimeoutRef.current);
-            }
-        };
-    }, []);
-
     const handleSubmit = () => {
         if (selectedFile) {
             onFileUpload(selectedFile);
-        } else if (url.trim()) {
-            onUrlSubmit(url.trim());
+        } else if (url) {
+            // Future logic to handle URL submission
+            console.log('Submitting URL:', url);
+            alert("URL submission is not yet implemented.");
         }
     };
 
@@ -120,50 +52,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         }
         return "Search by paper name, paste URL, or upload PDF...";
     };
-
-    // Typewriter rotating titles for subtitle
-    const titles = [
-        'Attention Is All You Need',
-        'BERT: Pre-training of Deep Bidirectional Transformers',
-        'GPT-3: Language Models are Few-Shot Learners',
-        'ResNet: Deep Residual Learning for Image Recognition',
-        'Neural Ordinary Differential Equations',
-        'Diffusion Models Beat GANs on Image Synthesis',
-        'Playing Atari with Deep Reinforcement Learning',
-        'U-Net: Convolutional Networks for Biomedical Image Segmentation'
-    ];
-
-    const [typedText, setTypedText] = useState('');
-    const [titleIndex, setTitleIndex] = useState(0);
-    const [charIndex, setCharIndex] = useState(0);
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    useEffect(() => {
-        const current = titles[titleIndex % titles.length];
-        const typingSpeed = isDeleting ? 30 : 65; // ms per char
-        const pauseAtEnd = 1200; // pause when full word typed
-
-        let timer: number;
-
-        if (!isDeleting && charIndex < current.length) {
-            timer = window.setTimeout(() => {
-                setTypedText(current.slice(0, charIndex + 1));
-                setCharIndex(charIndex + 1);
-            }, typingSpeed);
-        } else if (!isDeleting && charIndex === current.length) {
-            timer = window.setTimeout(() => setIsDeleting(true), pauseAtEnd);
-        } else if (isDeleting && charIndex > 0) {
-            timer = window.setTimeout(() => {
-                setTypedText(current.slice(0, charIndex - 1));
-                setCharIndex(charIndex - 1);
-            }, typingSpeed);
-        } else if (isDeleting && charIndex === 0) {
-            setIsDeleting(false);
-            setTitleIndex((titleIndex + 1) % titles.length);
-        }
-
-        return () => window.clearTimeout(timer);
-    }, [charIndex, isDeleting, titleIndex, titles]);
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center px-4 py-12 sm:py-16">
@@ -306,11 +194,15 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
 
                 {/* Footer Text */}
                 <div className="space-y-3 text-center">
-                    <p className="text-xs font-light uppercase tracking-widest text-gray-400">
+                      </p>
                         A software created by the FINS group for the University of Florida AI Days Hackathon
-                    </p>
+
                 </div>
             </div>
+
+            <p className="text-sm text-gray-400 mt-4">
+                Platos-Cave can analyze research papers from URLs or PDF files
+            </p>
         </div>
     );
 };

@@ -15,7 +15,10 @@ type GraphNodeData = {
 };
 
 type GraphNode = Node<GraphNodeData>;
-type GraphEdge = Edge;
+type GraphEdgeData = {
+    value?: number;
+};
+type GraphEdge = Edge<GraphEdgeData>;
 
 const roleStyles: Record<string, { badgeBg: string; badgeText: string; bodyBg: string; border: string }> = {
     context: { badgeBg: 'bg-emerald-50', badgeText: 'text-emerald-700', bodyBg: 'bg-white', border: 'border-emerald-200' },
@@ -134,13 +137,23 @@ const parseGraphML = (xmlString: string, config: LayoutConfig): { nodes: GraphNo
     Array.from(edgeElements).forEach((edgeEl, index) => {
         const source = edgeEl.getAttribute('source')!;
         const target = edgeEl.getAttribute('target')!;
+
+        const dataElements = edgeEl.getElementsByTagName('data');
+        const valueText = Array.from(dataElements).find(d => d.getAttribute('key') === 'weight')?.textContent;
+        const value = valueText ? parseFloat(valueText) : 1;
+
         edges.push({
             id: edgeEl.getAttribute('id') || `edge-${source}-${target}-${index}`,
             source,
             target,
             type: 'smoothstep',
+            data: { value },
+            label: value.toFixed(2),
+            labelStyle: { fill: brandGreen, fontSize: 11, fontWeight: 600 },
+            labelBgStyle: { fill: 'white', fillOpacity: 0.7 },
+            labelShowBg: true,
             markerEnd: { type: MarkerType.ArrowClosed, color: brandGreen, width: config.markerSize, height: config.markerSize },
-            style: { stroke: brandGreen, strokeWidth: config.strokeWidth, opacity: 0.85 },
+            style: { stroke: brandGreen, strokeWidth: Math.max(1.2, value * 2), opacity: 0.85 },
         });
     });
 
@@ -155,9 +168,7 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
     const isCompact = layoutConfig.id === 'compact';
 
     useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
+        if (typeof window === 'undefined') return;
         const updateLayout = () => {
             const width = window.innerWidth;
             setLayoutConfig(width < 768 ? LAYOUT_PRESETS.compact : LAYOUT_PRESETS.default);
@@ -204,7 +215,6 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
     }
 
     return (
-        // The `relative` class on this parent div is essential for positioning the button.
         <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
             <ReactFlow
                 nodes={nodes}
@@ -222,7 +232,7 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
             >
                 <Controls />
             </ReactFlow>
-            {/* The `absolute`, `bottom-4`, and `right-4` classes anchor the button to the bottom right. */}
+
             <button
                 onClick={handleSaveGraph}
                 className="absolute bottom-3 right-3 z-10 rounded-lg border border-brand-green/40 bg-white/95 px-4 py-2 text-sm font-semibold text-brand-green shadow hover:bg-brand-green hover:text-white transition"
@@ -234,3 +244,4 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData }) => {
 };
 
 export default XmlGraphViewer;
+
