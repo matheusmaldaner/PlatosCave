@@ -10,8 +10,7 @@ _Appeal to Logos_
 
 ---
 
-### 🕯️ **Plato’s Cave**
-> *A learning-focused research tool that helps you illuminate complex academic papers.*
+ *A learning-focused research tool that helps you illuminate complex academic papers.*
 
 </div>
 
