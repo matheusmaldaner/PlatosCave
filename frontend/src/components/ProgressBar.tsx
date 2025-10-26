@@ -6,6 +6,17 @@ interface ProgressBarProps {
     steps: ProcessStep[];
 }
 
+// Tooltip descriptions for each stage
+const STAGE_DESCRIPTIONS: Record<string, string> = {
+    "Validate": "URL validation & browser setup",
+    "Decomposing PDF": "Extract paper content",
+    "Building Logic Tree": "Identify claims & evidence",
+    "Building Knowledge Graph": "Identify claims & evidence",
+    "Organizing Agents": "Deploy verification agents",
+    "Compiling Evidence": "Verify all claims",
+    "Evaluating Integrity": "Calculate final score"
+};
+
 const getStepIcon = (status: 'pending' | 'active' | 'completed', index: number) => {
     if (status === 'completed') {
         return (
@@ -60,9 +71,21 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ steps }) => {
 
                     return (
                         <React.Fragment key={step.name}>
-                            {/* Circle */}
-                            <div className={circleClasses.join(' ')}>
-                                {getStepIcon(step.status, index)}
+                            {/* Circle with Tooltip */}
+                            <div className="relative group cursor-help">
+                                <div className={`${circleClasses.join(' ')} group-hover:scale-110`}>
+                                    {getStepIcon(step.status, index)}
+                                </div>
+                                {/* Tooltip */}
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-gray-900 text-white text-xs rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none whitespace-nowrap z-[9999] shadow-lg">
+                                    <div className="text-gray-300">
+                                        {index + 1}/{steps.length}: {STAGE_DESCRIPTIONS[step.name] || step.name}
+                                    </div>
+                                    {/* Arrow pointing down */}
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                                        <div className="border-[3px] border-transparent border-t-gray-900"></div>
+                                    </div>
+                                </div>
                             </div>
                             {/* Line */}
                             {!isLast && (
