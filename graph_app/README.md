@@ -97,9 +97,7 @@ This system is a **validated DAG** whose **nodes** carry agent-extracted, normal
 
 * Nodes $v\in V$, directed edges $u\to v\in E$. Parents $P(v)={,u:(u\to v)\in E,}$.
 * Six node metrics $m_v\in[0,1]^6$ in fixed order:
-  $$
-  m_v=\big[\text{cred},,\text{rel},,\text{evid},,\text{rigor},,\text{repr},,\text{cites}\big]_v.
-  $$
+  $m_v=\big[\text{cred},,\text{rel},,\text{evid},,\text{rigor},,\text{repr},,\text{cites}\big]_v.$
 * Convex per-metric weights $w\in\Delta_6:={w\in\mathbb R_{\ge 0}^6:\sum_i w_i=1}$.
   (Optionally role-specific $w^{(\rho)}$.)
 
@@ -108,14 +106,10 @@ This system is a **validated DAG** whose **nodes** carry agent-extracted, normal
 ## 1) Nodes: Agent-Extracted Features + Convex Quality
 
 **Node readiness.** The agent fills metrics in **BFS order** from Hypothesis roots. A node is *ready* iff all six metrics are present:
-$$
-\mathbf 1_{\mathrm{ready}}(v);=;\prod_{i=1}^{6}\mathbf 1{,m_{v,i}\ \text{is present},}.
-$$
+$\mathbf 1_{\mathrm{ready}}(v);=;\prod_{i=1}^{6}\mathbf 1{,m_{v,i}\ \text{is present},}.$
 
 **Node quality (convex).** A node’s scalar quality is a convex blend:
-$$
-q_v;=;\langle w,m_v\rangle;=;\sum_{i=1}^{6}w_i,m_{v,i},\qquad w\in\Delta_6.
-$$
+$q_v;=;\langle w,m_v\rangle;=;\sum_{i=1}^{6}w_i,m_{v,i},\qquad w\in\Delta_6.$
 **Intuition.** Convexity keeps $q_v$ in $[0,1]$, **interpretable**, and **comparable** across roles/graphs. If some metrics are missing, either impute or **renormalize** $w$ over present components.
 
 **Role-aware option.** For role $\rho(v)$, use $q_v=\langle w^{(\rho(v))},m_v\rangle$ with $w^{(\rho)}\in\Delta_6$.
@@ -126,9 +120,7 @@ $$
 ## 2) Edges: Interpretable Confidence with Trust Gating
 
 Edges are scored **only when ready**:
-$$
-\mathbf 1_{\mathrm{ready}}(u!\to!v);=;\mathbf 1_{\mathrm{ready}}(v)\cdot\prod_{p\in P(v)}\mathbf 1_{\mathrm{ready}}(p).
-$$
+$\mathbf 1_{\mathrm{ready}}(u!\to!v);=;\mathbf 1_{\mathrm{ready}}(v)\cdot\prod_{p\in P(v)}\mathbf 1_{\mathrm{ready}}(p).$
 
 We combine **five interpretable factors** in $[0,1]$:
 
@@ -138,7 +130,7 @@ We combine **five interpretable factors** in $[0,1]$:
 4. **Pairwise synergy** $s_{u\to v}$ (role-pair-specific mix of parent/child metrics).
 
 **Raw edge confidence (convex blend).**
-$$
+$
 c^{\mathrm{raw}}*{u\to v}
 ;=;
 \lambda_r,r*{u\to v}
@@ -147,28 +139,26 @@ c^{\mathrm{raw}}*{u\to v}
 +\lambda_a,a_{u\to v}
 +\lambda_s,s_{u\to v},
 \qquad \lambda\in\Delta_5.
-$$
+$
 **Intuition.** A convex mixture keeps scores in $[0,1]$, eases calibration, and each $\lambda_k$ remains **explainable** in the UI.
 
 > **Alternative (multiplicative).** \quad $c^{\mathrm{raw}}=\prod_k x_k^{\gamma_k}$ with $\gamma_k\ge 0$.
 > **Intuition.** Penalizes weak factors more aggressively; learnable choice between additive vs. multiplicative.
 
 **Trust gate from parents.** Aggregate parent trust with $\operatorname{Agg}\in{\min,\ \mathrm{mean},\ \mathrm{LSE}*\alpha}$ where
-$$
+$
 \mathrm{LSE}*\alpha(S);=;\tfrac{1}{\alpha}\log!\sum_{x\in S}e^{\alpha x}
 \quad(\alpha>0\ \text{soft-max},\ \alpha<0\ \text{soft-min}).
-$$
+$
 Then apply a sigmoid gate with cutoff $\eta$ and sharpness $\beta$:
-$$
+$
 \tau_{P(v)};=;\sigma!\big(\beta,[,\operatorname{Agg}({q_p:p\in P(v)})-\eta,]\big),\qquad
 \sigma(z)=\frac{1}{1+e^{-z}}.
-$$
+$
 **Intuition.** **Noisy/weak parents** should **down-weight** downstream edges. $\beta$ governs gate steepness; $\eta$ is the minimum acceptable upstream quality.
 
 **Final edge confidence.**
-$$
-C_{u\to v};=;\mathbf 1_{\mathrm{ready}}(u!\to!v)\cdot\tau_{P(v)}\cdot c^{\mathrm{raw}}_{u\to v}.
-$$
+$C_{u\to v};=;\mathbf 1_{\mathrm{ready}}(u!\to!v)\cdot\tau_{P(v)}\cdot c^{\mathrm{raw}}_{u\to v}.$
 **Intuition.** Readiness avoids stale scores; the gate $\tau$ protects against **over-crediting** chains with weak ancestors.
 
 ---
@@ -176,9 +166,7 @@ $$
 ## 3) Graph: Scores, Walks, Fingerprints
 
 **Best-path reliability.** Let $\Pi$ be all root→leaf paths:
-$$
-S_{\text{path}}=\max_{\pi\in\Pi}\ \prod_{(i\to j)\in\pi} C_{i\to j}.
-$$
+$S_{\text{path}}=\max_{\pi\in\Pi}\ \prod_{(i\to j)\in\pi} C_{i\to j}.$
 **Intuition.** A paper is strong if **at least one** high-confidence causal chain survives.
 
 **Coverage / coherence / redundancy / fragility.**
@@ -189,23 +177,17 @@ $$
 * **Fragility**: $1-\text{min-cut}$ computed on costs $1-C_{u\to v}$.
 
 **Graph score (convex).**
-$$
-S_{\text{graph}};=;\sum_{t\in{\text{path},\text{cov},\text{coh},\text{red},\text{frag}}}\mu_t,S_t,
-\qquad \mu\in\Delta_5.
-$$
+$S_{\text{graph}};=;\sum_{t\in{\text{path},\text{cov},\text{coh},\text{red},\text{frag}}}\mu_t,S_t,
+\qquad \mu\in\Delta_5.$
 **Intuition.** A single scalar with **decomposable** components for transparency/ablation.
 
 **Confidence-weighted random walks (node2vec-style).** Directed transition kernel
-$$
-P(v!\to!w);=;\frac{C_{v\to w}^{,\kappa}\cdot\phi_{p,q}(\text{2nd-order bias})}{\sum_{w':(v\to w')\in E}C_{v\to w'}^{,\kappa}\cdot\phi_{p,q}(\cdot)},
-$$
+$P(v!\to!w);=;\frac{C_{v\to w}^{,\kappa}\cdot\phi_{p,q}(\text{2nd-order bias})}{\sum_{w':(v\to w')\in E}C_{v\to w'}^{,\kappa}\cdot\phi_{p,q}(\cdot)},$
 with standard node2vec bias $\phi_{p,q}$ (return/outward control) and temperature $\kappa>0$.
 **Intuition.** Walks concentrate on **trustworthy subgraphs**, yielding corpora for node/graph embeddings.
 
 **Paper fingerprint.**
-$$
-f(G)=\big[S_{\text{graph}},,\text{hist}(C),,\text{role counts},,\text{role-pair counts},,\overline m,,\text{top-}k\text{ path stats},\ldots\big].
-$$
+$f(G)=\big[S_{\text{graph}},,\text{hist}(C),,\text{role counts},,\text{role-pair counts},,\overline m,,\text{top-}k\text{ path stats},\ldots\big].$
 **Intuition.** A fixed-length, stable vector for retrieval, clustering, or downstream learning.
 
 ---
