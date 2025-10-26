@@ -289,38 +289,101 @@ async def main(url):
           f.write(user_message.text)
     
         send_update("Building Logic Tree", "Extracting claims, evidence, and hypotheses...")
-    
-        # need to invoke llm with Message objects
-        print(f"[MAIN.PY DEBUG] Invoking LLM for DAG generation", file=sys.stderr, flush=True)
-        response = await llm.ainvoke(messages=[user_message])
-        print(f"[MAIN.PY DEBUG] LLM response received", file=sys.stderr, flush=True)
-    
+
+        # Retry logic for DAG generation with validation feedback
+        max_retries = 3
+        dag_json = None
+        last_error = None
+
+        for attempt in range(max_retries):
+            try:
+                # Invoke LLM with retry feedback if needed
+                print(f"[MAIN.PY DEBUG] Invoking LLM for DAG generation (attempt {attempt + 1}/{max_retries})", file=sys.stderr, flush=True)
+
+                # Try to use structured output if supported by the LLM
+                try:
+                    # Attempt to force JSON output mode (works with OpenAI models)
+                    response = await llm.ainvoke(
+                        messages=[user_message],
+                        response_format={"type": "json_object"}  # Structured output
+                    )
+                    print(f"[MAIN.PY DEBUG] ✅ Using structured JSON output mode", file=sys.stderr, flush=True)
+                except (TypeError, AttributeError) as e:
+                    # Fallback: LLM doesn't support response_format parameter
+                    print(f"[MAIN.PY DEBUG] ⚠️ Structured output not supported, using standard mode: {e}", file=sys.stderr, flush=True)
+                    response = await llm.ainvoke(messages=[user_message])
+
+                print(f"[MAIN.PY DEBUG] LLM response received", file=sys.stderr, flush=True)
+
+                # Save response for debugging
+                with open(f'response_dag_attempt_{attempt + 1}.txt', 'w', encoding='utf-8') as f:
+                    f.write(response.completion)
+
+                # Parse the JSON response (handle explanatory text and markdown blocks)
+                dag_json_str = response.completion.strip()
+
+                # Find the actual JSON start (handles text before JSON)
+                json_start = dag_json_str.find('{')
+                if json_start == -1:
+                    raise ValueError("No JSON object found in response")
+
+                # Extract from first { to end
+                dag_json_str = dag_json_str[json_start:].strip()
+
+                # Remove trailing markdown blocks if present
+                if dag_json_str.endswith('```'):
+                    dag_json_str = dag_json_str[:-3].strip()
+
+                # Try to parse JSON
+                dag_json = json.loads(dag_json_str)
+
+                # Success! Save and break
+                print(f"[MAIN.PY DEBUG] ✅ DAG JSON parsed successfully on attempt {attempt + 1}", file=sys.stderr, flush=True)
+                with open('response_dag.txt', 'w', encoding='utf-8') as f:
+                    f.write(response.completion)
+                with open('final_dag.json', 'w', encoding='utf-8') as f:
+                    f.write(dag_json_str)
+                break
+
+            except json.JSONDecodeError as e:
+                last_error = e
+                print(f"[MAIN.PY DEBUG] ❌ JSON parse failed on attempt {attempt + 1}: {e}", file=sys.stderr, flush=True)
+
+                if attempt < max_retries - 1:
+                    # Retry with error feedback
+                    error_context = f"""
+PREVIOUS ATTEMPT FAILED - JSON PARSING ERROR:
+Error: {e}
+Location: Line {e.lineno if hasattr(e, 'lineno') else 'unknown'}, Column {e.colno if hasattr(e, 'colno') else 'unknown'}
+
+The JSON you provided was INVALID. Common issues:
+- Unescaped backslashes in text (like LaTeX: \\mathcal, \\text, etc.)
+- Special characters not properly escaped
+- Invalid escape sequences
+
+Please regenerate the ENTIRE JSON output with these fixes:
+1. Convert ALL LaTeX to plain text (e.g., "$\\mathcal{{D}}$" → "dataset D")
+2. Replace special symbols with words (e.g., "α" → "alpha")
+3. Only use valid JSON escapes: \\n, \\t, \\", \\\\, \\/
+4. Double-check that your output is valid JSON before responding
+
+{dag_task_prompt}
+"""
+                    user_message = UserMessage(content=error_context)
+                    send_update("Building Logic Tree", f"Retrying DAG generation (attempt {attempt + 2}/{max_retries})...")
+                else:
+                    # Last attempt failed, save debug info
+                    with open('failed_dag.json', 'w', encoding='utf-8') as f:
+                        f.write(dag_json_str if 'dag_json_str' in locals() else response.completion)
+                    raise  # Re-raise to be caught by outer exception handler
+
+        if dag_json is None:
+            raise ValueError(f"Failed to generate valid DAG JSON after {max_retries} attempts. Last error: {last_error}")
+
         send_update("Building Logic Tree", "Logic tree constructed.")
-    
-        with open('response_dag.txt', 'w', encoding='utf-8') as f:
-          f.write(response.completion)
-    
-        with open('final_dag.json', 'w', encoding='utf-8') as f:
-          f.write(response.completion)
-    
+
         # Convert DAG JSON to GraphML for frontend visualization
         try:
-            # Parse the JSON response (handle explanatory text and markdown blocks)
-            dag_json_str = response.completion.strip()
-
-            # Find the actual JSON start (handles text before JSON)
-            json_start = dag_json_str.find('{')
-            if json_start == -1:
-                raise ValueError("No JSON object found in response")
-
-            # Extract from first { to end
-            dag_json_str = dag_json_str[json_start:].strip()
-
-            # Remove trailing markdown blocks if present
-            if dag_json_str.endswith('```'):
-                dag_json_str = dag_json_str[:-3].strip()
-
-            dag_json = json.loads(dag_json_str)
     
             # Convert to GraphML
             graphml_output = dag_to_graphml(dag_json)
