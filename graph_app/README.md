@@ -95,7 +95,7 @@ This system is a **validated DAG** whose **nodes** carry agent-extracted, normal
 
 ## Notation
 
-* Nodes $v\in V$, directed edges $u\to v\in E$. Parents $P(v)={,u:(u\to v)\in E,}$.
+* Nodes $v\in V$, directed edges $u\to v\in E$. Parents $P(v)={u:(u\to v)\in E}$.
 * Six node metrics $m_v\in[0,1]^6$ in fixed order:
   $m_v=\big[\text{cred},\text{rel},\text{evid},\text{rigor},\text{repr},\text{cites}\big]_v.$
 * Convex per-metric weights $w\in\Delta_6:={w\in\mathbb R_{\ge 0}^6:\sum_i w_i=1}$.
@@ -226,7 +226,7 @@ Graph gives **trust-aware** signals; content models (e.g., SBERT) give **semanti
 * **Trust-aware retrieval:** index $f(G)$ (plus content vectors) in FAISS; query with adjustable $\alpha$ between semantics and trust.
 * **Session-aware ranking:** boost edges/nodes overlapping the user’s active graph; decay low-confidence chains.
 * **Active learning:** choose the **next node to annotate** that maximizes expected gain in $S_{\text{graph}}$ or reduces uncertainty on critical paths.
-* **Contradiction mining:** surface high-$C$ edges forming **conflicting** role patterns across papers.
+* **Contradiction mining:** surface high- $C$ edges forming **conflicting** role patterns across papers.
 * **Planning:** from a target Conclusion, back-chain to missing **Method/Evidence** roles; propose a reading list.
 
 ---
