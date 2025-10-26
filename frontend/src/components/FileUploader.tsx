@@ -1,21 +1,15 @@
 // PlatosCave/frontend/src/components/FileUploader.tsx
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 interface FileUploaderProps {
     onFileUpload: (file: File) => void;
-    onUrlSubmit: (url: string) => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }) => {
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
     const [url, setUrl] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isMultiline, setIsMultiline] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const lastTextLengthRef = useRef<number>(0);
-    const lastStateChangeRef = useRef<number>(0);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
@@ -25,56 +19,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         }
     }, [onFileUpload]);
 
-    // Auto-resize textarea as user types
-    const autoResizeTextarea = useCallback(() => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
-
-        const currentText = textarea.value;
-        const currentLength = currentText.length;
-
-        // Always resize the textarea height instantly (no transition)
-        textarea.style.height = 'auto';
-        const scrollHeight = textarea.scrollHeight;
-        textarea.style.height = `${scrollHeight}px`;
-
-        // Get line height for comparison
-        const computedStyle = window.getComputedStyle(textarea);
-        const lineHeight = parseInt(computedStyle.lineHeight);
-
-        // Clear any pending timeout
-        if (resizeTimeoutRef.current) {
-            clearTimeout(resizeTimeoutRef.current);
-        }
-
-        // Debounce the layout state change
-        resizeTimeoutRef.current = setTimeout(() => {
-            const now = Date.now();
-            const timeSinceLastChange = now - lastStateChangeRef.current;
-
-            // Prevent rapid state changes - must wait at least 400ms between switches
-            if (timeSinceLastChange < 400) {
-                return;
-            }
-
-            const lengthDiff = Math.abs(currentLength - lastTextLengthRef.current);
-
-            // Only switch layouts if there's been a text change
-            // Use clear thresholds with hysteresis to prevent oscillation
-            if (!isMultiline && scrollHeight > lineHeight * 1.35 && lengthDiff >= 2) {
-                // Switching to multiline
-                setIsMultiline(true);
-                lastStateChangeRef.current = now;
-                lastTextLengthRef.current = currentLength;
-            } else if (isMultiline && scrollHeight <= lineHeight * 1.1 && lengthDiff >= 2) {
-                // Switching back to single line
-                setIsMultiline(false);
-                lastStateChangeRef.current = now;
-                lastTextLengthRef.current = currentLength;
-            }
-        }, 100);
-    }, [isMultiline]);
-
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: { 'application/pdf': ['.pdf'] },
@@ -82,25 +26,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         noClick: true, // We will trigger the click manually
     });
 
-    // Initialize textarea size on mount and when URL changes
-    React.useEffect(() => {
-        autoResizeTextarea();
-    }, [url, autoResizeTextarea]);
-
-    // Cleanup timeout on unmount
-    React.useEffect(() => {
-        return () => {
-            if (resizeTimeoutRef.current) {
-                clearTimeout(resizeTimeoutRef.current);
-            }
-        };
-    }, []);
-
     const handleSubmit = () => {
         if (selectedFile) {
             onFileUpload(selectedFile);
-        } else if (url.trim()) {
-            onUrlSubmit(url.trim());
+        } else if (url) {
+            // Future logic to handle URL submission
+            console.log('Submitting URL:', url);
+            alert("URL submission is not yet implemented.");
         }
     };
 
@@ -121,196 +53,64 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
         return "Enter research paper URL or upload PDF...";
     };
 
-    // Typewriter rotating titles for subtitle
-    const titles = [
-        'Attention Is All You Need',
-        'BERT: Pre-training of Deep Bidirectional Transformers',
-        'GPT-3: Language Models are Few-Shot Learners',
-        'ResNet: Deep Residual Learning for Image Recognition',
-        'Neural Ordinary Differential Equations',
-        'Diffusion Models Beat GANs on Image Synthesis',
-        'Playing Atari with Deep Reinforcement Learning',
-        'U-Net: Convolutional Networks for Biomedical Image Segmentation'
-    ];
-
-    const [typedText, setTypedText] = useState('');
-    const [titleIndex, setTitleIndex] = useState(0);
-    const [charIndex, setCharIndex] = useState(0);
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    useEffect(() => {
-        const current = titles[titleIndex % titles.length];
-        const typingSpeed = isDeleting ? 30 : 65; // ms per char
-        const pauseAtEnd = 1200; // pause when full word typed
-
-        let timer: number;
-
-        if (!isDeleting && charIndex < current.length) {
-            timer = window.setTimeout(() => {
-                setTypedText(current.slice(0, charIndex + 1));
-                setCharIndex(charIndex + 1);
-            }, typingSpeed);
-        } else if (!isDeleting && charIndex === current.length) {
-            timer = window.setTimeout(() => setIsDeleting(true), pauseAtEnd);
-        } else if (isDeleting && charIndex > 0) {
-            timer = window.setTimeout(() => {
-                setTypedText(current.slice(0, charIndex - 1));
-                setCharIndex(charIndex - 1);
-            }, typingSpeed);
-        } else if (isDeleting && charIndex === 0) {
-            setIsDeleting(false);
-            setTitleIndex((titleIndex + 1) % titles.length);
-        }
-
-        return () => window.clearTimeout(timer);
-    }, [charIndex, isDeleting, titleIndex, titles]);
-
     return (
-        <div className="flex h-full w-full flex-col items-center justify-center px-4 py-12 sm:py-16">
-            <div className="mx-auto w-full max-w-3xl space-y-12">
-                {/* Hero Section */}
-                <div className="space-y-6 text-center">
-                    <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl animate-dissolve-up">
-                        Analyze research papers
-                    </h1>
-                    <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg animate-dissolve-up-delayed">
-                        Upload a PDF or enter a URL to extract insights and evaluate research integrity
-                    </p>
-                </div>
+        <div className="flex flex-col items-center justify-center h-full w-full text-center">
+            <h1 className="text-4xl font-bold text-text-primary mb-2">
+                Analyze research papers instantly
+            </h1>
+            <p className="text-lg text-text-secondary mb-8">
+                Upload a PDF or paste a URL to extract insights from research papers
+            </p>
 
-                {/* Main Input Area */}
-                <div {...getRootProps()} className="mx-auto w-full max-w-2xl">
-                    <div
-                        className={`relative flex w-full rounded-2xl border bg-white/85 px-4 py-4 text-left backdrop-blur-sm transition-all duration-300 ease-in-out ${
-                            isMultiline
-                                ? 'flex-col gap-3'
-                                : 'flex-col gap-4 sm:flex-row sm:items-center sm:gap-0 sm:px-5 sm:py-4'
-                        } ${
-                            isDragActive
-                                ? 'border-green-300 shadow-lg shadow-green-100/50 sm:scale-[1.01]'
-                                : 'border-gray-200 shadow-sm hover:border-gray-300 hover:shadow-md'
-                        }`}
+            {/* Main Input Area */}
+            <div {...getRootProps()} className="w-full max-w-2xl mx-auto">
+                <div className={`relative flex items-center w-full p-2 bg-white rounded-xl shadow-md border transition-all ${isDragActive ? 'border-brand-green ring-2 ring-brand-green-light' : 'border-gray-200'}`}>
+                    {/* Hidden file input for react-dropzone */}
+                    <input {...getInputProps()} />
+                    {/* Hidden file input for manual selection */}
+                    <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept=".pdf" style={{ display: 'none' }} />
+
+                    {/* Upload Icon */}
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 text-gray-400 hover:text-gray-600"
+                        aria-label="Upload PDF"
                     >
-                        {/* Hidden file input for react-dropzone */}
-                        <input {...getInputProps()} />
-                        {/* Hidden file input for manual selection */}
-                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept=".pdf" className="hidden" />
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                    </button>
 
-                        {/* Upload Icon - shows on left for single line, bottom left for multiline */}
-                        {!isMultiline && (
-                            <button
-                                type="button"
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    fileInputRef.current?.click();
-                                }}
-                                className="flex h-11 w-11 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-gray-600 sm:mr-3"
-                                aria-label="Upload PDF"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8-4-4m0 0L8 8m4-4v12" />
-                                </svg>
-                            </button>
-                        )}
+                    {/* Text Input / File Name Display */}
+                    <input
+                        type="text"
+                        value={selectedFile ? '' : url} // Clear URL input if a file is selected
+                        onChange={(e) => {
+                            setUrl(e.target.value);
+                            if (selectedFile) setSelectedFile(null); // Clear file if user starts typing
+                        }}
+                        placeholder={getDisplayText()}
+                        className="flex-grow bg-transparent outline-none border-none text-gray-700 mx-2 placeholder:text-gray-400"
+                        readOnly={!!selectedFile} // Make input readonly if a file is selected
+                    />
 
-                        {/* Text Input / File Name Display */}
-                        <div className={`relative flex w-full items-center rounded-xl border border-transparent bg-white px-3 py-2 shadow-inner focus-within:border-brand-green/60 ${isMultiline ? '' : 'flex-1'}`}>
-                            <textarea
-                                ref={textareaRef}
-                                value={selectedFile ? '' : url}
-                                onChange={(e) => {
-                                    setUrl(e.target.value);
-                                    if (selectedFile) setSelectedFile(null);
-                                    autoResizeTextarea();
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey && (selectedFile || url.trim())) {
-                                        e.preventDefault();
-                                        handleSubmit();
-                                    }
-                                }}
-                                placeholder={(!selectedFile && url.trim() === '') ? '' : getDisplayText()}
-                                className="w-full resize-none border-none bg-transparent text-base text-gray-800 placeholder:text-gray-400 focus:outline-none min-h-[24px]"
-                                readOnly={!!selectedFile}
-                                rows={1}
-                            />
-                            {!selectedFile && url.trim() === '' && (
-                                <span className="pointer-events-none absolute left-3 top-2 text-base text-gray-400 typing-caret">
-                                    {typedText}
-                                </span>
-                            )}
-                            {selectedFile && (
-                                <span className="ml-3 hidden max-w-[200px] truncate text-sm font-medium text-gray-600 sm:inline" title={selectedFile.name}>
-                                    {selectedFile.name}
-                                </span>
-                            )}
-                        </div>
-
-                        {/* Buttons - different layout for multiline */}
-                        {isMultiline ? (
-                            <div className="flex items-center justify-between">
-                                <button
-                                    type="button"
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                        fileInputRef.current?.click();
-                                    }}
-                                    className="flex h-11 w-11 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-gray-600"
-                                    aria-label="Upload PDF"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8-4-4m0 0L8 8m4-4v12" />
-                                    </svg>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                        handleSubmit();
-                                    }}
-                                    disabled={!selectedFile && !url.trim()}
-                                    className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors duration-200 ${
-                                        selectedFile || url.trim()
-                                            ? 'bg-green-50 text-green-600 hover:bg-green-100'
-                                            : 'cursor-not-allowed bg-gray-100 text-gray-300'
-                                    }`}
-                                    aria-label="Analyze"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M8 5v14l11-7z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    handleSubmit();
-                                }}
-                                disabled={!selectedFile && !url.trim()}
-                                className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors duration-200 sm:ml-3 ${
-                                    selectedFile || url.trim()
-                                        ? 'bg-green-50 text-green-600 hover:bg-green-100'
-                                        : 'cursor-not-allowed bg-gray-100 text-gray-300'
-                                }`}
-                                aria-label="Analyze"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
-                            </button>
-                        )}
-                    </div>
-                </div>
-
-                {/* Footer Text */}
-                <div className="space-y-3 text-center">
-                    <p className="text-xs font-light uppercase tracking-widest text-gray-400">
-                        A software created by the FINS group for the University of Florida AI Days Hackathon
-                    </p>
+                    {/* Submit Button */}
+                    <button
+                        onClick={handleSubmit}
+                        disabled={!selectedFile && !url}
+                        className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg transition hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        aria-label="Submit"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                    </button>
                 </div>
             </div>
+
+            <p className="text-sm text-gray-400 mt-4">
+                Platos-Cave can analyze research papers from URLs or PDF files
+            </p>
         </div>
     );
 };
