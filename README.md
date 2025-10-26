@@ -17,24 +17,26 @@ Like emerging from Plato's allegorical cave into enlightenment, this tool illumi
 
 # Quick Start
 
-You have to run the frontend and backend on two separate terminal sessions. Follow the commands below:
+You have to run the frontend, backend and docker image on **three** separate terminal sessions. Follow the commands below:
 
-## Getting Started (FrontEnd)
-
-### Installation
+## (1) Getting Started (FrontEnd)
 
 ```bash
+cd frontend
 npm install
 gatsby develop
 ```
 
 This will start the development server at `http://localhost:8000`
 
-## Getting Started (Backend)
+## (2) Getting Started (Backend)
+
+On a separate terminal, while the frontend is still running, run the following commands:
 
 ```bash
 # install uv 
 # curl -LsSf https://astral.sh/uv/install.sh | sh
+cd backend
 uv sync
 source .venv/bin/activate
 uvx playwright install chromium --with-deps
@@ -50,13 +52,6 @@ Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/
 BROWSER_USE_API_KEY="bu_YOURKEY"
 ```
 
-```bash 
-# start the docker
-docker compose -f docker-compose.browser.yaml up --build remote-browser
-# alternatively you can run it detached:
-# docker compose -f docker-compose.browser.yaml up -d
-```
-
 ```bash
 # install VNC server
 sudo apt-get install x11vnc
@@ -68,80 +63,16 @@ sudo apt update
 sudo apt install chromium-browser
 google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
 
-cd backend
 python server.py
 ```
 
+## (3) Docker Image for Web Agent
 
-### Killing Processes
+Also an "image" here is not to be interpreted as a picture. You can think of a Docker image as a package that has everything you need to run some software (it has the libraries, code, envs, configs...)
 
-
-```bash
-# Kill all Python processes (main.py and server.py)
-pkill -f "python main.py"
-pkill -f "python server.py"
-
-# Kill Gatsby and all Node processes for this project
-pkill -f "gatsby develop"
-pkill -f "gatsby-worker"
+```bash 
+# start the docker (open Docker Desktop if on Windows -> Resources -> WSL Integration -> Enable Integration)
+docker compose -f docker-compose.browser.yaml up --build remote-browser
+# alternatively you can run it detached:
+# docker compose -f docker-compose.browser.yaml up -d
 ```
-
-2. Clear caches
- 
-```bash
-# Clear Python cache
-find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
-find . -type f -name "*.pyc" -delete
-
-# Clear Gatsby cache (frontend)
-cd frontend
-rm -rf .cache public node_modules/.cache
-
-# Clear backend cache
-cd ../backend
-rm -rf __pycache__ .pytest_cache
-```
-
-### Agent Logic
-Make an acyliclical graph of the paper in the following structure:
-{
-  text:
-  next_node:
-}
-
-Prompt One:
-
-You are verifying ONE statement from a scholarly work in an unknown field.
-Judge only using internal logic, standard disciplinary conventions, and what a well-read scholar would know WITHOUT the web.
-Do not fabricate specifics not present in the statement or obvious from general academic practice.
-
-STATEMENT:
-<<<{text}>>>
-
-TASKS (do all):
-1) Classify the statement into ONE category:
-   {definition | theoretical-claim | methodological-claim | empirical-result | data-statement | model/equation | causal-claim | statistical-inference | citation/attribution | quotation | normative-claim | limitation/scope | conclusion/implication | forecast/prediction}
-2) INTERNAL correctness (0–1): Does it make sense on its own terms (logic, math if any, terminology, no category errors)?
-3) CONTEXTUAL plausibility (0–1): Is it broadly plausible for a typical paper in its field (without checking sources)?
-4) SUPPORT present in-text (select all): {figure/table ref | equation ref | cited-source ref | definition given | none}
-5) Red flags (0–3 short items): e.g., undefined term, missing unit/timeframe, category error, overclaim, non sequitur, math mismatch.
-6) Rationale (1–3 sentences) citing specific phrases or structural issues in the statement.
-
-Return STRICT JSON ONLY:
-{
-  "classification": "",
-  "internal_score": 0.0,
-  "contextual_plausibility": 0.0,
-  "support_markers": [],
-  "red_flags": [],
-  "rationale": ""
-}
-
-
-
-Potential Agents For Improved Fact Checking: 
-* equation-verifier agent	symbolic math, gradient comparison, consistency checks.
-* replication agent	re-runs experiments and compares metrics.
-* citation agent	fetches and summarizes cited works, flags mis-citations.
-* explanation-tester agent	runs stability and faithfulness experiments.
-* consistency-auditor agent	scans text for overclaims or unsupported assertions.

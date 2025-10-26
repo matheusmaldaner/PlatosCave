@@ -50,61 +50,153 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload }) => {
         if (isDragActive) {
             return "Drop the PDF here...";
         }
-        return "Enter research paper URL or upload PDF...";
+        return "Search by paper name, paste URL, or upload PDF...";
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full w-full text-center">
-            <h1 className="text-4xl font-bold text-text-primary mb-2">
-                Analyze research papers instantly
-            </h1>
-            <p className="text-lg text-text-secondary mb-8">
-                Upload a PDF or paste a URL to extract insights from research papers
-            </p>
+        <div className="flex h-full w-full flex-col items-center justify-center px-4 py-12 sm:py-16">
+            <div className="mx-auto w-full max-w-3xl space-y-12">
+                {/* Hero Section */}
+                <div className="space-y-6 text-center">
+                    <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl animate-dissolve-up">
+                        Analyze research papers
+                    </h1>
+                    <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg animate-dissolve-up-delayed">
+                        Search by name, paste a URL, or upload a PDF to verify a research paper's integrity
+                    </p>
+                </div>
 
-            {/* Main Input Area */}
-            <div {...getRootProps()} className="w-full max-w-2xl mx-auto">
-                <div className={`relative flex items-center w-full p-2 bg-white rounded-xl shadow-md border transition-all ${isDragActive ? 'border-brand-green ring-2 ring-brand-green-light' : 'border-gray-200'}`}>
-                    {/* Hidden file input for react-dropzone */}
-                    <input {...getInputProps()} />
-                    {/* Hidden file input for manual selection */}
-                    <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept=".pdf" style={{ display: 'none' }} />
-
-                    {/* Upload Icon */}
-                    <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="p-2 text-gray-400 hover:text-gray-600"
-                        aria-label="Upload PDF"
+                {/* Main Input Area */}
+                <div {...getRootProps()} className="mx-auto w-full max-w-2xl">
+                    <div
+                        className={`relative flex w-full rounded-2xl border bg-white/85 px-4 py-4 text-left backdrop-blur-sm transition-all duration-300 ease-in-out ${
+                            isMultiline
+                                ? 'flex-col gap-3'
+                                : 'flex-col gap-4 sm:flex-row sm:items-center sm:gap-0 sm:px-5 sm:py-4'
+                        } ${
+                            isDragActive
+                                ? 'border-green-300 shadow-lg shadow-green-100/50 sm:scale-[1.01]'
+                                : 'border-gray-200 shadow-sm hover:border-gray-300 hover:shadow-md'
+                        }`}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
-                    </button>
+                        {/* Hidden file input for react-dropzone */}
+                        <input {...getInputProps()} />
+                        {/* Hidden file input for manual selection */}
+                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept=".pdf" className="hidden" />
 
-                    {/* Text Input / File Name Display */}
-                    <input
-                        type="text"
-                        value={selectedFile ? '' : url} // Clear URL input if a file is selected
-                        onChange={(e) => {
-                            setUrl(e.target.value);
-                            if (selectedFile) setSelectedFile(null); // Clear file if user starts typing
-                        }}
-                        placeholder={getDisplayText()}
-                        className="flex-grow bg-transparent outline-none border-none text-gray-700 mx-2 placeholder:text-gray-400"
-                        readOnly={!!selectedFile} // Make input readonly if a file is selected
-                    />
+                        {/* Upload Icon - shows on left for single line, bottom left for multiline */}
+                        {!isMultiline && (
+                            <button
+                                type="button"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    fileInputRef.current?.click();
+                                }}
+                                className="flex h-11 w-11 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-gray-600 sm:mr-3"
+                                aria-label="Upload PDF"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                            </button>
+                        )}
 
-                    {/* Submit Button */}
-                    <button
-                        onClick={handleSubmit}
-                        disabled={!selectedFile && !url}
-                        className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-lg transition hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        aria-label="Submit"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                    </button>
+                        {/* Text Input / File Name Display */}
+                        <div className={`relative flex w-full items-center rounded-xl border border-transparent bg-white px-3 py-2 shadow-inner focus-within:border-brand-green/60 ${isMultiline ? '' : 'flex-1'}`}>
+                            <textarea
+                                ref={textareaRef}
+                                value={selectedFile ? '' : url}
+                                onChange={(e) => {
+                                    setUrl(e.target.value);
+                                    if (selectedFile) setSelectedFile(null);
+                                    autoResizeTextarea();
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey && (selectedFile || url.trim())) {
+                                        e.preventDefault();
+                                        handleSubmit();
+                                    }
+                                }}
+                                placeholder={(!selectedFile && url.trim() === '') ? '' : getDisplayText()}
+                                className="w-full resize-none border-none bg-transparent text-base text-gray-800 placeholder:text-gray-400 focus:outline-none min-h-[24px]"
+                                readOnly={!!selectedFile}
+                                rows={1}
+                            />
+                            {!selectedFile && url.trim() === '' && (
+                                <span className="pointer-events-none absolute left-3 top-2 text-base text-gray-400 typing-caret">
+                                    {typedText}
+                                </span>
+                            )}
+                            {selectedFile && (
+                                <span className="ml-3 hidden max-w-[200px] truncate text-sm font-medium text-gray-600 sm:inline" title={selectedFile.name}>
+                                    {selectedFile.name}
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Buttons - different layout for multiline */}
+                        {isMultiline ? (
+                            <div className="flex items-center justify-between">
+                                <button
+                                    type="button"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        fileInputRef.current?.click();
+                                    }}
+                                    className="flex h-11 w-11 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-gray-600"
+                                    aria-label="Upload PDF"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        handleSubmit();
+                                    }}
+                                    disabled={!selectedFile && !url.trim()}
+                                    className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-200 ${
+                                        selectedFile || url.trim()
+                                            ? 'bg-green-50 text-green-600 hover:bg-green-100'
+                                            : 'cursor-not-allowed bg-gray-100 text-gray-300'
+                                    }`}
+                                    aria-label="Analyze"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    handleSubmit();
+                                }}
+                                disabled={!selectedFile && !url.trim()}
+                                className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-200 sm:ml-3 ${
+                                    selectedFile || url.trim()
+                                        ? 'bg-green-50 text-green-600 hover:bg-green-100'
+                                        : 'cursor-not-allowed bg-gray-100 text-gray-300'
+                                }`}
+                                aria-label="Analyze"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Footer Text */}
+                <div className="space-y-3 text-center">
+                      </p>
+                        A software created by the FINS group for the University of Florida AI Days Hackathon
+
                 </div>
             </div>
 
