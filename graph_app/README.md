@@ -97,7 +97,7 @@ This system is a **validated DAG** whose **nodes** carry agent-extracted, normal
 
 * Nodes $v\in V$, directed edges $u\to v\in E$. Parents $P(v)={,u:(u\to v)\in E,}$.
 * Six node metrics $m_v\in[0,1]^6$ in fixed order:
-  $m_v=\big[\text{cred},,\text{rel},,\text{evid},,\text{rigor},,\text{repr},,\text{cites}\big]_v.$
+  $m_v=\big[\text{cred},\text{rel},\text{evid},\text{rigor},\text{repr},\text{cites}\big]_v.$
 * Convex per-metric weights $w\in\Delta_6:={w\in\mathbb R_{\ge 0}^6:\sum_i w_i=1}$.
   (Optionally role-specific $w^{(\rho)}$.)
 
@@ -170,7 +170,7 @@ with standard node2vec bias $\phi_{p,q}$ (return/outward control) and temperatur
 **Intuition.** Walks concentrate on **trustworthy subgraphs**, yielding corpora for node/graph embeddings.
 
 **Paper fingerprint.**
-$f(G)=\big[S_{\text{graph}},,\text{hist}(C),,\text{role counts},,\text{role-pair counts},,\overline m,,\text{top-}k\text{ path stats},\ldots\big].$
+$f(G)=\big[S_{\text{graph}},\text{hist}(C),\text{role counts},\text{role-pair counts},\overline m,\text{top-}k\text{ path stats},\ldots\big].$
 **Intuition.** A fixed-length, stable vector for retrieval, clustering, or downstream learning.
 
 ---
@@ -208,7 +208,7 @@ We expose a **differentiable** parameter surface:
 1. Build graphs; collect $(\hat C,\hat q,\hat S)$.
 2. Forward: compute $(q,C,S)$ with current parameters.
 3. Loss: weighted sum of edge/node/graph terms + regularizers.
-4. Backprop (PyTorch/JAX), update $(w,\lambda,\beta,\eta,r,s,,\ldots)$.
+4. Backprop (PyTorch/JAX), update $(w,\lambda,\beta,\eta,r,s,\ldots)$.
 5. Calibrate (temperature scaling / Platt) if needed.
 
 ### B. Align Graph Embeddings with Content Embeddings
