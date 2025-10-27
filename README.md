@@ -2,7 +2,7 @@
 <img src="docs/img/banner.png" alt="Plato's Cave Logo">
 
 
-_Appeal to Logos_
+ *A learning-focused research tool that helps you illuminate complex academic papers.*
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-prototype-yellow)]()
@@ -10,11 +10,9 @@ _Appeal to Logos_
 
 ---
 
- *A learning-focused research tool that helps you illuminate complex academic papers.*
 
 </div>
 
----
 
 ### 🧠 Overview
 
