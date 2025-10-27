@@ -4,15 +4,36 @@
 
  *A learning-focused research tool that helps you illuminate complex academic papers.*
 
+[![1st Place](https://img.shields.io/badge/⭐%201st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-prototype-yellow)]()
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
 
 ---
 
+### 📹 Watch the Demo
 
+We developed Plato's Cave as part of the University of Florida's AI Days Hackathon, and therefore had to keep the video within the time limit:
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=wvmJdUhuj4s" target="_blank">
+    <img src="https://img.youtube.com/vi/wvmJdUhuj4s/maxresdefault.jpg"
+      alt="Watch the demo video"
+      width="600"
+      style="border-radius: 8px;"
+    />
+  </a>
+
+  <br><br>
+
+  <a href="https://www.youtube.com/watch?v=wvmJdUhuj4s" target="_blank">
+    <img
+      src="https://img.shields.io/badge/▶%20Watch%20Demo%20Video-red?logo=youtube"
+      alt="Watch on YouTube"
+    />
+  </a>
 </div>
 
+---
 
 ### 🧠 Overview
 
