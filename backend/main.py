@@ -7,7 +7,8 @@ import argparse
 import json
 import sys
 import os
-from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt
+from pathlib import Path
+from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, parse_verification_result
 from verification_pipeline import run_verification_pipeline
 
 load_dotenv()
@@ -103,7 +104,7 @@ async def create_browser_with_retry(
     raise Exception(f"Unexpected error in browser connection retry logic: {last_error}")
 
 
-def dag_to_graphml(dag_json: dict) -> str:
+def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
     """
     Convert DAG JSON structure to GraphML XML format for frontend visualization.
 
@@ -114,15 +115,24 @@ def dag_to_graphml(dag_json: dict) -> str:
                   - role: str (Hypothesis, Claim, Evidence, etc.)
                   - parents: list[int] or null
                   - children: list[int] or null
+        verification_results: Optional dict mapping node_id -> verification metrics
 
     Returns:
         GraphML XML string ready for XmlGraphViewer component
     """
-    # GraphML header with schema definitions
+    # GraphML header with schema definitions (including metrics and rationale)
     graphml_header = """<?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
   <key id="d0" for="node" attr.name="role" attr.type="string" />
   <key id="d2" for="node" attr.name="text" attr.type="string" />
+  <key id="d3" for="node" attr.name="credibility" attr.type="double" />
+  <key id="d4" for="node" attr.name="relevance" attr.type="double" />
+  <key id="d5" for="node" attr.name="evidence_strength" attr.type="double" />
+  <key id="d6" for="node" attr.name="method_rigor" attr.type="double" />
+  <key id="d7" for="node" attr.name="reproducibility" attr.type="double" />
+  <key id="d8" for="node" attr.name="citation_support" attr.type="double" />
+  <key id="d9" for="node" attr.name="verification_summary" attr.type="string" />
+  <key id="d10" for="node" attr.name="confidence_level" attr.type="string" />
   <graph edgedefault="directed">"""
 
     graphml_footer = """  </graph>
@@ -135,12 +145,29 @@ def dag_to_graphml(dag_json: dict) -> str:
     # Build nodes
     for node in dag_json["nodes"]:
         node_id = f"n{node['id']}"
+        str_node_id = str(node['id'])
         role = node['role'].lower()  # Lowercase the role as requested
         text = node['text'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')  # XML escape
 
+        # Build node XML with metrics if available
         node_xml = f"""    <node id="{node_id}">
       <data key="d0">{role}</data>
-      <data key="d2">{text}</data>
+      <data key="d2">{text}</data>"""
+
+        # Add verification metrics if available
+        if verification_results and str_node_id in verification_results:
+            ver_data = verification_results[str_node_id]
+            node_xml += f"""
+      <data key="d3">{ver_data.get('credibility', 0.0)}</data>
+      <data key="d4">{ver_data.get('relevance', 0.0)}</data>
+      <data key="d5">{ver_data.get('evidence_strength', 0.0)}</data>
+      <data key="d6">{ver_data.get('method_rigor', 0.0)}</data>
+      <data key="d7">{ver_data.get('reproducibility', 0.0)}</data>
+      <data key="d8">{ver_data.get('citation_support', 0.0)}</data>
+      <data key="d9">{ver_data.get('verification_summary', '').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')}</data>
+      <data key="d10">{ver_data.get('confidence_level', '')}</data>"""
+
+        node_xml += """
     </node>"""
         nodes_xml.append(node_xml)
 
@@ -242,7 +269,7 @@ async def main(url):
     
         # TODO: make sure it shows interactive elements during the browsing
         # Optimized: reduced from 100 to 25 steps for faster execution
-        history = await agent.run(max_steps=25)
+        history = await agent.run(max_steps=100)
         print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
     
         send_update("Decomposing PDF", "Paper content extracted successfully.")
@@ -403,30 +430,186 @@ Please regenerate the ENTIRE JSON output with these fixes:
     
             # Small delay to ensure WebSocket transmission completes
             await asyncio.sleep(0.5)
-    
+
             send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
-    
-            # Stage 4 & 5 & 6: Run Verification Pipeline
+
+            # Stage 4 & 5: Verify Claims with Browser Agents
+            # Run browser agents to verify each claim and collect verification results
+
+            print(f"[MAIN.PY DEBUG] ========== STAGE 4-5: CLAIM VERIFICATION ==========", file=sys.stderr, flush=True)
+            send_update("Organizing Agents", "Preparing claim verification agents...")
+
+            # Collect all nodes that need verification (skip Hypothesis)
+            nodes_to_verify = [
+                node for node in dag_json["nodes"]
+                if node["role"] != "Hypothesis"  # Hypothesis doesn't need web verification
+            ]
+
+            # Set default scores for Hypothesis nodes
+            hypothesis_nodes = [node for node in dag_json["nodes"] if node["role"] == "Hypothesis"]
+            verification_results = {}
+
+            for hyp_node in hypothesis_nodes:
+                print(f"[MAIN.PY DEBUG] Setting default scores for hypothesis node {hyp_node['id']}", file=sys.stderr, flush=True)
+                verification_results[str(hyp_node["id"])] = {
+                    "credibility": 0.75,      # Assume hypothesis is well-formed
+                    "relevance": 1.0,         # Hypothesis is always 100% relevant to itself
+                    "evidence_strength": 0.5, # Neutral - to be determined by children
+                    "method_rigor": 0.5,      # Neutral
+                    "reproducibility": 0.5,   # Neutral
+                    "citation_support": 0.5   # Neutral
+                }
+
+            total_nodes = len(nodes_to_verify)
+            print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
+            send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
+
+            # Sequential verification loop using the same browser from paper extraction
+            send_update("Compiling Evidence", "Starting sequential claim verification...")
+
+            for idx, node in enumerate(nodes_to_verify, start=1):
+                node_id = str(node["id"])
+                node_text = node["text"]
+                node_role = node["role"]
+
+                print(f"[MAIN.PY DEBUG] ========== VERIFYING NODE {idx}/{total_nodes} ==========", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] Node ID: {node_id}", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] Node Role: {node_role}", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] Node Text: {node_text[:100]}...", file=sys.stderr, flush=True)
+
+                send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
+
+                # Build verification prompt
+                verification_prompt = build_claim_verification_prompt(
+                    claim_text=node_text,
+                    claim_role=node_role,
+                    claim_context=""  # Could add parent node context here in future
+                )
+
+                # Check if browser connection is still alive, reconnect if needed
+                print(f"[MAIN.PY DEBUG] Checking browser connection health...", file=sys.stderr, flush=True)
+                try:
+                    # Test if browser is responsive by checking if we can get pages
+                    await browser.get_pages()
+                    print(f"[MAIN.PY DEBUG] ✅ Browser connection is alive", file=sys.stderr, flush=True)
+                except Exception as e:
+                    print(f"[MAIN.PY DEBUG] ⚠️ Browser connection dead: {e}", file=sys.stderr, flush=True)
+                    print(f"[MAIN.PY DEBUG] Attempting to reconnect browser...", file=sys.stderr, flush=True)
+
+                    # Close the dead browser
+                    try:
+                        await browser.stop()
+                    except:
+                        pass
+
+                    # Store original connection details
+                    original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (remote_cdp_ws or remote_cdp_url or "")
+                    original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
+
+                    # Reconnect to the same CDP endpoint
+                    browser = await create_browser_with_retry(
+                        cdp_url=original_cdp_url,
+                        headless=False,
+                        is_local=original_is_local,
+                        keep_alive=True,
+                        max_retries=3,
+                        initial_delay=2.0
+                    )
+                    print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
+
+                # Create agent for this verification
+                print(f"[MAIN.PY DEBUG] Creating verification agent for node {node_id}...", file=sys.stderr, flush=True)
+                agent_kwargs = {
+                    'task': verification_prompt,
+                    'llm': llm,
+                    'vision_detail_level': 'low',  # Lower detail for faster verification
+                    'generate_gif': False,          # Don't generate GIFs for each verification
+                    'use_vision': True,             # Enable vision for actual web browsing
+                    'browser': browser              # Reuse the same browser instance (reconnected if needed)
+                }
+
+                verification_agent = Agent(**agent_kwargs)
+                print(f"[MAIN.PY DEBUG] Starting verification agent with max_steps=30...", file=sys.stderr, flush=True)
+
+                try:
+                    # Run agent verification
+                    history = await verification_agent.run(max_steps=30)
+                    print(f"[MAIN.PY DEBUG] Agent completed, extracting result...", file=sys.stderr, flush=True)
+
+                    # Extract result from agent
+                    result_text = history.final_result()
+                    print(f"[MAIN.PY DEBUG] Raw result (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
+
+                    # Parse verification result
+                    verification_result = parse_verification_result(result_text)
+
+                    if verification_result:
+                        # Log sources checked to verify actual browsing happened
+                        sources = verification_result.get('sources_checked', [])
+                        print(f"[MAIN.PY DEBUG] ✅ Verification successful! Sources checked: {len(sources)}", file=sys.stderr, flush=True)
+                        for source_idx, source in enumerate(sources[:3], 1):  # Log first 3 sources
+                            print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')}", file=sys.stderr, flush=True)
+                    else:
+                        print(f"[MAIN.PY DEBUG] ⚠️ Failed to parse verification result, using fallback scores", file=sys.stderr, flush=True)
+                        verification_result = {
+                            "credibility": 0.2,
+                            "relevance": 0.5,
+                            "evidence_strength": 0.2,
+                            "method_rigor": 0.2,
+                            "reproducibility": 0.2,
+                            "citation_support": 0.2,
+                            "verification_summary": "Failed to parse verification result",
+                            "confidence_level": "failed"
+                        }
+
+                except Exception as e:
+                    print(f"[MAIN.PY DEBUG] ❌ Error verifying node {node_id}: {e}", file=sys.stderr, flush=True)
+                    verification_result = {
+                        "credibility": 0.2,
+                        "relevance": 0.5,
+                        "evidence_strength": 0.2,
+                        "method_rigor": 0.2,
+                        "reproducibility": 0.2,
+                        "citation_support": 0.2,
+                        "verification_summary": f"Verification failed: {e}",
+                        "confidence_level": "failed"
+                    }
+
+                # Store verification result
+                verification_results[node_id] = verification_result
+                print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id}", file=sys.stderr, flush=True)
+
+                # Small delay between verifications
+                await asyncio.sleep(0.5)
+
+            send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
+
+            # Stage 6: Run Verification Pipeline (Pure Data Processing)
             # This will handle:
-            # - Organizing Agents
-            # - Compiling Evidence (sequential verification)
-            # - Evaluating Integrity (graph scoring)
-    
-            print(f"[MAIN.PY DEBUG] ========== STAGE 4-6: VERIFICATION PIPELINE ==========", file=sys.stderr, flush=True)
-            kg_scorer, verification_summary = await run_verification_pipeline(
+            # - Converting DAG to KGScorer
+            # - Applying pre-computed verification results
+            # - Calculating edge and graph scores
+
+            print(f"[MAIN.PY DEBUG] ========== STAGE 6: GRAPH SCORING PIPELINE ==========", file=sys.stderr, flush=True)
+            kg_scorer, verification_summary = run_verification_pipeline(
                 dag_json=dag_json,
-                llm=llm,
-                browser=browser,
+                verification_results=verification_results,
                 send_update_fn=None  # Use default progress updates
             )
             print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
     
             # Get final integrity score from verification pipeline
             integrity_score = verification_summary['graph_score']
-    
+
             print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
             send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
-    
+
+            # Re-send GraphML with verification metrics embedded
+            print(f"[MAIN.PY DEBUG] Re-generating GraphML with verification metrics", file=sys.stderr, flush=True)
+            graphml_with_metrics = dag_to_graphml(dag_json, verification_results)
+            send_graph_data(graphml_with_metrics)
+            print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics", file=sys.stderr, flush=True)
+
             # Send final score
             print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
             send_final_score(integrity_score)
