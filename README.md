@@ -1,12 +1,13 @@
 <div align="center">
 <img src="docs/img/banner.png" alt="Plato's Cave Logo">
 
-
  *A learning-focused research tool that helps you illuminate complex academic papers.*
 
 [![1st Place](https://img.shields.io/badge/⭐%201st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
+
+</div>
 
 ---
 
@@ -27,7 +28,7 @@ We developed Plato's Cave as part of the University of Florida's AI Days Hackath
 
   <a href="https://www.youtube.com/watch?v=wvmJdUhuj4s" target="_blank">
     <img
-      src="https://img.shields.io/badge/▶%20Watch%20Demo%20Video-red?logo=youtube"
+      src="https://img.shields.io/badge/%20Watch%20Demo%20Video-red?logo=youtube"
       alt="Watch on YouTube"
     />
   </a>
@@ -40,7 +41,12 @@ We developed Plato's Cave as part of the University of Florida's AI Days Hackath
 Plato’s Cave helps you **comprehend dense academic material** by analyzing PDFs and URLs using progressive AI assistance.  
 Like emerging from Plato’s allegorical cave into enlightenment, this tool illuminates the **shadows of academic literature**, uncovering key insights, visualizations, and summaries.  
 
+
+<div align="center">
+
 ![Green Cave](https://github.com/matheusmaldaner/PlatosCave/blob/main/green_cave.gif)
+
+</div>
 
 ## 🚀 Quick Start
 
