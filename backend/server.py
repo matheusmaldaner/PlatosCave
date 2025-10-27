@@ -14,7 +14,12 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    ping_timeout=300,  # 5 minutes before considering connection dead
+    ping_interval=25   # Send ping every 25 seconds to keep connection alive
+)
 
 UPLOAD_FOLDER = 'papers'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
