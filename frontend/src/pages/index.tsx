@@ -227,7 +227,7 @@ const IndexPage = () => {
                     )}
                 </header>
 
-                <div className="relative flex-grow overflow-hidden">
+                <div className="relative flex-grow overflow-x-hidden">
                     <div
                         className={`absolute inset-0 flex overflow-y-auto p-4 transition-all duration-500 ease-in-out sm:p-8 ${(!uploadedFile && !submittedUrl) ? 'pointer-events-auto opacity-100 translate-y-0' : 'pointer-events-none opacity-0 -translate-y-4'}`}
                     >
@@ -237,9 +237,11 @@ const IndexPage = () => {
                     </div>
 
                     <div
-                        className={`absolute inset-0 flex flex-col overflow-hidden transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'pointer-events-none opacity-0 translate-y-4' : 'pointer-events-auto opacity-100 translate-y-0'}`}
+                        className={`absolute inset-0 flex flex-col transition-all duration-500 ease-in-out ${(!uploadedFile && !submittedUrl) ? 'pointer-events-none opacity-0 translate-y-4' : 'pointer-events-auto opacity-100 translate-y-0'}`}
                     >
-                        <ProgressBar steps={processSteps} />
+                        <div className="pt-12 overflow-visible">
+                            <ProgressBar steps={processSteps} />
+                        </div>
                         
                         {/* Browser Viewer - Inline below progress bar */}
                         <BrowserViewer
@@ -250,7 +252,7 @@ const IndexPage = () => {
                             cdpWebSocket={browserSession?.cdpWebSocket}
                         />
                         
-                        <div className="flex-grow px-3 pb-24 pt-3 sm:px-6 sm:pb-6" style={{ minHeight: '55vh' }}>
+                        <div className="flex-grow px-3 pb-24 pt-3 sm:px-6 sm:pb-6 overflow-hidden" style={{ minHeight: '55vh' }}>
                             <XmlGraphViewer graphmlData={graphmlData} />
                         </div>
                     </div>
