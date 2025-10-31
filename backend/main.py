@@ -567,7 +567,11 @@ Please regenerate the ENTIRE JSON output with these fixes:
             send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
 
             # Sequential verification loop using the same browser from paper extraction
+            # NOTE: Browser context management is critical here. CDP "top-level targets" errors
+            # occur when the browser gets stuck in iframe contexts. We reset context before
+            # each verification and force reconnection if CDP errors are detected.
             send_update("Compiling Evidence", "Starting sequential claim verification...")
+            browser_needs_reset = False
 
             for idx, node in enumerate(nodes_to_verify, start=1):
                 node_id = str(node["id"])
@@ -590,13 +594,22 @@ Please regenerate the ENTIRE JSON output with these fixes:
 
                 # Check if browser connection is still alive, reconnect if needed
                 print(f"[MAIN.PY DEBUG] Checking browser connection health...", file=sys.stderr, flush=True)
+                browser_was_reset = False
+
                 try:
                     # Test if browser is responsive by checking if we can get pages
                     await browser.get_pages()
                     print(f"[MAIN.PY DEBUG] ✅ Browser connection is alive", file=sys.stderr, flush=True)
+
+                    # Force reset if CDP errors were detected in previous iteration
+                    if browser_needs_reset:
+                        print(f"[MAIN.PY DEBUG] 🔄 Forcing browser reset due to previous CDP errors", file=sys.stderr, flush=True)
+                        raise Exception("Forced browser reset due to CDP frame errors")
+
                 except Exception as e:
-                    print(f"[MAIN.PY DEBUG] ⚠️ Browser connection dead: {e}", file=sys.stderr, flush=True)
+                    print(f"[MAIN.PY DEBUG] ⚠️ Browser connection issue: {e}", file=sys.stderr, flush=True)
                     print(f"[MAIN.PY DEBUG] Attempting to reconnect browser...", file=sys.stderr, flush=True)
+                    browser_was_reset = True
 
                     # Close the dead browser
                     try:
@@ -618,6 +631,24 @@ Please regenerate the ENTIRE JSON output with these fixes:
                         initial_delay=2.0
                     )
                     print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
+                    browser_needs_reset = False  # Reset the flag after successful reconnection
+
+                # Reset browser context to top-level before each verification
+                print(f"[MAIN.PY DEBUG] Resetting browser context to top-level...", file=sys.stderr, flush=True)
+                try:
+                    pages = await browser.get_pages()
+                    if pages:
+                        page = pages[0]  # Get the first/main page
+                        # Navigate to a blank page to reset context
+                        await page.goto('about:blank')
+                        # Small delay to ensure context reset
+                        await asyncio.sleep(0.5)
+                        print(f"[MAIN.PY DEBUG] ✅ Browser context reset to top-level", file=sys.stderr, flush=True)
+                    else:
+                        print(f"[MAIN.PY DEBUG] ⚠️ No pages found in browser, skipping context reset", file=sys.stderr, flush=True)
+                except Exception as e:
+                    print(f"[MAIN.PY DEBUG] ⚠️ Failed to reset browser context: {e}", file=sys.stderr, flush=True)
+                    # Continue anyway - don't fail the verification for this
 
                 # Create agent for this verification
                 print(f"[MAIN.PY DEBUG] Creating verification agent for node {node_id}...", file=sys.stderr, flush=True)
@@ -634,7 +665,7 @@ Please regenerate the ENTIRE JSON output with these fixes:
                 print(f"[MAIN.PY DEBUG] Starting verification agent with max_steps=30...", file=sys.stderr, flush=True)
 
                 try:
-                    # Run agent verification
+                    # Run agent verification with CDP error handling
                     history = await verification_agent.run(max_steps=30)
                     print(f"[MAIN.PY DEBUG] Agent completed, extracting result...", file=sys.stderr, flush=True)
 
@@ -665,7 +696,15 @@ Please regenerate the ENTIRE JSON output with these fixes:
                         }
 
                 except Exception as e:
-                    print(f"[MAIN.PY DEBUG] ❌ Error verifying node {node_id}: {e}", file=sys.stderr, flush=True)
+                    error_msg = str(e)
+                    print(f"[MAIN.PY DEBUG] ❌ Error verifying node {node_id}: {error_msg}", file=sys.stderr, flush=True)
+
+                    # Check if this is a CDP frame targeting error
+                    if "top-level targets" in error_msg or "Command can only be executed on top-level targets" in error_msg:
+                        print(f"[MAIN.PY DEBUG] 🔄 CDP frame error detected, marking browser as needing reset", file=sys.stderr, flush=True)
+                        # Force browser reconnection on next iteration by setting a flag or handling in the loop
+                        browser_needs_reset = True
+
                     verification_result = {
                         "credibility": 0.2,
                         "relevance": 0.5,
@@ -673,7 +712,7 @@ Please regenerate the ENTIRE JSON output with these fixes:
                         "method_rigor": 0.2,
                         "reproducibility": 0.2,
                         "citation_support": 0.2,
-                        "verification_summary": f"Verification failed: {e}",
+                        "verification_summary": f"Verification failed: {error_msg}",
                         "confidence_level": "failed"
                     }
 
