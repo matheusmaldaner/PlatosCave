@@ -7,7 +7,9 @@ import argparse
 import json
 import sys
 import os
-from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt
+from pathlib import Path
+import fitz  # PyMuPDF for PDF text extraction
+from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, parse_verification_result
 from verification_pipeline import run_verification_pipeline
 
 load_dotenv()
@@ -35,6 +37,54 @@ def send_final_score(score: float, flush: bool = True):
     """Send final integrity score to frontend"""
     score_message = json.dumps({"type": "DONE", "score": score})
     print(score_message, flush=flush)
+
+def extract_text_from_pdf(pdf_path: str) -> str:
+    """
+    Extract text content from a PDF file using PyMuPDF.
+
+    Args:
+        pdf_path: Path to the PDF file
+
+    Returns:
+        Extracted text content as a string
+
+    Raises:
+        FileNotFoundError: If PDF file doesn't exist
+        Exception: If PDF extraction fails
+    """
+    pdf_path_obj = Path(pdf_path)
+
+    if not pdf_path_obj.exists():
+        raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+
+    if not pdf_path_obj.is_file():
+        raise ValueError(f"Path is not a file: {pdf_path}")
+
+    print(f"[MAIN.PY DEBUG] Extracting text from PDF: {pdf_path}", file=sys.stderr, flush=True)
+
+    try:
+        # Open the PDF file
+        doc = fitz.open(pdf_path)
+        text_content = []
+        page_count = len(doc)
+
+        # Extract text from each page
+        for page_num in range(page_count):
+            page = doc[page_num]
+            page_text = page.get_text()
+            if page_text.strip():  # Only add non-empty pages
+                text_content.append(f"--- Page {page_num + 1} ---\n{page_text}")
+
+        doc.close()
+
+        extracted_text = "\n\n".join(text_content)
+        print(f"[MAIN.PY DEBUG] Extracted {len(extracted_text)} characters from {page_count} pages", file=sys.stderr, flush=True)
+
+        return extracted_text
+
+    except Exception as e:
+        print(f"[MAIN.PY DEBUG] Error extracting PDF text: {e}", file=sys.stderr, flush=True)
+        raise Exception(f"Failed to extract text from PDF: {e}")
 
 async def create_browser_with_retry(
     cdp_url: str,
@@ -103,7 +153,7 @@ async def create_browser_with_retry(
     raise Exception(f"Unexpected error in browser connection retry logic: {last_error}")
 
 
-def dag_to_graphml(dag_json: dict) -> str:
+def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
     """
     Convert DAG JSON structure to GraphML XML format for frontend visualization.
 
@@ -114,15 +164,24 @@ def dag_to_graphml(dag_json: dict) -> str:
                   - role: str (Hypothesis, Claim, Evidence, etc.)
                   - parents: list[int] or null
                   - children: list[int] or null
+        verification_results: Optional dict mapping node_id -> verification metrics
 
     Returns:
         GraphML XML string ready for XmlGraphViewer component
     """
-    # GraphML header with schema definitions
+    # GraphML header with schema definitions (including metrics and rationale)
     graphml_header = """<?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
   <key id="d0" for="node" attr.name="role" attr.type="string" />
   <key id="d2" for="node" attr.name="text" attr.type="string" />
+  <key id="d3" for="node" attr.name="credibility" attr.type="double" />
+  <key id="d4" for="node" attr.name="relevance" attr.type="double" />
+  <key id="d5" for="node" attr.name="evidence_strength" attr.type="double" />
+  <key id="d6" for="node" attr.name="method_rigor" attr.type="double" />
+  <key id="d7" for="node" attr.name="reproducibility" attr.type="double" />
+  <key id="d8" for="node" attr.name="citation_support" attr.type="double" />
+  <key id="d9" for="node" attr.name="verification_summary" attr.type="string" />
+  <key id="d10" for="node" attr.name="confidence_level" attr.type="string" />
   <graph edgedefault="directed">"""
 
     graphml_footer = """  </graph>
@@ -135,12 +194,29 @@ def dag_to_graphml(dag_json: dict) -> str:
     # Build nodes
     for node in dag_json["nodes"]:
         node_id = f"n{node['id']}"
+        str_node_id = str(node['id'])
         role = node['role'].lower()  # Lowercase the role as requested
         text = node['text'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')  # XML escape
 
+        # Build node XML with metrics if available
         node_xml = f"""    <node id="{node_id}">
       <data key="d0">{role}</data>
-      <data key="d2">{text}</data>
+      <data key="d2">{text}</data>"""
+
+        # Add verification metrics if available
+        if verification_results and str_node_id in verification_results:
+            ver_data = verification_results[str_node_id]
+            node_xml += f"""
+      <data key="d3">{ver_data.get('credibility', 0.0)}</data>
+      <data key="d4">{ver_data.get('relevance', 0.0)}</data>
+      <data key="d5">{ver_data.get('evidence_strength', 0.0)}</data>
+      <data key="d6">{ver_data.get('method_rigor', 0.0)}</data>
+      <data key="d7">{ver_data.get('reproducibility', 0.0)}</data>
+      <data key="d8">{ver_data.get('citation_support', 0.0)}</data>
+      <data key="d9">{ver_data.get('verification_summary', '').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')}</data>
+      <data key="d10">{ver_data.get('confidence_level', '')}</data>"""
+
+        node_xml += """
     </node>"""
         nodes_xml.append(node_xml)
 
@@ -169,22 +245,44 @@ def dag_to_graphml(dag_json: dict) -> str:
 
     return graphml_content
 
-async def main(url):
+async def main(url=None, pdf_path=None):
     print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
-    print(f"[MAIN.PY DEBUG] URL: {url}", file=sys.stderr, flush=True)
+
+    # Validate input - need either URL or PDF path
+    if not url and not pdf_path:
+        raise ValueError("Either url or pdf_path must be provided")
+    if url and pdf_path:
+        raise ValueError("Cannot process both URL and PDF at the same time")
+
+    is_pdf_mode = pdf_path is not None
+    source = pdf_path if is_pdf_mode else url
+
+    print(f"[MAIN.PY DEBUG] Mode: {'PDF' if is_pdf_mode else 'URL'}", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Source: {source}", file=sys.stderr, flush=True)
 
     # Initialize browser to None for proper cleanup in finally block
     browser = None
 
     try:
         # Stage 1: Validate
-        send_update("Validate", f"Validating URL: {url}")
+        if is_pdf_mode:
+            send_update("Validate", f"Validating PDF file: {pdf_path}")
+            # Check if PDF exists
+            if not Path(pdf_path).exists():
+                raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+            send_update("Validate", "PDF file validated.")
+        else:
+            send_update("Validate", f"Validating URL: {url}")
         await asyncio.sleep(0.5)
 
+        # Initialize browser for BOTH modes (same way as before)
+        # In PDF mode: browser stays idle during extraction, used later for verification
+        # In URL mode: browser used for extraction AND verification
         remote_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
         remote_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
         print(f"[MAIN.PY DEBUG] Remote CDP WS: {remote_cdp_ws}", file=sys.stderr, flush=True)
         print(f"[MAIN.PY DEBUG] Remote CDP URL: {remote_cdp_url}", file=sys.stderr, flush=True)
+
         if remote_cdp_ws or remote_cdp_url:
             browser_endpoint = remote_cdp_ws or remote_cdp_url
             print(f"[MAIN.PY DEBUG] Using remote browser endpoint: {browser_endpoint}", file=sys.stderr, flush=True)
@@ -212,66 +310,96 @@ async def main(url):
                 initial_delay=1.0
             )
 
-        llm = ChatBrowserUse() # optimized for browser automation w 3-5x speedup
-        # alternatively you could use ChatOpenAI(model='o3'), ChatOllama(model="qwen32.1:8b")
-        # this would require OPENAI_API_KEY=... , GOOGLE_API_KEY=... , ANTHROPIC_API_KEY=... ,
+        # Initialize LLM - needed for both PDF and URL modes
+        llm = ChatBrowserUse()  # optimized for browser automation w 3-5x speedup
 
-        send_update("Validate", "URL validated. Initializing browser agent...")
+        send_update("Validate", "Browser and LLM initialized.")
         await asyncio.sleep(0.5)
 
-        # Stage 2: Decomposing PDF (actually browsing and extracting)
+        # Stage 2: Decomposing PDF (extracting content from URL or PDF file)
         print(f"[MAIN.PY DEBUG] ========== STAGE 2: DECOMPOSING PDF ==========", file=sys.stderr, flush=True)
-        send_update("Decomposing PDF", "Navigating to paper and extracting content...")
 
-        browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
-        print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
-        agent_kwargs = dict(
-           task=browsing_url_prompt,
-           llm=llm,
-           vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
-           generate_gif=False,            # Optimized: disabled to reduce overhead
-           use_vision=True
-        )
-        if browser is not None:
-            agent_kwargs['browser'] = browser
-            print(f"[MAIN.PY DEBUG] Browser added to agent", file=sys.stderr, flush=True)
-    
-        agent = Agent(**agent_kwargs)
-        print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=25", file=sys.stderr, flush=True)
-        #agent = Agent(task="browse matheus.wiki, tell his current school", llm=llm)
-    
-        # TODO: make sure it shows interactive elements during the browsing
-        # Optimized: reduced from 100 to 25 steps for faster execution
-        history = await agent.run(max_steps=25)
-        print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
-    
-        send_update("Decomposing PDF", "Paper content extracted successfully.")
-        
-        # Get the actual extracted content from the agent's extract actions
-        #extracted_text = history.final_result()
-        extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
-        extracted_text = "\n\n".join(extracted_chunks)
-    
-        # Join all extracted content into a single string (if multiple extractions were made)
-        #extracted_text = "\n\n".join(extracted_content) if extracted_content else history.final_result()
-    
-        # save for debugging
-        with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
-          f.write(extracted_text)
-    
-        # save additional debug info
-        browsed_urls = history.urls()
-        model_outputs = history.model_outputs()
-        last_action = history.last_action()
-        with open('extra_data.txt', 'w', encoding='utf-8') as f:
-          f.write("Browsed URLs:\n")
-          f.writelines(f"{url}\n" for url in browsed_urls)
-          # f.write("\nExtracted Content:\n")
-          # f.writelines(f"{line}\n" for line in extracted_content)
-          f.write("\nModel Outputs:\n")
-          f.writelines(f"{line}\n" for line in model_outputs)
-          f.write("\nLast Action:\n")
-          f.write(str(last_action))
+        if is_pdf_mode:
+            # PDF FILE MODE: Extract text directly from PDF file (browser stays idle)
+            send_update("Decomposing PDF", f"Extracting text from PDF file: {pdf_path}")
+
+            try:
+                # HACKY: Create a dummy browser agent to establish connection (same as URL mode)
+                # This ensures browser pops up and connects properly
+                print(f"[MAIN.PY DEBUG] Creating dummy browser agent to establish connection", file=sys.stderr, flush=True)
+                dummy_agent = Agent(
+                    task="Navigate to google.com and return the word 'ready'",
+                    llm=llm,
+                    browser=browser,
+                    vision_detail_level='low',
+                    generate_gif=False,
+                    use_vision=False
+                )
+                dummy_history = await dummy_agent.run(max_steps=3)
+                print(f"[MAIN.PY DEBUG] Browser connection established", file=sys.stderr, flush=True)
+
+                # Now extract text from PDF
+                extracted_text = extract_text_from_pdf(pdf_path)
+                send_update("Decomposing PDF", "PDF content extracted successfully.")
+
+                # save for debugging
+                with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
+                    f.write(extracted_text)
+
+                print(f"[MAIN.PY DEBUG] PDF extraction complete ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
+
+            except Exception as e:
+                error_msg = f"Failed to extract PDF: {e}"
+                print(f"[MAIN.PY DEBUG] {error_msg}", file=sys.stderr, flush=True)
+                send_update("Decomposing PDF", error_msg)
+                send_final_score(0.0)
+                return
+
+        else:
+            # URL MODE: Use browser automation to extract from URL
+            send_update("Decomposing PDF", "Navigating to paper and extracting content...")
+
+            browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
+            print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
+            agent_kwargs = dict(
+               task=browsing_url_prompt,
+               llm=llm,
+               vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
+               generate_gif=False,            # Optimized: disabled to reduce overhead
+               use_vision=True
+            )
+            if browser is not None:
+                agent_kwargs['browser'] = browser
+                print(f"[MAIN.PY DEBUG] Browser added to agent", file=sys.stderr, flush=True)
+
+            agent = Agent(**agent_kwargs)
+            print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=100", file=sys.stderr, flush=True)
+
+            # TODO: make sure it shows interactive elements during the browsing
+            history = await agent.run(max_steps=100)
+            print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
+
+            send_update("Decomposing PDF", "Paper content extracted successfully.")
+
+            # Get the actual extracted content from the agent's extract actions
+            extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
+            extracted_text = "\n\n".join(extracted_chunks)
+
+            # save for debugging
+            with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
+              f.write(extracted_text)
+
+            # save additional debug info
+            browsed_urls = history.urls()
+            model_outputs = history.model_outputs()
+            last_action = history.last_action()
+            with open('extra_data.txt', 'w', encoding='utf-8') as f:
+              f.write("Browsed URLs:\n")
+              f.writelines(f"{url}\n" for url in browsed_urls)
+              f.write("\nModel Outputs:\n")
+              f.writelines(f"{line}\n" for line in model_outputs)
+              f.write("\nLast Action:\n")
+              f.write(str(last_action))
     
         # Stage 3: Building Logic Tree (generating DAG)
         print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
@@ -403,30 +531,226 @@ Please regenerate the ENTIRE JSON output with these fixes:
     
             # Small delay to ensure WebSocket transmission completes
             await asyncio.sleep(0.5)
-    
+
             send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
-    
-            # Stage 4 & 5 & 6: Run Verification Pipeline
+
+            # Stage 4 & 5: Verify Claims with Browser Agents
+            # Run browser agents to verify each claim and collect verification results
+            # Browser is already initialized (same for both URL and PDF modes)
+
+            print(f"[MAIN.PY DEBUG] ========== STAGE 4-5: CLAIM VERIFICATION ==========", file=sys.stderr, flush=True)
+            send_update("Organizing Agents", "Preparing claim verification agents...")
+
+            # Collect all nodes that need verification (skip Hypothesis)
+            nodes_to_verify = [
+                node for node in dag_json["nodes"]
+                if node["role"] != "Hypothesis"  # Hypothesis doesn't need web verification
+            ]
+
+            # Set default scores for Hypothesis nodes
+            hypothesis_nodes = [node for node in dag_json["nodes"] if node["role"] == "Hypothesis"]
+            verification_results = {}
+
+            for hyp_node in hypothesis_nodes:
+                print(f"[MAIN.PY DEBUG] Setting default scores for hypothesis node {hyp_node['id']}", file=sys.stderr, flush=True)
+                verification_results[str(hyp_node["id"])] = {
+                    "credibility": 0.75,      # Assume hypothesis is well-formed
+                    "relevance": 1.0,         # Hypothesis is always 100% relevant to itself
+                    "evidence_strength": 0.5, # Neutral - to be determined by children
+                    "method_rigor": 0.5,      # Neutral
+                    "reproducibility": 0.5,   # Neutral
+                    "citation_support": 0.5   # Neutral
+                }
+
+            total_nodes = len(nodes_to_verify)
+            print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
+            send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
+
+            # Sequential verification loop using the same browser from paper extraction
+            # NOTE: Browser context management is critical here. CDP "top-level targets" errors
+            # occur when the browser gets stuck in iframe contexts. We reset context before
+            # each verification and force reconnection if CDP errors are detected.
+            send_update("Compiling Evidence", "Starting sequential claim verification...")
+            browser_needs_reset = False
+
+            for idx, node in enumerate(nodes_to_verify, start=1):
+                node_id = str(node["id"])
+                node_text = node["text"]
+                node_role = node["role"]
+
+                print(f"[MAIN.PY DEBUG] ========== VERIFYING NODE {idx}/{total_nodes} ==========", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] Node ID: {node_id}", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] Node Role: {node_role}", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] Node Text: {node_text[:100]}...", file=sys.stderr, flush=True)
+
+                send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
+
+                # Build verification prompt
+                verification_prompt = build_claim_verification_prompt(
+                    claim_text=node_text,
+                    claim_role=node_role,
+                    claim_context=""  # Could add parent node context here in future
+                )
+
+                # Check if browser connection is still alive, reconnect if needed
+                print(f"[MAIN.PY DEBUG] Checking browser connection health...", file=sys.stderr, flush=True)
+                browser_was_reset = False
+
+                try:
+                    # Test if browser is responsive by checking if we can get pages
+                    await browser.get_pages()
+                    print(f"[MAIN.PY DEBUG] ✅ Browser connection is alive", file=sys.stderr, flush=True)
+
+                    # Force reset if CDP errors were detected in previous iteration
+                    if browser_needs_reset:
+                        print(f"[MAIN.PY DEBUG] 🔄 Forcing browser reset due to previous CDP errors", file=sys.stderr, flush=True)
+                        raise Exception("Forced browser reset due to CDP frame errors")
+
+                except Exception as e:
+                    print(f"[MAIN.PY DEBUG] ⚠️ Browser connection issue: {e}", file=sys.stderr, flush=True)
+                    print(f"[MAIN.PY DEBUG] Attempting to reconnect browser...", file=sys.stderr, flush=True)
+                    browser_was_reset = True
+
+                    # Close the dead browser
+                    try:
+                        await browser.stop()
+                    except:
+                        pass
+
+                    # Store original connection details
+                    original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (remote_cdp_ws or remote_cdp_url or "")
+                    original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
+
+                    # Reconnect to the same CDP endpoint
+                    browser = await create_browser_with_retry(
+                        cdp_url=original_cdp_url,
+                        headless=False,
+                        is_local=original_is_local,
+                        keep_alive=True,
+                        max_retries=3,
+                        initial_delay=2.0
+                    )
+                    print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
+                    browser_needs_reset = False  # Reset the flag after successful reconnection
+
+                # Reset browser context to top-level before each verification
+                print(f"[MAIN.PY DEBUG] Resetting browser context to top-level...", file=sys.stderr, flush=True)
+                try:
+                    pages = await browser.get_pages()
+                    if pages:
+                        page = pages[0]  # Get the first/main page
+                        # Navigate to a blank page to reset context
+                        await page.goto('about:blank')
+                        # Small delay to ensure context reset
+                        await asyncio.sleep(0.5)
+                        print(f"[MAIN.PY DEBUG] ✅ Browser context reset to top-level", file=sys.stderr, flush=True)
+                    else:
+                        print(f"[MAIN.PY DEBUG] ⚠️ No pages found in browser, skipping context reset", file=sys.stderr, flush=True)
+                except Exception as e:
+                    print(f"[MAIN.PY DEBUG] ⚠️ Failed to reset browser context: {e}", file=sys.stderr, flush=True)
+                    # Continue anyway - don't fail the verification for this
+
+                # Create agent for this verification
+                print(f"[MAIN.PY DEBUG] Creating verification agent for node {node_id}...", file=sys.stderr, flush=True)
+                agent_kwargs = {
+                    'task': verification_prompt,
+                    'llm': llm,
+                    'vision_detail_level': 'low',  # Lower detail for faster verification
+                    'generate_gif': False,          # Don't generate GIFs for each verification
+                    'use_vision': True,             # Enable vision for actual web browsing
+                    'browser': browser              # Reuse the same browser instance (reconnected if needed)
+                }
+
+                verification_agent = Agent(**agent_kwargs)
+                print(f"[MAIN.PY DEBUG] Starting verification agent with max_steps=30...", file=sys.stderr, flush=True)
+
+                try:
+                    # Run agent verification with CDP error handling
+                    history = await verification_agent.run(max_steps=30)
+                    print(f"[MAIN.PY DEBUG] Agent completed, extracting result...", file=sys.stderr, flush=True)
+
+                    # Extract result from agent
+                    result_text = history.final_result()
+                    print(f"[MAIN.PY DEBUG] Raw result (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
+
+                    # Parse verification result
+                    verification_result = parse_verification_result(result_text)
+
+                    if verification_result:
+                        # Log sources checked to verify actual browsing happened
+                        sources = verification_result.get('sources_checked', [])
+                        print(f"[MAIN.PY DEBUG] ✅ Verification successful! Sources checked: {len(sources)}", file=sys.stderr, flush=True)
+                        for source_idx, source in enumerate(sources[:3], 1):  # Log first 3 sources
+                            print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')}", file=sys.stderr, flush=True)
+                    else:
+                        print(f"[MAIN.PY DEBUG] ⚠️ Failed to parse verification result, using fallback scores", file=sys.stderr, flush=True)
+                        verification_result = {
+                            "credibility": 0.2,
+                            "relevance": 0.5,
+                            "evidence_strength": 0.2,
+                            "method_rigor": 0.2,
+                            "reproducibility": 0.2,
+                            "citation_support": 0.2,
+                            "verification_summary": "Failed to parse verification result",
+                            "confidence_level": "failed"
+                        }
+
+                except Exception as e:
+                    error_msg = str(e)
+                    print(f"[MAIN.PY DEBUG] ❌ Error verifying node {node_id}: {error_msg}", file=sys.stderr, flush=True)
+
+                    # Check if this is a CDP frame targeting error
+                    if "top-level targets" in error_msg or "Command can only be executed on top-level targets" in error_msg:
+                        print(f"[MAIN.PY DEBUG] 🔄 CDP frame error detected, marking browser as needing reset", file=sys.stderr, flush=True)
+                        # Force browser reconnection on next iteration by setting a flag or handling in the loop
+                        browser_needs_reset = True
+
+                    verification_result = {
+                        "credibility": 0.2,
+                        "relevance": 0.5,
+                        "evidence_strength": 0.2,
+                        "method_rigor": 0.2,
+                        "reproducibility": 0.2,
+                        "citation_support": 0.2,
+                        "verification_summary": f"Verification failed: {error_msg}",
+                        "confidence_level": "failed"
+                    }
+
+                # Store verification result
+                verification_results[node_id] = verification_result
+                print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id}", file=sys.stderr, flush=True)
+
+                # Small delay between verifications
+                await asyncio.sleep(0.5)
+
+            send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
+
+            # Stage 6: Run Verification Pipeline (Pure Data Processing)
             # This will handle:
-            # - Organizing Agents
-            # - Compiling Evidence (sequential verification)
-            # - Evaluating Integrity (graph scoring)
-    
-            print(f"[MAIN.PY DEBUG] ========== STAGE 4-6: VERIFICATION PIPELINE ==========", file=sys.stderr, flush=True)
-            kg_scorer, verification_summary = await run_verification_pipeline(
+            # - Converting DAG to KGScorer
+            # - Applying pre-computed verification results
+            # - Calculating edge and graph scores
+
+            print(f"[MAIN.PY DEBUG] ========== STAGE 6: GRAPH SCORING PIPELINE ==========", file=sys.stderr, flush=True)
+            kg_scorer, verification_summary = run_verification_pipeline(
                 dag_json=dag_json,
-                llm=llm,
-                browser=browser,
+                verification_results=verification_results,
                 send_update_fn=None  # Use default progress updates
             )
             print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
     
             # Get final integrity score from verification pipeline
             integrity_score = verification_summary['graph_score']
-    
+
             print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
             send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
-    
+
+            # Re-send GraphML with verification metrics embedded
+            print(f"[MAIN.PY DEBUG] Re-generating GraphML with verification metrics", file=sys.stderr, flush=True)
+            graphml_with_metrics = dag_to_graphml(dag_json, verification_results)
+            send_graph_data(graphml_with_metrics)
+            print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics", file=sys.stderr, flush=True)
+
             # Send final score
             print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
             send_final_score(integrity_score)
@@ -493,16 +817,25 @@ Please regenerate the ENTIRE JSON output with these fixes:
     # TODO: save the finalized md file so it is not temp
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run an agent task with a selected LLM.")
-    parser.add_argument("--url", type=str, help="Enter URL to analyze.")
+    parser = argparse.ArgumentParser(description="Analyze research papers from URL or PDF file.")
+    parser.add_argument("--url", type=str, help="URL to analyze (e.g., arXiv paper)")
+    parser.add_argument("--pdf", type=str, help="Path to local PDF file to analyze")
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
 
     args = parser.parse_args()
 
+    # Validate that either URL or PDF is provided (but not both)
+    if not args.url and not args.pdf:
+        parser.error("Either --url or --pdf must be provided")
+    if args.url and args.pdf:
+        parser.error("Cannot specify both --url and --pdf. Choose one.")
+
     # TODO: Use args.agent_aggressiveness and args.evidence_threshold in future
-    asyncio.run(main(args.url))
-    # to run, use python main.py --url "https://arxiv.org/abs/2305.10403"
+    asyncio.run(main(url=args.url, pdf_path=args.pdf))
+    # Examples:
+    # python main.py --url "https://arxiv.org/abs/2305.10403"
+    # python main.py --pdf "/path/to/paper.pdf"
 
 
 # spins up multiple parallel agents for the list for dags

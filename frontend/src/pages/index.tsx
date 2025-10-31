@@ -126,6 +126,7 @@ const IndexPage = () => {
 
       <main className="flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans">
         {/* Header */}
+
         <header className="relative z-10 flex w-full items-center justify-between border-b border-gray-100 bg-white/50 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
           <button
             onClick={() => window.location.reload()}
@@ -134,7 +135,6 @@ const IndexPage = () => {
           >
             <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-9" />
           </button>
-
           {(uploadedFile || submittedUrl) && (
             <div className="flex items-center gap-4">
               {finalScore !== null && (
@@ -145,6 +145,9 @@ const IndexPage = () => {
                   </p>
                 </div>
               )}
+              <span className="max-w-full truncate font-mono text-xs text-gray-600 sm:max-w-md sm:text-sm">
+                {uploadedFile ? uploadedFile.name : submittedUrl}
+              </span>
               <button
                 onClick={() => setIsSettingsOpen(true)}
                 className="rounded-lg p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-700"
@@ -205,6 +208,6 @@ const IndexPage = () => {
       </main>
     </>
   );
-};
 
+};
 export default IndexPage;
