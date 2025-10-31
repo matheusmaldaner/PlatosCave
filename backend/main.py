@@ -8,6 +8,7 @@ import json
 import sys
 import os
 from pathlib import Path
+import fitz  # PyMuPDF for PDF text extraction
 from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, parse_verification_result
 from verification_pipeline import run_verification_pipeline
 
@@ -36,6 +37,54 @@ def send_final_score(score: float, flush: bool = True):
     """Send final integrity score to frontend"""
     score_message = json.dumps({"type": "DONE", "score": score})
     print(score_message, flush=flush)
+
+def extract_text_from_pdf(pdf_path: str) -> str:
+    """
+    Extract text content from a PDF file using PyMuPDF.
+
+    Args:
+        pdf_path: Path to the PDF file
+
+    Returns:
+        Extracted text content as a string
+
+    Raises:
+        FileNotFoundError: If PDF file doesn't exist
+        Exception: If PDF extraction fails
+    """
+    pdf_path_obj = Path(pdf_path)
+
+    if not pdf_path_obj.exists():
+        raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+
+    if not pdf_path_obj.is_file():
+        raise ValueError(f"Path is not a file: {pdf_path}")
+
+    print(f"[MAIN.PY DEBUG] Extracting text from PDF: {pdf_path}", file=sys.stderr, flush=True)
+
+    try:
+        # Open the PDF file
+        doc = fitz.open(pdf_path)
+        text_content = []
+        page_count = len(doc)
+
+        # Extract text from each page
+        for page_num in range(page_count):
+            page = doc[page_num]
+            page_text = page.get_text()
+            if page_text.strip():  # Only add non-empty pages
+                text_content.append(f"--- Page {page_num + 1} ---\n{page_text}")
+
+        doc.close()
+
+        extracted_text = "\n\n".join(text_content)
+        print(f"[MAIN.PY DEBUG] Extracted {len(extracted_text)} characters from {page_count} pages", file=sys.stderr, flush=True)
+
+        return extracted_text
+
+    except Exception as e:
+        print(f"[MAIN.PY DEBUG] Error extracting PDF text: {e}", file=sys.stderr, flush=True)
+        raise Exception(f"Failed to extract text from PDF: {e}")
 
 async def create_browser_with_retry(
     cdp_url: str,
@@ -196,22 +245,44 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
 
     return graphml_content
 
-async def main(url):
+async def main(url=None, pdf_path=None):
     print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
-    print(f"[MAIN.PY DEBUG] URL: {url}", file=sys.stderr, flush=True)
+
+    # Validate input - need either URL or PDF path
+    if not url and not pdf_path:
+        raise ValueError("Either url or pdf_path must be provided")
+    if url and pdf_path:
+        raise ValueError("Cannot process both URL and PDF at the same time")
+
+    is_pdf_mode = pdf_path is not None
+    source = pdf_path if is_pdf_mode else url
+
+    print(f"[MAIN.PY DEBUG] Mode: {'PDF' if is_pdf_mode else 'URL'}", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Source: {source}", file=sys.stderr, flush=True)
 
     # Initialize browser to None for proper cleanup in finally block
     browser = None
 
     try:
         # Stage 1: Validate
-        send_update("Validate", f"Validating URL: {url}")
+        if is_pdf_mode:
+            send_update("Validate", f"Validating PDF file: {pdf_path}")
+            # Check if PDF exists
+            if not Path(pdf_path).exists():
+                raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+            send_update("Validate", "PDF file validated.")
+        else:
+            send_update("Validate", f"Validating URL: {url}")
         await asyncio.sleep(0.5)
 
+        # Initialize browser for BOTH modes (same way as before)
+        # In PDF mode: browser stays idle during extraction, used later for verification
+        # In URL mode: browser used for extraction AND verification
         remote_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
         remote_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
         print(f"[MAIN.PY DEBUG] Remote CDP WS: {remote_cdp_ws}", file=sys.stderr, flush=True)
         print(f"[MAIN.PY DEBUG] Remote CDP URL: {remote_cdp_url}", file=sys.stderr, flush=True)
+
         if remote_cdp_ws or remote_cdp_url:
             browser_endpoint = remote_cdp_ws or remote_cdp_url
             print(f"[MAIN.PY DEBUG] Using remote browser endpoint: {browser_endpoint}", file=sys.stderr, flush=True)
@@ -239,66 +310,96 @@ async def main(url):
                 initial_delay=1.0
             )
 
-        llm = ChatBrowserUse() # optimized for browser automation w 3-5x speedup
-        # alternatively you could use ChatOpenAI(model='o3'), ChatOllama(model="qwen32.1:8b")
-        # this would require OPENAI_API_KEY=... , GOOGLE_API_KEY=... , ANTHROPIC_API_KEY=... ,
+        # Initialize LLM - needed for both PDF and URL modes
+        llm = ChatBrowserUse()  # optimized for browser automation w 3-5x speedup
 
-        send_update("Validate", "URL validated. Initializing browser agent...")
+        send_update("Validate", "Browser and LLM initialized.")
         await asyncio.sleep(0.5)
 
-        # Stage 2: Decomposing PDF (actually browsing and extracting)
+        # Stage 2: Decomposing PDF (extracting content from URL or PDF file)
         print(f"[MAIN.PY DEBUG] ========== STAGE 2: DECOMPOSING PDF ==========", file=sys.stderr, flush=True)
-        send_update("Decomposing PDF", "Navigating to paper and extracting content...")
 
-        browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
-        print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
-        agent_kwargs = dict(
-           task=browsing_url_prompt,
-           llm=llm,
-           vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
-           generate_gif=False,            # Optimized: disabled to reduce overhead
-           use_vision=True
-        )
-        if browser is not None:
-            agent_kwargs['browser'] = browser
-            print(f"[MAIN.PY DEBUG] Browser added to agent", file=sys.stderr, flush=True)
-    
-        agent = Agent(**agent_kwargs)
-        print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=25", file=sys.stderr, flush=True)
-        #agent = Agent(task="browse matheus.wiki, tell his current school", llm=llm)
-    
-        # TODO: make sure it shows interactive elements during the browsing
-        # Optimized: reduced from 100 to 25 steps for faster execution
-        history = await agent.run(max_steps=100)
-        print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
-    
-        send_update("Decomposing PDF", "Paper content extracted successfully.")
-        
-        # Get the actual extracted content from the agent's extract actions
-        #extracted_text = history.final_result()
-        extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
-        extracted_text = "\n\n".join(extracted_chunks)
-    
-        # Join all extracted content into a single string (if multiple extractions were made)
-        #extracted_text = "\n\n".join(extracted_content) if extracted_content else history.final_result()
-    
-        # save for debugging
-        with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
-          f.write(extracted_text)
-    
-        # save additional debug info
-        browsed_urls = history.urls()
-        model_outputs = history.model_outputs()
-        last_action = history.last_action()
-        with open('extra_data.txt', 'w', encoding='utf-8') as f:
-          f.write("Browsed URLs:\n")
-          f.writelines(f"{url}\n" for url in browsed_urls)
-          # f.write("\nExtracted Content:\n")
-          # f.writelines(f"{line}\n" for line in extracted_content)
-          f.write("\nModel Outputs:\n")
-          f.writelines(f"{line}\n" for line in model_outputs)
-          f.write("\nLast Action:\n")
-          f.write(str(last_action))
+        if is_pdf_mode:
+            # PDF FILE MODE: Extract text directly from PDF file (browser stays idle)
+            send_update("Decomposing PDF", f"Extracting text from PDF file: {pdf_path}")
+
+            try:
+                # HACKY: Create a dummy browser agent to establish connection (same as URL mode)
+                # This ensures browser pops up and connects properly
+                print(f"[MAIN.PY DEBUG] Creating dummy browser agent to establish connection", file=sys.stderr, flush=True)
+                dummy_agent = Agent(
+                    task="Navigate to google.com and return the word 'ready'",
+                    llm=llm,
+                    browser=browser,
+                    vision_detail_level='low',
+                    generate_gif=False,
+                    use_vision=False
+                )
+                dummy_history = await dummy_agent.run(max_steps=3)
+                print(f"[MAIN.PY DEBUG] Browser connection established", file=sys.stderr, flush=True)
+
+                # Now extract text from PDF
+                extracted_text = extract_text_from_pdf(pdf_path)
+                send_update("Decomposing PDF", "PDF content extracted successfully.")
+
+                # save for debugging
+                with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
+                    f.write(extracted_text)
+
+                print(f"[MAIN.PY DEBUG] PDF extraction complete ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
+
+            except Exception as e:
+                error_msg = f"Failed to extract PDF: {e}"
+                print(f"[MAIN.PY DEBUG] {error_msg}", file=sys.stderr, flush=True)
+                send_update("Decomposing PDF", error_msg)
+                send_final_score(0.0)
+                return
+
+        else:
+            # URL MODE: Use browser automation to extract from URL
+            send_update("Decomposing PDF", "Navigating to paper and extracting content...")
+
+            browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
+            print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
+            agent_kwargs = dict(
+               task=browsing_url_prompt,
+               llm=llm,
+               vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
+               generate_gif=False,            # Optimized: disabled to reduce overhead
+               use_vision=True
+            )
+            if browser is not None:
+                agent_kwargs['browser'] = browser
+                print(f"[MAIN.PY DEBUG] Browser added to agent", file=sys.stderr, flush=True)
+
+            agent = Agent(**agent_kwargs)
+            print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=100", file=sys.stderr, flush=True)
+
+            # TODO: make sure it shows interactive elements during the browsing
+            history = await agent.run(max_steps=100)
+            print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
+
+            send_update("Decomposing PDF", "Paper content extracted successfully.")
+
+            # Get the actual extracted content from the agent's extract actions
+            extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
+            extracted_text = "\n\n".join(extracted_chunks)
+
+            # save for debugging
+            with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
+              f.write(extracted_text)
+
+            # save additional debug info
+            browsed_urls = history.urls()
+            model_outputs = history.model_outputs()
+            last_action = history.last_action()
+            with open('extra_data.txt', 'w', encoding='utf-8') as f:
+              f.write("Browsed URLs:\n")
+              f.writelines(f"{url}\n" for url in browsed_urls)
+              f.write("\nModel Outputs:\n")
+              f.writelines(f"{line}\n" for line in model_outputs)
+              f.write("\nLast Action:\n")
+              f.write(str(last_action))
     
         # Stage 3: Building Logic Tree (generating DAG)
         print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
@@ -435,6 +536,7 @@ Please regenerate the ENTIRE JSON output with these fixes:
 
             # Stage 4 & 5: Verify Claims with Browser Agents
             # Run browser agents to verify each claim and collect verification results
+            # Browser is already initialized (same for both URL and PDF modes)
 
             print(f"[MAIN.PY DEBUG] ========== STAGE 4-5: CLAIM VERIFICATION ==========", file=sys.stderr, flush=True)
             send_update("Organizing Agents", "Preparing claim verification agents...")
@@ -676,16 +778,25 @@ Please regenerate the ENTIRE JSON output with these fixes:
     # TODO: save the finalized md file so it is not temp
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run an agent task with a selected LLM.")
-    parser.add_argument("--url", type=str, help="Enter URL to analyze.")
+    parser = argparse.ArgumentParser(description="Analyze research papers from URL or PDF file.")
+    parser.add_argument("--url", type=str, help="URL to analyze (e.g., arXiv paper)")
+    parser.add_argument("--pdf", type=str, help="Path to local PDF file to analyze")
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
 
     args = parser.parse_args()
 
+    # Validate that either URL or PDF is provided (but not both)
+    if not args.url and not args.pdf:
+        parser.error("Either --url or --pdf must be provided")
+    if args.url and args.pdf:
+        parser.error("Cannot specify both --url and --pdf. Choose one.")
+
     # TODO: Use args.agent_aggressiveness and args.evidence_threshold in future
-    asyncio.run(main(args.url))
-    # to run, use python main.py --url "https://arxiv.org/abs/2305.10403"
+    asyncio.run(main(url=args.url, pdf_path=args.pdf))
+    # Examples:
+    # python main.py --url "https://arxiv.org/abs/2305.10403"
+    # python main.py --pdf "/path/to/paper.pdf"
 
 
 # spins up multiple parallel agents for the list for dags
