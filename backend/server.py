@@ -367,12 +367,50 @@ def ensure_remote_browser_service() -> Optional[dict]:
     return browser_payload
 
 def run_script_and_stream_output(filepath, settings):
+    """
+    Run PDF analysis using main.py with --pdf flag
+    Streams real-time updates via WebSocket
+    """
+    print(f"[SERVER DEBUG] ========== STARTING PDF ANALYSIS ==========", flush=True)
+    print(f"[SERVER DEBUG] PDF path: {filepath}", flush=True)
+    print(f"[SERVER DEBUG] Settings: {settings}", flush=True)
+
+    # Ensure remote browser is available (needed for claim verification even in PDF mode)
+    print("[SERVER DEBUG] Ensuring remote browser service for verification...", flush=True)
+    browser_info = ensure_remote_browser_service()
+    if browser_info is None:
+        print("[SERVER DEBUG] Remote browser failed, falling back to local browser", flush=True)
+        browser_info = {}  # Empty dict to signal local browser mode
+
     command = [
-        'python', '../cli.py', filepath,
+        'python', 'main.py', '--pdf', filepath,
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
 
+    # Set environment to suppress browser-use logs
+    env = os.environ.copy()
+    env['SUPPRESS_LOGS'] = 'true'
+
+    # Set remote browser environment variables (same as URL mode)
+    if browser_info:
+        cdp_url = browser_info.get('cdp_url')
+        cdp_ws = browser_info.get('cdp_websocket')
+        if cdp_url:
+            env['REMOTE_BROWSER_CDP_URL'] = cdp_url
+        if cdp_ws:
+            env['REMOTE_BROWSER_CDP_WS'] = cdp_ws
+        novnc_url = browser_info.get('novnc_url')
+        if novnc_url:
+            env['REMOTE_BROWSER_NOVNC_URL'] = novnc_url
+    else:
+        # Ensure remote browser env vars are not set for local browser fallback
+        env.pop('REMOTE_BROWSER_CDP_URL', None)
+        env.pop('REMOTE_BROWSER_CDP_WS', None)
+        env.pop('REMOTE_BROWSER_NOVNC_URL', None)
+        print("[SERVER DEBUG] Using local browser - no remote CDP environment variables set", flush=True)
+
+    print(f"[SERVER DEBUG] Starting subprocess with command: {' '.join(command)}", flush=True)
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
@@ -380,21 +418,42 @@ def run_script_and_stream_output(filepath, settings):
         text=True,
         bufsize=1,
         encoding='utf-8',
-        cwd=os.path.dirname(os.path.abspath(__file__))  # Run from backend directory
+        cwd=os.path.dirname(os.path.abspath(__file__)),  # Run from backend directory
+        env=env
     )
+    print(f"[SERVER DEBUG] Subprocess started with PID: {process.pid}", flush=True)
+
+    # Re-emit browser info to ensure frontend WebSocket has connected and receives it
+    # Same as URL mode - this makes the browser viewer appear in the frontend
+    if browser_info and browser_info.get('cdp_url'):
+        print(f"[SERVER DEBUG] Re-emitting BROWSER_ADDRESS to frontend: {browser_info}", flush=True)
+        socketio.emit('status_update', {'data': json.dumps(browser_info)})
+        socketio.sleep(0.1)  # Small delay to ensure delivery
+        print("[SERVER DEBUG] BROWSER_ADDRESS re-emitted!", flush=True)
+    else:
+        print("[SERVER DEBUG] Using local browser, no BROWSER_ADDRESS to emit", flush=True)
 
     for line in process.stdout:
         line = line.strip()
         if line:
-            # This part is fine and streams stdout correctly
-            socketio.emit('status_update', {'data': line})
-            socketio.sleep(0)
+            # Only send valid JSON to frontend
+            try:
+                json.loads(line)  # Validate it's JSON
+                socketio.emit('status_update', {'data': line})
+                socketio.sleep(0)
+            except json.JSONDecodeError:
+                # Ignore non-JSON output
+                print(f"[SERVER DEBUG] Skipping non-JSON line: {line[:100]}", flush=True)
+                pass
 
+    print("[SERVER DEBUG] Subprocess stdout closed, waiting for process to finish...", flush=True)
     process.wait()
-    # CORRECTED: Properly handle and send stderr output as JSON
+    print(f"[SERVER DEBUG] Subprocess finished with return code: {process.returncode}", flush=True)
+
+    # Handle errors
     if process.returncode != 0:
         error_output = process.stderr.read()
-        print(f"CLI Error: {error_output}") # Log error on the server
+        print(f"PDF Analysis Error: {error_output}")
         error_message = json.dumps({"type": "ERROR", "message": error_output})
         socketio.emit('status_update', {'data': error_message})
 
@@ -551,6 +610,10 @@ def upload_file():
     }
 
     if file and file.filename:
+        # Validate file type - only accept PDFs
+        if not file.filename.lower().endswith('.pdf'):
+            return {'error': 'Only PDF files are supported'}, 400
+
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
         socketio.start_background_task(run_script_and_stream_output, filepath, settings)
