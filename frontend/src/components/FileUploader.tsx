@@ -312,7 +312,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                 </div>
             </div>
         </div>
-    );
+      </div>
+
+      <p className="text-sm text-gray-400 mt-4">
+        Platos-Cave can analyze research papers from URLs or PDF files
+      </p>
+    </div>
+  );
 };
 
 export default FileUploader;
