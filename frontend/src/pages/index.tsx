@@ -29,6 +29,8 @@ const IndexPage = () => {
   const [graphmlData, setGraphmlData] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const [mode, setMode] = useState<'academic' | 'journalist'>('academic');
+
   const [settings, setSettings] = useState<Settings>({
     agentAggressiveness: 5,
     evidenceThreshold: 0.8,
@@ -51,7 +53,7 @@ const IndexPage = () => {
   useEffect(() => {
     if (!uploadedFile && !submittedUrl) return;
 
-    const socket: Socket = io('http://localhost:5000');
+    const socket: Socket = io('http://localhost:5050');
     socket.on('connect', () => console.log('Connected to WebSocket server!'));
 
     socket.on('status_update', (msg: { data: string }) => {
@@ -78,7 +80,7 @@ const IndexPage = () => {
       }
     });
 
-    return () => socket.disconnect();
+    return () => { socket.disconnect(); };
   }, [uploadedFile, submittedUrl]);
 
   const handleFileUpload = async (file: File) => {
@@ -87,6 +89,7 @@ const IndexPage = () => {
     Object.entries(settings).forEach(([key, value]) =>
       formData.append(key, value.toString())
     );
+    formData.append('mode', mode);
 
     setProcessSteps(INITIAL_STAGES);
     setFinalScore(null);
@@ -95,7 +98,7 @@ const IndexPage = () => {
     setSubmittedUrl(null);
 
     try {
-      await axios.post('http://localhost:5000/api/upload', formData);
+      await axios.post('http://localhost:5050/api/upload', formData);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -109,7 +112,7 @@ const IndexPage = () => {
     setUploadedFile(null);
 
     try {
-      await axios.post('http://localhost:5000/api/analyze-url', { url, ...settings });
+      await axios.post('http://localhost:5050/api/analyze-url', { url, mode, ...settings });
     } catch (error) {
       console.error('Error analyzing URL:', error);
     }
@@ -183,7 +186,12 @@ const IndexPage = () => {
         <div className="relative flex-grow overflow-hidden">
           {!uploadedFile && !submittedUrl ? (
             <div className="flex items-center justify-center p-6">
-              <FileUploader onFileUpload={handleFileUpload} onUrlSubmit={handleUrlSubmit} />
+              <FileUploader
+                onFileUpload={handleFileUpload}
+                onUrlSubmit={handleUrlSubmit}
+                mode={mode}
+                onModeChange={setMode}
+              />
             </div>
           ) : (
             <>

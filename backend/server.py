@@ -9,6 +9,7 @@ from urllib import request as urllib_request
 from urllib.error import URLError, HTTPError
 from urllib.parse import urlparse, urlunparse
 from flask import Flask, request
+from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from flask_cors import CORS
 
@@ -387,6 +388,9 @@ def run_script_and_stream_output(filepath, settings):
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
+    mode = settings.get('mode', 'academic')
+    if mode:
+        command.extend(['--mode', str(mode)])
 
     # Set environment to suppress browser-use logs
     env = os.environ.copy()
@@ -516,6 +520,9 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
+    mode = settings.get('mode', 'academic')
+    if mode:
+        command.extend(['--mode', str(mode)])
 
     # Set environment to suppress browser-use logs
     env = os.environ.copy()
@@ -606,7 +613,8 @@ def upload_file():
 
     settings = {
         'agentAggressiveness': request.form.get('agentAggressiveness', 5),
-        'evidenceThreshold': request.form.get('evidenceThreshold', 0.8)
+        'evidenceThreshold': request.form.get('evidenceThreshold', 0.8),
+        'mode': request.form.get('mode', 'academic')
     }
 
     if file and file.filename:
@@ -644,6 +652,13 @@ def cleanup():
         return {'error': str(e)}, 500
 
 
+@app.route('/api/health', methods=['GET'])
+def health():
+    """Simple health endpoint to verify server is up."""
+    return {"status": "ok"}, 200
+
+
+
 @app.route('/api/analyze-url', methods=['POST'])
 def analyze_url():
     """
@@ -660,7 +675,8 @@ def analyze_url():
     url = data['url']
     settings = {
         'agentAggressiveness': data.get('agentAggressiveness', 5),
-        'evidenceThreshold': data.get('evidenceThreshold', 0.8)
+        'evidenceThreshold': data.get('evidenceThreshold', 0.8),
+        'mode': data.get('mode', 'academic')
     }
 
     # Get session ID from request header or generate one
@@ -695,5 +711,8 @@ def handle_disconnect():
     reset_browser_session()
 
 if __name__ == '__main__':
-    socketio.run(app, port=5000, debug=True)
+    # Load .env and enforce required keys before starting the server
+    load_dotenv()
+
+    socketio.run(app, port=5050, debug=True)
 

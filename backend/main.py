@@ -245,7 +245,7 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
 
     return graphml_content
 
-async def main(url=None, pdf_path=None):
+async def main(url=None, pdf_path=None, mode: str = 'academic'):
     print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
 
     # Validate input - need either URL or PDF path
@@ -359,7 +359,7 @@ async def main(url=None, pdf_path=None):
             # URL MODE: Use browser automation to extract from URL
             send_update("Decomposing PDF", "Navigating to paper and extracting content...")
 
-            browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
+            browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url, mode=mode)
             print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
             agent_kwargs = dict(
                task=browsing_url_prompt,
@@ -408,7 +408,7 @@ async def main(url=None, pdf_path=None):
     
         # we got all the info about the paper stored in url (all text), extract payload later
         print(f"[MAIN.PY DEBUG] Building DAG prompt from extracted text ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
-        dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text)
+        dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text, mode=mode)
     
         # create the dag from the raw text of the paper, need to pass Message objects
         user_message = UserMessage(content=dag_task_prompt)
@@ -589,7 +589,8 @@ Please regenerate the ENTIRE JSON output with these fixes:
                 verification_prompt = build_claim_verification_prompt(
                     claim_text=node_text,
                     claim_role=node_role,
-                    claim_context=""  # Could add parent node context here in future
+                    claim_context="",  # Could add parent node context here in future
+                    mode=mode
                 )
 
                 # Check if browser connection is still alive, reconnect if needed
@@ -822,6 +823,7 @@ if __name__ == "__main__":
     parser.add_argument("--pdf", type=str, help="Path to local PDF file to analyze")
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
+    parser.add_argument("--mode", type=str, default='academic', help="Prompt mode: academic or journalist")
 
     args = parser.parse_args()
 
@@ -832,7 +834,7 @@ if __name__ == "__main__":
         parser.error("Cannot specify both --url and --pdf. Choose one.")
 
     # TODO: Use args.agent_aggressiveness and args.evidence_threshold in future
-    asyncio.run(main(url=args.url, pdf_path=args.pdf))
+    asyncio.run(main(url=args.url, pdf_path=args.pdf, mode=args.mode))
     # Examples:
     # python main.py --url "https://arxiv.org/abs/2305.10403"
     # python main.py --pdf "/path/to/paper.pdf"

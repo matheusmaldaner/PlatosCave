@@ -5,12 +5,15 @@ import { useDropzone } from 'react-dropzone';
 interface FileUploaderProps {
     onFileUpload: (file: File) => void;
     onUrlSubmit: (url: string) => void;
+    mode: 'academic' | 'journalist';
+    onModeChange: (mode: 'academic' | 'journalist') => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }) => {
+const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit, mode, onModeChange }) => {
     const [url, setUrl] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isMultiline, setIsMultiline] = useState(false);
+    const [isModeOpen, setIsModeOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -213,6 +216,45 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                             </button>
                         )}
 
+                        {/* Mode selector (compact dropdown) */}
+                        {!isMultiline && (
+                            <div className="relative sm:mr-3">
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); setIsModeOpen((o) => !o); }}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none"
+                                    aria-haspopup="listbox"
+                                    aria-expanded={isModeOpen}
+                                    aria-label="Select mode"
+                                >
+                                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />
+                                    <span className="capitalize">{mode}</span>
+                                    <svg className="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                                {isModeOpen && (
+                                    <div
+                                        className="absolute z-20 mt-2 w-40 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {(['academic','journalist'] as const).map((opt) => (
+                                            <button
+                                                key={opt}
+                                                type="button"
+                                                onClick={() => { onModeChange(opt); setIsModeOpen(false); }}
+                                                className={`w-full px-3 py-2 text-left text-sm capitalize ${mode === opt ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                                                role="option"
+                                                aria-selected={mode === opt}
+                                            >
+                                                {opt}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {/* Text Input / File Name Display */}
                         <div className={`relative flex w-full items-center rounded-xl border border-transparent bg-white px-3 py-2 shadow-inner focus-within:border-brand-green/60 ${isMultiline ? '' : 'flex-1'}`}>
                             <textarea
@@ -262,6 +304,42 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8-4-4m0 0L8 8m4-4v12" />
                                     </svg>
                                 </button>
+                                {/* Mode selector for multiline layout */}
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={(e) => { e.stopPropagation(); setIsModeOpen((o) => !o); }}
+                                        className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none"
+                                        aria-haspopup="listbox"
+                                        aria-expanded={isModeOpen}
+                                        aria-label="Select mode"
+                                    >
+                                        <span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />
+                                        <span className="capitalize">{mode}</span>
+                                        <svg className="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    {isModeOpen && (
+                                        <div
+                                            className="absolute z-20 mt-2 w-40 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            {(['academic','journalist'] as const).map((opt) => (
+                                                <button
+                                                    key={opt}
+                                                    type="button"
+                                                    onClick={() => { onModeChange(opt); setIsModeOpen(false); }}
+                                                    className={`w-full px-3 py-2 text-left text-sm capitalize ${mode === opt ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                                                    role="option"
+                                                    aria-selected={mode === opt}
+                                                >
+                                                    {opt}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                                 <button
                                     type="button"
                                     onClick={(event) => {
@@ -310,14 +388,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                         A software created by the FINS group for the University of Florida AI Days Hackathon
                     </p>
                 </div>
+
+                <p className="text-sm text-gray-400 mt-4">
+                Platos-Cave can analyze research papers from URLs or PDF files
+                </p>
             </div>
         </div>
-      </div>
-
-      <p className="text-sm text-gray-400 mt-4">
-        Platos-Cave can analyze research papers from URLs or PDF files
-      </p>
-    </div>
   );
 };
 
