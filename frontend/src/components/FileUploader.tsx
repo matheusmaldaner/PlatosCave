@@ -127,13 +127,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit, 
     // Typewriter rotating titles for subtitle
     const titles = [
         'Attention Is All You Need',
-        'BERT: Pre-training of Deep Bidirectional Transformers',
+        'BERT: Pre-training of Deep Bidirectional..,
         'GPT-3: Language Models are Few-Shot Learners',
-        'ResNet: Deep Residual Learning for Image Recognition',
+        'ResNet: Deep Residual Learning for..',
         'Neural Ordinary Differential Equations',
         'Diffusion Models Beat GANs on Image Synthesis',
         'Playing Atari with Deep Reinforcement Learning',
-        'U-Net: Convolutional Networks for Biomedical Image Segmentation'
+        'U-Net: Convolutional Networks for...'
     ];
 
     const [typedText, setTypedText] = useState('');
