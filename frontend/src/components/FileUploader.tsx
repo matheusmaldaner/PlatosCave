@@ -309,15 +309,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                     <p className="text-xs font-light uppercase tracking-widest text-gray-400">
                         A software created by the FINS group for the University of Florida AI Days Hackathon
                     </p>
+                    <p className="text-sm text-gray-400 mt-4">
+                        Platos-Cave can analyze research papers from URLs or PDF files
+                    </p>
                 </div>
             </div>
         </div>
-      </div>
-
-      <p className="text-sm text-gray-400 mt-4">
-        Platos-Cave can analyze research papers from URLs or PDF files
-      </p>
-    </div>
   );
 };
 
