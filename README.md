@@ -1,7 +1,7 @@
 <div align="center">
 <img src="docs/img/banner.png" alt="Plato's Cave Logo">
 
- *A learning-focused research tool that helps you illuminate complex academic papers.*
+ *A Human-Centered Agentic System for Validating Research Papers*
 
 [![1st Place](https://img.shields.io/badge/⭐%201st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
 [![License](https://img.shields.io/badge/license-Research%20Use%20Only-red.svg)](LICENSE.md)
