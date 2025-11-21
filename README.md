@@ -7,6 +7,7 @@
 [![License](https://img.shields.io/badge/license-Research%20Use%20Only-red.svg)](LICENSE.md)
 [![Commercial License](https://img.shields.io/badge/commercial%20license-contact%20author-blue.svg)](mailto:mkunzlermaldaner@ufl.edu)
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
+![Patent Pending](https://img.shields.io/badge/⚖️%20Patent-Pending-orange)
 
 </div>
 
