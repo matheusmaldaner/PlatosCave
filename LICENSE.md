@@ -319,16 +319,26 @@ Matheus Kunzler Maldaner at the email address above.
 
 ## CONTRIBUTOR ACKNOWLEDGMENTS
 
-This project was developed during UF AI Days GatorHack and includes
-contributions from multiple developers. While Matheus Kunzler Maldaner is
-the primary author, maintainer, and copyright holder, we acknowledge:
+This project was initially developed during UF AI Days GatorHack 2025 by a collaborative
+team. For legal and licensing purposes, copyright is filed under one name to
+enable clear patent filing and commercial licensing pathways.
+
+While Matheus Kunzler Maldaner is
+listed as the copyright holder, we acknowledge:
 
 - **Raul Valle, Stephen Wormald** - Significant technical contributions and documentation
 - **Kristian O'Connor, James Woelke** - Additional contributions
 
+### Copyright Note:
+While copyright is held by Matheus Kunzler Maldaner for licensing and patent
+purposes, all team members are credited in academic citations and acknowledged
+for their valuable contributions to this project.
+
+### Contributor Rights:
 Individual contributors' rights to their specific contributions remain as
-provided under applicable law. For any questions regarding contributions
-or rights, please contact the primary author above.
+provided under applicable law. Contributors seeking information about their
+contributions or potential collaboration opportunities may contact:
+mkunzlermaldaner@ufl.edu
 
 ---
 
