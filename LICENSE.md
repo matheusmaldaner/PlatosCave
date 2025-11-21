@@ -113,9 +113,9 @@ Commercial use is prohibited without explicit permission from Matheus Kunzler Ma
 4. **In Academic Publications**: Proper citation if used in research:
 
 ```
-Maldaner, M. K. (2025). Plato's Cave: A Trust-Propagating Knowledge Graph System
-for Academic Research Verification. University of Florida.
-https://github.com/matheusmaldaner/PlatosCave
+Maldaner, M. K., Valle, R., Wormald, S., O'Connor, K., & Woelke, J. (2025).
+Plato's Cave: A Trust-Propagating Knowledge Graph System for Academic Research Verification.
+University of Florida. https://github.com/matheusmaldaner/PlatosCave
 ```
 
 ### Removal or Obscuring Attribution:
@@ -158,11 +158,6 @@ non-commercial purposes** as defined in this License.
 - Commercial patent licenses must be negotiated separately
 - Any patents filed or pending remain the property of Matheus Kunzler Maldaner
 
-### Patent Pending Notice:
-Portions of this Software may be covered by pending or granted patents. The algorithms
-and methods embodied herein, including the trust-gating mechanism and role-aware
-scoring system, are proprietary inventions of Matheus Kunzler Maldaner.
-
 ---
 
 ## DISTRIBUTION AND REDISTRIBUTION
@@ -201,14 +196,6 @@ separate commercial license from Matheus Kunzler Maldaner.
 - Removal of attribution requirements (negotiable)
 - Custom licensing terms and pricing
 - Technical support and consulting (negotiable)
-
-### Pricing Structure (Indicative):
-- Startups (<$1M revenue): Contact for academic-startup pricing
-- Small Business (<$10M revenue): Starting at $5,000/year
-- Enterprise (>$10M revenue): Starting at $25,000/year
-- Universities/Institutions: Contact for institutional licensing
-
-*Actual pricing negotiable based on use case and scale.*
 
 ---
 
