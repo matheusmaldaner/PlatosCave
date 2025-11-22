@@ -81,7 +81,7 @@ Create a .env file
 touch .env
 ```
 
-Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/dashboard/api))
+Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))
 ```
 BROWSER_USE_API_KEY="bu_YOURKEY"
 ```
