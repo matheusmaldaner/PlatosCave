@@ -58,7 +58,13 @@ You have to run the frontend, backend and docker image on **three** separate ter
 ```bash
 cd frontend
 npm install
-gatsby develop
+gatsby develop  # If command not found, try: npx gatsby develop
+```
+
+If you see
+Module not found: Can't resolve 'lucide-react':
+```bash
+npm install lucide-react
 ```
 
 This will start the development server at `http://localhost:8000`
@@ -83,6 +89,7 @@ touch .env
 
 Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))
 ```
+nano .env  # Open the file and add the line below
 BROWSER_USE_API_KEY="bu_YOURKEY"
 ```
 
