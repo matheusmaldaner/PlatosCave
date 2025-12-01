@@ -49,11 +49,14 @@ const IndexPage = () => {
     limitation: 1.0,
   });
 
+  // Fixed API base (standardized)
+  const API_BASE = 'http://localhost:5050';
+
   // WebSocket connection for updates
   useEffect(() => {
     if (!uploadedFile && !submittedUrl) return;
 
-    const socket: Socket = io('http://localhost:5050');
+    const socket: Socket = io(API_BASE);
     socket.on('connect', () => console.log('Connected to WebSocket server!'));
 
     socket.on('status_update', (msg: { data: string }) => {
@@ -98,7 +101,7 @@ const IndexPage = () => {
     setSubmittedUrl(null);
 
     try {
-      await axios.post('http://localhost:5050/api/upload', formData);
+      await axios.post(`${API_BASE}/api/upload`, formData);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -112,7 +115,7 @@ const IndexPage = () => {
     setUploadedFile(null);
 
     try {
-      await axios.post('http://localhost:5050/api/analyze-url', { url, mode, ...settings });
+      await axios.post(`${API_BASE}/api/analyze-url`, { url, mode, ...settings });
     } catch (error) {
       console.error('Error analyzing URL:', error);
     }

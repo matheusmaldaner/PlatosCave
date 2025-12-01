@@ -74,7 +74,7 @@ uv sync
 source .venv/bin/activate
 uvx playwright install chromium --with-deps
 ```
-* Note: MacOS reserves port 5000 for airplay mechanisms. If you are on mac switch backend port to 5050.
+* Note: MacOS reserves port 5000 for airplay functionality. If you are on mac you will need to change backend port.
 
 Create a .env file
 ```
