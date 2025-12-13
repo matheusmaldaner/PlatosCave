@@ -87,9 +87,9 @@ Create a .env file
 touch .env
 ```
 
-Add your BROWSER_USE_API_KEY to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))
 
-Add your EXA_API key to the file (get $10 free [here](https://dashboard.exa.ai/home))
+Add your BROWSER_USE_API_KEY to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))<br>
+Add your EXA_API_KEY to the file (get $10 free [here](https://dashboard.exa.ai/home))
 ```
 nano .env  # Open the file and add the line below
 BROWSER_USE_API_KEY="bu_YOURKEY"
