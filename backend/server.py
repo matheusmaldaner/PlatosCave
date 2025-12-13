@@ -45,6 +45,25 @@ BROWSER_NOVNC_HEALTH_URL = BROWSER_NOVNC_INTERNAL_URL
 active_processes = {}
 
 
+def stream_stderr_to_console_and_ws(process, session_id=None):
+    """
+    Read subprocess stderr continuously so main.py debug prints are not lost
+    and the subprocess doesn't block due to filled stderr buffer.
+    """
+    for line in process.stderr:
+        line = line.rstrip("\n")
+        if not line:
+            continue
+
+        # 1) server 콘솔에 출력
+        print(f"[MAIN STDERR] {line}", flush=True)
+
+        # 2) (선택) 프론트에도 보내기
+        payload = {"type": "LOG", "stream": "stderr", "text": line}
+        socketio.emit('status_update', {'data': json.dumps(payload)})
+        socketio.sleep(0)
+
+
 def emit_json_message(payload: dict) -> None:
     """Send a structured payload to the frontend over WebSocket."""
     print(f"[SERVER DEBUG] Emitting message: {payload.get('type', 'UNKNOWN')}", flush=True)
@@ -422,6 +441,7 @@ def run_script_and_stream_output(filepath, settings):
         env=env
     )
     print(f"[SERVER DEBUG] Subprocess started with PID: {process.pid}", flush=True)
+    socketio.start_background_task(stream_stderr_to_console_and_ws, process)
 
     # Re-emit browser info to ensure frontend WebSocket has connected and receives it
     # Same as URL mode - this makes the browser viewer appear in the frontend
@@ -551,6 +571,7 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
         env=env  # Pass modified environment
     )
     print(f"[SERVER DEBUG] Subprocess started with PID: {process.pid}", flush=True)
+    socketio.start_background_task(stream_stderr_to_console_and_ws, process, session_id)
 
     # Track this process for the session
     if session_id:
