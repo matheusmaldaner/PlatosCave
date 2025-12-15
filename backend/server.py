@@ -55,10 +55,10 @@ def stream_stderr_to_console_and_ws(process, session_id=None):
         if not line:
             continue
 
-        # 1) server 콘솔에 출력
+        # Print stderr output to the server console
         print(f"[MAIN STDERR] {line}", flush=True)
 
-        # 2) (선택) 프론트에도 보내기
+        # (optional) show stderr logs
         payload = {"type": "LOG", "stream": "stderr", "text": line}
         socketio.emit('status_update', {'data': json.dumps(payload)})
         socketio.sleep(0)
