@@ -87,7 +87,6 @@ Create a .env file
 touch .env
 ```
 
-
 Add your BROWSER_USE_API_KEY to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))<br>
 Add your EXA_API_KEY to the file (get $10 free [here](https://dashboard.exa.ai/home))
 ```
