@@ -13,6 +13,8 @@ from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, buil
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
+from typing import Optional, Any
+import textwrap
 
 load_dotenv()
 
@@ -31,19 +33,19 @@ if os.environ.get('SUPPRESS_LOGS') == 'true':
 
 # WebSocket update helpers (for server.py to stream to frontend)
 # this update is what the socket.IO listens for
-def send_update(stage: str, text: str, flush: bool = True):
+def send_update(stage: str, text: str, flush: bool = True) -> None:
     """Send progress update to frontend via WebSocket"""
     update_message = json.dumps({"type": "UPDATE", "stage": stage, "text": text})
     print(f"[MAIN.PY DEBUG] Sending UPDATE - Stage: {stage}, Text: {text}", file=sys.stderr, flush=True)
     print(update_message, flush=flush)
     print(f"[MAIN.PY DEBUG] UPDATE sent", file=sys.stderr, flush=True)
 
-def send_graph_data(graph_string: str, flush: bool = True):
+def send_graph_data(graph_string: str, flush: bool = True) -> None:
     """Send GraphML data to frontend"""
     graph_message = json.dumps({"type": "GRAPH_DATA", "data": graph_string})
     print(graph_message, flush=flush)
 
-def send_final_score(score: float, flush: bool = True):
+def send_final_score(score: float, flush: bool = True) -> None:
     """Send final integrity score to frontend"""
     score_message = json.dumps({"type": "DONE", "score": score})
     print(score_message, flush=flush)
@@ -96,44 +98,66 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         print(f"[MAIN.PY DEBUG] Error extracting PDF text: {e}", file=sys.stderr, flush=True)
         raise Exception(f"Failed to extract text from PDF: {e}")
     
-def build_claim_verification_prompt_exa(claim_text, claim_role, claim_context): # # Force LLM to use Exa-retrieved sources before any free browsing
-    return f"""
-You are verifying the following claim.
+# Force LLM to use Exa-retrieved sources before any free browsing
+def build_claim_verification_prompt_exa(claim_text: str, claim_role: str, claim_context: str) -> str:
+    """
+    Force LLM to use Exa-retrieved sources before any free browsing
+    
+    Args:
+        claim_text (str): verifying if true or false (please double check if this is the correct definition)
+        claim_role (str): Role for the LLM to fill
+        claim_context (str): First initial sources to browse through
 
-Claim role: {claim_role}
-Claim text:
-{claim_text}
+    Returns:
+        Verification prompt for LLM
+    """
+    return textwrap.dedent(f"""
+        You are verifying the following claim.
 
-{claim_context}
+        Claim role: {claim_role}
+        Claim text:
+        {claim_text}
 
-=== STRICT INSTRUCTIONS (MANDATORY) ===
-1. You MUST open and examine at least TWO sources labeled [EXA#] above.
-2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
-3. Do NOT rely solely on prior knowledge or memory.
-4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
-5. Your final answer MUST be a JSON object (not markdown, not text).
+        {claim_context}
 
-Return ONLY valid JSON with this schema:
-{{
-  "credibility": float,
-  "relevance": float,
-  "evidence_strength": float,
-  "method_rigor": float,
-  "reproducibility": float,
-  "citation_support": float,
-  "sources_checked": [
-    {{
-      "url": string,
-      "finding": string
-    }}
-  ],
-  "verification_summary": string,
-  "confidence_level": string
-}}
-"""
+        === STRICT INSTRUCTIONS (MANDATORY) ===
+        1. You MUST open and examine at least TWO sources labeled [EXA#] above.
+        2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
+        3. Do NOT rely solely on prior knowledge or memory.
+        4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
+        5. Your final answer MUST be a JSON object (not markdown, not text).
+
+        Return ONLY valid JSON with this schema:
+        {{
+        "credibility": float,
+        "relevance": float,
+        "evidence_strength": float,
+        "method_rigor": float,
+        "reproducibility": float,
+        "citation_support": float,
+        "sources_checked": [
+            {{
+            "url": string,
+            "finding": string
+            }}
+        ],
+        "verification_summary": string,
+        "confidence_level": string
+        }}
+        """)
 
     
-async def exa_retrieve(claim: str, k: int = 6) -> str: # Exa based evidence retrieval for claim verification
+async def exa_retrieve(claim: str, k: int = 6) -> str: 
+    """
+    Exa based evidence retrieval for claim verification
+
+    Args:
+        claim (str): Statement to look into
+        k (int, optional): Number of results to return. Defaults to 6.
+
+    Returns:
+        str: found sources for LLM
+    """
     def _run():
         print(f"[EXA DEBUG] query={claim[:120]!r} k={k}", file=sys.stderr, flush=True)
         res = exa.search_and_contents(
@@ -156,7 +180,16 @@ async def exa_retrieve(claim: str, k: int = 6) -> str: # Exa based evidence retr
 
     return await asyncio.to_thread(_run)
 
-async def extract_text(paper_url: str) -> str: # Extract paper text via Exa (fallback to browser if insufficient)
+async def extract_text(paper_url: str) -> str:
+    """
+    Extract paper text via Exa (fallback to browser if insufficient)
+
+    Args:
+        paper_url (str): link to paper
+
+    Returns:
+        str: text from paper
+    """
     def _run():
         res = exa.search_and_contents(
             paper_url,
@@ -174,13 +207,13 @@ async def extract_text(paper_url: str) -> str: # Extract paper text via Exa (fal
 
 
 async def create_browser_with_retry(
-    cdp_url: str,
-    is_local: bool,
-    headless: bool = False,
-    keep_alive: bool = True,
-    max_retries: int = 3,
-    initial_delay: float = 2.0
-) -> Browser:
+        cdp_url: str,
+        is_local: bool,
+        headless: bool = False,
+        keep_alive: bool = True,
+        max_retries: int = 3,
+        initial_delay: float = 2.0
+        ) -> Browser:
     """
     Create browser with exponential backoff retry logic.
 
@@ -257,19 +290,19 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
         GraphML XML string ready for XmlGraphViewer component
     """
     # GraphML header with schema definitions (including metrics and rationale)
-    graphml_header = """<?xml version='1.0' encoding='utf-8'?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-  <key id="d0" for="node" attr.name="role" attr.type="string" />
-  <key id="d2" for="node" attr.name="text" attr.type="string" />
-  <key id="d3" for="node" attr.name="credibility" attr.type="double" />
-  <key id="d4" for="node" attr.name="relevance" attr.type="double" />
-  <key id="d5" for="node" attr.name="evidence_strength" attr.type="double" />
-  <key id="d6" for="node" attr.name="method_rigor" attr.type="double" />
-  <key id="d7" for="node" attr.name="reproducibility" attr.type="double" />
-  <key id="d8" for="node" attr.name="citation_support" attr.type="double" />
-  <key id="d9" for="node" attr.name="verification_summary" attr.type="string" />
-  <key id="d10" for="node" attr.name="confidence_level" attr.type="string" />
-  <graph edgedefault="directed">"""
+    graphml_header = textwrap.dedent("""<?xml version='1.0' encoding='utf-8'?>
+        <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+        <key id="d0" for="node" attr.name="role" attr.type="string" />
+        <key id="d2" for="node" attr.name="text" attr.type="string" />
+        <key id="d3" for="node" attr.name="credibility" attr.type="double" />
+        <key id="d4" for="node" attr.name="relevance" attr.type="double" />
+        <key id="d5" for="node" attr.name="evidence_strength" attr.type="double" />
+        <key id="d6" for="node" attr.name="method_rigor" attr.type="double" />
+        <key id="d7" for="node" attr.name="reproducibility" attr.type="double" />
+        <key id="d8" for="node" attr.name="citation_support" attr.type="double" />
+        <key id="d9" for="node" attr.name="verification_summary" attr.type="string" />
+        <key id="d10" for="node" attr.name="confidence_level" attr.type="string" />
+        <graph edgedefault="directed">""")
 
     graphml_footer = """  </graph>
 </graphml>"""
@@ -569,24 +602,24 @@ async def main(url=None, pdf_path=None):
 
                 if attempt < max_retries - 1:
                     # Retry with error feedback
-                    error_context = f"""
-PREVIOUS ATTEMPT FAILED - JSON PARSING ERROR:
-Error: {e}
-Location: Line {e.lineno if hasattr(e, 'lineno') else 'unknown'}, Column {e.colno if hasattr(e, 'colno') else 'unknown'}
+                    error_context = textwrap.dedent(f"""
+                        PREVIOUS ATTEMPT FAILED - JSON PARSING ERROR:
+                        Error: {e}
+                        Location: Line {e.lineno if hasattr(e, 'lineno') else 'unknown'}, Column {e.colno if hasattr(e, 'colno') else 'unknown'}
 
-The JSON you provided was INVALID. Common issues:
-- Unescaped backslashes in text (like LaTeX: \\mathcal, \\text, etc.)
-- Special characters not properly escaped
-- Invalid escape sequences
+                        The JSON you provided was INVALID. Common issues:
+                        - Unescaped backslashes in text (like LaTeX: \\mathcal, \\text, etc.)
+                        - Special characters not properly escaped
+                        - Invalid escape sequences
 
-Please regenerate the ENTIRE JSON output with these fixes:
-1. Convert ALL LaTeX to plain text (e.g., "$\\mathcal{{D}}$" → "dataset D")
-2. Replace special symbols with words (e.g., "α" → "alpha")
-3. Only use valid JSON escapes: \\n, \\t, \\", \\\\, \\/
-4. Double-check that your output is valid JSON before responding
+                        Please regenerate the ENTIRE JSON output with these fixes:
+                        1. Convert ALL LaTeX to plain text (e.g., "$\\mathcal{{D}}$" → "dataset D")
+                        2. Replace special symbols with words (e.g., "α" → "alpha")
+                        3. Only use valid JSON escapes: \\n, \\t, \\", \\\\, \\/
+                        4. Double-check that your output is valid JSON before responding
 
-{dag_task_prompt}
-"""
+                        {dag_task_prompt}
+                        """)
                     user_message = UserMessage(content=error_context)
                     send_update("Building Logic Tree", f"Retrying DAG generation (attempt {attempt + 2}/{max_retries})...")
                 else:
@@ -677,8 +710,8 @@ Please regenerate the ENTIRE JSON output with these fixes:
 
                 exa_context = await exa_retrieve(node_text, k=6)
                 claim_context = (
-                "Here are candidate sources retrieved by Exa. "
-                "Use these first, then browse if needed.\n\n"
+                    "Here are candidate sources retrieved by Exa. "
+                    "Use these first, then browse if needed.\n\n"
                 f"{exa_context}"
                 )
                 # Build verification prompt
