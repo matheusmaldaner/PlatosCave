@@ -59,7 +59,13 @@ You have to run the frontend, backend and docker image on **three** separate ter
 ```bash
 cd frontend
 npm install
-gatsby develop
+gatsby develop  # If command not found, try: npx gatsby develop
+```
+
+If you see
+Module not found: Can't resolve 'lucide-react':
+```bash
+npm install lucide-react
 ```
 
 This will start the development server at `http://localhost:8000`
@@ -82,9 +88,12 @@ Create a .env file
 touch .env
 ```
 
-Add your API key to the file (get $10 free [here](https://cloud.browser-use.com/dashboard/api))
+Add your BROWSER_USE_API_KEY to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))<br>
+Add your EXA_API_KEY to the file (get $10 free [here](https://dashboard.exa.ai/home))
 ```
+nano .env  # Open the file and add the line below
 BROWSER_USE_API_KEY="bu_YOURKEY"
+EXA_API_KEY="YOURKEY"
 ```
 
 ```bash
