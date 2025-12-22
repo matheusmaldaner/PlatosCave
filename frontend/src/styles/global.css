@@ -1,46 +1,237 @@
 /* PlatosCave/frontend/src/styles/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: #FFFFFF;
+/* Base styles */
+html {
+    scroll-behavior: smooth;
 }
 
-@keyframes dissolveUp {
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #FFFDF9 0%, #FDF9F3 50%, #FAF5ED 100%);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Serif headings */
+.font-serif {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+/* Custom utilities */
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
     0% {
         opacity: 0;
-        transform: translateY(12px);
-        filter: blur(4px);
-    }
-    60% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
+        transform: translateY(24px);
     }
     100% {
         opacity: 1;
         transform: translateY(0);
-        filter: blur(0);
     }
 }
 
-.animate-dissolve-up {
-    animation: dissolveUp 700ms ease-out both;
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-.animate-dissolve-up-delayed {
-    animation: dissolveUp 900ms ease-out both;
-    animation-delay: 120ms;
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.7s ease-out both;
+}
+
+.animate-fade-in-up-delayed {
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.animate-fade-in-up-delayed-2 {
+    animation: fadeInUp 0.8s ease-out 0.35s both;
+}
+
+.animate-fade-in-up-delayed-3 {
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+.animate-fade-in-right {
+    animation: fadeInRight 0.9s ease-out 0.4s both;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.5s ease-out both;
+}
+
+.animate-float {
+    animation: float 5s ease-in-out infinite;
+}
+
+.animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+.animate-pulse-glow {
+    animation: pulseGlow 2s infinite;
+}
+
+/* Typewriter caret animation */
 @keyframes caretBlink {
     0%, 100% { border-color: transparent; }
     50% { border-color: currentColor; }
 }
 
 .typing-caret {
-    border-right: 2px solid rgba(75, 85, 99, 0.8); /* gray-600 */
+    border-right: 2px solid rgba(107, 114, 128, 0.7);
     animation: caretBlink 1s step-end infinite;
     white-space: nowrap;
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Glass morphism effects */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Soft shadows */
+.shadow-soft {
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.02),
+        0 4px 8px rgba(0, 0, 0, 0.03),
+        0 8px 16px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-soft-lg {
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.02),
+        0 10px 20px rgba(0, 0, 0, 0.04),
+        0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* Button styles */
+.btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-text-primary text-white font-medium rounded-full transition-all duration-200 hover:bg-gray-800 hover:shadow-lg active:scale-[0.98];
+}
+
+.btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent text-text-primary font-medium rounded-full border border-gray-300 transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 active:scale-[0.98];
+}
+
+/* Badge/pill styles */
+.pill-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-full bg-white border border-gray-200 shadow-pill;
+}
+
+/* Card hover effects */
+.card-hover {
+    @apply transition-all duration-300 hover:shadow-card-xl hover:-translate-y-1;
+}
+
+/* Input focus styles */
+.input-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Selection styling */
+::selection {
+    background: rgba(16, 185, 129, 0.2);
+    color: inherit;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .hero-title {
+        font-size: 2.5rem;
+        line-height: 1.15;
+    }
 }

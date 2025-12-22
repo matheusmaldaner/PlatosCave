@@ -7,7 +7,7 @@ interface ScoreSliderProps {
 
 const ScoreSlider: React.FC<ScoreSliderProps> = ({ label = "Depth Decay (α)" }) => {
   const [alpha, setAlpha] = useState(0.15);
-  const [score, setScore] = useState(0);
+  const [, setScore] = useState(0);
 
   // temp static test data
   const nodes = [

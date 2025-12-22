@@ -1,0 +1,68 @@
+version : '3'
+
+vars: 
+  BACKEND_DIR: backend
+  VENV_DIR: '{{.BACKEND_DIR}}/.venv'
+tasks: 
+  setup: 
+    desc: 'Run initial setup for the repo'
+    cmds:
+      - task: install-uv
+      - task: setup-backend
+      - task: create-env
+  start:
+    cmds:
+      - task: start-server`
+  install-uv:
+    desc: 'install uv package manager'
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+        {{else}}
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        {{end}}
+    status:
+      - command -v uv || where uv
+  setup-backend:
+    desc: 'Setup backend'
+    dir: '{{.BACKEND_DIR}}'
+    cmds:
+      - uv sync
+      - uvx playwright install chromium --with-deps
+  create-env:
+    dir: '{{.BACKEND_DIR}}'
+    cmds:
+      - cp ../sample.env ../.env
+    status:
+      - test -f {{.BACKEND_DIR}}/.env
+  start-server:
+    dir: '{{.BACKEND_DIR}}' 
+    cmds:
+      - uv run python server.py
+  setup-vnc:
+    desc: 'Install and start VNC server (Linux only)'
+    platforms: [linux]
+    cmds:
+      - sudo apt-get update
+      - sudo apt-get install -y x11vnc
+      - x11vnc -display :0 -forever -shared
+
+  install-chrome-linux:
+    desc: 'Install Chromium browser (Linux only)'
+    platforms: [linux]
+    cmds:
+      - sudo apt update
+      - sudo apt install -y chromium-browser
+
+  clean:
+    desc: 'Clean up virtual environment and cache files'
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+        if exist {{.VENV_DIR}} rmdir /s /q {{.VENV_DIR}}
+        {{else}}
+        rm -rf {{.VENV_DIR}}
+        {{end}}
+
+      

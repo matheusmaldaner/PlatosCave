@@ -4,6 +4,19 @@ import React from 'react';
 export interface Settings {
     agentAggressiveness: number;
     evidenceThreshold: number;
+    credibility: number;
+    relevance: number;
+    evidenceStrength: number;
+    methodRigor: number;
+    reproducibility: number;
+    citationSupport: number;
+    hypothesis: number;
+    claim: number;
+    method: number;
+    evidence: number;
+    result: number;
+    conclusion: number;
+    limitation: number;
 }
 
 interface SettingsModalProps {

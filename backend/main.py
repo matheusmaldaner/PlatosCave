@@ -11,23 +11,13 @@ from pathlib import Path
 import fitz  # PyMuPDF for PDF text extraction
 from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, parse_verification_result
 from verification_pipeline import run_verification_pipeline
-import logging
-from exa_py import Exa
 
 load_dotenv()
-
-exa_api_key = os.getenv("EXA_API_KEY")
-if not exa_api_key:
-    raise RuntimeError("EXA_API_KEY is not set")
-
-exa = Exa(api_key=exa_api_key)
-
 
 # Suppress browser-use logs by redirecting stderr when running from server
 # (browser-use logs go to stderr, we only want JSON on stdout)
 if os.environ.get('SUPPRESS_LOGS') == 'true':
-    #sys.stderr = open(os.devnull, 'w')
-    logging.getLogger("browser_use").setLevel(logging.ERROR)
+    sys.stderr = open(os.devnull, 'w')
 
 # WebSocket update helpers (for server.py to stream to frontend)
 # this update is what the socket.IO listens for
@@ -95,83 +85,6 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     except Exception as e:
         print(f"[MAIN.PY DEBUG] Error extracting PDF text: {e}", file=sys.stderr, flush=True)
         raise Exception(f"Failed to extract text from PDF: {e}")
-    
-def build_claim_verification_prompt_exa(claim_text, claim_role, claim_context): # # Force LLM to use Exa-retrieved sources before any free browsing
-    return f"""
-You are verifying the following claim.
-
-Claim role: {claim_role}
-Claim text:
-{claim_text}
-
-{claim_context}
-
-=== STRICT INSTRUCTIONS (MANDATORY) ===
-1. You MUST open and examine at least TWO sources labeled [EXA#] above.
-2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
-3. Do NOT rely solely on prior knowledge or memory.
-4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
-5. Your final answer MUST be a JSON object (not markdown, not text).
-
-Return ONLY valid JSON with this schema:
-{{
-  "credibility": float,
-  "relevance": float,
-  "evidence_strength": float,
-  "method_rigor": float,
-  "reproducibility": float,
-  "citation_support": float,
-  "sources_checked": [
-    {{
-      "url": string,
-      "finding": string
-    }}
-  ],
-  "verification_summary": string,
-  "confidence_level": string
-}}
-"""
-
-    
-async def exa_retrieve(claim: str, k: int = 6) -> str: # Exa based evidence retrieval for claim verification
-    def _run():
-        print(f"[EXA DEBUG] query={claim[:120]!r} k={k}", file=sys.stderr, flush=True)
-        res = exa.search_and_contents(
-            claim,
-            num_results=k,
-            text={"max_characters": 1200}
-        )
-        print(f"[EXA DEBUG] results={len(getattr(res,'results',[]) or [])}", file=sys.stderr, flush=True)
-
-        lines = []
-        for i, r in enumerate(res.results, 1):
-            title = getattr(r, "title", "") or ""
-            url = getattr(r, "url", "") or ""
-            snippet = ""
-            if getattr(r, "text", None):
-                snippet = r.text[:400].replace("\n", " ")
-            print(f"[EXA DEBUG]  {i}. {url}", file=sys.stderr, flush=True)
-            lines.append(f"[EXA{i}] {title}\n{url}\nSnippet: {snippet}\n")
-        return "\n".join(lines)
-
-    return await asyncio.to_thread(_run)
-
-async def extract_text(paper_url: str) -> str: # Extract paper text via Exa (fallback to browser if insufficient)
-    def _run():
-        res = exa.search_and_contents(
-            paper_url,
-            num_results=1,
-            text={"max_characters": 50000}
-        )
-        if not getattr(res, "results", None):
-            return ""
-
-        r = res.results[0]
-        text = (getattr(r, "text", "") or "").strip()
-        return text
-
-    return await asyncio.to_thread(_run)
-
 
 async def create_browser_with_retry(
     cdp_url: str,
@@ -398,9 +311,7 @@ async def main(url=None, pdf_path=None):
             )
 
         # Initialize LLM - needed for both PDF and URL modes
-        llm = ChatBrowserUse(temperature=0)  # optimized for browser automation w 3-5x speedup
-
-        # analysis_llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0) # for scoring
+        llm = ChatBrowserUse()  # optimized for browser automation w 3-5x speedup
 
         send_update("Validate", "Browser and LLM initialized.")
         await asyncio.sleep(0.5)
@@ -447,50 +358,49 @@ async def main(url=None, pdf_path=None):
         else:
             # URL MODE: Use browser automation to extract from URL
             send_update("Decomposing PDF", "Navigating to paper and extracting content...")
-            history = None
 
-            exa_text = await extract_text(url)
+            browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
+            print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
+            agent_kwargs = dict(
+               task=browsing_url_prompt,
+               llm=llm,
+               vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
+               generate_gif=False,            # Optimized: disabled to reduce overhead
+               use_vision=True
+            )
+            if browser is not None:
+                agent_kwargs['browser'] = browser
+                print(f"[MAIN.PY DEBUG] Browser added to agent", file=sys.stderr, flush=True)
 
-            if exa_text and len(exa_text) > 2000:
-                extracted_text = exa_text
+            agent = Agent(**agent_kwargs)
+            print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=100", file=sys.stderr, flush=True)
 
-            else:
-                send_update("Decomposing PDF", "Exa extraction insufficient; falling back to browser extraction...")
+            # TODO: make sure it shows interactive elements during the browsing
+            history = await agent.run(max_steps=100)
+            print(f"[MAIN.PY DEBUG] Agent run completed", file=sys.stderr, flush=True)
 
-                browsing_url_prompt = build_url_paper_analysis_prompt(paper_url=url)
-                print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
-                agent_kwargs = dict(
-                task=browsing_url_prompt,
-                browser=browser, # Added!
-                llm=llm,
-                vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
-                generate_gif=False,            # Optimized: disabled to reduce overhead
-                use_vision=True
-                )
+            send_update("Decomposing PDF", "Paper content extracted successfully.")
 
-                agent = Agent(**agent_kwargs)
-                print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=100", file=sys.stderr, flush=True)
+            # Get the actual extracted content from the agent's extract actions
+            extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
+            extracted_text = "\n\n".join(extracted_chunks)
 
-                # TODO: make sure it shows interactive elements during the browsing
-                history = await agent.run(max_steps=100)
-                send_update("Decomposing PDF", "Paper content extracted successfully.")
-                extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
-                extracted_text = "\n\n".join(extracted_chunks)
+            # save for debugging
+            with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
+              f.write(extracted_text)
 
-            if history is not None:
-                browsed_urls = history.urls()
-                model_outputs = history.model_outputs()
-                last_action = history.last_action()
-
-                # save for debugging
-                with open('extra_data.txt', 'w', encoding='utf-8') as f:
-                    f.write("Browsed URLs:\n")
-                    f.writelines(f"{url}\n" for url in browsed_urls)
-                    f.write("\nModel Outputs:\n")
-                    f.writelines(f"{line}\n" for line in model_outputs)
-                    f.write("\nLast Action:\n")
-                    f.write(str(last_action))
-            
+            # save additional debug info
+            browsed_urls = history.urls()
+            model_outputs = history.model_outputs()
+            last_action = history.last_action()
+            with open('extra_data.txt', 'w', encoding='utf-8') as f:
+              f.write("Browsed URLs:\n")
+              f.writelines(f"{url}\n" for url in browsed_urls)
+              f.write("\nModel Outputs:\n")
+              f.writelines(f"{line}\n" for line in model_outputs)
+              f.write("\nLast Action:\n")
+              f.write(str(last_action))
+    
         # Stage 3: Building Logic Tree (generating DAG)
         print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
         send_update("Building Logic Tree", "Analyzing paper structure...")
@@ -675,17 +585,11 @@ Please regenerate the ENTIRE JSON output with these fixes:
 
                 send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
 
-                exa_context = await exa_retrieve(node_text, k=6)
-                claim_context = (
-                "Here are candidate sources retrieved by Exa. "
-                "Use these first, then browse if needed.\n\n"
-                f"{exa_context}"
-                )
                 # Build verification prompt
-                verification_prompt = build_claim_verification_prompt_exa(
+                verification_prompt = build_claim_verification_prompt(
                     claim_text=node_text,
                     claim_role=node_role,
-                    claim_context=claim_context
+                    claim_context=""  # Could add parent node context here in future
                 )
 
                 # Check if browser connection is still alive, reconnect if needed

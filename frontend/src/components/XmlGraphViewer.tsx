@@ -165,16 +165,16 @@ const GraphControls: React.FC<{ isDrawerOpen: boolean }> = ({ isDrawerOpen }) =>
       className="absolute z-10 flex flex-col gap-2 bg-white/80 p-2 rounded-lg shadow-md transition-all duration-300"
       style={{
         left: isDrawerOpen ? "21rem" : "1rem",
-        bottom: isDrawerOpen ? "4rem" : "1rem", // ✅ slides upward when drawer opens
+        bottom: isDrawerOpen ? "4rem" : "1rem",
       }}
     >
-      <button onClick={zoomIn} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom In">
+      <button onClick={() => zoomIn()} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom In">
         <ZoomIn size={20} />
       </button>
-      <button onClick={zoomOut} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom Out">
+      <button onClick={() => zoomOut()} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom Out">
         <ZoomOut size={20} />
       </button>
-      <button onClick={fitView} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Fit View">
+      <button onClick={() => fitView()} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Fit View">
         <Maximize2 size={20} />
       </button>
     </div>
@@ -215,7 +215,8 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData, isDrawerOp
     }
   }, [graphmlData, layoutConfig]);
 
-  const handleSaveGraph = () => {
+  // Export function kept for future use
+  const _handleSaveGraph = () => {
     if (!graphmlData) return;
     const blob = new Blob([graphmlData], { type: "application/xml" });
     const url = URL.createObjectURL(blob);
@@ -227,6 +228,7 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData, isDrawerOp
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+  void _handleSaveGraph;
 
   if (!graphmlData)
     return (

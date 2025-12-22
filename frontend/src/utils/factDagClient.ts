@@ -1,4 +1,4 @@
-import type { FactDAG, LLMClient } from "./factDagLLM";
+import type { LLMClient } from "./factDagLLM";
 
 export class ApiDagLLM implements LLMClient {
   async generate(prompt: string): Promise<string> {

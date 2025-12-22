@@ -13,7 +13,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
     const [isMultiline, setIsMultiline] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const lastTextLengthRef = useRef<number>(0);
     const lastStateChangeRef = useRef<number>(0);
 

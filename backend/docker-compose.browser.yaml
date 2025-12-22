@@ -12,11 +12,19 @@ services:
       VNC_PORT: 5900
       NOVNC_PORT: 7900
       CHROME_START_URL: "about:blank"
+    # CRITICAL: Chrome requires shared memory - without this it WILL crash
     shm_size: "2gb"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:9222/json/version || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    # Memory limits to prevent OOM crashes
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
