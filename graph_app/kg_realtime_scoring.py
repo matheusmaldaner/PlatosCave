@@ -137,10 +137,14 @@ class NodeQualityWeights:
 @dataclass
 class PropagationPenalty:
     enabled: bool = True
-    agg: str = "min"      # "min" | "mean" | "lse"
-    alpha: float = 1.0    # exponent on parent trust
-    eta: float = 2**(-1/8)     # floor in the gating factor
-    default_raw_conf: float = 0.5  # used if a raw conf isn't known yet
+    agg: str = "min"      # "min" | "mean" | "lse" | "softmin" | "dampmin"
+    alpha: float = 1.0
+    eta: float = 2**(-1/8)
+    default_raw_conf: float = 0.5
+
+    # NEW (reasonable defaults)
+    softmin_beta: float = 6.0     # higher => closer to min
+    dampmin_lambda: float = 0.35  # higher => closer to mean
 
 @dataclass
 class RoleTransitionPrior:
@@ -509,8 +513,6 @@ class KGScorer:
         self.penalty = PropagationPenalty()
         self.trust: Dict[str, float] = {}
 
-
-
     # --- Build / update API ---
 
     def add_node(self, node: Node):
@@ -523,12 +525,21 @@ class KGScorer:
         if u not in self.nodes or v not in self.nodes:
             raise KeyError("add_edge: both nodes must be added first")
         self.G.add_edge(u, v)
-        if v not in self.nodes[v].parents:
+        if u not in self.nodes[v].parents:
             self.nodes[v].parents.append(u)
 
     def register_edge_update_callback(self, fn: Callable[[str, str, float, Dict[str,float]], None]):
         """fn(u, v, weight, feature_dict)"""
         self.edge_update_callbacks.append(fn)
+
+    def _invalidate_trust_from(self, nid: str):
+        # remove nid and all descendants (they depend on nid via trust recursion)
+        if not self.G.has_node(nid):
+            self.trust.pop(nid, None)
+            return
+        impacted = {nid} | nx.descendants(self.G, nid)
+        for x in impacted:
+            self.trust.pop(x, None)
 
     def update_node_metrics(self, node_id: str, **metrics: float):
         """
@@ -543,11 +554,14 @@ class KGScorer:
                 raise ValueError(f"Metric '{k}' must be in [0,1]")
             setattr(n, k, v)
 
-        # 1) Recompute incoming edges of this node if all parents ready
-        self._try_update_incoming_edges(node_id)
-        # 2) Recompute outgoing edges of this node IF this node was a missing parent for some child
-        for child in self.G.successors(node_id):
-            self._try_update_incoming_edges(child)
+        # 0) Invalidate trust for this node and all descendants
+        self._invalidate_trust_from(node_id)
+        # 1) Recompute derived edge confidences in the affected subgraph.
+        #    A local metric update can change trust values, which can change downstream edge confidences.
+        impacted = {node_id} | set(nx.descendants(self.G, node_id))
+        for v in nx.topological_sort(self.G):
+            if v in impacted:
+                self._try_update_incoming_edges(v)
 
     # --- Internal scoring ---
 
@@ -570,6 +584,9 @@ class KGScorer:
             self.G[u][v]["confidence_raw"] = w_raw
             raw_by_u[u] = w_raw
             feats_by_u[u] = feats
+
+        # 1.5) raw confs into v cahnged -> v trust & descendants trust are stale
+        self._invalidate_trust_from(v)
 
         # 2) compute TRUST for parent(s) and the child, based on RAW confs
         tv = self._compute_node_trust(v)  # fills self.trust recursively
@@ -665,6 +682,41 @@ class KGScorer:
 
     def _get_raw_conf(self, u: str, v: str) -> float:
         return float(self.G[u][v].get("confidence_raw", self.penalty.default_raw_conf))
+    
+    def _agg_parent_vals(self, vals: list[float]) -> float:
+        if not vals:
+            return 0.0
+
+        mode = self.penalty.agg
+        if mode == "min":
+            return min(vals)
+        if mode == "mean":
+            return sum(vals) / len(vals)
+
+        if mode == "softmin":
+            beta = max(0.0, float(getattr(self.penalty, "softmin_beta", 6.0)))
+            vmin = min(vals)
+            vmax = max(vals)
+            rng = max(1e-12, vmax - vmin)
+            # weight smaller vals more
+            ws = [math.exp(-beta * ((v - vmin) / rng)) for v in vals]
+            z = sum(ws) or 1.0
+            return sum(w * v for w, v in zip(ws, vals)) / z
+
+        if mode == "dampmin":
+            lam = float(getattr(self.penalty, "dampmin_lambda", 0.35))
+            lam = 0.0 if lam < 0.0 else 1.0 if lam > 1.0 else lam
+            vmin = min(vals)
+            vmean = sum(vals) / len(vals)
+            return (1.0 - lam) * vmin + lam * vmean
+
+        # keep your existing "lse" (but see note below)
+        if mode == "lse":
+            logs = [math.log(max(1e-6, x)) for x in vals]
+            m = max(logs)
+            return math.exp(m) * sum(math.exp(l - m) for l in logs) / len(logs)
+
+        raise ValueError(f"Unknown penalty.agg='{mode}'")
 
     def _compute_node_trust(self, v: str, _memo: Optional[Dict[str,float]] = None) -> float:
         if not self.penalty.enabled:
@@ -681,23 +733,15 @@ class KGScorer:
             vals = []
             for u in parents:
                 # compute parent trust recursively
-                tu = self.trust.get(u)
+                tu = _memo.get(u)
+                if tu is None:
+                    tu = self.trust.get(u)
                 if tu is None:
                     tu = self._compute_node_trust(u, _memo)
+
                 c_raw = self._get_raw_conf(u, v)
                 vals.append( (max(1e-6, tu) ** max(0.0, self.penalty.alpha)) * c_raw )
-            if self.penalty.agg == "min":
-                agg_val = min(vals) if vals else 0.0
-            elif self.penalty.agg == "mean":
-                agg_val = sum(vals)/len(vals) if vals else 0.0
-            else:  # "lse" softmax-like (log-sum-exp on logs)
-                import math
-                if not vals:
-                    agg_val = 0.0
-                else:
-                    logs = [math.log(max(1e-6, x)) for x in vals]
-                    m = max(logs)
-                    agg_val = math.exp(m) * sum(math.exp(l - m) for l in logs) / len(logs)
+            agg_val = self._agg_parent_vals(vals)
             tv = clip01(qv * agg_val)
 
         _memo[v] = tv
@@ -732,6 +776,96 @@ class KGScorer:
         self.trust.clear()
         for v in nx.topological_sort(self.G):
             self._try_update_incoming_edges(v)
+
+    def validate_scoring_state(self, *, strict: bool = False) -> Dict[str, Any]:
+        """
+        Validate that the scorer has enough information to produce stable scores.
+
+        Definitions:
+        - A node is "ready" if it has all six metrics (Node.has_all_metrics()).
+        - An edge (u -> v) is "eligible" for derived confidences if v is ready and ALL
+            of its parents are ready. Eligible edges should have both:
+            * G[u][v]['confidence_raw']
+            * G[u][v]['confidence']
+
+        This flags the most common root cause of unexpectedly low scores: scoring paths
+        falling back to defaults because eligible edges never got their derived fields.
+        """
+        rep: Dict[str, Any] = {
+            "errors": [],
+            "warnings": [],
+            "nodes_missing_metrics": [],
+            "eligible_edges": 0,
+            "eligible_edges_with_confidence": 0,
+            "eligible_edges_with_confidence_raw": 0,
+            "eligible_edges_missing_confidence": [],
+            "eligible_edges_missing_confidence_raw": [],
+            "eligible_edges_missing_features": [],
+        }
+
+        # 1) Node readiness
+        for nid, n in self.nodes.items():
+            if not n.has_all_metrics():
+                rep["nodes_missing_metrics"].append(nid)
+
+        # 2) Eligible edges that should have derived confidence fields
+        for v in self.G.nodes():
+            parents = list(self.G.predecessors(v))
+            if not parents:
+                continue
+            if not self.nodes[v].has_all_metrics():
+                continue
+            if not all(self.nodes[u].has_all_metrics() for u in parents):
+                continue
+
+            for u in parents:
+                rep["eligible_edges"] += 1
+                d = self.G[u][v]
+
+                if "confidence" in d:
+                    rep["eligible_edges_with_confidence"] += 1
+                else:
+                    rep["eligible_edges_missing_confidence"].append((u, v))
+
+                if "confidence_raw" in d:
+                    rep["eligible_edges_with_confidence_raw"] += 1
+                else:
+                    rep["eligible_edges_missing_confidence_raw"].append((u, v))
+
+                if "features" not in d:
+                    rep["eligible_edges_missing_features"].append((u, v))
+
+        # 3) Summarize as warnings/errors
+        if rep["eligible_edges_missing_confidence"]:
+            msg = (
+                f"{len(rep['eligible_edges_missing_confidence'])} eligible edges are missing 'confidence'. "
+                "Run recompute_all_confidences() (or ensure update_node_metrics() reaches all impacted nodes) "
+                "before scoring."
+            )
+            if self.default_edge_confidence is None:
+                rep["errors"].append(msg)
+            else:
+                rep["warnings"].append(msg)
+
+        if self.penalty.enabled and rep["eligible_edges_missing_confidence_raw"]:
+            msg = (
+                f"{len(rep['eligible_edges_missing_confidence_raw'])} eligible edges are missing 'confidence_raw'. "
+                "Propagation trust uses confidence_raw; missing values typically indicate the edge-update path did not run."
+            )
+            if self.penalty.default_raw_conf is None:
+                rep["errors"].append(msg)
+            else:
+                rep["warnings"].append(msg)
+
+        if rep["eligible_edges_missing_features"]:
+            rep["warnings"].append(
+                f"{len(rep['eligible_edges_missing_features'])} eligible edges are missing 'features' dicts."
+            )
+
+        if strict and rep["errors"]:
+            raise ValueError("; ".join(rep["errors"]))
+
+        return rep
 
     def set_metric_weights(self, weights: Dict[str, float], *, normalize: bool = False):
         """
@@ -788,6 +922,13 @@ class KGScorer:
 
         if not nx.is_directed_acyclic_graph(self.G):
             raise ValueError("Graph score expects a DAG")
+        
+        rep = self.validate_scoring_state(strict=False)
+        if rep["eligible_edges"] and rep["eligible_edges_with_confidence"] < rep["eligible_edges"]:
+            if self.default_edge_confidence is None:
+                missing = rep["eligible_edges"] - rep["eligible_edges_with_confidence"]
+                raise ValueError(f"Scoring not ready: {missing} eligible edges are missing 'confidence'.")
+
 
         total_e = self.G.number_of_edges() or 1
         weighted_e = sum(1 for u,v in self.G.edges() if "confidence" in self.G[u][v])
@@ -813,13 +954,27 @@ class KGScorer:
 
         # best path product DP
         best = {n: 0.0 for n in self.G.nodes()}
-        for h in H: best[h] = 1.0
+        best_len = {n: 0 for n in self.G.nodes()}
+        for h in H:
+            best[h] = 1.0
+            best_len[h] = 0
+
         for v in nx.topological_sort(self.G):
             for u in self.G.predecessors(v):
-                w = self.G[u][v].get("confidence", 0.5)
+                w = self.G[u][v].get("confidence", self.default_edge_confidence)
                 cand = best[u] * w
-                if cand > best[v]: best[v] = cand
-        best_path = max((best[c] for c in C), default=0.0)
+                cand_len = best_len[u] + 1
+                if cand > best[v]:
+                    best[v] = cand
+                    best_len[v] = cand_len
+
+        # use geometric mean to avoid length-based collapse
+        best_path_geom = 0.0
+        for c in C:
+            L = max(1, best_len[c])
+            best_path_geom = max(best_path_geom, best[c] ** (1.0 / L))
+
+        best_path = best_path_geom
 
         # redundancy via maxflow on unit capacities with super source/sink
         Gf = nx.DiGraph()
@@ -837,7 +992,7 @@ class KGScorer:
         # fragility via min cut with capacities = 1 - confidence
         Gc = nx.DiGraph()
         for u, v in self.G.edges():
-            cap = max(1e-6, 1.0 - self.G[u][v].get("confidence", 0.5))
+            cap = max(1e-6, 1.0 - self.G[u][v].get("confidence", self.default_edge_confidence))
             Gc.add_edge(u, v, capacity=cap)
         for h in H: Gc.add_edge(S, h, capacity=float("inf"))
         for c in C: Gc.add_edge(c, T, capacity=float("inf"))
