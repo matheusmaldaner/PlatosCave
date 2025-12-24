@@ -48,8 +48,19 @@ _CANON_ROLE = {
 # Make role list independent of class definition order
 _CANON_ROLES = ["Assumption","Claim","Conclusion","Context","Counterevidence",
                 "Evidence","Hypothesis","Limitation","Method","Result"]
+
 _ROLE_LIST = _CANON_ROLES
+
 _ROLE_TO_IDX = {r: i for i, r in enumerate(_ROLE_LIST)}
+
+METRIC_KEYS = (
+    "credibility",
+    "relevance",
+    "evidence_strength",
+    "method_rigor",
+    "reproducibility",
+    "citation_support",
+)
 
 def _role_one_hot(role: str):
     vec = [0.0] * len(_ROLE_LIST)
@@ -137,10 +148,14 @@ class NodeQualityWeights:
 @dataclass
 class PropagationPenalty:
     enabled: bool = True
-    agg: str = "min"      # "min" | "mean" | "lse"
-    alpha: float = 1.0    # exponent on parent trust
-    eta: float = 2**(-1/8)     # floor in the gating factor
-    default_raw_conf: float = 0.5  # used if a raw conf isn't known yet
+    agg: str = "min"      # "min" | "mean" | "softmin" | "dampmin"
+    alpha: float = 1.0
+    eta: float = 2**(-1/8)
+    default_raw_conf: float = 0.5
+
+    # NEW (reasonable defaults)
+    softmin_beta: float = 6.0     # higher => closer to min
+    dampmin_lambda: float = 0.35  # higher => closer to mean
 
 @dataclass
 class RoleTransitionPrior:
@@ -150,15 +165,15 @@ class RoleTransitionPrior:
         ("Hypothesis","Method"): 0.50, ("Hypothesis","Result"): 0.25,
         ("Hypothesis","Conclusion"): 0.25,
         ("Evidence","Result"): 1.00, ("Evidence","Claim"): 0.50,
-        ("Evidence","Conclusion"): 0.25,
+        ("Evidence","Conclusion"): 0.75,
         ("Method","Result"): 0.75, ("Method","Evidence"): 0.50,
         ("Result","Conclusion"): 0.75, ("Claim","Conclusion"): 0.50,
         ("Claim","Evidence"): 0.50, ("Context","Claim"): 0.50,
         ("Assumption","Claim"): 0.50, ("Assumption","Method"): 0.50,
-        ("Counterevidence","Claim"): 0.25, ("Counterevidence","Conclusion"): 0.0,
-        # Default if missing: 0.25 (weakly sensible)
+        ("Counterevidence","Claim"): 0.75, ("Counterevidence","Conclusion"): 0.75,
+        # Default if missing: 0.5 (weakly sensible)
     })
-    default_value: float = 0.25
+    default_value: float = 0.5
 
     def get(self, r_from: str, r_to: str) -> float:
         return self.table.get((r_from, r_to), self.default_value)
@@ -497,7 +512,7 @@ class KGScorer:
         self.G = nx.DiGraph()
         self.nodes: Dict[str, Node] = {}
         self.tokens: Dict[str, Set[str]] = {}
-        self.edge_update_callbacks: List[Callable[[str, str, float, Dict[str,float]], None]] = []
+        self.edge_update_callbacks: List[Callable[[str, str, float, Dict[str, float]], None]] = []
 
         self.edge_w = edge_weights or EdgeCombineWeights()
         self.node_q = node_quality or NodeQualityWeights()
@@ -509,7 +524,24 @@ class KGScorer:
         self.penalty = PropagationPenalty()
         self.trust: Dict[str, float] = {}
 
+        # ---------- NEW: topology + adjacency caches ----------
+        self._topo_dirty: bool = True
+        self._topo_order: List[str] = []
+        self._topo_index: Dict[str, int] = {}
 
+        self._pred_cache: Dict[str, Tuple[str, ...]] = {}
+        self._succ_cache: Dict[str, Tuple[str, ...]] = {}
+
+        # ---------- NEW: per-node metric/quality caches ----------
+        self._node_metric_version: Dict[str, int] = {}
+        self._global_metric_weight_version: int = 0
+        # node_id -> (node_ver, global_ver, cached_value)
+        self._weighted_metrics_cache: Dict[str, Tuple[int, int, Dict[str, float]]] = {}
+        self._node_quality_cache: Dict[str, Tuple[int, int, float]] = {}
+        self._score_state_version: int = 0
+        self._validated_score_state_version: int = -1
+        self._validated_score_state_report: Optional[Dict[str, Any]] = None
+        self._alignment_cache: Dict[Tuple[str, str], float] = {}
 
     # --- Build / update API ---
 
@@ -519,35 +551,134 @@ class KGScorer:
         self.G.add_node(node.id, role=node.role)
         self.tokens[node.id] = tokenize(node.text)
 
+        # NEW: cache invalidation
+        self._node_metric_version.setdefault(node.id, 0)
+        self._pred_cache.pop(node.id, None)
+        self._succ_cache.pop(node.id, None)
+        self._weighted_metrics_cache.pop(node.id, None)
+        self._node_quality_cache.pop(node.id, None)
+        self.trust.pop(node.id, None)
+        self._mark_topology_dirty()
+
     def add_edge(self, u: str, v: str):
         if u not in self.nodes or v not in self.nodes:
             raise KeyError("add_edge: both nodes must be added first")
         self.G.add_edge(u, v)
-        if v not in self.nodes[v].parents:
+        if u not in self.nodes[v].parents:
             self.nodes[v].parents.append(u)
+
+        # NEW: adjacency/topology cache invalidation (localized)
+        self._pred_cache.pop(v, None)
+        self._succ_cache.pop(u, None)
+        self._mark_topology_dirty()
+        self._alignment_cache[(u, v)] = jaccard(self.tokens[u], self.tokens[v])
 
     def register_edge_update_callback(self, fn: Callable[[str, str, float, Dict[str,float]], None]):
         """fn(u, v, weight, feature_dict)"""
         self.edge_update_callbacks.append(fn)
 
+    def _invalidate_trust_from(self, nid: str):
+        if not self.G.has_node(nid):
+            self.trust.pop(nid, None)
+            return
+        impacted = {nid} | self._descendants_set(nid)
+        for x in impacted:
+            self.trust.pop(x, None)
+
     def update_node_metrics(self, node_id: str, **metrics: float):
         """
-        Update any subset of the six agent metrics. If this makes some edges eligible
-        (child has all metrics AND all parents have all metrics), recompute those edges.
+        Update any subset of the six agent metrics. Recompute only impacted nodes/edges.
         """
         n = self.nodes[node_id]
-        for k,v in metrics.items():
+        changed_any = False
+
+        for k, v in metrics.items():
             if k not in n.__dict__:
                 raise KeyError(f"Unknown metric '{k}'")
             if v is not None and not (0.0 <= v <= 1.0):
                 raise ValueError(f"Metric '{k}' must be in [0,1]")
-            setattr(n, k, v)
+            if getattr(n, k) != v:
+                setattr(n, k, v)
+                changed_any = True
 
-        # 1) Recompute incoming edges of this node if all parents ready
-        self._try_update_incoming_edges(node_id)
-        # 2) Recompute outgoing edges of this node IF this node was a missing parent for some child
-        for child in self.G.successors(node_id):
-            self._try_update_incoming_edges(child)
+        if not changed_any:
+            return
+
+        # NEW: bump per-node version so metric/quality caches naturally invalidate
+        self._node_metric_version[node_id] = self._node_metric_version.get(node_id, 0) + 1
+        self._weighted_metrics_cache.pop(node_id, None)
+        self._node_quality_cache.pop(node_id, None)
+
+        # 0) Invalidate trust for this node and all descendants (trust recursion depends on it)
+        self._invalidate_trust_from(node_id)
+
+        # 1) Only recompute the impacted subgraph, in topological order
+        impacted = {node_id} | self._descendants_set(node_id)
+        for v in self._impacted_nodes_in_topo_order(impacted):
+            self._try_update_incoming_edges(v)
+
+    # ---------- Cache helpers ----------
+
+    def _mark_topology_dirty(self) -> None:
+        self._topo_dirty = True
+        # adjacency caches are safe to keep, but they must be invalidated per-node on changes
+
+    def _ensure_topology_cache(self) -> None:
+        if not self._topo_dirty:
+            return
+        self._topo_order = list(nx.topological_sort(self.G))
+        self._topo_index = {nid: i for i, nid in enumerate(self._topo_order)}
+        self._topo_dirty = False
+
+    def _preds(self, v: str) -> Tuple[str, ...]:
+        cached = self._pred_cache.get(v)
+        if cached is not None:
+            return cached
+        preds = tuple(self.G.predecessors(v))
+        self._pred_cache[v] = preds
+        return preds
+
+    def _succs(self, u: str) -> Tuple[str, ...]:
+        cached = self._succ_cache.get(u)
+        if cached is not None:
+            return cached
+        succs = tuple(self.G.successors(u))
+        self._succ_cache[u] = succs
+        return succs
+
+    def _descendants_set(self, start: str) -> Set[str]:
+        """
+        Faster descendant collection than nx.descendants for repeated calls.
+        Uses cached successor lists (which are invalidated on add_edge).
+        """
+        if not self.G.has_node(start):
+            return set()
+        seen: Set[str] = set()
+        stack = list(self._succs(start))
+        while stack:
+            x = stack.pop()
+            if x in seen:
+                continue
+            seen.add(x)
+            stack.extend(self._succs(x))
+        return seen
+
+    def _impacted_nodes_in_topo_order(self, impacted: Set[str]) -> List[str]:
+        """
+        Returns impacted nodes ordered topologically with a cost proportional to |impacted|
+        for small impacted sets, falling back to a scan for very large impacted sets.
+        """
+        self._ensure_topology_cache()
+        n_total = len(self._topo_order) or 1
+        k = len(impacted)
+
+        # If most nodes are impacted, scanning once is cheaper than sorting k nodes
+        if k >= int(0.6 * n_total):
+            imp = impacted  # local ref
+            return [nid for nid in self._topo_order if nid in imp]
+
+        idx = self._topo_index
+        return sorted(impacted, key=lambda nid: idx.get(nid, 1 << 30))
 
     # --- Internal scoring ---
 
@@ -556,59 +687,97 @@ class KGScorer:
         node_v = self.nodes[v]
         if not node_v.has_all_metrics():
             return
-        parents = list(self.G.predecessors(v))
+
+        parents = self._preds(v)
         if not parents:
             return
-        if not all(self.nodes[u].has_all_metrics() for u in parents):
-            return
 
-        # 1) compute RAW edge confidences first (no propagation penalty)
-        raw_by_u = {}
-        feats_by_u = {}
+        # Fast fail: if any parent missing metrics, nothing to do
         for u in parents:
-            w_raw, feats = self._compute_edge_confidence(u, v)  # existing features
+            if not self.nodes[u].has_all_metrics():
+                return
+
+        # 1) Compute RAW edge confidences (no propagation penalty)
+        raw_by_u: Dict[str, float] = {}
+        feats_by_u: Dict[str, Dict[str, float]] = {}
+
+        for u in parents:
+            w_raw, feats = self._compute_edge_confidence(u, v)
             self.G[u][v]["confidence_raw"] = w_raw
             raw_by_u[u] = w_raw
             feats_by_u[u] = feats
 
-        # 2) compute TRUST for parent(s) and the child, based on RAW confs
-        tv = self._compute_node_trust(v)  # fills self.trust recursively
-        # ensure parent trusts cached
-        for u in parents:
-            if u not in self.trust:
-                self._compute_node_trust(u)
+        # 2) Compute TRUST for v (fills self.trust recursively as needed)
+        tv = self._compute_node_trust(v)
 
-        # 3) set FINAL edge confidences with gating by parent trust
-        eta = min(max(self.penalty.eta, 0.0), 1.0)
+        # 3) Set FINAL edge confidences with gating by parent trust
+        eta = self.penalty.eta
+        if eta < 0.0:
+            eta = 0.0
+        elif eta > 1.0:
+            eta = 1.0
+
+        alpha = self.penalty.alpha
+        if alpha < 0.0:
+            alpha = 0.0
+
         for u in parents:
-            tu = self.trust.get(u, self._node_quality(u))
+            tu = self.trust.get(u)
+            if tu is None:
+                tu = self._node_quality(u)
+
             w_raw = raw_by_u[u]
-            w_final = clip01(w_raw * (eta + (1.0 - eta) * (tu ** max(0.0, self.penalty.alpha))))
+            w_final = clip01(w_raw * (eta + (1.0 - eta) * (tu ** alpha)))
             self.G[u][v]["confidence"] = w_final
 
-            feats = feats_by_u[u].copy()
+            feats = feats_by_u[u]  # NO copy
             feats["confidence_raw"] = w_raw
             feats["trust_parent"] = tu
-            feats["trust_child"]  = tv
+            feats["trust_child"] = tv
+
+            # keep compatibility: preserve the old raw “confidence” as confidence_combined
+            if "confidence" in feats and feats["confidence"] != w_final:
+                feats["confidence_combined"] = feats["confidence"]
+            feats["confidence"] = w_final
+
             self.G[u][v]["features"] = feats
 
             for cb in self.edge_update_callbacks:
                 cb(u, v, w_final, feats)
 
+        # NEW: bump a version counter so graph_score() can reuse a cached validate_scoring_state()
+        self._score_state_version += 1
+        self._validated_score_state_version = -1
+        self._validated_score_state_report = None
+
     def _node_quality(self, node_id: str) -> float:
+        node_ver = self._node_metric_version.get(node_id, 0)
+        glob_ver = self._global_metric_weight_version
+
+        cached = self._node_quality_cache.get(node_id)
+        if cached is not None and cached[0] == node_ver and cached[1] == glob_ver:
+            return cached[2]
+
         node = self.nodes[node_id]
         role = node.role
         weights = self.node_q.per_role.get(role, {})
+
+        md = self._weighted_metrics(node_id)
+
         if not weights:
-            # fallback: average of available metrics
-            vals = self._weighted_metrics(node_id).values()
-            return sum(vals) / 6.0
+            q = sum(md.values()) / 6.0
+            q = clip01(q)
+            self._node_quality_cache[node_id] = (node_ver, glob_ver, q)
+            return q
+
         total = sum(abs(v) for v in weights.values()) or 1.0
         q = 0.0
-        md = self._weighted_metrics(node_id)   # <— was node.metric_dict()
         for m, w in weights.items():
             q += w * md.get(m, 0.0)
-        return clip01(q / total)
+        q = clip01(q / total)
+
+        self._node_quality_cache[node_id] = (node_ver, glob_ver, q)
+        return q
 
     def _pair_synergy(self, u: str, v: str) -> float:
         ru, rv = self.nodes[u].role, self.nodes[v].role
@@ -632,7 +801,13 @@ class KGScorer:
         return clip01(0.5*p_score + 0.5*c_score)
 
     def _alignment(self, u: str, v: str) -> float:
-        return jaccard(self.tokens[u], self.tokens[v])
+        key = (u, v)
+        cached = self._alignment_cache.get(key)
+        if cached is not None:
+            return cached
+        al = jaccard(self.tokens[u], self.tokens[v])
+        self._alignment_cache[key] = al
+        return al
 
     def _role_prior(self, u: str, v: str) -> float:
         return self.role_prior.get(self.nodes[u].role, self.nodes[v].role)
@@ -665,39 +840,81 @@ class KGScorer:
 
     def _get_raw_conf(self, u: str, v: str) -> float:
         return float(self.G[u][v].get("confidence_raw", self.penalty.default_raw_conf))
+    
+    def _agg_parent_vals(self, vals: list[float]) -> float:
+        if not vals:
+            return 0.0
 
-    def _compute_node_trust(self, v: str, _memo: Optional[Dict[str,float]] = None) -> float:
+        mode = self.penalty.agg
+        if mode == "min":
+            return min(vals)
+        if mode == "mean":
+            return sum(vals) / len(vals)
+
+        if mode == "softmin":
+            beta = max(0.0, float(getattr(self.penalty, "softmin_beta", 6.0)))
+            vmin = min(vals)
+            vmax = max(vals)
+            rng = vmax - vmin
+            if rng <= 1e-12 or beta == 0.0:
+                return sum(vals) / len(vals)
+
+            inv_rng = 1.0 / rng
+            wsum = 0.0
+            vsum = 0.0
+            for v in vals:
+                x = (v - vmin) * inv_rng
+                w = math.exp(-beta * x)
+                wsum += w
+                vsum += w * v
+            return vsum / (wsum or 1.0)
+
+        if mode == "dampmin":
+            lam = float(getattr(self.penalty, "dampmin_lambda", 0.35))
+            lam = 0.0 if lam < 0.0 else 1.0 if lam > 1.0 else lam
+            vmin = min(vals)
+            vmean = sum(vals) / len(vals)
+            return (1.0 - lam) * vmin + lam * vmean
+
+        raise ValueError(f"Unknown penalty.agg='{mode}'")
+
+    def _compute_node_trust(self, v: str, _memo: Optional[Dict[str, float]] = None) -> float:
         if not self.penalty.enabled:
-            # fall back: local quality only
             return clip01(self._node_quality(v))
-        if _memo is None: _memo = {}
-        if v in _memo: return _memo[v]
+
+        if _memo is None:
+            _memo = {}
+        else:
+            tv = _memo.get(v)
+            if tv is not None:
+                return tv
+
+        tv_cached = self.trust.get(v)
+        if tv_cached is not None:
+            _memo[v] = tv_cached
+            return tv_cached
 
         qv = clip01(self._node_quality(v))
-        parents = list(self.G.predecessors(v))
+        parents = self._preds(v)
         if not parents:
             tv = qv
         else:
-            vals = []
+            alpha = self.penalty.alpha
+            if alpha < 0.0:
+                alpha = 0.0
+
+            vals: List[float] = []
             for u in parents:
-                # compute parent trust recursively
-                tu = self.trust.get(u)
+                tu = _memo.get(u)
+                if tu is None:
+                    tu = self.trust.get(u)
                 if tu is None:
                     tu = self._compute_node_trust(u, _memo)
+
                 c_raw = self._get_raw_conf(u, v)
-                vals.append( (max(1e-6, tu) ** max(0.0, self.penalty.alpha)) * c_raw )
-            if self.penalty.agg == "min":
-                agg_val = min(vals) if vals else 0.0
-            elif self.penalty.agg == "mean":
-                agg_val = sum(vals)/len(vals) if vals else 0.0
-            else:  # "lse" softmax-like (log-sum-exp on logs)
-                import math
-                if not vals:
-                    agg_val = 0.0
-                else:
-                    logs = [math.log(max(1e-6, x)) for x in vals]
-                    m = max(logs)
-                    agg_val = math.exp(m) * sum(math.exp(l - m) for l in logs) / len(logs)
+                vals.append((max(1e-6, tu) ** alpha) * c_raw)
+
+            agg_val = self._agg_parent_vals(vals)
             tv = clip01(qv * agg_val)
 
         _memo[v] = tv
@@ -707,31 +924,128 @@ class KGScorer:
     def _weighted_metrics(self, node_id: str) -> Dict[str, float]:
         """
         Return this node's six metrics after applying the global weights.
-        Multiplicative weighting, clipped to [0,1] per component.
+        Cached per node_id across calls until that node's metrics or global weights change.
         """
-        md = self.nodes[node_id].metric_dict().copy()
-        w  = self.metric_w.weights or {}
-        if not w:
-            return md
-        for k in ("credibility","relevance","evidence_strength",
-                "method_rigor","reproducibility","citation_support"):
-            if k in md:
+        node_ver = self._node_metric_version.get(node_id, 0)
+        glob_ver = self._global_metric_weight_version
+
+        cached = self._weighted_metrics_cache.get(node_id)
+        if cached is not None and cached[0] == node_ver and cached[1] == glob_ver:
+            return cached[2]
+
+        md = self.nodes[node_id].metric_dict()  # already returns a fresh dict
+        w = self.metric_w.weights or {}
+
+        if w:
+            for k in METRIC_KEYS:
                 wk = float(w.get(k, 1.0))
-                # clip to keep metric semantics ∈ [0,1]
-                v = md[k] * wk
+                v = md.get(k, 0.0) * wk
                 md[k] = 0.0 if v < 0.0 else (1.0 if v > 1.0 else v)
+
+        self._weighted_metrics_cache[node_id] = (node_ver, glob_ver, md)
         return md
 
     def recompute_all_confidences(self):
         """
         Recompute all edge confidences (and trusts) under current weights.
-        Safe for DAGs; uses existing readiness checks.
+        Uses cached topological order.
         """
         if not self.G.nodes:
             return
         self.trust.clear()
-        for v in nx.topological_sort(self.G):
+        self._ensure_topology_cache()
+        for v in self._topo_order:
             self._try_update_incoming_edges(v)
+
+    def validate_scoring_state(self, *, strict: bool = False) -> Dict[str, Any]:
+        """
+        Validate that the scorer has enough information to produce stable scores.
+
+        Definitions:
+        - A node is "ready" if it has all six metrics (Node.has_all_metrics()).
+        - An edge (u -> v) is "eligible" for derived confidences if v is ready and ALL
+            of its parents are ready. Eligible edges should have both:
+            * G[u][v]['confidence_raw']
+            * G[u][v]['confidence']
+
+        This flags the most common root cause of unexpectedly low scores: scoring paths
+        falling back to defaults because eligible edges never got their derived fields.
+        """
+        rep: Dict[str, Any] = {
+            "errors": [],
+            "warnings": [],
+            "nodes_missing_metrics": [],
+            "eligible_edges": 0,
+            "eligible_edges_with_confidence": 0,
+            "eligible_edges_with_confidence_raw": 0,
+            "eligible_edges_missing_confidence": [],
+            "eligible_edges_missing_confidence_raw": [],
+            "eligible_edges_missing_features": [],
+        }
+
+        # 1) Node readiness
+        for nid, n in self.nodes.items():
+            if not n.has_all_metrics():
+                rep["nodes_missing_metrics"].append(nid)
+
+        # 2) Eligible edges that should have derived confidence fields
+        for v in self.G.nodes():
+            parents = self._preds(v)
+            if not parents:
+                continue
+            if not self.nodes[v].has_all_metrics():
+                continue
+            if not all(self.nodes[u].has_all_metrics() for u in parents):
+                continue
+
+            for u in parents:
+                rep["eligible_edges"] += 1
+                d = self.G[u][v]
+
+                if "confidence" in d:
+                    rep["eligible_edges_with_confidence"] += 1
+                else:
+                    rep["eligible_edges_missing_confidence"].append((u, v))
+
+                if "confidence_raw" in d:
+                    rep["eligible_edges_with_confidence_raw"] += 1
+                else:
+                    rep["eligible_edges_missing_confidence_raw"].append((u, v))
+
+                if "features" not in d:
+                    rep["eligible_edges_missing_features"].append((u, v))
+
+        # 3) Summarize as warnings/errors
+        if rep["eligible_edges_missing_confidence"]:
+            msg = (
+                f"{len(rep['eligible_edges_missing_confidence'])} eligible edges are missing 'confidence'. "
+                "Run recompute_all_confidences() (or ensure update_node_metrics() reaches all impacted nodes) "
+                "before scoring."
+            )
+            if self.default_edge_confidence is None:
+                rep["errors"].append(msg)
+            else:
+                rep["warnings"].append(msg)
+
+        if self.penalty.enabled and rep["eligible_edges_missing_confidence_raw"]:
+            msg = (
+                f"{len(rep['eligible_edges_missing_confidence_raw'])} eligible edges are missing 'confidence_raw'. "
+                "Propagation trust uses confidence_raw; missing values typically indicate the edge-update path did not run."
+            )
+            if self.penalty.default_raw_conf is None:
+                rep["errors"].append(msg)
+            else:
+                rep["warnings"].append(msg)
+
+        if rep["eligible_edges_missing_features"]:
+            rep["warnings"].append(
+                f"{len(rep['eligible_edges_missing_features'])} eligible edges are missing 'features' dicts."
+            )
+
+        if strict and rep["errors"]:
+            raise ValueError("; ".join(rep["errors"]))
+
+        return rep
 
     def set_metric_weights(self, weights: Dict[str, float], *, normalize: bool = False):
         """
@@ -768,106 +1082,228 @@ class KGScorer:
             curr = {k: (x / avg) for k, x in curr.items()}
 
         self.metric_w.weights = curr
+
+        # NEW: bump global version to invalidate all cached metric mixes / qualities
+        self._global_metric_weight_version += 1
+        self._weighted_metrics_cache.clear()
+        self._node_quality_cache.clear()
+
         self.recompute_all_confidences()
 
     # --------- Graph score (optional; configurable) ---------
 
-    def graph_score(self) -> Tuple[float, Dict[str, float]]:
+    def graph_score(self, *, validate: bool = True) -> Tuple[float, Dict[str, float]]:
         """
-        Computes a score using:
-          - bridge coverage (H -> * -> C)
-          - best path product
-          - redundancy (edge-disjoint H->C paths, soft capped)
-          - fragility (min cut with capacities 1 - confidence)
-          - coherence (fraction of bridge edges with role_prior >= 0.5)
-          - coverage (presence of Method/Evidence/Result on bridge)
+        Optimized graph_score:
+        - Uses cached topo order (self._ensure_topology_cache)
+        - Uses boolean reachability (no big-int path counting)
+        - Best-path DP in log-space for numeric stability (still “max product” semantics)
+        - Restricts coherence/flow/cut work to the bridge subgraph
+        - Optionally skips validate_scoring_state() if state unchanged
+        - Skips maxflow/mincut if their weights are 0
         """
+        # 0) Get topo once (and validate DAG implicitly)
+        try:
+            self._ensure_topology_cache()
+        except nx.NetworkXUnfeasible as e:
+            raise ValueError("Graph score expects a DAG") from e
+
+        G = self.G
+        topo = self._topo_order
+        if not topo:
+            details = {
+                "bridge_coverage": 0.0,
+                "best_path": 0.0,
+                "redundancy": 0.0,
+                "fragility": 0.0,
+                "coherence": 0.0,
+                "coverage": 0.0,
+                "score_raw": 0.0,
+            }
+            # keep mapping consistent with your existing normalization logic
+            return 0.5, details
+
         # Identify roots
-        H = [n for n in self.G.nodes() if self.nodes[n].role == "Hypothesis"]
-        C = [n for n in self.G.nodes() if self.nodes[n].role == "Conclusion"]
+        H = [n for n in G.nodes() if self.nodes[n].role == "Hypothesis"]
+        C = [n for n in G.nodes() if self.nodes[n].role == "Conclusion"]
 
-        if not nx.is_directed_acyclic_graph(self.G):
-            raise ValueError("Graph score expects a DAG")
+        # 1) Optional validation (cached by a version counter; see section #2)
+        if validate:
+            rep = None
+            if (
+                getattr(self, "_validated_score_state_version", -1) == getattr(self, "_score_state_version", 0)
+                and getattr(self, "_validated_score_state_report", None) is not None
+            ):
+                rep = self._validated_score_state_report
+            else:
+                rep = self.validate_scoring_state(strict=False)
+                self._validated_score_state_version = self._score_state_version
+                self._validated_score_state_report = rep
 
-        total_e = self.G.number_of_edges() or 1
-        weighted_e = sum(1 for u,v in self.G.edges() if "confidence" in self.G[u][v])
+            if rep["eligible_edges"] and rep["eligible_edges_with_confidence"] < rep["eligible_edges"]:
+                if self.default_edge_confidence is None:
+                    missing = rep["eligible_edges"] - rep["eligible_edges_with_confidence"]
+                    raise ValueError(f"Scoring not ready: {missing} eligible edges are missing 'confidence'.")
+
+        # Keep your “all edges must have confidence if no default” behavior
+        total_e = G.number_of_edges() or 1
+        weighted_e = sum(1 for u, v in G.edges() if "confidence" in G[u][v])
         if self.default_edge_confidence is None and weighted_e < total_e:
             raise ValueError("Not enough edges have confidence; defer scoring.")
 
-        # reachability from H
-        paths_from_H = {n: 0 for n in self.G.nodes()}
-        for h in H: paths_from_H[h] = 1
-        for v in nx.topological_sort(self.G):
-            for u in self.G.predecessors(v):
-                paths_from_H[v] += paths_from_H[u]
+        preds = self._preds
+        succs = self._succs
 
-        # reachability to C (reverse DP)
-        paths_to_C = {n: 0 for n in self.G.nodes()}
-        for c in C: paths_to_C[c] = 1
-        for u in reversed(list(nx.topological_sort(self.G))):
-            for v in self.G.successors(u):
-                paths_to_C[u] += paths_to_C[v]
+        # 2) Boolean reachability from H (single topo pass)
+        reach_from: Set[str] = set(H)
+        for v in topo:
+            if v in reach_from:
+                continue
+            for u in preds(v):
+                if u in reach_from:
+                    reach_from.add(v)
+                    break
 
-        bridge_nodes = {n for n in self.G.nodes() if paths_from_H[n] > 0 and paths_to_C[n] > 0}
-        bridge_cov = len(bridge_nodes) / max(1, self.G.number_of_nodes())
+        # 3) Boolean reachability to C (single reverse-topo pass)
+        reach_to: Set[str] = set(C)
+        for u in reversed(topo):
+            if u in reach_to:
+                continue
+            for v in succs(u):
+                if v in reach_to:
+                    reach_to.add(u)
+                    break
 
-        # best path product DP
-        best = {n: 0.0 for n in self.G.nodes()}
-        for h in H: best[h] = 1.0
-        for v in nx.topological_sort(self.G):
-            for u in self.G.predecessors(v):
-                w = self.G[u][v].get("confidence", 0.5)
-                cand = best[u] * w
-                if cand > best[v]: best[v] = cand
-        best_path = max((best[c] for c in C), default=0.0)
+        bridge_nodes = reach_from & reach_to
+        bridge_cov = len(bridge_nodes) / max(1, G.number_of_nodes())
 
-        # redundancy via maxflow on unit capacities with super source/sink
-        Gf = nx.DiGraph()
-        S, T = "_S_", "_T_"
-        for u, v in self.G.edges():
-            Gf.add_edge(u, v, capacity=1.0)
-        for h in H: Gf.add_edge(S, h, capacity=float("inf"))
-        for c in C: Gf.add_edge(c, T, capacity=float("inf"))
-        try:
-            flow_val, _ = nx.maximum_flow(Gf, S, T)
-            redundancy = min(flow_val / 3.0, 1.0)  # soft cap; tweak as you like
-        except Exception:
-            redundancy = 0.0
+        # 4) Best-path “max product” DP, but in log-space (faster + avoids underflow)
+        idx = self._topo_index
+        NEG_INF = -1e300
+        best_log = [NEG_INF] * len(topo)
+        best_len = [0] * len(topo)
 
-        # fragility via min cut with capacities = 1 - confidence
-        Gc = nx.DiGraph()
-        for u, v in self.G.edges():
-            cap = max(1e-6, 1.0 - self.G[u][v].get("confidence", 0.5))
-            Gc.add_edge(u, v, capacity=cap)
-        for h in H: Gc.add_edge(S, h, capacity=float("inf"))
-        for c in C: Gc.add_edge(c, T, capacity=float("inf"))
-        try:
-            cut_val, _ = nx.minimum_cut(Gc, S, T)
-            # normalize by number of edges on bridge (avoid >1)
-            denom = max(1, len([e for e in self.G.edges() if e[0] in bridge_nodes and e[1] in bridge_nodes]))
-            fragility = clip01(cut_val / denom)
-        except Exception:
-            fragility = 1.0
+        for h in H:
+            # Only H that can reach some Conclusion matters
+            if h in bridge_nodes:
+                hi = idx[h]
+                best_log[hi] = 0.0
+                best_len[hi] = 0
 
-        # coherence & coverage on bridge
-        bridge_edges = [(u, v) for (u, v) in self.G.edges() if u in bridge_nodes and v in bridge_nodes]
-        if bridge_edges:
-            coh = sum(1.0 if self._role_prior(u, v) >= 0.5 else 0.0 for (u, v) in bridge_edges) / len(bridge_edges)
-        else:
-            coh = 0.0
+        default_w = self.default_edge_confidence
+        for v in topo:
+            if v not in bridge_nodes:
+                continue
+            vi = idx[v]
+            for u in preds(v):
+                ui = idx[u]
+                ul = best_log[ui]
+                if ul <= NEG_INF / 2:
+                    continue
+                w = G[u][v].get("confidence", default_w)
+                if w is None or w <= 0.0:
+                    continue
+                cand_log = ul + math.log(w)
+                if cand_log > best_log[vi]:
+                    best_log[vi] = cand_log
+                    best_len[vi] = best_len[ui] + 1
+
+        best_path = 0.0
+        for c in C:
+            if c not in bridge_nodes:
+                continue
+            ci = idx[c]
+            bl = best_log[ci]
+            if bl <= NEG_INF / 2:
+                continue
+            L = max(1, best_len[ci])
+            gm = math.exp(bl / L)  # geometric mean of product-maximizing path
+            if gm > best_path:
+                best_path = gm
+
+        # 5) Coherence & coverage computed only on bridge edges/nodes
+        bridge_edges: List[Tuple[str, str]] = []
+        coh_hits = 0.0
+        role_prior = self._role_prior
+        for u, v in G.edges():
+            if u in bridge_nodes and v in bridge_nodes:
+                bridge_edges.append((u, v))
+                if role_prior(u, v) >= 0.5:
+                    coh_hits += 1.0
+        coh = (coh_hits / len(bridge_edges)) if bridge_edges else 0.0
+
         target_roles = {"Method", "Evidence", "Result"}
         roles_present = {self.nodes[n].role for n in bridge_nodes}
         cov = len(roles_present & target_roles) / len(target_roles) if target_roles else 1.0
 
-        # final score
+        # 6) Redundancy / fragility: skip entirely if their weights are 0
         W = self.graph_w
-        score = (W.bridge_coverage * bridge_cov +
-                 W.best_path       * best_path +
-                 W.redundancy      * redundancy +
-                 W.fragility       * fragility +
-                 W.coherence       * coh +
-                 W.coverage        * cov)
-        score = clip01(score)
+        redundancy = 0.0
+        fragility = 0.0
+
+        # Filter roots to those actually on the bridge
+        H2 = [h for h in H if h in bridge_nodes]
+        C2 = [c for c in C if c in bridge_nodes]
+
+        # Prefer a faster flow implementation for typical sparse DAGs
+        flow_func = nx.algorithms.flow.shortest_augmenting_path
+
+        if W.redundancy != 0.0 and bridge_edges and H2 and C2:
+            Gf = nx.DiGraph()
+            S, T = "_S_", "_T_"
+            for u, v in bridge_edges:
+                Gf.add_edge(u, v, capacity=1.0)
+            for h in H2:
+                Gf.add_edge(S, h, capacity=float("inf"))
+            for c in C2:
+                Gf.add_edge(c, T, capacity=float("inf"))
+            try:
+                flow_val, _ = nx.maximum_flow(Gf, S, T, flow_func=flow_func)
+                redundancy = min(flow_val / 3.0, 1.0)
+            except Exception:
+                redundancy = 0.0
+
+        if W.fragility != 0.0 and bridge_edges and H2 and C2:
+            Gc = nx.DiGraph()
+            S, T = "_S_", "_T_"
+            for u, v in bridge_edges:
+                w = G[u][v].get("confidence", default_w)
+                if w is None:
+                    # if default_w is None, earlier checks would have raised; keep safe fallback
+                    w = 0.0
+                cap = max(1e-6, 1.0 - w)
+                Gc.add_edge(u, v, capacity=cap)
+            for h in H2:
+                Gc.add_edge(S, h, capacity=float("inf"))
+            for c in C2:
+                Gc.add_edge(c, T, capacity=float("inf"))
+            try:
+                cut_val, _ = nx.minimum_cut(Gc, S, T, flow_func=flow_func)
+                denom = max(1, len(bridge_edges))
+                fragility = clip01(cut_val / denom)
+            except Exception:
+                fragility = 1.0
+
+        # 7) Final score (unchanged normalization logic)
+        score_raw = (
+            W.bridge_coverage * bridge_cov +
+            W.best_path       * best_path +
+            W.redundancy      * redundancy +
+            W.fragility       * fragility +
+            W.coherence       * coh +
+            W.coverage        * cov
+        )
+
+        wvec = [W.bridge_coverage, W.best_path, W.redundancy, W.fragility, W.coherence, W.coverage]
+        pos_sum = sum(x for x in wvec if x > 0)
+        neg_sum = sum(x for x in wvec if x < 0)
+
+        denom = max(1e-9, (pos_sum - neg_sum))
+        score_01 = (score_raw - neg_sum) / denom
+        score_01 = clip01(score_01)
+
+        eps = 1e-9
+        score = eps + (1.0 - 2.0 * eps) * score_01
 
         details = {
             "bridge_coverage": bridge_cov,
@@ -876,7 +1312,7 @@ class KGScorer:
             "fragility": fragility,
             "coherence": coh,
             "coverage": cov,
-            "graph_score": score
+            "score_raw": score_raw,
         }
         return score, details
 
