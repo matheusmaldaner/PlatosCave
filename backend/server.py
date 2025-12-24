@@ -716,5 +716,5 @@ def handle_disconnect():
     reset_browser_session()
 
 if __name__ == '__main__':
-    socketio.run(app, port=5000, debug=True)
+    socketio.run(app, port=5001, debug=True)
 
