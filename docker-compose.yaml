@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: docker/Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      BACKEND_API_URL: http://backend:5001
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - platoscave-net
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      REMOTE_BROWSER_CDP_INTERNAL_URL: http://remote-browser:9222
+      REMOTE_BROWSER_CDP_PUBLIC_URL: ""
+      REMOTE_BROWSER_NOVNC_INTERNAL_URL: http://remote-browser:7900
+      REMOTE_BROWSER_NOVNC_PUBLIC_URL: http://localhost:7900/vnc.html?autoconnect=1&resize=scale
+    depends_on:
+      remote-browser:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:5001/health', timeout=2).read()\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - platoscave-net
+
+  remote-browser:
+    build:
+      context: ./backend/docker/remote-browser
+    ports:
+      - "9222:9222"
+      - "7900:7900"
+    environment:
+      CDP_PORT: 9222
+      VNC_PORT: 5900
+      NOVNC_PORT: 7900
+      CHROME_START_URL: "about:blank"
+    shm_size: "2gb"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -H 'Host: localhost' http://localhost:9222/json/version || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - platoscave-net
+
+networks:
+  platoscave-net:
+    driver: bridge
