@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   frontend:
     build:
@@ -30,7 +28,11 @@ services:
       remote-browser:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:5001/health', timeout=2).read()\""]
+      test:
+        [
+          "CMD-SHELL",
+          'python -c "import urllib.request; urllib.request.urlopen(''http://localhost:5001/health'', timeout=2).read()"',
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -52,7 +54,11 @@ services:
     shm_size: "2gb"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS -H 'Host: localhost' http://localhost:9222/json/version || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS -H 'Host: localhost' http://localhost:9222/json/version || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
