@@ -8,7 +8,7 @@ import sys
 import os
 from pathlib import Path
 import fitz  # PyMuPDF for PDF text extraction
-from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, parse_verification_result
+from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, build_claim_verification_prompt_exa, parse_verification_result
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
@@ -97,66 +97,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         print(f"[MAIN.PY DEBUG] Error extracting PDF text: {e}", file=sys.stderr, flush=True)
         raise Exception(f"Failed to extract text from PDF: {e}")
     
-# Force LLM to use Exa-retrieved sources before any free browsing
-def build_claim_verification_prompt_exa(claim_text: str, claim_role: str, claim_context: str) -> str:
-    """
-    Force LLM to use Exa-retrieved sources before any free browsing
-    
-    Args:
-        claim_text (str): verifying if true or false (please double check if this is the correct definition)
-        claim_role (str): Role for the LLM to fill
-        claim_context (str): First initial sources to browse through
-
-    Returns:
-        Verification prompt for LLM
-    """
-    return textwrap.dedent(f"""
-        You are verifying the following claim.
-
-        Claim role: {claim_role}
-        Claim text:
-        {claim_text}
-
-        {claim_context}
-
-        === STRICT INSTRUCTIONS (MANDATORY) ===
-        1. You MUST open and examine at least TWO sources labeled [EXA#] above.
-        2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
-        3. Do NOT rely solely on prior knowledge or memory.
-        4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
-        5. Your final answer MUST be a JSON object (not markdown, not text).
-
-        Return ONLY valid JSON with this schema:
-        {{
-        "credibility": float,
-        "relevance": float,
-        "evidence_strength": float,
-        "method_rigor": float,
-        "reproducibility": float,
-        "citation_support": float,
-        "sources_checked": [
-            {{
-            "url": string,
-            "finding": string
-            }}
-        ],
-        "verification_summary": string,
-        "confidence_level": string
-        }}
-        """)
-
-    
-async def exa_retrieve(claim: str, k: int = 6) -> str: 
-    """
-    Exa based evidence retrieval for claim verification
-
-    Args:
-        claim (str): Statement to look into
-        k (int, optional): Number of results to return. Defaults to 6.
-
-    Returns:
-        str: found sources for LLM
-    """
+async def exa_retrieve(claim: str, k: int = 6) -> str: # Exa based evidence retrieval for claim verification
     def _run():
         print(f"[EXA DEBUG] query={claim[:120]!r} k={k}", file=sys.stderr, flush=True)
         res = exa.search_and_contents(
@@ -190,17 +131,24 @@ async def extract_text(paper_url: str) -> str:
         str: text from paper
     """
     def _run():
-        res = exa.search_and_contents(
-            paper_url,
-            num_results=1,
-            text={"max_characters": 50000}
-        )
-        if not getattr(res, "results", None):
-            return ""
+        try:
+            print(f"[EXA DEBUG] extract_text called with url={paper_url[:100]}", file=sys.stderr, flush=True)
+            res = exa.search_and_contents(
+                paper_url,
+                num_results=1,
+                text={"max_characters": 50000}
+            )
+            if not getattr(res, "results", None):
+                print(f"[EXA DEBUG] No results returned from Exa", file=sys.stderr, flush=True)
+                return ""
 
-        r = res.results[0]
-        text = (getattr(r, "text", "") or "").strip()
-        return text
+            r = res.results[0]
+            text = (getattr(r, "text", "") or "").strip()
+            print(f"[EXA DEBUG] Exa returned {len(text)} chars", file=sys.stderr, flush=True)
+            return text
+        except Exception as e:
+            print(f"[EXA DEBUG] extract_text error: {e}", file=sys.stderr, flush=True)
+            return ""
 
     return await asyncio.to_thread(_run)
 

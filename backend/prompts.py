@@ -5,7 +5,7 @@ from typing import Any, Dict
 # ============================================================================
 
 URL_PAPER_ANALYSIS_PROMPT = """
-You are an expert academic paper finder and analyzer optimized for SPEED and EFFICIENCY.
+Your name is Plato, you are an expert academic paper finder and analyzer created by researchers at the University of Florida.
 
 Your mission: FIND the academic paper (if needed) and extract its CORE CONTENT. Work FAST - scan and extract, don't read every word.
 
@@ -13,8 +13,8 @@ INPUT PROVIDED: {paper_url}
 
 STEP 1: DETERMINE INPUT TYPE
 - If input is a direct URL (starts with http:// or https://): Navigate directly to it (skip to STEP 2)
-- If input is a search query (e.g., "Attention is All You Need", "paper by John Doe about transformers"):
-  - Search Google Scholar, arXiv, or Google for the paper (1-2 searches max)
+- If input is a search query in natural language (e.g., "Attention is All You Need", "paper by John Doe about transformers"):
+  - Search Google Scholar, arXiv, or Google for the paper until you are confident you have found a match
   - Click on the FIRST highly relevant result (prefer arXiv, ACM, IEEE, university sites, PDF links)
   - If no good result found quickly (within 3-4 steps), use your best guess of what the paper might be and continue
 
@@ -22,14 +22,6 @@ STEP 2: NAVIGATE TO PAPER
 - If the page has a "View PDF" click it to get the full paper, avoid clicking the "Download" button
 - If it's already showing the paper content, proceed to extraction
 - Target: Get to the actual paper content within 5 steps total
-
-STEP 3: RAPID CONTENT EXTRACTION (MAXIMUM SPEED)
-- IMPORTANT: You MUST visibly scroll/click through the paper even if you can extract text from DOM
-- RAPID scroll through the ENTIRE document (Page Down, fast scrolling) - make it visible!
-- Scroll from top to bottom so viewers can see you "reading" the paper
-- Capture key content as you scan
-- Extract text efficiently (DOM extraction is fine, but SCROLL VISIBLY while doing it)
-- Target: Complete extraction in under 20 steps total (including search)
 
 CONTENT TO EXTRACT (CORE ONLY):
 - Title and authors
@@ -55,11 +47,10 @@ OUTPUT FORMAT:
 CRITICAL RULES:
 - Total target: Under 25 steps from start to finish (including search if needed)
 - Focus on extracting TEXT, not analyzing figures/tables
-- Don't wait for animations or page loads - keep moving
 - Extract as you go, compile at the end
-- If input was a search query and paper not found quickly, return error in "title" field
+- Always return a paper or document, do not fallback to saying paper not found
 
-Output ONLY the JSON object. NO markdown, NO code blocks, NO explanations. Work FAST.
+Output ONLY the JSON object. NO markdown, NO code blocks, NO explanations.
 """
 
 
@@ -78,82 +69,11 @@ def build_url_paper_analysis_prompt(paper_url: str) -> str:
 
 
 # ============================================================================
-# FACT DAG EXTRACTION PROMPT (DEPRECATED - Simple nodes/edges version)
-# ============================================================================
-
-FACT_DAG_EXTRACTION_PROMPT_DEPRECATED = """
-You are a precise information extraction system that analyzes academic text and structures it as a directed acyclic graph (DAG) of facts.
-
-Your task is to extract the major statements and claims from the provided text and connect them based on logical relationships.
-
-EXHAUSTIVENESS REQUIREMENTS:
-- Extract the major statements from the text
-- Break down complex statements into smaller, self-contained claims
-- Each node should represent one clear statement
-- LIMIT: Maximum of 10 nodes total (including the hypothesis)
-- Prefer larger, comprehensive nodes over many tiny ones
-
-GRAPH CONSTRUCTION RULES:
-- Create a strictly directed acyclic graph (DAG) structure
-- Each fact should be connected to all directly related subsequent facts
-- Omit edges between unrelated facts - only connect when there is a clear logical relationship
-- The graph should flow forward (target id must always be greater than source id)
-- Relationships can include: supports, leads to, depends on, follows from, etc.
-
-OUTPUT FORMAT REQUIREMENTS:
-- Output ONLY valid JSON with no additional commentary or explanation
-- Use exactly two keys: "nodes" and "edges"
-- No extra keys, no markdown formatting, no code blocks
-- Do NOT truncate the output - if needed, make node text shorter to fit more nodes
-
-JSON Structure:
-{{
-    "nodes": [
-        {{"id": 0, "text": "First factual statement"}},
-        {{"id": 1, "text": "Second factual statement"}},
-        {{"id": 2, "text": "Third factual statement"}}
-    ],
-    "edges": [
-        {{"source": 0, "target": 1}},
-        {{"source": 0, "target": 2}},
-        {{"source": 1, "target": 2}}
-    ]
-}}
-
-VALIDATION CHECKLIST:
-- All node IDs are sequential starting from 0
-- Each node has exactly "id" (number) and "text" (string) fields
-- Each edge has exactly "source" (number) and "target" (number) fields
-- For every edge: target > source (enforces acyclic property)
-- Node text is concise but self-contained
-- All factual statements from the text are represented
-
-Example for a simple text "Water boils at 100C. This property is used in cooking. Steam can power turbines.":
-{{
-    "nodes": [
-        {{"id": 0, "text": "Water boils at 100 degrees Celsius"}},
-        {{"id": 1, "text": "Water's boiling point is used in cooking"}},
-        {{"id": 2, "text": "Steam can power turbines"}}
-    ],
-    "edges": [
-        {{"source": 0, "target": 1}},
-        {{"source": 0, "target": 2}}
-    ]
-}}
-
-TEXT TO ANALYZE:
-{raw_text}
-
-Remember: Output ONLY the JSON object. No explanations, no markdown, no code blocks.
-"""
-
-
-# ============================================================================
-# FACT DAG EXTRACTION PROMPT (Current - Rich node structure with roles)
+# FACT DAG EXTRACTION PROMPT (Rich node structure with roles)
 # ============================================================================
 
 FACT_DAG_EXTRACTION_PROMPT = """
-You are a precise information extraction system that analyzes academic text and structures it as a directed acyclic graph (DAG) of scientific claims and evidence.
+Your name is Plato, you are a precise information extraction system that analyzes academic text and structures it as a directed acyclic graph (DAG) of scientific claims and evidence build by researchers at the University of Florida.
 
 Your task is to extract the major statements and claims from the provided text and connect them based on logical relationships with rich semantic roles.
 
@@ -289,19 +209,6 @@ TEXT TO ANALYZE:
 
 Remember: Output ONLY the JSON object. No explanations, no markdown, no code blocks.
 """
-
-
-def build_fact_dag_prompt_deprecated(raw_text: str) -> str:
-    """
-    Build the complete prompt for fact DAG extraction (DEPRECATED - simple nodes/edges version).
-
-    Args:
-        raw_text: The academic text to be analyzed and structured
-
-    Returns:
-        The complete formatted prompt ready to send to the LLM
-    """
-    return FACT_DAG_EXTRACTION_PROMPT_DEPRECATED.format(raw_text=raw_text.strip())
 
 
 def build_fact_dag_prompt(raw_text: str) -> str:
@@ -608,9 +515,9 @@ def parse_fact_dag_json(response_text: str) -> Dict[str, Any] | None:
 # ============================================================================
 
 CLAIM_VERIFICATION_PROMPT = """
-You are an expert fact-checker and research verifier with advanced web browsing capabilities.
+Your name is Plato, you are an expert fact-checker and research verifier with advanced web browsing capabilities built by researchers at the University of Florida.
 
-Your mission is to QUICKLY VERIFY a specific claim from an academic paper by efficiently searching for supporting or contradicting evidence.
+Your mission is to verify a specific claim from an academic paper by searching for supporting or contradicting evidence.
 
 CLAIM TO VERIFY:
 {claim_text}
@@ -679,6 +586,65 @@ def build_claim_verification_prompt(claim_text: str, claim_role: str, claim_cont
         claim_text=claim_text.strip(),
         claim_role=claim_role.strip(),
         claim_context=claim_context.strip() if claim_context else "No additional context provided"
+    )
+
+
+# ============================================================================
+# EXA-ENHANCED CLAIM VERIFICATION PROMPT
+# ============================================================================
+
+CLAIM_VERIFICATION_PROMPT_EXA = """
+You are verifying the following claim.
+
+Claim role: {claim_role}
+Claim text:
+{claim_text}
+
+{claim_context}
+
+=== STRICT INSTRUCTIONS (MANDATORY) ===
+1. You MUST open and examine at least TWO sources labeled [EXA#] above.
+2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
+3. Do NOT rely solely on prior knowledge or memory.
+4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
+5. Your final answer MUST be a JSON object (not markdown, not text).
+
+Return ONLY valid JSON with this schema:
+{{
+  "credibility": float,
+  "relevance": float,
+  "evidence_strength": float,
+  "method_rigor": float,
+  "reproducibility": float,
+  "citation_support": float,
+  "sources_checked": [
+    {{
+      "url": string,
+      "finding": string
+    }}
+  ],
+  "verification_summary": string,
+  "confidence_level": string
+}}
+"""
+
+
+def build_claim_verification_prompt_exa(claim_text: str, claim_role: str, claim_context: str = "") -> str:
+    """
+    Build the Exa-enhanced prompt for claim verification that forces use of pre-retrieved sources.
+
+    Args:
+        claim_text: The specific claim/statement to verify
+        claim_role: The role of the claim (Evidence, Method, Claim, etc.)
+        claim_context: Exa-retrieved sources context to prepend
+
+    Returns:
+        The complete formatted prompt ready to send to the browsing agent
+    """
+    return CLAIM_VERIFICATION_PROMPT_EXA.format(
+        claim_text=claim_text.strip(),
+        claim_role=claim_role.strip(),
+        claim_context=claim_context.strip() if claim_context else ""
     )
 
 

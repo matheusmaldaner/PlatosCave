@@ -7,6 +7,7 @@
 [![License](https://img.shields.io/badge/license-Research%20Use%20Only-red.svg)](LICENSE.md)
 [![Commercial License](https://img.shields.io/badge/commercial%20license-contact%20author-blue.svg)](mailto:mkunzlermaldaner@ufl.edu)
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
+![Patent Pending](https://img.shields.io/badge/⚖️%20Patent-Pending-orange)
 
 </div>
 
@@ -114,7 +115,8 @@ python server.py
 Also an "image" here is not to be interpreted as a picture. You can think of a Docker image as a package that has everything you need to run some software (it has the libraries, code, envs, configs...)
 
 ```bash 
-# start the docker (open Docker Desktop if on Windows -> Resources -> WSL Integration -> Enable Integration)
+# start the docker service (open Docker Desktop if on Windows -> Resources -> WSL Integration -> Enable Integration)
+cd backend
 docker compose -f docker-compose.browser.yaml up --build remote-browser
 # alternatively you can run it detached:
 # docker compose -f docker-compose.browser.yaml up -d
