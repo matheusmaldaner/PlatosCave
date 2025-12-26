@@ -122,6 +122,7 @@ docker compose -f docker-compose.browser.yaml up --build remote-browser
 # docker compose -f docker-compose.browser.yaml up -d
 ```
 
+Once you have all three separate terminals running, you can access the application at `http://localhost:8000`
 
 ## 🧩 Tech Stack
 
