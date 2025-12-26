@@ -4,7 +4,7 @@ import subprocess
 import json  # Make sure json is imported
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any, Union
 from urllib import request as urllib_request
 from urllib.error import URLError, HTTPError
 from urllib.parse import urlparse, urlunparse
@@ -69,7 +69,7 @@ def build_ws_url(base_http_url: str, ws_path: str) -> Optional[str]:
 active_processes = {}
 
 
-def stream_stderr_to_console_and_ws(process, session_id=None):
+def stream_stderr_to_console_and_ws(process, session_id=None) -> None:
     """
     Read subprocess stderr continuously so main.py debug prints are not lost
     and the subprocess doesn't block due to filled stderr buffer.
@@ -121,10 +121,19 @@ def wait_for_http_ok(
 
 
 def fetch_cdp_metadata(url: str, timeout: float = 5.0, retries: int = 3) -> Optional[dict]:
-    """
-    Retrieve Chrome DevTools metadata JSON from the remote browser.
+    """    Retrieve Chrome DevTools metadata JSON from the remote browser.
     Retries on connection errors (browser may be restarting/busy).
+
+    Args:
+        url (str): url of website
+        timeout (float, optional): Defaults to 5.0.
+        retries (int, optional): Defaults to 3.
+
+    Returns:
+        Optional[dict]: _description_
     """
+
+    
     for attempt in range(retries):
         try:
             req = urllib_request.Request(url, headers=CDP_HTTP_HEADERS)
@@ -192,6 +201,41 @@ def close_all_browser_tabs() -> bool:
         return False
 
 
+def close_all_nonblanks(non_blank_tabs) -> None:
+    """Closes all non blank tabs within the browser session
+
+    Args:
+        non_blank_tabs (List[Any]): tabs to close
+    """
+    for tab in non_blank_tabs:
+        tab_id = tab.get('id')
+        tab_url = tab.get('url', '')
+        print(f"[SERVER DEBUG] Closing non-blank tab {tab_id}: {tab_url[:60]}", flush=True)
+
+        close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
+        try:
+            req = urllib_request.Request(close_url, method='GET')
+            with urllib_request.urlopen(req, timeout=2) as close_response:
+                print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
+        except Exception as e:
+            print(f"[SERVER DEBUG] ✗ Failed to close tab {tab_id}: {e} (continuing...)", flush=True)
+
+def keep_single_blank_tab(blank_tabs) -> None:
+    if len(blank_tabs) > 1:
+        print(f"[SERVER DEBUG] Found {len(blank_tabs)} blank tabs, keeping only one", flush=True)
+        tabs_to_close = blank_tabs[1:]  # Keep first, close rest
+        for tab in tabs_to_close:
+            tab_id = tab.get('id')
+            close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
+            try:
+                req = urllib_request.Request(close_url, method='GET')
+                with urllib_request.urlopen(req, timeout=2) as close_response:
+                    print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
+            except Exception as e:
+                print(f"[SERVER DEBUG] ✗ Failed to close blank tab {tab_id}: {e} (continuing...)", flush=True)
+    else:
+        print(f"[SERVER DEBUG] ✓ Kept existing blank tab", flush=True)
+
 def reset_browser_session() -> bool:
     """
     Reset the browser session to a clean state.
@@ -222,35 +266,14 @@ def reset_browser_session() -> bool:
             non_blank_tabs = [tab for tab in pages if not tab.get('url', '').startswith('about:blank')]
 
             # Close all non-blank tabs (with shorter timeout per tab)
-            for tab in non_blank_tabs:
-                tab_id = tab.get('id')
-                tab_url = tab.get('url', '')
-                print(f"[SERVER DEBUG] Closing non-blank tab {tab_id}: {tab_url[:60]}", flush=True)
+            close_all_nonblanks(non_blank_tabs)
 
-                close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
-                try:
-                    req = urllib_request.Request(close_url, method='GET', headers=CDP_HTTP_HEADERS)
-                    with urllib_request.urlopen(req, timeout=2) as close_response:
-                        print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
-                except Exception as e:
-                    print(f"[SERVER DEBUG] ✗ Failed to close tab {tab_id}: {e} (continuing...)", flush=True)
-
-            # If there are multiple blank tabs, keep only one
-            if len(blank_tabs) > 1:
-                print(f"[SERVER DEBUG] Found {len(blank_tabs)} blank tabs, keeping only one", flush=True)
-                tabs_to_close = blank_tabs[1:]  # Keep first, close rest
-                for tab in tabs_to_close:
-                    tab_id = tab.get('id')
-                    close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
-                    try:
-                        req = urllib_request.Request(close_url, method='GET', headers=CDP_HTTP_HEADERS)
-                        with urllib_request.urlopen(req, timeout=2) as close_response:
-                            print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
-                    except Exception as e:
-                        print(f"[SERVER DEBUG] ✗ Failed to close blank tab {tab_id}: {e} (continuing...)", flush=True)
+            # If there are multiple blank tabs, keep only one. If there is already one, do nothing
+            if len(blank_tabs):
+                keep_single_blank_tab(blank_tabs)
 
             # If no blank tabs exist, create one
-            if len(blank_tabs) == 0:
+            else:
                 print(f"[SERVER DEBUG] No blank tabs found, creating one...", flush=True)
                 time.sleep(0.2)  # Brief pause
 
@@ -260,8 +283,7 @@ def reset_browser_session() -> bool:
                     if 200 <= response.status < 300:
                         tab_data = json.loads(response.read().decode('utf-8'))
                         print(f"[SERVER DEBUG] ✓ Created blank tab with ID: {tab_data.get('id')}", flush=True)
-            else:
-                print(f"[SERVER DEBUG] ✓ Kept existing blank tab", flush=True)
+                
 
             print("[SERVER DEBUG] Browser session reset completed", flush=True)
             return True
@@ -292,7 +314,7 @@ def reset_browser_session() -> bool:
     return False
 
 
-def kill_process_safely(process, timeout: float = 5.0) -> bool:
+def kill_process_safely(process: subprocess.Popen, timeout: float = 5.0) -> bool:
     """
     Safely terminate a process, trying SIGTERM first, then SIGKILL if needed.
 
@@ -378,7 +400,7 @@ def ensure_remote_browser_service() -> Optional[dict]:
         if metadata:
             print("[SERVER DEBUG] CDP endpoint is ready", flush=True)
             break
-        socketio.sleep(1.5)
+        socketio.sleep(1.5) # type: ignore
 
     if not metadata:
         emit_json_message({
@@ -424,10 +446,14 @@ def ensure_remote_browser_service() -> Optional[dict]:
         'cdp_websocket': internal_ws_url
     }
 
-def run_script_and_stream_output(filepath, settings):
-    """
-    Run PDF analysis using main.py with --pdf flag
-    Streams real-time updates via WebSocket
+
+def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> None:
+    """    Run PDF analysis using main.py with --pdf flag
+            Streams real-time updates via WebSocket
+
+    Args:
+        filepath (str): path to string
+        settings (dict[str, Any]): Aggressiveness and Evidence settings
     """
     print(f"[SERVER DEBUG] ========== STARTING PDF ANALYSIS ==========", flush=True)
     print(f"[SERVER DEBUG] PDF path: {filepath}", flush=True)
@@ -487,7 +513,7 @@ def run_script_and_stream_output(filepath, settings):
     if browser_info and browser_info.get('cdp_url'):
         print(f"[SERVER DEBUG] Re-emitting BROWSER_ADDRESS to frontend: {browser_info}", flush=True)
         socketio.emit('status_update', {'data': json.dumps(browser_info)})
-        socketio.sleep(0.1)  # Small delay to ensure delivery
+        socketio.sleep(0.1)  # Small delay to ensure delivery # type: ignore
         print("[SERVER DEBUG] BROWSER_ADDRESS re-emitted!", flush=True)
     else:
         print("[SERVER DEBUG] Using local browser, no BROWSER_ADDRESS to emit", flush=True)
@@ -517,22 +543,9 @@ def run_script_and_stream_output(filepath, settings):
         socketio.emit('status_update', {'data': error_message})
 
 
-def run_url_analysis_and_stream_output(url, settings, session_id=None):
-    """
-    Run URL analysis using browser-use + DAG generation
-    Streams real-time updates via WebSocket
-
-    Args:
-        url: URL to analyze
-        settings: Analysis settings
-        session_id: WebSocket session ID for process tracking
-    """
-    print(f"[SERVER DEBUG] ========== STARTING run_url_analysis_and_stream_output ==========", flush=True)
-    print(f"[SERVER DEBUG] URL: {url}", flush=True)
-    print(f"[SERVER DEBUG] Settings: {settings}", flush=True)
-    print(f"[SERVER DEBUG] Session ID: {session_id}", flush=True)
-
-    # Kill any previous main.py analysis processes
+def kill_and_reset() -> None:
+    """ Kill any previous main.py analysis processes"""
+    
     try:
         print("[SERVER DEBUG] Killing old main.py processes...", flush=True)
         result = subprocess.run(['pkill', '-9', '-f', 'main.py'],
@@ -551,6 +564,24 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
     # This ensures we start fresh but don't break CDP connections
     print("[SERVER DEBUG] Resetting browser session before getting connection info...", flush=True)
     reset_browser_session()
+
+def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
+    """
+    Run URL analysis using browser-use + DAG generation
+    Streams real-time updates via WebSocket
+
+    Args:
+        url: URL to analyze
+        settings: Analysis settings
+        session_id: WebSocket session ID for process tracking
+    """
+    print(f"[SERVER DEBUG] ========== STARTING run_url_analysis_and_stream_output ==========", flush=True)
+    print(f"[SERVER DEBUG] URL: {url}", flush=True)
+    print(f"[SERVER DEBUG] Settings: {settings}", flush=True)
+    print(f"[SERVER DEBUG] Session ID: {session_id}", flush=True)
+
+    # kill any previous main.py processes and reset browser
+    kill_and_reset()
 
     # Give browser a moment to stabilize after reset
     socketio.sleep(0.5)
@@ -659,7 +690,9 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None):
 
 
 @app.route('/api/upload', methods=['POST'])
-def upload_file():
+def upload_file() -> (tuple[dict[str, str], int]) | (tuple[str, int]):
+    """Once file is selected, run PDF analysis"""
+    
     if 'file' not in request.files:
         return 'No file part', 400
     file = request.files['file']
@@ -682,11 +715,11 @@ def upload_file():
 
 
 @app.route('/api/cleanup', methods=['POST'])
-def cleanup():
+def cleanup() -> tuple[dict[str, str], int]:
     """
     Cleanup endpoint: Reset browser state to prepare for new analysis
     Called when user refreshes or clicks logo
-    
+
     Simply resets browser tabs - the next analysis will handle process management
     """
     print("[SERVER DEBUG] ========== /api/cleanup ENDPOINT HIT ==========", flush=True)
@@ -705,7 +738,7 @@ def cleanup():
 
 
 @app.route('/api/analyze-url', methods=['POST'])
-def analyze_url():
+def analyze_url() -> tuple[dict[str, str], int]:
     """
     Analyze a research paper from URL using browser-use + DAG generation
     """
@@ -733,13 +766,15 @@ def analyze_url():
 
     return {'message': 'URL analysis started.', 'url': url}, 202
 
+
 @socketio.on('connect')
-def handle_connect():
+def handle_connect() -> None:
     print('[SERVER DEBUG] ========== CLIENT CONNECTED TO WEBSOCKET ==========', flush=True)
     print(f'[SERVER DEBUG] Client ID: {request.sid}', flush=True)
 
+
 @socketio.on('disconnect')
-def handle_disconnect():
+def handle_disconnect() -> None:
     print('[SERVER DEBUG] ========== CLIENT DISCONNECTED FROM WEBSOCKET ==========', flush=True)
     print(f'[SERVER DEBUG] Client ID: {request.sid}', flush=True)
 
@@ -753,6 +788,7 @@ def handle_disconnect():
     # Reset browser session when client disconnects
     print('[SERVER DEBUG] Resetting browser session after disconnect...', flush=True)
     reset_browser_session()
+
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=5001, debug=True)
