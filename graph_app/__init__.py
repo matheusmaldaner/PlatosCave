@@ -6,7 +6,8 @@ Exports:
 - KGSession: thin session adapter intended for API/front-end integration
 """
 
-from kg_realtime_scoring import KGScorer, DAGValidation
-from service_adapter import KGSession
+from .kg_realtime_scoring import KGScorer, DAGValidation
+from .service_adapter import KGSession
 
 __all__ = ["KGScorer", "DAGValidation", "KGSession"]
+
