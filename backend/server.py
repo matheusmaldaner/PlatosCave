@@ -40,6 +40,30 @@ BROWSER_NOVNC_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_NOVNC_PUBLIC_URL', 'ht
 BROWSER_CDP_HEALTH_URL = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/version"
 BROWSER_NOVNC_HEALTH_URL = BROWSER_NOVNC_INTERNAL_URL
 
+CDP_HTTP_HEADERS = {"Host": "localhost"}
+
+
+def running_in_docker() -> bool:
+    if os.path.exists("/.dockerenv"):
+        return True
+    try:
+        with open("/proc/1/cgroup", "r", encoding="utf-8") as handle:
+            cgroup = handle.read()
+        return "docker" in cgroup or "containerd" in cgroup
+    except OSError:
+        return False
+
+
+def build_ws_url(base_http_url: str, ws_path: str) -> Optional[str]:
+    if not base_http_url:
+        return None
+    parsed_base = urlparse(base_http_url)
+    hostname = parsed_base.hostname or "localhost"
+    port = parsed_base.port or 9222
+    ws_scheme = "wss" if parsed_base.scheme == "https" else "ws"
+    ws_netloc = f"{hostname}:{port}"
+    return urlunparse((ws_scheme, ws_netloc, ws_path, "", "", ""))
+
 # Global dictionary to track running processes per session
 # session_id -> process object
 active_processes = {}
@@ -71,12 +95,23 @@ def emit_json_message(payload: dict) -> None:
     print(f"[SERVER DEBUG] Message emitted successfully", flush=True)
 
 
-def wait_for_http_ok(url: str, timeout: float = 30.0, interval: float = 1.5) -> bool:
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}, 200
+
+
+def wait_for_http_ok(
+    url: str,
+    timeout: float = 30.0,
+    interval: float = 1.5,
+    headers: Optional[dict] = None
+) -> bool:
     """Poll the given URL until it returns HTTP 200 or timeout expires."""
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         try:
-            with urllib_request.urlopen(url, timeout=interval) as response:
+            req = urllib_request.Request(url, headers=headers or {})
+            with urllib_request.urlopen(req, timeout=interval) as response:
                 if 200 <= response.status < 300:
                     return True
         except (URLError, HTTPError, OSError, ConnectionResetError):
@@ -92,7 +127,8 @@ def fetch_cdp_metadata(url: str, timeout: float = 5.0, retries: int = 3) -> Opti
     """
     for attempt in range(retries):
         try:
-            with urllib_request.urlopen(url, timeout=timeout) as response:
+            req = urllib_request.Request(url, headers=CDP_HTTP_HEADERS)
+            with urllib_request.urlopen(req, timeout=timeout) as response:
                 if 200 <= response.status < 300:
                     raw = response.read().decode('utf-8')
                     return json.loads(raw)
@@ -124,7 +160,8 @@ def close_all_browser_tabs() -> bool:
         list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
         print(f"[SERVER DEBUG] Fetching tab list from: {list_url}", flush=True)
 
-        with urllib_request.urlopen(list_url, timeout=5) as response:
+        req = urllib_request.Request(list_url, headers=CDP_HTTP_HEADERS)
+        with urllib_request.urlopen(req, timeout=5) as response:
             tabs = json.loads(response.read().decode('utf-8'))
 
         print(f"[SERVER DEBUG] Found {len(tabs)} tabs/targets", flush=True)
@@ -139,7 +176,8 @@ def close_all_browser_tabs() -> bool:
 
                 close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
                 try:
-                    with urllib_request.urlopen(close_url, timeout=5) as close_response:
+                    close_req = urllib_request.Request(close_url, headers=CDP_HTTP_HEADERS)
+                    with urllib_request.urlopen(close_req, timeout=5) as close_response:
                         if 200 <= close_response.status < 300:
                             closed_count += 1
                             print(f"[SERVER DEBUG] ✓ Closed tab {tab_id}", flush=True)
@@ -172,7 +210,8 @@ def reset_browser_session() -> bool:
             list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
             print(f"[SERVER DEBUG] Fetching tab list from: {list_url} (attempt {attempt + 1}/{max_attempts})", flush=True)
 
-            with urllib_request.urlopen(list_url, timeout=3) as response:
+            req = urllib_request.Request(list_url, headers=CDP_HTTP_HEADERS)
+            with urllib_request.urlopen(req, timeout=3) as response:
                 tabs = json.loads(response.read().decode('utf-8'))
 
             pages = [tab for tab in tabs if tab.get('type') == 'page']
@@ -190,7 +229,7 @@ def reset_browser_session() -> bool:
 
                 close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
                 try:
-                    req = urllib_request.Request(close_url, method='GET')
+                    req = urllib_request.Request(close_url, method='GET', headers=CDP_HTTP_HEADERS)
                     with urllib_request.urlopen(req, timeout=2) as close_response:
                         print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
                 except Exception as e:
@@ -204,7 +243,7 @@ def reset_browser_session() -> bool:
                     tab_id = tab.get('id')
                     close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
                     try:
-                        req = urllib_request.Request(close_url, method='GET')
+                        req = urllib_request.Request(close_url, method='GET', headers=CDP_HTTP_HEADERS)
                         with urllib_request.urlopen(req, timeout=2) as close_response:
                             print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
                     except Exception as e:
@@ -216,7 +255,7 @@ def reset_browser_session() -> bool:
                 time.sleep(0.2)  # Brief pause
 
                 new_tab_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/new"
-                req = urllib_request.Request(new_tab_url, method='PUT')
+                req = urllib_request.Request(new_tab_url, method='PUT', headers=CDP_HTTP_HEADERS)
                 with urllib_request.urlopen(req, timeout=3) as response:
                     if 200 <= response.status < 300:
                         tab_data = json.loads(response.read().decode('utf-8'))
@@ -297,27 +336,30 @@ def ensure_remote_browser_service() -> Optional[dict]:
         'text': 'Ensuring remote browser service is running...'
     })
 
-    if not BROWSER_COMPOSE_FILE.exists():
-        emit_json_message({
-            'type': 'ERROR',
-            'message': f'Remote browser compose file not found at {BROWSER_COMPOSE_FILE}'
-        })
-        return None
+    if running_in_docker():
+        print("[SERVER DEBUG] Running in Docker; skipping docker compose startup", flush=True)
+    else:
+        if not BROWSER_COMPOSE_FILE.exists():
+            emit_json_message({
+                'type': 'ERROR',
+                'message': f'Remote browser compose file not found at {BROWSER_COMPOSE_FILE}'
+            })
+            return None
 
-    try:
-        subprocess.run(
-            ['docker', 'compose', '-f', str(BROWSER_COMPOSE_FILE), 'up', '-d', 'remote-browser'],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT,
-            cwd=BROWSER_COMPOSE_FILE.parent
-        )
-    except subprocess.CalledProcessError as exc:
-        emit_json_message({
-            'type': 'ERROR',
-            'message': f'Failed to start remote browser service: {exc}'
-        })
-        return None
+        try:
+            subprocess.run(
+                ['docker', 'compose', '-f', str(BROWSER_COMPOSE_FILE), 'up', '-d', 'remote-browser'],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT,
+                cwd=BROWSER_COMPOSE_FILE.parent
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+            emit_json_message({
+                'type': 'ERROR',
+                'message': f'Failed to start remote browser service: {exc}'
+            })
+            return None
 
     # Check noVNC but don't fail if unavailable (it's for viewing only)
     print("[SERVER DEBUG] Checking noVNC endpoint (optional)...", flush=True)
@@ -345,32 +387,25 @@ def ensure_remote_browser_service() -> Optional[dict]:
         })
         return None
 
-    # Rewrite the advertised WebSocket endpoint to use public URL
     ws_url = metadata.get('webSocketDebuggerUrl')
+    ws_path = None
     if ws_url:
         print(f"[SERVER DEBUG] Original WebSocket URL from metadata: {ws_url}", flush=True)
-        
-        parsed_ws = urlparse(ws_url)
-        parsed_cdp_public = urlparse(BROWSER_CDP_PUBLIC_URL)
-        
-        # Use public hostname and port
-        public_hostname = parsed_cdp_public.hostname or 'localhost'
-        public_port = parsed_cdp_public.port or 9222
-        
-        # Determine WebSocket scheme based on public CDP URL (ws for http, wss for https)
-        ws_scheme = 'wss' if parsed_cdp_public.scheme == 'https' else 'ws'
-        
-        # Rebuild WebSocket URL with public hostname/port
-        ws_netloc = f"{public_hostname}:{public_port}"
-        ws_url = urlunparse((ws_scheme, ws_netloc, parsed_ws.path, '', '', ''))
-        
-        print(f"[SERVER DEBUG] Rewritten WebSocket URL: {ws_url}", flush=True)
+        ws_path = urlparse(ws_url).path
+
+    internal_ws_url = build_ws_url(BROWSER_CDP_INTERNAL_URL, ws_path) if ws_path else None
+    public_ws_url = build_ws_url(BROWSER_CDP_PUBLIC_URL, ws_path) if ws_path else None
+
+    if internal_ws_url:
+        print(f"[SERVER DEBUG] Internal WebSocket URL: {internal_ws_url}", flush=True)
+    if public_ws_url:
+        print(f"[SERVER DEBUG] Public WebSocket URL: {public_ws_url}", flush=True)
 
     browser_payload = {
         'type': 'BROWSER_ADDRESS',
         'novnc_url': BROWSER_NOVNC_PUBLIC_URL,
         'cdp_url': BROWSER_CDP_PUBLIC_URL,
-        'cdp_websocket': ws_url
+        'cdp_websocket': public_ws_url
     }
     print(f"[SERVER DEBUG] About to emit BROWSER_ADDRESS: {browser_payload}", flush=True)
     emit_json_message(browser_payload)
@@ -383,7 +418,11 @@ def ensure_remote_browser_service() -> Optional[dict]:
     })
 
     print("[SERVER DEBUG] ========== ensure_remote_browser_service COMPLETED ==========", flush=True)
-    return browser_payload
+    return {
+        'novnc_url': BROWSER_NOVNC_INTERNAL_URL,
+        'cdp_url': BROWSER_CDP_INTERNAL_URL,
+        'cdp_websocket': internal_ws_url
+    }
 
 def run_script_and_stream_output(filepath, settings):
     """
@@ -716,5 +755,4 @@ def handle_disconnect():
     reset_browser_session()
 
 if __name__ == '__main__':
-    socketio.run(app, port=5000, debug=True)
-
+    socketio.run(app, host="0.0.0.0", port=5001, debug=True)

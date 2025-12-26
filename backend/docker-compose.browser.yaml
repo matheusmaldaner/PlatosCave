@@ -15,7 +15,7 @@ services:
     shm_size: "2gb"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:9222/json/version || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS -H 'Host: localhost' http://localhost:9222/json/version || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
