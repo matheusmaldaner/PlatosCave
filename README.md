@@ -115,7 +115,8 @@ python server.py
 Also an "image" here is not to be interpreted as a picture. You can think of a Docker image as a package that has everything you need to run some software (it has the libraries, code, envs, configs...)
 
 ```bash 
-# start the docker (open Docker Desktop if on Windows -> Resources -> WSL Integration -> Enable Integration)
+# start the docker service (open Docker Desktop if on Windows -> Resources -> WSL Integration -> Enable Integration)
+cd backend
 docker compose -f docker-compose.browser.yaml up --build remote-browser
 # alternatively you can run it detached:
 # docker compose -f docker-compose.browser.yaml up -d
