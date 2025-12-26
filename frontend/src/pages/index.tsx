@@ -12,6 +12,8 @@ import ProgressBar from "../components/ProgressBar";
 import ParticleBackground from "../components/ParticleBackground";
 import platosCaveLogo from "../images/platos-cave-logo.png";
 
+const API_URL = process.env.GATSBY_API_URL || "http://localhost:5001";
+
 const INITIAL_STAGES: ProcessStep[] = [
   { name: "Validate", displayText: "Pending...", status: "pending" },
   { name: "Decomposing PDF", displayText: "Pending...", status: "pending" },
@@ -65,7 +67,7 @@ const IndexPage = () => {
   useEffect(() => {
     if (!uploadedFile && !submittedUrl) return;
 
-    const socket: Socket = io("http://localhost:5001");
+    const socket: Socket = io(API_URL);
     socket.on("connect", () => console.log("Connected to WebSocket server!"));
 
     socket.on("status_update", (msg: { data: string }) => {
@@ -125,7 +127,7 @@ const IndexPage = () => {
     setBrowserCdpWebSocket(undefined);
 
     try {
-      await axios.post("http://localhost:5001/api/upload", formData);
+      await axios.post(`${API_URL}/api/upload`, formData);
     } catch (error) {
       console.error("Error uploading file:", error);
     }
@@ -145,7 +147,7 @@ const IndexPage = () => {
     setBrowserCdpWebSocket(undefined);
 
     try {
-      await axios.post("http://localhost:5001/api/analyze-url", {
+      await axios.post(`${API_URL}/api/analyze-url`, {
         url,
         ...settings,
       });
