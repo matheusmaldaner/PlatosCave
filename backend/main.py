@@ -1,4 +1,4 @@
-from browser_use import Agent, ChatBrowserUse, ChatOpenAI, Browser, ChatAnthropic, ChatOllama, BrowserContext
+from browser_use import Agent, ChatBrowserUse, ChatOpenAI, Browser, ChatAnthropic, ChatOllama
 from browser_use.llm.messages import BaseMessage, UserMessage
 from dotenv import load_dotenv
 import asyncio
@@ -12,7 +12,7 @@ from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, buil
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
-from typing import Optional, Any
+from typing import Optional
 import textwrap
 
 load_dotenv()
@@ -312,8 +312,7 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
 
     return graphml_content
 
-async def stageOne(browser: Browser|None, is_pdf_mode: bool, url: Any = None, pdf_path: Any = None) -> tuple[Browser, ChatBrowserUse]:
-    browser = browser
+async def stage_one(browser: Browser | None, is_pdf_mode: bool, url: str | None = None, pdf_path: str | None = None) -> tuple[Browser, ChatBrowserUse]:
     # Stage 1: Validate
     if is_pdf_mode:
         send_update("Validate", f"Validating PDF file: {pdf_path}")
@@ -371,10 +370,10 @@ async def stageOne(browser: Browser|None, is_pdf_mode: bool, url: Any = None, pd
     return browser, llm
 
 
-async def stageTwo(browser: Browser|None, llm: ChatBrowserUse, is_pdf_mode: bool, url: Any = None, pdf_path: Any = None):
+async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: bool, url: str | None = None, pdf_path: str | None = None):
     # Stage 2: Decomposing PDF (extracting content from URL or PDF file)
 
-    async def pdf_exists(browser: Browser|None, llm: ChatBrowserUse, is_pdf_mode: bool, url: Any = None, pdf_path: Any = None):
+    async def pdf_exists(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: bool, url: str | None = None, pdf_path: str | None = None):
                 # PDF FILE MODE: Extract text directly from PDF file (browser stays idle)
         send_update("Decomposing PDF", f"Extracting text from PDF file: {pdf_path}")
         extracted_text = ""
@@ -411,7 +410,7 @@ async def stageTwo(browser: Browser|None, llm: ChatBrowserUse, is_pdf_mode: bool
             send_final_score(0.0)
             return False, extracted_text
         
-    async def pdf_missing(browser: Browser|None, llm: ChatBrowserUse, is_pdf_mode: bool, url: Any = None, pdf_path: Any = None):
+    async def pdf_missing(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: bool, url: str | None = None, pdf_path: str | None = None):
                 # URL MODE: Use browser automation to extract from URL
         send_update("Decomposing PDF", "Navigating to paper and extracting content...")
         history = None
@@ -466,7 +465,7 @@ async def stageTwo(browser: Browser|None, llm: ChatBrowserUse, is_pdf_mode: bool
     else:
         return await pdf_missing(browser=browser, llm=llm, is_pdf_mode=is_pdf_mode, url=url, pdf_path=pdf_path)
 
-async def stageThree(extracted_text: str, llm: ChatBrowserUse):
+async def stage_three(extracted_text: str, llm: ChatBrowserUse):
     # Stage 3: Building Logic Tree (generating DAG)
     print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
     send_update("Building Logic Tree", "Analyzing paper structure...")
@@ -729,7 +728,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
     return verification_result
 
 
-async def frontend_vis_chat_verification(dag_json, dag_json_str, browser, llm: ChatBrowserUse):
+async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, browser: Browser, llm: ChatBrowserUse):
        # Convert DAG JSON to GraphML for frontend visualization
         try:
     
@@ -861,7 +860,7 @@ async def frontend_vis_chat_verification(dag_json, dag_json_str, browser, llm: C
             traceback.print_exc(file=sys.stderr)
             send_final_score(0.0)
  
-async def cleanUp(browser: Browser|None):
+async def clean_up(browser: Browser | None):
     # Clean up browser resources
     if browser is not None:
         print(f"[MAIN.PY DEBUG] Cleaning up browser resources", file=sys.stderr, flush=True)
@@ -904,21 +903,21 @@ async def main(url=None, pdf_path=None):
     browser = None
 
     try:
-        browser, llm = await stageOne(browser, is_pdf_mode, url, pdf_path)
+        browser, llm = await stage_one(browser, is_pdf_mode, url, pdf_path)
 
         # Stage 2: Decomposing PDF (extracting content from URL or PDF file)
-        valid, extracted_text = await stageTwo(browser=browser, llm=llm, is_pdf_mode=is_pdf_mode, url=url, pdf_path=pdf_path)
+        valid, extracted_text = await stage_two(browser=browser, llm=llm, is_pdf_mode=is_pdf_mode, url=url, pdf_path=pdf_path)
         if not valid:
             return
-            
+
         # Stage 3: Building Logic Tree (generating DAG)
-        dag_json, dag_json_str = await stageThree(extracted_text=extracted_text, llm=llm)
+        dag_json, dag_json_str = await stage_three(extracted_text=extracted_text, llm=llm)
 
         # Convert DAG JSON to GraphML for frontend visualization
         # Stage 4 & 5: Verify Claims with Browser Agents
         # Stage 6: Run Verification Pipeline (Pure Data Processing)
         await frontend_vis_chat_verification(dag_json=dag_json, dag_json_str=dag_json_str, browser=browser, llm=llm)
-        
+
 
     except Exception as e:
         # Handle any unexpected errors in the main try block
@@ -929,7 +928,7 @@ async def main(url=None, pdf_path=None):
         send_final_score(0.0)
 
     finally:
-        await cleanUp(browser)
+        await clean_up(browser)
     # all the data is being stored in temp md files
     # TODO: save the finalized md file so it is not temp
 
