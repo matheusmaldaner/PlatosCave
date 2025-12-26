@@ -2,7 +2,7 @@
 from collections import deque
 from typing import Dict, Any, List, Optional, Tuple
 
-from kg_realtime_scoring import DAGValidation, KGScorer  # your module
+from .kg_realtime_scoring import DAGValidation, KGScorer  # your module
 
 
 # deterministic BFS (copy of the simple one in the demo)
@@ -218,3 +218,4 @@ class KGSession:
         """
         self.kg.set_metric_weights(weights, normalize=normalize)
         return {"ok": True, "weights": dict(self.kg.metric_w.weights)}
+
