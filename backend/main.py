@@ -121,17 +121,24 @@ async def exa_retrieve(claim: str, k: int = 6) -> str: # Exa based evidence retr
 
 async def extract_text(paper_url: str) -> str: # Extract paper text via Exa (fallback to browser if insufficient)
     def _run():
-        res = exa.search_and_contents(
-            paper_url,
-            num_results=1,
-            text={"max_characters": 50000}
-        )
-        if not getattr(res, "results", None):
-            return ""
+        try:
+            print(f"[EXA DEBUG] extract_text called with url={paper_url[:100]}", file=sys.stderr, flush=True)
+            res = exa.search_and_contents(
+                paper_url,
+                num_results=1,
+                text={"max_characters": 50000}
+            )
+            if not getattr(res, "results", None):
+                print(f"[EXA DEBUG] No results returned from Exa", file=sys.stderr, flush=True)
+                return ""
 
-        r = res.results[0]
-        text = (getattr(r, "text", "") or "").strip()
-        return text
+            r = res.results[0]
+            text = (getattr(r, "text", "") or "").strip()
+            print(f"[EXA DEBUG] Exa returned {len(text)} chars", file=sys.stderr, flush=True)
+            return text
+        except Exception as e:
+            print(f"[EXA DEBUG] extract_text error: {e}", file=sys.stderr, flush=True)
+            return ""
 
     return await asyncio.to_thread(_run)
 
