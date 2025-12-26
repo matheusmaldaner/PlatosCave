@@ -9,7 +9,7 @@ import sys
 import os
 from pathlib import Path
 import fitz  # PyMuPDF for PDF text extraction
-from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, parse_verification_result
+from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, build_claim_verification_prompt_exa, parse_verification_result
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
@@ -95,43 +95,6 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     except Exception as e:
         print(f"[MAIN.PY DEBUG] Error extracting PDF text: {e}", file=sys.stderr, flush=True)
         raise Exception(f"Failed to extract text from PDF: {e}")
-    
-def build_claim_verification_prompt_exa(claim_text, claim_role, claim_context): # # Force LLM to use Exa-retrieved sources before any free browsing
-    return f"""
-You are verifying the following claim.
-
-Claim role: {claim_role}
-Claim text:
-{claim_text}
-
-{claim_context}
-
-=== STRICT INSTRUCTIONS (MANDATORY) ===
-1. You MUST open and examine at least TWO sources labeled [EXA#] above.
-2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
-3. Do NOT rely solely on prior knowledge or memory.
-4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
-5. Your final answer MUST be a JSON object (not markdown, not text).
-
-Return ONLY valid JSON with this schema:
-{{
-  "credibility": float,
-  "relevance": float,
-  "evidence_strength": float,
-  "method_rigor": float,
-  "reproducibility": float,
-  "citation_support": float,
-  "sources_checked": [
-    {{
-      "url": string,
-      "finding": string
-    }}
-  ],
-  "verification_summary": string,
-  "confidence_level": string
-}}
-"""
-
     
 async def exa_retrieve(claim: str, k: int = 6) -> str: # Exa based evidence retrieval for claim verification
     def _run():

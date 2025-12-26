@@ -589,6 +589,65 @@ def build_claim_verification_prompt(claim_text: str, claim_role: str, claim_cont
     )
 
 
+# ============================================================================
+# EXA-ENHANCED CLAIM VERIFICATION PROMPT
+# ============================================================================
+
+CLAIM_VERIFICATION_PROMPT_EXA = """
+You are verifying the following claim.
+
+Claim role: {claim_role}
+Claim text:
+{claim_text}
+
+{claim_context}
+
+=== STRICT INSTRUCTIONS (MANDATORY) ===
+1. You MUST open and examine at least TWO sources labeled [EXA#] above.
+2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
+3. Do NOT rely solely on prior knowledge or memory.
+4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
+5. Your final answer MUST be a JSON object (not markdown, not text).
+
+Return ONLY valid JSON with this schema:
+{{
+  "credibility": float,
+  "relevance": float,
+  "evidence_strength": float,
+  "method_rigor": float,
+  "reproducibility": float,
+  "citation_support": float,
+  "sources_checked": [
+    {{
+      "url": string,
+      "finding": string
+    }}
+  ],
+  "verification_summary": string,
+  "confidence_level": string
+}}
+"""
+
+
+def build_claim_verification_prompt_exa(claim_text: str, claim_role: str, claim_context: str = "") -> str:
+    """
+    Build the Exa-enhanced prompt for claim verification that forces use of pre-retrieved sources.
+
+    Args:
+        claim_text: The specific claim/statement to verify
+        claim_role: The role of the claim (Evidence, Method, Claim, etc.)
+        claim_context: Exa-retrieved sources context to prepend
+
+    Returns:
+        The complete formatted prompt ready to send to the browsing agent
+    """
+    return CLAIM_VERIFICATION_PROMPT_EXA.format(
+        claim_text=claim_text.strip(),
+        claim_role=claim_role.strip(),
+        claim_context=claim_context.strip() if claim_context else ""
+    )
+
+
 def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
     """
     Parse and validate the verification result from the agent.
