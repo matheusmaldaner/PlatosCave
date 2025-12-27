@@ -468,6 +468,7 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
 
     command = [
         'python', 'main.py', '--pdf', filepath,
+        '--max-nodes', str(settings.get('maxNodes', 10)),
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
@@ -602,7 +603,7 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
 
     command = [
         'python', 'main.py', '--url', url,
-        # Note: main.py doesn't use these settings yet, but we pass them for future use
+        '--max-nodes', str(settings.get('maxNodes', 10)),
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
@@ -698,6 +699,7 @@ def upload_file() -> (tuple[dict[str, str], int]) | (tuple[str, int]):
     file = request.files['file']
 
     settings = {
+        'maxNodes': request.form.get('maxNodes', 10),
         'agentAggressiveness': request.form.get('agentAggressiveness', 5),
         'evidenceThreshold': request.form.get('evidenceThreshold', 0.8)
     }
@@ -752,6 +754,7 @@ def analyze_url() -> tuple[dict[str, str], int]:
 
     url = data['url']
     settings = {
+        'maxNodes': data.get('maxNodes', 10),
         'agentAggressiveness': data.get('agentAggressiveness', 5),
         'evidenceThreshold': data.get('evidenceThreshold', 0.8)
     }

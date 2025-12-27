@@ -1,6 +1,6 @@
 // frontend/src/components/ProgressBar.tsx
 import React from 'react';
-import { ProcessStep } from './Sidebar'; // Reusing this type definition
+import { ProcessStep } from '../types';
 
 interface ProgressBarProps {
     steps: ProcessStep[];
