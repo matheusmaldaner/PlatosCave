@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import ReactFlow, { Node, Edge, MarkerType, NodeProps, Handle, Position, useReactFlow } from "reactflow";
+import ReactFlow, { Node, Edge, MarkerType, NodeProps, Handle, Position, useReactFlow, NodeToolbar } from "reactflow";
 import dagre from "dagre";
 import "reactflow/dist/style.css";
 import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
@@ -7,12 +7,16 @@ import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 interface XmlGraphViewerProps {
   graphmlData: string | null;
   isDrawerOpen?: boolean;
+  activeNodeId?: string | null;
+  onBrowserClick?: () => void;
 }
 
 type GraphNodeData = {
   role: string;
   text: string;
   cardWidth: number;
+  isActive?: boolean;
+  onBrowserClick?: () => void;
 };
 
 type GraphNode = Node<GraphNodeData>;
@@ -35,17 +39,49 @@ const GraphNodeCard: React.FC<NodeProps<GraphNodeData>> = ({ data }) => {
   const palette = roleStyles[roleKey] || { badgeBg: "bg-gray-50", badgeText: "text-gray-700", bodyBg: "bg-white", border: "border-gray-200" };
 
   return (
-    <div
-      style={{ width: `${data.cardWidth}px` }}
-      className={`relative rounded-xl border ${palette.border} ${palette.bodyBg} p-3 shadow-sm`}
-    >
-      <Handle type="target" position={Position.Top} className="h-2 w-2 rounded-full bg-brand-green" />
-      <p className={`inline-flex items-center rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide ${palette.badgeBg} ${palette.badgeText}`}>
-        {data.role}
-      </p>
-      <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-line">{data.text}</p>
-      <Handle type="source" position={Position.Bottom} className="h-2 w-2 rounded-full bg-brand-green" />
-    </div>
+    <>
+      {/* Browser Active Toolbar - appears above node when active */}
+      <NodeToolbar isVisible={data.isActive} position={Position.Top} style={{ pointerEvents: 'auto' }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            console.log('[DEBUG] Browser Active clicked, onBrowserClick:', data.onBrowserClick);
+            if (data.onBrowserClick) {
+              data.onBrowserClick();
+            } else {
+              console.error('[DEBUG] onBrowserClick is undefined!');
+            }
+          }}
+          className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-pointer"
+          style={{ pointerEvents: 'auto' }}
+        >
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-medium text-gray-700 text-sm">Browser Active</span>
+          <svg
+            className="w-4 h-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </NodeToolbar>
+
+      {/* Node card with active state styling */}
+      <div
+        style={{ width: `${data.cardWidth}px` }}
+        className={`relative rounded-xl border ${data.isActive ? 'border-emerald-400 ring-2 ring-emerald-200' : palette.border} ${palette.bodyBg} p-3 shadow-sm transition-all duration-300`}
+      >
+        <Handle type="target" position={Position.Top} className="h-2 w-2 rounded-full bg-brand-green" />
+        <p className={`inline-flex items-center rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide ${palette.badgeBg} ${palette.badgeText}`}>
+          {data.role}
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-line">{data.text}</p>
+        <Handle type="source" position={Position.Bottom} className="h-2 w-2 rounded-full bg-brand-green" />
+      </div>
+    </>
   );
 };
 
@@ -168,13 +204,13 @@ const GraphControls: React.FC<{ isDrawerOpen: boolean }> = ({ isDrawerOpen }) =>
         bottom: isDrawerOpen ? "4rem" : "1rem", // ✅ slides upward when drawer opens
       }}
     >
-      <button onClick={zoomIn} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom In">
+      <button onClick={() => zoomIn()} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom In">
         <ZoomIn size={20} />
       </button>
-      <button onClick={zoomOut} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom Out">
+      <button onClick={() => zoomOut()} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Zoom Out">
         <ZoomOut size={20} />
       </button>
-      <button onClick={fitView} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Fit View">
+      <button onClick={() => fitView()} className="p-2 bg-gray-100 rounded hover:bg-gray-200" title="Fit View">
         <Maximize2 size={20} />
       </button>
     </div>
@@ -182,7 +218,12 @@ const GraphControls: React.FC<{ isDrawerOpen: boolean }> = ({ isDrawerOpen }) =>
 };
 
 
-const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData, isDrawerOpen = false }) => {
+const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({
+  graphmlData,
+  isDrawerOpen = false,
+  activeNodeId = null,
+  onBrowserClick
+}) => {
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [edges, setEdges] = useState<GraphEdge[]>([]);
   const [layoutConfig, setLayoutConfig] = useState<LayoutConfig>(LAYOUT_PRESETS.default);
@@ -204,7 +245,20 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData, isDrawerOp
     if (graphmlData) {
       try {
         const { nodes: layoutedNodes, edges: layoutedEdges } = parseGraphML(graphmlData, layoutConfig);
-        setNodes(layoutedNodes);
+
+        console.log('[DEBUG] XmlGraphViewer useEffect - activeNodeId:', activeNodeId, 'onBrowserClick defined:', !!onBrowserClick);
+
+        // Mark active node and pass browser click callback
+        const nodesWithActiveState = layoutedNodes.map(node => ({
+          ...node,
+          data: {
+            ...node.data,
+            isActive: node.id === `n${activeNodeId}`,
+            onBrowserClick
+          }
+        }));
+
+        setNodes(nodesWithActiveState);
         setEdges(layoutedEdges);
       } catch (e) {
         console.error("Failed to parse GraphML data:", e);
@@ -213,7 +267,7 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({ graphmlData, isDrawerOp
       setNodes([]);
       setEdges([]);
     }
-  }, [graphmlData, layoutConfig]);
+  }, [graphmlData, layoutConfig, activeNodeId, onBrowserClick]);
 
   const handleSaveGraph = () => {
     if (!graphmlData) return;
