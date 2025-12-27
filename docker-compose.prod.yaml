@@ -1,33 +1,31 @@
 services:
   frontend:
-    platform: linux/amd64
     image: ghcr.io/matheusmaldaner/platoscave/platoscave-frontend:latest
-    build:
-      context: ./frontend
-      dockerfile: docker/Dockerfile
     ports:
       - "3000:80"
     environment:
-      GATSBY_API_URL: http://backend:5001
+      GATSBY_API_URL: https://platoscave.matheus.wiki
     depends_on:
       backend:
         condition: service_healthy
     networks:
       - platoscave-net
+    restart: unless-stopped
 
   backend:
-    platform: linux/amd64
     image: ghcr.io/matheusmaldaner/platoscave/platoscave-backend:latest
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
     ports:
       - "5001:5001"
     environment:
+      # CORS - restrict to your frontend domain/IP (comma-separated for multiple)
+      ALLOWED_ORIGINS: https://platoscave.matheus.wiki,http://localhost
       REMOTE_BROWSER_CDP_INTERNAL_URL: http://remote-browser:9222
-      REMOTE_BROWSER_CDP_PUBLIC_URL: ""
+      REMOTE_BROWSER_CDP_PUBLIC_URL: https://platoscave.matheus.wiki/cdp
       REMOTE_BROWSER_NOVNC_INTERNAL_URL: http://remote-browser:7900
-      REMOTE_BROWSER_NOVNC_PUBLIC_URL: http://localhost:7900/vnc.html?autoconnect=1&resize=scale
+      REMOTE_BROWSER_NOVNC_PUBLIC_URL: https://platoscave.matheus.wiki/vnc/vnc.html?autoconnect=1&resize=scale
+      BROWSER_USE_API_KEY: <YOUR_BROWSER_USE_API_KEY>
+      EXA_API_KEY: <YOUR_EXA_API_KEY>
+      SUPPRESS_LOGS: false
     depends_on:
       remote-browser:
         condition: service_healthy
@@ -43,12 +41,10 @@ services:
       start_period: 15s
     networks:
       - platoscave-net
+    restart: unless-stopped
 
   remote-browser:
-    platform: linux/amd64
     image: ghcr.io/matheusmaldaner/platoscave/platoscave-remote-browser:latest
-    build:
-      context: ./backend/docker/remote-browser
     ports:
       - "9222:9222"
       - "7900:7900"
