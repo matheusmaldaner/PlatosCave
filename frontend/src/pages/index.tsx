@@ -191,7 +191,7 @@ const IndexPage = () => {
         </header>
 
         {/* Main content */}
-        <div className="relative flex-grow overflow-hidden">
+        <div className="relative flex-grow">
           {!uploadedFile && !submittedUrl ? (
             <div className="flex items-center justify-center p-6">
               <FileUploader
