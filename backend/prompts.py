@@ -81,7 +81,7 @@ EXHAUSTIVENESS REQUIREMENTS:
 - Extract the major SCIENTIFIC statements from the text (hypotheses, evidence, methods, results)
 - Break down complex statements into smaller, self-contained claims
 - Each node should represent one clear statement
-- LIMIT: Maximum of 10 nodes total (including the hypothesis)
+- LIMIT: Maximum of {max_nodes} nodes total (including the hypothesis)
 - Prefer larger, comprehensive nodes over many tiny ones
 
 EXCLUDE THE FOLLOWING (DO NOT extract these as nodes):
@@ -211,17 +211,21 @@ Remember: Output ONLY the JSON object. No explanations, no markdown, no code blo
 """
 
 
-def build_fact_dag_prompt(raw_text: str) -> str:
+def build_fact_dag_prompt(raw_text: str, max_nodes: int = 10) -> str:
     """
     Build the complete prompt for fact DAG extraction (current - rich node structure).
 
     Args:
         raw_text: The academic text to be analyzed and structured
+        max_nodes: Maximum number of nodes to extract (default: 10)
 
     Returns:
         The complete formatted prompt ready to send to the LLM
     """
-    return FACT_DAG_EXTRACTION_PROMPT.format(raw_text=raw_text.strip())
+    return FACT_DAG_EXTRACTION_PROMPT.format(
+        raw_text=raw_text.strip(),
+        max_nodes=max_nodes
+    )
 
 
 def validate_fact_dag_json_deprecated(json_response: Dict[str, Any]) -> bool:

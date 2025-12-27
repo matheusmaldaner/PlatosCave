@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import FileUploader from "../components/FileUploader";
-import { ProcessStep } from "../components/Sidebar";
 import XmlGraphViewer from "../components/XmlGraphViewer";
 import BrowserViewer from "../components/BrowserViewer";
-import SettingsDrawer from "../components/SettingsDrawer";
-import { Settings } from "../components/SettingsModal";
+import SettingsPopover from "../components/SettingsPopover";
 import ProgressBar from "../components/ProgressBar";
 import ParticleBackground from "../components/ParticleBackground";
+import { ProcessStep, Settings, DEFAULT_SETTINGS } from "../types";
 import platosCaveLogo from "../images/platos-cave-logo.png";
 
 const API_URL = process.env.GATSBY_API_URL || "http://localhost:5001";
@@ -37,7 +36,7 @@ const IndexPage = () => {
   const [submittedUrl, setSubmittedUrl] = useState<string | null>(null);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [graphmlData, setGraphmlData] = useState<string | null>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Browser viewer state
   const [isBrowserOpen, setIsBrowserOpen] = useState(false);
@@ -45,23 +44,8 @@ const IndexPage = () => {
   const [browserCdpUrl, setBrowserCdpUrl] = useState<string | undefined>(undefined);
   const [browserCdpWebSocket, setBrowserCdpWebSocket] = useState<string | undefined>(undefined);
 
-  const [settings, setSettings] = useState<Settings>({
-    agentAggressiveness: 5,
-    evidenceThreshold: 0.8,
-    credibility: 1.0,
-    relevance: 1.0,
-    evidenceStrength: 1.0,
-    methodRigor: 1.0,
-    reproducibility: 1.0,
-    citationSupport: 1.0,
-    hypothesis: 1.0,
-    claim: 1.0,
-    method: 1.0,
-    evidence: 1.0,
-    result: 1.0,
-    conclusion: 1.0,
-    limitation: 1.0,
-  });
+  // Settings state - only 3 settings that actually work
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
 
   // WebSocket connection for updates
   useEffect(() => {
@@ -86,14 +70,14 @@ const IndexPage = () => {
         } else if (update.type === "GRAPH_DATA") {
           setGraphmlData(update.data);
         } else if (update.type === "BROWSER_ADDRESS") {
-          // Handle browser address from backend
           console.log("Received BROWSER_ADDRESS:", update);
           setBrowserNovncUrl(update.novnc_url);
           setBrowserCdpUrl(update.cdp_url);
           setBrowserCdpWebSocket(update.cdp_websocket);
-          setIsBrowserOpen(true); // Automatically open browser viewer
+          setIsBrowserOpen(true);
         } else if (update.type === "DONE") {
           setFinalScore(update.score);
+          setIsAnalyzing(false);
           setProcessSteps((prev) =>
             prev.map((s) => ({ ...s, status: "completed" }))
           );
@@ -104,21 +88,22 @@ const IndexPage = () => {
       }
     });
 
-    return () => socket.disconnect();
+    return () => { socket.disconnect(); };
   }, [uploadedFile, submittedUrl]);
 
   const handleFileUpload = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    Object.entries(settings).forEach(([key, value]) =>
-      formData.append(key, value.toString())
-    );
+    formData.append("maxNodes", settings.maxNodes.toString());
+    formData.append("agentAggressiveness", settings.agentAggressiveness.toString());
+    formData.append("evidenceThreshold", settings.evidenceThreshold.toString());
 
     setProcessSteps(INITIAL_STAGES);
     setFinalScore(null);
     setGraphmlData(null);
     setUploadedFile(file);
     setSubmittedUrl(null);
+    setIsAnalyzing(true);
 
     // Reset browser state
     setIsBrowserOpen(false);
@@ -130,6 +115,7 @@ const IndexPage = () => {
       await axios.post(`${API_URL}/api/upload`, formData);
     } catch (error) {
       console.error("Error uploading file:", error);
+      setIsAnalyzing(false);
     }
   };
 
@@ -139,6 +125,7 @@ const IndexPage = () => {
     setGraphmlData(null);
     setSubmittedUrl(url);
     setUploadedFile(null);
+    setIsAnalyzing(true);
 
     // Reset browser state
     setIsBrowserOpen(false);
@@ -149,16 +136,14 @@ const IndexPage = () => {
     try {
       await axios.post(`${API_URL}/api/analyze-url`, {
         url,
-        ...settings,
+        maxNodes: settings.maxNodes,
+        agentAggressiveness: settings.agentAggressiveness,
+        evidenceThreshold: settings.evidenceThreshold,
       });
     } catch (error) {
       console.error("Error analyzing URL:", error);
+      setIsAnalyzing(false);
     }
-  };
-
-  const handleSettingsSave = (newSettings: Settings) => {
-    setSettings(newSettings);
-    setIsSettingsOpen(false);
   };
 
   return (
@@ -167,7 +152,6 @@ const IndexPage = () => {
 
       <main className="flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans">
         {/* Header */}
-
         <header className="relative z-10 flex w-full items-center justify-between border-b border-gray-100 bg-white/50 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
           <button
             onClick={() => window.location.reload()}
@@ -176,51 +160,35 @@ const IndexPage = () => {
           >
             <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-9" />
           </button>
-          {(uploadedFile || submittedUrl) && (
-            <div className="flex items-center gap-4">
-              {finalScore !== null && (
-                <div className="text-left sm:text-right">
-                  <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                    Integrity Score
-                  </span>
-                  <p className="text-2xl font-semibold text-transparent bg-gradient-to-r from-green-500 to-green-600 bg-clip-text sm:text-3xl">
-                    {finalScore.toFixed(2)}
-                  </p>
-                </div>
-              )}
-              <span className="max-w-full truncate font-mono text-xs text-gray-600 sm:max-w-md sm:text-sm">
-                {uploadedFile ? uploadedFile.name : submittedUrl}
-              </span>
-              <button
-                onClick={() => setIsSettingsOpen(true)}
-                className="rounded-lg p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-700"
-              ></button>
-            </div>
-          )}
+
+          <div className="flex items-center gap-4">
+            {/* Show file/URL name during analysis */}
+            {(uploadedFile || submittedUrl) && (
+              <>
+                {finalScore !== null && (
+                  <div className="text-left sm:text-right">
+                    <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                      Integrity Score
+                    </span>
+                    <p className="text-2xl font-semibold text-transparent bg-gradient-to-r from-green-500 to-green-600 bg-clip-text sm:text-3xl">
+                      {finalScore.toFixed(2)}
+                    </p>
+                  </div>
+                )}
+                <span className="max-w-full truncate font-mono text-xs text-gray-600 sm:max-w-md sm:text-sm">
+                  {uploadedFile ? uploadedFile.name : submittedUrl}
+                </span>
+              </>
+            )}
+
+            {/* Settings gear icon - always visible, disabled during analysis */}
+            <SettingsPopover
+              settings={settings}
+              onSettingsChange={setSettings}
+              disabled={isAnalyzing}
+            />
+          </div>
         </header>
-
-        {/* Drawer Tab */}
-        {(uploadedFile || submittedUrl) && (
-          <button
-            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            className={`fixed top-1/2 left-0 transform -translate-y-1/2 z-40 flex flex-col items-center justify-center bg-green-300 text-white w-10 h-32 rounded-r-2xl shadow-xl hover:bg-green-400 transition-transform duration-300 ${
-              isSettingsOpen ? "translate-x-80" : "translate-x-0"
-            }`}
-          >
-            <span className="text-4xl font-bold leading-none">
-              {isSettingsOpen ? "◁" : "▷"}
-            </span>
-          </button>
-        )}
-
-        {/* Drawer */}
-        <SettingsDrawer
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-          settings={settings}
-          onSave={handleSettingsSave}
-          graphmlData={graphmlData} // ✅ supports Save GraphML button
-        />
 
         {/* Main content */}
         <div className="relative flex-grow overflow-hidden">
@@ -248,10 +216,7 @@ const IndexPage = () => {
                 className="flex-grow p-4"
                 style={{ height: "calc(100vh - 150px)" }}
               >
-                <XmlGraphViewer
-                  graphmlData={graphmlData}
-                  isDrawerOpen={isSettingsOpen}
-                />
+                <XmlGraphViewer graphmlData={graphmlData} />
               </div>
             </>
           )}
@@ -274,4 +239,5 @@ const IndexPage = () => {
     </>
   );
 };
+
 export default IndexPage;

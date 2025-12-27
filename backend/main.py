@@ -465,7 +465,7 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
     else:
         return await pdf_missing(browser=browser, llm=llm, is_pdf_mode=is_pdf_mode, url=url, pdf_path=pdf_path)
 
-async def stage_three(extracted_text: str, llm: ChatBrowserUse):
+async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int = 10):
     # Stage 3: Building Logic Tree (generating DAG)
     print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
     send_update("Building Logic Tree", "Analyzing paper structure...")
@@ -473,7 +473,7 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse):
 
     # we got all the info about the paper stored in url (all text), extract payload later
     print(f"[MAIN.PY DEBUG] Building DAG prompt from extracted text ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
-    dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text)
+    dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text, max_nodes=max_nodes)
 
     # create the dag from the raw text of the paper, need to pass Message objects
     user_message = UserMessage(content=dag_task_prompt)
@@ -884,7 +884,7 @@ async def clean_up(browser: Browser | None):
             print(f"[MAIN.PY DEBUG] ⚠️ Error during browser cleanup: {cleanup_error}", file=sys.stderr, flush=True)
 
 
-async def main(url=None, pdf_path=None):
+async def main(url=None, pdf_path=None, max_nodes=10):
     print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
 
     # Validate input - need either URL or PDF path
@@ -911,7 +911,7 @@ async def main(url=None, pdf_path=None):
             return
 
         # Stage 3: Building Logic Tree (generating DAG)
-        dag_json, dag_json_str = await stage_three(extracted_text=extracted_text, llm=llm)
+        dag_json, dag_json_str = await stage_three(extracted_text=extracted_text, llm=llm, max_nodes=max_nodes)
 
         # Convert DAG JSON to GraphML for frontend visualization
         # Stage 4 & 5: Verify Claims with Browser Agents
@@ -936,6 +936,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze research papers from URL or PDF file.")
     parser.add_argument("--url", type=str, help="URL to analyze (e.g., arXiv paper)")
     parser.add_argument("--pdf", type=str, help="Path to local PDF file to analyze")
+    parser.add_argument("--max-nodes", type=int, default=10, help="Maximum number of nodes in the knowledge graph (default: 10)")
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
 
@@ -948,7 +949,7 @@ if __name__ == "__main__":
         parser.error("Cannot specify both --url and --pdf. Choose one.")
 
     # TODO: Use args.agent_aggressiveness and args.evidence_threshold in future
-    asyncio.run(main(url=args.url, pdf_path=args.pdf))
+    asyncio.run(main(url=args.url, pdf_path=args.pdf, max_nodes=args.max_nodes))
     # Examples:
     # python main.py --url "https://arxiv.org/abs/2305.10403"
     # python main.py --pdf "/path/to/paper.pdf"
