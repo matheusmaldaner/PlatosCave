@@ -598,7 +598,7 @@ def build_claim_verification_prompt(claim_text: str, claim_role: str, claim_cont
 # ============================================================================
 
 CLAIM_VERIFICATION_PROMPT_EXA = """
-You are verifying the following claim.
+You are verifying the following claim using the provided Exa search results.
 
 Claim role: {claim_role}
 Claim text:
@@ -606,29 +606,35 @@ Claim text:
 
 {claim_context}
 
-=== STRICT INSTRUCTIONS (MANDATORY) ===
-1. You MUST open and examine at least TWO sources labeled [EXA#] above.
-2. These [EXA#] sources MUST be listed in the final `sources_checked` field.
-3. Do NOT rely solely on prior knowledge or memory.
-4. If Exa sources are insufficient, you MAY browse further, but only AFTER using Exa sources.
-5. Your final answer MUST be a JSON object (not markdown, not text).
+=== VERIFICATION TASK ===
+Analyze the Exa sources above ([EXA1], [EXA2], etc.) to verify the claim.
+Score each metric from 0.0 to 1.0 based on how well the sources support the claim.
 
-Return ONLY valid JSON with this schema:
+SCORING GUIDE:
+- credibility: 1.0=multiple authoritative sources confirm | 0.5=mixed/partial | 0.0=contradicted
+- relevance: 1.0=directly addresses claim | 0.5=tangentially related | 0.0=unrelated
+- evidence_strength: 1.0=strong evidence from multiple sources | 0.5=moderate | 0.0=weak/none
+- method_rigor: 1.0=peer-reviewed/authoritative | 0.5=reputable but informal | 0.0=unreliable
+- reproducibility: 1.0=well-established fact | 0.5=plausible | 0.0=contested
+- citation_support: 1.0=sources directly cite evidence | 0.5=indirect support | 0.0=no support
+
+=== OUTPUT FORMAT (MANDATORY) ===
+You MUST respond with ONLY a JSON object. No text before or after.
+Do NOT write explanations. Do NOT use markdown code blocks.
+Start your response with {{ and end with }}.
+
 {{
-  "credibility": float,
-  "relevance": float,
-  "evidence_strength": float,
-  "method_rigor": float,
-  "reproducibility": float,
-  "citation_support": float,
+  "credibility": 0.85,
+  "relevance": 0.90,
+  "evidence_strength": 0.75,
+  "method_rigor": 0.80,
+  "reproducibility": 0.70,
+  "citation_support": 0.85,
   "sources_checked": [
-    {{
-      "url": string,
-      "finding": string
-    }}
+    {{"url": "https://example.com", "finding": "Supports claim"}}
   ],
-  "verification_summary": string,
-  "confidence_level": string
+  "verification_summary": "Brief 1-2 sentence summary",
+  "confidence_level": "high"
 }}
 """
 
@@ -663,17 +669,55 @@ def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
         Parsed JSON dict with verification metrics, or None if parsing fails
     """
     import json
+    import re
+
+    if not response_text:
+        return None
 
     try:
-        # Extract JSON from response
-        json_start = response_text.find("{")
-        json_end = response_text.rfind("}")
+        working_text = response_text
+
+        # Strategy 1: Handle done(text=json.dumps(...)) pattern from browser agent
+        # The LLM sometimes outputs: await done(text=json.dumps(verification_data), success=True)
+        done_match = re.search(r'done\s*\(\s*text\s*=\s*["\']?(\{.+?\})["\']?\s*[,\)]', working_text, re.DOTALL)
+        if done_match:
+            working_text = done_match.group(1)
+
+        # Strategy 2: Extract JSON from markdown code blocks
+        # Handle ```json ... ``` or ``` ... ```
+        code_block_match = re.search(r'```(?:json)?\s*(\{.+?\})\s*```', working_text, re.DOTALL)
+        if code_block_match:
+            working_text = code_block_match.group(1)
+
+        # Strategy 3: Handle double-encoded JSON (escaped quotes like \")
+        if '\\"' in working_text or "\\'" in working_text:
+            try:
+                working_text = working_text.replace('\\"', '"').replace("\\'", "'")
+                working_text = working_text.replace('\\\\', '\\')
+            except Exception:
+                pass
+
+        # Strategy 4: Extract JSON object from surrounding text
+        json_start = working_text.find("{")
+        json_end = working_text.rfind("}")
 
         if json_start == -1 or json_end == -1 or json_end <= json_start:
             return None
 
-        json_str = response_text[json_start:json_end + 1]
-        parsed = json.loads(json_str)
+        json_str = working_text[json_start:json_end + 1]
+
+        # Try parsing
+        try:
+            parsed = json.loads(json_str)
+        except json.JSONDecodeError:
+            # If that fails, try with the original text
+            json_str_orig = response_text[response_text.find("{"):response_text.rfind("}") + 1]
+            try:
+                parsed = json.loads(json_str_orig)
+            except json.JSONDecodeError:
+                # Last resort: try to fix common JSON issues
+                fixed_json = json_str.replace("'", '"')  # Single quotes to double
+                parsed = json.loads(fixed_json)
 
         # Validate required fields
         required_metrics = ["credibility", "relevance", "evidence_strength",
@@ -682,6 +726,12 @@ def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
         for metric in required_metrics:
             if metric not in parsed:
                 return None
+            # Convert to float if it's a string number
+            if isinstance(parsed[metric], str):
+                try:
+                    parsed[metric] = float(parsed[metric])
+                except ValueError:
+                    return None
             if not isinstance(parsed[metric], (int, float)):
                 return None
             # Ensure value is in [0, 1]
@@ -690,5 +740,43 @@ def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
 
         return parsed
 
-    except (json.JSONDecodeError, ValueError, KeyError):
+    except (json.JSONDecodeError, ValueError, KeyError, TypeError) as e:
+        # Log the error for debugging
+        import sys
+        print(f"[PARSE DEBUG] Failed to parse: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
+        print(f"[PARSE DEBUG] Text length: {len(response_text)}", file=sys.stderr, flush=True)
+        print(f"[PARSE DEBUG] First 200 chars: {response_text[:200]}", file=sys.stderr, flush=True)
+        print(f"[PARSE DEBUG] Last 200 chars: {response_text[-200:] if len(response_text) > 200 else response_text}", file=sys.stderr, flush=True)
         return None
+
+
+def build_json_repair_prompt(malformed_response: str, error_message: str) -> str:
+    """
+    Build a prompt to ask the LLM to fix malformed JSON.
+
+    Args:
+        malformed_response: The original malformed response
+        error_message: The JSON parsing error message
+
+    Returns:
+        A prompt string for the LLM to fix the JSON
+    """
+    return f"""The following response contains malformed JSON that failed to parse.
+
+ERROR: {error_message}
+
+ORIGINAL RESPONSE (may be truncated):
+{malformed_response[:2000]}
+
+Please extract and fix the JSON to produce a valid JSON object with these exact keys:
+- credibility (float 0-1)
+- relevance (float 0-1)
+- evidence_strength (float 0-1)
+- method_rigor (float 0-1)
+- reproducibility (float 0-1)
+- citation_support (float 0-1)
+- sources_checked (array of objects with "url" and "finding")
+- verification_summary (string)
+- confidence_level (string: "high", "medium", "low", or "failed")
+
+Output ONLY the fixed JSON object. Start with {{ and end with }}. No other text."""
