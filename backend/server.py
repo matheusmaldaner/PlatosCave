@@ -478,6 +478,9 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
     env = os.environ.copy()
     env['SUPPRESS_LOGS'] = 'true'
 
+    # Force unbuffered Python output for real-time logging
+    env['PYTHONUNBUFFERED'] = '1'
+
     # Set remote browser environment variables (same as URL mode)
     if browser_info:
         cdp_url = browser_info.get('cdp_url')
@@ -500,7 +503,7 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.STDOUT,  # Merge stderr into stdout for reliable logging
         text=True,
         bufsize=1,
         encoding='utf-8',
@@ -508,7 +511,7 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
         env=env
     )
     print(f"[SERVER DEBUG] Subprocess started with PID: {process.pid}", flush=True)
-    socketio.start_background_task(stream_stderr_to_console_and_ws, process)
+    # Note: stderr is now merged into stdout, no separate streaming needed
 
     # Re-emit browser info to ensure frontend WebSocket has connected and receives it
     # Same as URL mode - this makes the browser viewer appear in the frontend
@@ -529,9 +532,8 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
                 socketio.emit('status_update', {'data': line})
                 socketio.sleep(0)
             except json.JSONDecodeError:
-                # Ignore non-JSON output
-                print(f"[SERVER DEBUG] Skipping non-JSON line: {line[:100]}", flush=True)
-                pass
+                # Print debug/stderr output to console (now merged into stdout)
+                print(f"[MAIN] {line}", flush=True)
 
     print("[SERVER DEBUG] Subprocess stdout closed, waiting for process to finish...", flush=True)
     process.wait()
@@ -539,7 +541,7 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
 
     # Handle errors
     if process.returncode != 0:
-        error_output = process.stderr.read()
+        error_output = ""  # stderr is now merged into stdout
         print(f"PDF Analysis Error: {error_output}")
         error_message = json.dumps({"type": "ERROR", "message": error_output})
         socketio.emit('status_update', {'data': error_message})
@@ -613,6 +615,9 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
     env = os.environ.copy()
     env['SUPPRESS_LOGS'] = 'true'
 
+    # Force unbuffered Python output for real-time logging
+    env['PYTHONUNBUFFERED'] = '1'
+
     # Only set remote browser environment variables if we successfully got browser info
     if browser_info:
         cdp_url = browser_info.get('cdp_url')
@@ -635,7 +640,7 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.STDOUT,  # Merge stderr into stdout for reliable logging
         text=True,
         bufsize=1,
         encoding='utf-8',
@@ -643,7 +648,7 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
         env=env  # Pass modified environment
     )
     print(f"[SERVER DEBUG] Subprocess started with PID: {process.pid}", flush=True)
-    socketio.start_background_task(stream_stderr_to_console_and_ws, process, session_id)
+    # Note: stderr is now merged into stdout, no separate streaming needed
 
     # Track this process for the session
     if session_id:
@@ -664,15 +669,14 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
     for line in process.stdout:
         line = line.strip()
         if line:
-            # Only send valid JSON to frontend (filter out browser-use debug logs)
+            # Only send valid JSON to frontend (filter out debug logs)
             try:
                 json.loads(line)  # Validate it's JSON
                 socketio.emit('status_update', {'data': line})
                 socketio.sleep(0)
             except json.JSONDecodeError:
-                # Ignore non-JSON output (debug logs from browser-use/LLM)
-                print(f"[SERVER DEBUG] Skipping non-JSON line: {line[:100]}", flush=True)
-                pass
+                # Print debug/stderr output to console (now merged into stdout)
+                print(f"[MAIN] {line}", flush=True)
 
     print("[SERVER DEBUG] Subprocess stdout closed, waiting for process to finish...", flush=True)
     process.wait()
@@ -685,9 +689,9 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
 
     # Handle errors
     if process.returncode != 0:
-        error_output = process.stderr.read()
-        print(f"URL Analysis Error: {error_output}")
-        error_message = json.dumps({"type": "ERROR", "message": error_output})
+        error_output = ""  # stderr is now merged into stdout
+        print(f"URL Analysis Error (check logs above)", flush=True)
+        error_message = json.dumps({"type": "ERROR", "message": "Analysis failed - check server logs"})
         socketio.emit('status_update', {'data': error_message})
 
 
