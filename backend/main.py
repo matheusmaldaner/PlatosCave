@@ -23,6 +23,8 @@ if not exa_api_key:
 
 exa = Exa(api_key=exa_api_key)
 
+# Debug mode - set DEBUG=true to write debug files (.txt, .json, .graphml)
+DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
 
 # Suppress browser-use logs by redirecting stderr when running from server
 # (browser-use logs go to stderr, we only want JSON on stdout)
@@ -398,8 +400,9 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
             send_update("Decomposing PDF", "PDF content extracted successfully.")
 
             # save for debugging
-            with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
-                f.write(extracted_text)
+            if DEBUG:
+                with open('extracted_paper_text.txt', 'w', encoding='utf-8') as f:
+                    f.write(extracted_text)
 
             print(f"[MAIN.PY DEBUG] PDF extraction complete ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
             return True, extracted_text
@@ -449,13 +452,14 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
             last_action = history.last_action()
 
             # save for debugging
-            with open('extra_data.txt', 'w', encoding='utf-8') as f:
-                f.write("Browsed URLs:\n")
-                f.writelines(f"{url}\n" for url in browsed_urls)
-                f.write("\nModel Outputs:\n")
-                f.writelines(f"{line}\n" for line in model_outputs)
-                f.write("\nLast Action:\n")
-                f.write(str(last_action))
+            if DEBUG:
+                with open('extra_data.txt', 'w', encoding='utf-8') as f:
+                    f.write("Browsed URLs:\n")
+                    f.writelines(f"{url}\n" for url in browsed_urls)
+                    f.write("\nModel Outputs:\n")
+                    f.writelines(f"{line}\n" for line in model_outputs)
+                    f.write("\nLast Action:\n")
+                    f.write(str(last_action))
         return True, extracted_text
 
     print(f"[MAIN.PY DEBUG] ========== STAGE 2: DECOMPOSING PDF ==========", file=sys.stderr, flush=True)
@@ -478,8 +482,9 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
     # create the dag from the raw text of the paper, need to pass Message objects
     user_message = UserMessage(content=dag_task_prompt)
 
-    with open('user_message.txt', 'w', encoding='utf-8') as f:
-        f.write(user_message.text)
+    if DEBUG:
+        with open('user_message.txt', 'w', encoding='utf-8') as f:
+            f.write(user_message.text)
 
     send_update("Building Logic Tree", "Extracting claims, evidence, and hypotheses...")
 
@@ -509,8 +514,9 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
             print(f"[MAIN.PY DEBUG] LLM response received", file=sys.stderr, flush=True)
 
             # Save response for debugging
-            with open(f'response_dag_attempt_{attempt + 1}.txt', 'w', encoding='utf-8') as f:
-                f.write(response.completion)
+            if DEBUG:
+                with open(f'response_dag_attempt_{attempt + 1}.txt', 'w', encoding='utf-8') as f:
+                    f.write(response.completion)
 
             # Parse the JSON response (handle explanatory text and markdown blocks)
             dag_json_str = response.completion.strip()
@@ -532,10 +538,11 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
 
             # Success! Save and break
             print(f"[MAIN.PY DEBUG] ✅ DAG JSON parsed successfully on attempt {attempt + 1}", file=sys.stderr, flush=True)
-            with open('response_dag.txt', 'w', encoding='utf-8') as f:
-                f.write(response.completion)
-            with open('final_dag.json', 'w', encoding='utf-8') as f:
-                f.write(dag_json_str)
+            if DEBUG:
+                with open('response_dag.txt', 'w', encoding='utf-8') as f:
+                    f.write(response.completion)
+                with open('final_dag.json', 'w', encoding='utf-8') as f:
+                    f.write(dag_json_str)
             break
 
         except json.JSONDecodeError as e:
@@ -566,8 +573,9 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
                 send_update("Building Logic Tree", f"Retrying DAG generation (attempt {attempt + 2}/{max_retries})...")
             else:
                 # Last attempt failed, save debug info
-                with open('failed_dag.json', 'w', encoding='utf-8') as f:
-                    f.write(dag_json_str if 'dag_json_str' in locals() else response.completion)
+                if DEBUG:
+                    with open('failed_dag.json', 'w', encoding='utf-8') as f:
+                        f.write(dag_json_str if 'dag_json_str' in locals() else response.completion)
                 raise  # Re-raise to be caught by outer exception handler
 
     if dag_json is None:
@@ -627,7 +635,9 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
             pass
 
         # Store original connection details
-        original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (remote_cdp_ws or remote_cdp_url or "")
+        fallback_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
+        fallback_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
+        original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (fallback_cdp_ws or fallback_cdp_url or "")
         original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
 
         # Reconnect to the same CDP endpoint
@@ -736,8 +746,9 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
             graphml_output = dag_to_graphml(dag_json)
     
             # Save GraphML file for frontend
-            with open('final_dag.graphml', 'w', encoding='utf-8') as f:
-                f.write(graphml_output)
+            if DEBUG:
+                with open('final_dag.graphml', 'w', encoding='utf-8') as f:
+                    f.write(graphml_output)
     
             # Send GraphML data to frontend via WebSocket
             print(f"[MAIN.PY DEBUG] Sending GraphML data ({len(graphml_output)} bytes)", file=sys.stderr, flush=True)
@@ -847,9 +858,10 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
             print(f"[MAIN.PY DEBUG] Problematic JSON (first 500 chars): {dag_json_str[:500]}", file=sys.stderr, flush=True)
 
             # Save the problematic JSON for debugging
-            with open('failed_dag.json', 'w', encoding='utf-8') as f:
-                f.write(dag_json_str)
-            print(f"[MAIN.PY DEBUG] Full problematic JSON saved to failed_dag.json", file=sys.stderr, flush=True)
+            if DEBUG:
+                with open('failed_dag.json', 'w', encoding='utf-8') as f:
+                    f.write(dag_json_str)
+                print(f"[MAIN.PY DEBUG] Full problematic JSON saved to failed_dag.json", file=sys.stderr, flush=True)
 
             send_update("Evaluating Integrity", error_msg)
             send_final_score(0.0)
