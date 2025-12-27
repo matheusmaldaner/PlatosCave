@@ -652,10 +652,10 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
     send_update("Building Logic Tree", "Logic tree constructed.")
     return dag_json, dag_json_str
 
-async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser: Browser, llm: ChatBrowserUse):
+async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False):
     """
     Verify a node using a two-step approach:
-    1. Fast LLM-only verification using Exa sources (no browser needed)
+    1. Fast LLM-only verification using Exa sources (no browser needed) - SKIP if use_browser_verification is True
     2. Fall back to browser agent only if LLM verification fails
     """
     total_nodes = len(nodes_to_verify)
@@ -683,66 +683,72 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
     )
 
     # Step 2: Try fast LLM-only verification first (no browser needed)
-    print(f"[MAIN.PY DEBUG] Attempting fast LLM-only verification...", file=sys.stderr, flush=True)
+    # SKIP this step if use_browser_verification is enabled (user wants to see browser work)
     verification_result = None
 
-    try:
-        # Wrap prompt with strong JSON-forcing instructions
-        json_forcing_prompt = (
-            "CRITICAL INSTRUCTION: Output ONLY a raw JSON object. Nothing else.\n"
-            "- Do NOT use done() or any function calls\n"
-            "- Do NOT wrap in ```json``` code blocks\n"
-            "- Do NOT include any explanation text\n"
-            "- Start with { and end with }\n"
-            "- Output the JSON directly, like: {\"credibility\": 0.9, ...}\n\n"
-            f"{verification_prompt}"
-        )
-        user_message = UserMessage(content=json_forcing_prompt)
+    if use_browser_verification:
+        print(f"[MAIN.PY DEBUG] Visible verification mode enabled, skipping fast LLM path...", file=sys.stderr, flush=True)
+    else:
+        print(f"[MAIN.PY DEBUG] Attempting fast LLM-only verification...", file=sys.stderr, flush=True)
 
-        # Try structured JSON output if supported
+    if not use_browser_verification:
         try:
-            response = await llm.ainvoke(
-                messages=[user_message],
-                response_format={"type": "json_object"}
+            # Wrap prompt with strong JSON-forcing instructions
+            json_forcing_prompt = (
+                "CRITICAL INSTRUCTION: Output ONLY a raw JSON object. Nothing else.\n"
+                "- Do NOT use done() or any function calls\n"
+                "- Do NOT wrap in ```json``` code blocks\n"
+                "- Do NOT include any explanation text\n"
+                "- Start with { and end with }\n"
+                "- Output the JSON directly, like: {\"credibility\": 0.9, ...}\n\n"
+                f"{verification_prompt}"
             )
-        except (TypeError, AttributeError):
-            response = await llm.ainvoke(messages=[user_message])
+            user_message = UserMessage(content=json_forcing_prompt)
 
-        result_text = response.completion.strip()
-        print(f"[MAIN.PY DEBUG] LLM response (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
+            # Try structured JSON output if supported
+            try:
+                response = await llm.ainvoke(
+                    messages=[user_message],
+                    response_format={"type": "json_object"}
+                )
+            except (TypeError, AttributeError):
+                response = await llm.ainvoke(messages=[user_message])
 
-        # Parse verification result
-        verification_result = parse_verification_result(result_text)
+            result_text = response.completion.strip()
+            print(f"[MAIN.PY DEBUG] LLM response (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
 
-        if verification_result:
-            sources = verification_result.get('sources_checked', [])
-            print(f"[MAIN.PY DEBUG] ✅ Fast LLM verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
-            for source_idx, source in enumerate(sources[:3], 1):
-                print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')[:50]}", file=sys.stderr, flush=True)
-            return verification_result
-        else:
-            # Check if response contains JSON-like content that could be repaired
-            if '{' in result_text and '}' in result_text:
-                print(f"[MAIN.PY DEBUG] ⚠️ LLM returned malformed JSON, attempting repair...", file=sys.stderr, flush=True)
-                import json
-                try:
-                    json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
-                    error_msg = "Unknown parsing error"
-                except json.JSONDecodeError as e:
-                    error_msg = str(e)
+            # Parse verification result
+            verification_result = parse_verification_result(result_text)
 
-                verification_result = await attempt_json_repair(result_text, error_msg, llm)
-                if verification_result:
-                    sources = verification_result.get('sources_checked', [])
-                    print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
-                    return verification_result
-                else:
-                    print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, falling back to browser", file=sys.stderr, flush=True)
+            if verification_result:
+                sources = verification_result.get('sources_checked', [])
+                print(f"[MAIN.PY DEBUG] ✅ Fast LLM verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                for source_idx, source in enumerate(sources[:3], 1):
+                    print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')[:50]}", file=sys.stderr, flush=True)
+                return verification_result
             else:
-                print(f"[MAIN.PY DEBUG] ⚠️ LLM returned text (not JSON), falling back to browser", file=sys.stderr, flush=True)
+                # Check if response contains JSON-like content that could be repaired
+                if '{' in result_text and '}' in result_text:
+                    print(f"[MAIN.PY DEBUG] ⚠️ LLM returned malformed JSON, attempting repair...", file=sys.stderr, flush=True)
+                    import json
+                    try:
+                        json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
+                        error_msg = "Unknown parsing error"
+                    except json.JSONDecodeError as e:
+                        error_msg = str(e)
 
-    except Exception as e:
-        print(f"[MAIN.PY DEBUG] ⚠️ Fast LLM verification failed: {e}, trying browser fallback", file=sys.stderr, flush=True)
+                    verification_result = await attempt_json_repair(result_text, error_msg, llm)
+                    if verification_result:
+                        sources = verification_result.get('sources_checked', [])
+                        print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                        return verification_result
+                    else:
+                        print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, falling back to browser", file=sys.stderr, flush=True)
+                else:
+                    print(f"[MAIN.PY DEBUG] ⚠️ LLM returned text (not JSON), falling back to browser", file=sys.stderr, flush=True)
+
+        except Exception as e:
+            print(f"[MAIN.PY DEBUG] ⚠️ Fast LLM verification failed: {e}, trying browser fallback", file=sys.stderr, flush=True)
 
     # Step 3: Fall back to browser agent only if LLM verification failed
     print(f"[MAIN.PY DEBUG] Using browser agent fallback for node {node_id}...", file=sys.stderr, flush=True)
@@ -871,7 +877,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
     return verification_result
 
 
-async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, browser: Browser, llm: ChatBrowserUse):
+async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False):
        # Convert DAG JSON to GraphML for frontend visualization
         try:
     
@@ -943,7 +949,7 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
                 # Send progress update BEFORE highlighting node (so text updates first)
                 send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
                 send_node_active(node_id)  # Notify frontend which node is being verified
-                verification_results[node_id] = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser, llm)
+                verification_results[node_id] = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser, llm, use_browser_verification)
                 print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id}", file=sys.stderr, flush=True)
 
                 # Small delay between verifications
@@ -1034,7 +1040,7 @@ async def clean_up(browser: Browser | None):
             print(f"[MAIN.PY DEBUG] ⚠️ Error during browser cleanup: {cleanup_error}", file=sys.stderr, flush=True)
 
 
-async def main(url=None, pdf_path=None, max_nodes=10):
+async def main(url=None, pdf_path=None, max_nodes=10, use_browser_verification=False):
     print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
 
     # Validate input - need either URL or PDF path
@@ -1066,7 +1072,7 @@ async def main(url=None, pdf_path=None, max_nodes=10):
         # Convert DAG JSON to GraphML for frontend visualization
         # Stage 4 & 5: Verify Claims with Browser Agents
         # Stage 6: Run Verification Pipeline (Pure Data Processing)
-        await frontend_vis_chat_verification(dag_json=dag_json, dag_json_str=dag_json_str, browser=browser, llm=llm)
+        await frontend_vis_chat_verification(dag_json=dag_json, dag_json_str=dag_json_str, browser=browser, llm=llm, use_browser_verification=use_browser_verification)
 
 
     except Exception as e:
@@ -1089,6 +1095,7 @@ if __name__ == "__main__":
     parser.add_argument("--max-nodes", type=int, default=10, help="Maximum number of nodes in the knowledge graph (default: 10)")
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
+    parser.add_argument("--use-browser-verification", action="store_true", help="Force browser-based verification (slower but visible)")
 
     args = parser.parse_args()
 
@@ -1099,7 +1106,7 @@ if __name__ == "__main__":
         parser.error("Cannot specify both --url and --pdf. Choose one.")
 
     # TODO: Use args.agent_aggressiveness and args.evidence_threshold in future
-    asyncio.run(main(url=args.url, pdf_path=args.pdf, max_nodes=args.max_nodes))
+    asyncio.run(main(url=args.url, pdf_path=args.pdf, max_nodes=args.max_nodes, use_browser_verification=args.use_browser_verification))
     # Examples:
     # python main.py --url "https://arxiv.org/abs/2305.10403"
     # python main.py --pdf "/path/to/paper.pdf"
