@@ -17,7 +17,6 @@ services:
     ports:
       - "5001:5001"
     environment:
-      # CORS - restrict to your frontend domain/IP (comma-separated for multiple)
       ALLOWED_ORIGINS: https://platoscave.matheus.wiki,http://localhost
       REMOTE_BROWSER_CDP_INTERNAL_URL: http://remote-browser:9222
       REMOTE_BROWSER_CDP_PUBLIC_URL: https://platoscave.matheus.wiki/cdp
@@ -53,7 +52,7 @@ services:
       VNC_PORT: 5900
       NOVNC_PORT: 7900
       CHROME_START_URL: "about:blank"
-    shm_size: "2gb"
+    shm_size: "4gb"
     restart: unless-stopped
     healthcheck:
       test:
@@ -61,10 +60,10 @@ services:
           "CMD-SHELL",
           "curl -fsS -H 'Host: localhost' http://localhost:9222/json/version || exit 1",
         ]
-      interval: 10s
-      timeout: 5s
+      interval: 15s
+      timeout: 10s
       retries: 5
-      start_period: 15s
+      start_period: 30s
     networks:
       - platoscave-net
 
