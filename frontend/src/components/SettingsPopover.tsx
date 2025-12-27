@@ -36,7 +36,7 @@ const SettingsPopover: React.FC<SettingsPopoverProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  const handleChange = (key: keyof Settings, value: number) => {
+  const handleChange = (key: keyof Settings, value: number | boolean) => {
     const updated = { ...local, [key]: value };
     setLocal(updated);
     onSettingsChange(updated);
@@ -170,6 +170,32 @@ const SettingsPopover: React.FC<SettingsPopoverProps> = ({
               <div className="flex justify-between text-[10px] text-gray-400 mt-0.5">
                 <span>0.1 (lenient)</span>
                 <span>1.0 (strict)</span>
+              </div>
+            </div>
+
+            {/* Use Browser for Verification Toggle */}
+            <div className="pt-2 border-t border-gray-100">
+              <div className="flex justify-between items-center">
+                <div className="flex-1">
+                  <label className="text-xs font-medium text-gray-700">Visible Verification</label>
+                  <p className="text-[10px] text-gray-400 mt-0.5">
+                    Use browser for source checking (slower but transparent)
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleChange('useBrowserForVerification', !local.useBrowserForVerification)}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 ${
+                    local.useBrowserForVerification ? 'bg-green-600' : 'bg-gray-200'
+                  }`}
+                  role="switch"
+                  aria-checked={local.useBrowserForVerification}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                      local.useBrowserForVerification ? 'translate-x-4' : 'translate-x-0.5'
+                    }`}
+                  />
+                </button>
               </div>
             </div>
           </div>

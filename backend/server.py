@@ -611,6 +611,10 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
 
+    # Add flag to force browser-based verification if enabled
+    if settings.get('useBrowserForVerification', False):
+        command.append('--use-browser-verification')
+
     # Set environment to suppress browser-use logs
     env = os.environ.copy()
     env['SUPPRESS_LOGS'] = 'true'
@@ -761,7 +765,8 @@ def analyze_url() -> tuple[dict[str, str], int]:
     settings = {
         'maxNodes': data.get('maxNodes', 10),
         'agentAggressiveness': data.get('agentAggressiveness', 5),
-        'evidenceThreshold': data.get('evidenceThreshold', 0.8)
+        'evidenceThreshold': data.get('evidenceThreshold', 0.8),
+        'useBrowserForVerification': data.get('useBrowserForVerification', False)
     }
 
     # Get session ID from request header or generate one
