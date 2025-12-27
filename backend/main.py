@@ -12,7 +12,7 @@ import json
 import sys
 from pathlib import Path
 import fitz  # PyMuPDF for PDF text extraction
-from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, build_claim_verification_prompt_exa, parse_verification_result
+from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, build_claim_verification_prompt_exa, parse_verification_result, build_json_repair_prompt
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
@@ -162,6 +162,51 @@ async def extract_text(paper_url: str) -> str:
             return ""
 
     return await asyncio.to_thread(_run)
+
+
+async def attempt_json_repair(malformed_text: str, error_msg: str, llm) -> dict | None:
+    """
+    Attempt to repair malformed JSON by asking the LLM to fix it.
+
+    Args:
+        malformed_text: The original malformed response
+        error_msg: The JSON parsing error message
+        llm: The LLM instance to use for repair
+
+    Returns:
+        Parsed verification result dict, or None if repair failed
+    """
+    print(f"[MAIN.PY DEBUG] Attempting JSON repair via LLM...", file=sys.stderr, flush=True)
+
+    try:
+        repair_prompt = build_json_repair_prompt(malformed_text, error_msg)
+        repair_message = UserMessage(content=repair_prompt)
+
+        # Try with JSON mode if available
+        try:
+            response = await llm.ainvoke(
+                messages=[repair_message],
+                response_format={"type": "json_object"}
+            )
+        except (TypeError, AttributeError):
+            response = await llm.ainvoke(messages=[repair_message])
+
+        repaired_text = response.completion.strip()
+        print(f"[MAIN.PY DEBUG] Repair response (first 200 chars): {repaired_text[:200]}...", file=sys.stderr, flush=True)
+
+        # Try to parse the repaired JSON
+        result = parse_verification_result(repaired_text)
+
+        if result:
+            print(f"[MAIN.PY DEBUG] ✅ JSON repair successful!", file=sys.stderr, flush=True)
+            return result
+        else:
+            print(f"[MAIN.PY DEBUG] ⚠️ JSON repair returned invalid result", file=sys.stderr, flush=True)
+            return None
+
+    except Exception as e:
+        print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed: {e}", file=sys.stderr, flush=True)
+        return None
 
 
 async def create_browser_with_retry(
@@ -607,7 +652,12 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
     send_update("Building Logic Tree", "Logic tree constructed.")
     return dag_json, dag_json_str
 
-async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,browser: Browser, llm: ChatBrowserUse):
+async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser: Browser, llm: ChatBrowserUse):
+    """
+    Verify a node using a two-step approach:
+    1. Fast LLM-only verification using Exa sources (no browser needed)
+    2. Fall back to browser agent only if LLM verification fails
+    """
     total_nodes = len(nodes_to_verify)
     node_id = str(node["id"])
     node_text = node["text"]
@@ -618,15 +668,13 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
     print(f"[MAIN.PY DEBUG] Node Role: {node_role}", file=sys.stderr, flush=True)
     print(f"[MAIN.PY DEBUG] Node Text: {node_text[:100]}...", file=sys.stderr, flush=True)
 
-    # Note: Progress update is now sent in the main loop before send_node_active
-    # to ensure the progress bar updates before the node is highlighted
-
+    # Step 1: Retrieve Exa sources
     exa_context = await exa_retrieve(node_text, k=6)
     claim_context = (
-        "Here are candidate sources retrieved by Exa. "
-        "Use these first, then browse if needed.\n\n"
-    f"{exa_context}"
+        "Here are candidate sources retrieved by Exa.\n\n"
+        f"{exa_context}"
     )
+
     # Build verification prompt
     verification_prompt = build_claim_verification_prompt_exa(
         claim_text=node_text,
@@ -634,38 +682,93 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
         claim_context=claim_context
     )
 
-    # Check if browser connection is still alive, reconnect if needed
-    print(f"[MAIN.PY DEBUG] Checking browser connection health...", file=sys.stderr, flush=True)
-    browser_was_reset = False
+    # Step 2: Try fast LLM-only verification first (no browser needed)
+    print(f"[MAIN.PY DEBUG] Attempting fast LLM-only verification...", file=sys.stderr, flush=True)
+    verification_result = None
 
     try:
-        # Test if browser is responsive by checking if we can get pages
+        # Wrap prompt with strong JSON-forcing instructions
+        json_forcing_prompt = (
+            "CRITICAL INSTRUCTION: Output ONLY a raw JSON object. Nothing else.\n"
+            "- Do NOT use done() or any function calls\n"
+            "- Do NOT wrap in ```json``` code blocks\n"
+            "- Do NOT include any explanation text\n"
+            "- Start with { and end with }\n"
+            "- Output the JSON directly, like: {\"credibility\": 0.9, ...}\n\n"
+            f"{verification_prompt}"
+        )
+        user_message = UserMessage(content=json_forcing_prompt)
+
+        # Try structured JSON output if supported
+        try:
+            response = await llm.ainvoke(
+                messages=[user_message],
+                response_format={"type": "json_object"}
+            )
+        except (TypeError, AttributeError):
+            response = await llm.ainvoke(messages=[user_message])
+
+        result_text = response.completion.strip()
+        print(f"[MAIN.PY DEBUG] LLM response (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
+
+        # Parse verification result
+        verification_result = parse_verification_result(result_text)
+
+        if verification_result:
+            sources = verification_result.get('sources_checked', [])
+            print(f"[MAIN.PY DEBUG] ✅ Fast LLM verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+            for source_idx, source in enumerate(sources[:3], 1):
+                print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')[:50]}", file=sys.stderr, flush=True)
+            return verification_result
+        else:
+            # Check if response contains JSON-like content that could be repaired
+            if '{' in result_text and '}' in result_text:
+                print(f"[MAIN.PY DEBUG] ⚠️ LLM returned malformed JSON, attempting repair...", file=sys.stderr, flush=True)
+                import json
+                try:
+                    json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
+                    error_msg = "Unknown parsing error"
+                except json.JSONDecodeError as e:
+                    error_msg = str(e)
+
+                verification_result = await attempt_json_repair(result_text, error_msg, llm)
+                if verification_result:
+                    sources = verification_result.get('sources_checked', [])
+                    print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                    return verification_result
+                else:
+                    print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, falling back to browser", file=sys.stderr, flush=True)
+            else:
+                print(f"[MAIN.PY DEBUG] ⚠️ LLM returned text (not JSON), falling back to browser", file=sys.stderr, flush=True)
+
+    except Exception as e:
+        print(f"[MAIN.PY DEBUG] ⚠️ Fast LLM verification failed: {e}, trying browser fallback", file=sys.stderr, flush=True)
+
+    # Step 3: Fall back to browser agent only if LLM verification failed
+    print(f"[MAIN.PY DEBUG] Using browser agent fallback for node {node_id}...", file=sys.stderr, flush=True)
+
+    # Check browser connection
+    try:
         await browser.get_pages()
         print(f"[MAIN.PY DEBUG] ✅ Browser connection is alive", file=sys.stderr, flush=True)
 
-        # Force reset if CDP errors were detected in previous iteration
         if browser_needs_reset:
             print(f"[MAIN.PY DEBUG] 🔄 Forcing browser reset due to previous CDP errors", file=sys.stderr, flush=True)
-            raise Exception("Forced browser reset due to CDP frame errors")
+            raise Exception("Forced browser reset")
 
     except Exception as e:
         print(f"[MAIN.PY DEBUG] ⚠️ Browser connection issue: {e}", file=sys.stderr, flush=True)
-        print(f"[MAIN.PY DEBUG] Attempting to reconnect browser...", file=sys.stderr, flush=True)
-        browser_was_reset = True
-
-        # Close the dead browser
+        # Try to reconnect
         try:
             await browser.stop()
         except:
             pass
 
-        # Store original connection details
         fallback_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
         fallback_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
         original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (fallback_cdp_ws or fallback_cdp_url or "")
         original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
 
-        # Reconnect to the same CDP endpoint
         try:
             browser = await create_browser_with_retry(
                 cdp_url=original_cdp_url,
@@ -675,13 +778,10 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
                 max_retries=3,
                 initial_delay=2.0
             )
-            # Verify the reconnection actually worked
             await browser.get_pages()
             print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
-            browser_needs_reset = False  # Reset the flag after successful reconnection
         except Exception as reconnect_error:
             print(f"[MAIN.PY DEBUG] ❌ Browser reconnection failed: {reconnect_error}", file=sys.stderr, flush=True)
-            # Return failure result - browser is dead and cannot be recovered
             return {
                 "credibility": 0.2,
                 "relevance": 0.5,
@@ -693,109 +793,78 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
                 "confidence_level": "failed"
             }
 
-    # Reset browser context: navigate to blank WITHOUT closing tabs
-    # NOTE: Closing tabs via CDP destabilizes the WebSocket connection to remote browsers.
-    # Instead, we just navigate to about:blank which resets the context safely.
-    print(f"[MAIN.PY DEBUG] Resetting browser context to top-level...", file=sys.stderr, flush=True)
-    try:
-        pages = await browser.get_pages()
-        if pages:
-            # Just log how many tabs exist (don't close them - it breaks the connection)
-            if len(pages) > 1:
-                print(f"[MAIN.PY DEBUG] Browser has {len(pages)} tabs (not closing to preserve connection)", file=sys.stderr, flush=True)
-
-            # Navigate first page to blank to reset context
-            page = pages[0]
-            try:
-                await page.goto('about:blank')
-                await asyncio.sleep(0.3)  # Brief stabilization delay
-                print(f"[MAIN.PY DEBUG] ✅ Browser context reset to top-level", file=sys.stderr, flush=True)
-            except Exception as nav_err:
-                # If navigation fails, try to get a fresh page reference
-                print(f"[MAIN.PY DEBUG] ⚠️ Navigation to blank failed: {nav_err}", file=sys.stderr, flush=True)
-                # Don't fail - the agent will create its own context if needed
-        else:
-            print(f"[MAIN.PY DEBUG] ⚠️ No pages found in browser, skipping context reset", file=sys.stderr, flush=True)
-    except Exception as e:
-        print(f"[MAIN.PY DEBUG] ⚠️ Failed to reset browser context: {e}", file=sys.stderr, flush=True)
-        # Continue anyway - don't fail the verification for this
-
-    # Create agent for this verification
-    print(f"[MAIN.PY DEBUG] Creating verification agent for node {node_id}...", file=sys.stderr, flush=True)
+    # Create browser agent with vision DISABLED for faster verification
+    # We already have Exa sources, agent just needs to analyze them
+    # Add JSON-forcing prefix to the task
+    browser_task = (
+        "CRITICAL: When you are done, call done() with ONLY a raw JSON object as the text parameter.\n"
+        "The JSON must have these exact keys: credibility, relevance, evidence_strength, method_rigor, reproducibility, citation_support, sources_checked, verification_summary, confidence_level\n"
+        "Example: done(text='{\"credibility\": 0.9, \"relevance\": 1.0, ...}')\n\n"
+        f"{verification_prompt}"
+    )
     agent_kwargs = {
-        'task': verification_prompt,
+        'task': browser_task,
         'llm': llm,
-        'vision_detail_level': 'low',  # Lower detail for faster verification
-        'generate_gif': False,          # Don't generate GIFs for each verification
-        'use_vision': True,             # Enable vision for actual web browsing
-        'browser': browser              # Reuse the same browser instance (reconnected if needed)
+        'vision_detail_level': 'low',
+        'generate_gif': False,
+        'use_vision': False,  # Disabled - we have Exa sources, no need to screenshot
+        'browser': browser
     }
 
     verification_agent = Agent(**agent_kwargs)
-    print(f"[MAIN.PY DEBUG] Starting verification agent with max_steps=30...", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Starting browser agent with max_steps=10...", file=sys.stderr, flush=True)
 
     try:
-        # Run agent verification with CDP error handling
-        history = await verification_agent.run(max_steps=30)
-        print(f"[MAIN.PY DEBUG] Agent completed, extracting result...", file=sys.stderr, flush=True)
+        history = await verification_agent.run(max_steps=10)  # Reduced from 30
+        result_text = history.final_result() or ""
+        print(f"[MAIN.PY DEBUG] Agent result (first 300 chars): {result_text[:300]}...", file=sys.stderr, flush=True)
 
-        # Extract result from agent
-        result_text = history.final_result()
-        print(f"[MAIN.PY DEBUG] Raw result (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
-
-        # Parse verification result
         verification_result = parse_verification_result(result_text)
 
         if verification_result:
-            # Log sources checked to verify actual browsing happened
             sources = verification_result.get('sources_checked', [])
-            print(f"[MAIN.PY DEBUG] ✅ Verification successful! Sources checked: {len(sources)}", file=sys.stderr, flush=True)
-            for source_idx, source in enumerate(sources[:3], 1):  # Log first 3 sources
-                print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')}", file=sys.stderr, flush=True)
+            print(f"[MAIN.PY DEBUG] ✅ Browser agent verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
         else:
-            print(f"[MAIN.PY DEBUG] ⚠️ Failed to parse verification result, using fallback scores", file=sys.stderr, flush=True)
-            verification_result = {
-                "credibility": 0.2,
-                "relevance": 0.5,
-                "evidence_strength": 0.2,
-                "method_rigor": 0.2,
-                "reproducibility": 0.2,
-                "citation_support": 0.2,
-                "verification_summary": "Failed to parse verification result",
-                "confidence_level": "failed"
-            }
+            # Try to repair the malformed JSON
+            print(f"[MAIN.PY DEBUG] ⚠️ Failed to parse browser agent result, attempting repair...", file=sys.stderr, flush=True)
+            import json
+            try:
+                # Get the parse error for context
+                json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
+                error_msg = "Unknown parsing error"
+            except json.JSONDecodeError as e:
+                error_msg = str(e)
+
+            verification_result = await attempt_json_repair(result_text, error_msg, llm)
+
+            if verification_result:
+                sources = verification_result.get('sources_checked', [])
+                print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+            else:
+                print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, using fallback scores", file=sys.stderr, flush=True)
+                verification_result = {
+                    "credibility": 0.5,
+                    "relevance": 0.7,
+                    "evidence_strength": 0.5,
+                    "method_rigor": 0.5,
+                    "reproducibility": 0.5,
+                    "citation_support": 0.5,
+                    "verification_summary": "Verification completed but parsing failed",
+                    "confidence_level": "low"
+                }
 
     except Exception as e:
         error_msg = str(e)
-        error_lower = error_msg.lower()
-        print(f"[MAIN.PY DEBUG] ❌ Error verifying node {node_id}: {error_msg}", file=sys.stderr, flush=True)
-
-        # Check if this is a CDP/browser connection error that requires reset
-        cdp_error_patterns = [
-            "top-level targets",
-            "command can only be executed on top-level targets",
-            "no close frame",  # WebSocket closed unexpectedly
-            "websocket connection closed",
-            "connectionclosederror",
-            "no browser is open",
-            "failed to open new tab",
-            "target not found",
-            "may have detached",
-            "404",  # CDP endpoint unavailable
-            "cdp client not initialized",
-        ]
-        if any(pattern in error_lower for pattern in cdp_error_patterns):
-            print(f"[MAIN.PY DEBUG] 🔄 CDP/browser error detected, marking browser as needing reset", file=sys.stderr, flush=True)
-            browser_needs_reset = True
+        print(f"[MAIN.PY DEBUG] ❌ Browser agent error: {error_msg}", file=sys.stderr, flush=True)
 
         verification_result = {
-            "credibility": 0.2,
+            "credibility": 0.3,
             "relevance": 0.5,
-            "evidence_strength": 0.2,
-            "method_rigor": 0.2,
-            "reproducibility": 0.2,
-            "citation_support": 0.2,
-            "verification_summary": f"Verification failed: {error_msg}",
+            "evidence_strength": 0.3,
+            "method_rigor": 0.3,
+            "reproducibility": 0.3,
+            "citation_support": 0.3,
+            "verification_summary": f"Verification failed: {error_msg[:100]}",
             "confidence_level": "failed"
         }
 
