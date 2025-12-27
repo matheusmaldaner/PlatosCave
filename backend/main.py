@@ -198,15 +198,30 @@ async def create_browser_with_retry(
                 keep_alive=keep_alive
             )
 
-            # Test the connection by trying to create a page
+            # Test the connection by trying to start the browser
             try:
                 await browser.start()
+                # Verify connection is actually working by getting pages
+                await browser.get_pages()
                 print(f"[BROWSER] ✅ Connected successfully on attempt {attempt + 1}", file=sys.stderr, flush=True)
                 return browser
             except Exception as start_error:
-                # If start fails, still return browser - browser-use may handle lazy connection
-                print(f"[BROWSER] ⚠️ Browser created but start() failed: {start_error}", file=sys.stderr, flush=True)
-                return browser
+                error_str = str(start_error).lower()
+                # Check if this is a non-recoverable error (browser process is dead)
+                is_fatal = any(x in error_str for x in ['404', 'connection refused', 'no browser is open', 'target not found'])
+
+                if is_fatal:
+                    print(f"[BROWSER] ❌ Fatal connection error (browser likely dead): {start_error}", file=sys.stderr, flush=True)
+                    # Clean up the failed browser object
+                    try:
+                        await browser.stop()
+                    except:
+                        pass
+                    raise Exception(f"Browser process unavailable: {start_error}")
+                else:
+                    # Non-fatal error, browser might still work with lazy connection
+                    print(f"[BROWSER] ⚠️ Browser created but start() had issues: {start_error}", file=sys.stderr, flush=True)
+                    return browser
 
         except Exception as e:
             last_error = e
@@ -647,28 +662,54 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
         original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
 
         # Reconnect to the same CDP endpoint
-        browser = await create_browser_with_retry(
-            cdp_url=original_cdp_url,
-            headless=False,
-            is_local=original_is_local,
-            keep_alive=True,
-            max_retries=3,
-            initial_delay=2.0
-        )
-        print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
-        browser_needs_reset = False  # Reset the flag after successful reconnection
+        try:
+            browser = await create_browser_with_retry(
+                cdp_url=original_cdp_url,
+                headless=False,
+                is_local=original_is_local,
+                keep_alive=True,
+                max_retries=3,
+                initial_delay=2.0
+            )
+            # Verify the reconnection actually worked
+            await browser.get_pages()
+            print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
+            browser_needs_reset = False  # Reset the flag after successful reconnection
+        except Exception as reconnect_error:
+            print(f"[MAIN.PY DEBUG] ❌ Browser reconnection failed: {reconnect_error}", file=sys.stderr, flush=True)
+            # Return failure result - browser is dead and cannot be recovered
+            return {
+                "credibility": 0.2,
+                "relevance": 0.5,
+                "evidence_strength": 0.2,
+                "method_rigor": 0.2,
+                "reproducibility": 0.2,
+                "citation_support": 0.2,
+                "verification_summary": f"Verification failed: Browser unavailable - {reconnect_error}",
+                "confidence_level": "failed"
+            }
 
-    # Reset browser context to top-level before each verification
+    # Reset browser context: navigate to blank WITHOUT closing tabs
+    # NOTE: Closing tabs via CDP destabilizes the WebSocket connection to remote browsers.
+    # Instead, we just navigate to about:blank which resets the context safely.
     print(f"[MAIN.PY DEBUG] Resetting browser context to top-level...", file=sys.stderr, flush=True)
     try:
         pages = await browser.get_pages()
         if pages:
-            page = pages[0]  # Get the first/main page
-            # Navigate to a blank page to reset context
-            await page.goto('about:blank')
-            # Small delay to ensure context reset
-            await asyncio.sleep(0.5)
-            print(f"[MAIN.PY DEBUG] ✅ Browser context reset to top-level", file=sys.stderr, flush=True)
+            # Just log how many tabs exist (don't close them - it breaks the connection)
+            if len(pages) > 1:
+                print(f"[MAIN.PY DEBUG] Browser has {len(pages)} tabs (not closing to preserve connection)", file=sys.stderr, flush=True)
+
+            # Navigate first page to blank to reset context
+            page = pages[0]
+            try:
+                await page.goto('about:blank')
+                await asyncio.sleep(0.3)  # Brief stabilization delay
+                print(f"[MAIN.PY DEBUG] ✅ Browser context reset to top-level", file=sys.stderr, flush=True)
+            except Exception as nav_err:
+                # If navigation fails, try to get a fresh page reference
+                print(f"[MAIN.PY DEBUG] ⚠️ Navigation to blank failed: {nav_err}", file=sys.stderr, flush=True)
+                # Don't fail - the agent will create its own context if needed
         else:
             print(f"[MAIN.PY DEBUG] ⚠️ No pages found in browser, skipping context reset", file=sys.stderr, flush=True)
     except Exception as e:
@@ -722,12 +763,25 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
 
     except Exception as e:
         error_msg = str(e)
+        error_lower = error_msg.lower()
         print(f"[MAIN.PY DEBUG] ❌ Error verifying node {node_id}: {error_msg}", file=sys.stderr, flush=True)
 
-        # Check if this is a CDP frame targeting error
-        if "top-level targets" in error_msg or "Command can only be executed on top-level targets" in error_msg:
-            print(f"[MAIN.PY DEBUG] 🔄 CDP frame error detected, marking browser as needing reset", file=sys.stderr, flush=True)
-            # Force browser reconnection on next iteration by setting a flag or handling in the loop
+        # Check if this is a CDP/browser connection error that requires reset
+        cdp_error_patterns = [
+            "top-level targets",
+            "command can only be executed on top-level targets",
+            "no close frame",  # WebSocket closed unexpectedly
+            "websocket connection closed",
+            "connectionclosederror",
+            "no browser is open",
+            "failed to open new tab",
+            "target not found",
+            "may have detached",
+            "404",  # CDP endpoint unavailable
+            "cdp client not initialized",
+        ]
+        if any(pattern in error_lower for pattern in cdp_error_patterns):
+            print(f"[MAIN.PY DEBUG] 🔄 CDP/browser error detected, marking browser as needing reset", file=sys.stderr, flush=True)
             browser_needs_reset = True
 
         verification_result = {
