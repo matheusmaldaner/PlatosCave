@@ -51,6 +51,11 @@ def send_final_score(score: float, flush: bool = True) -> None:
     score_message = json.dumps({"type": "DONE", "score": score})
     print(score_message, flush=flush)
 
+def send_node_active(node_id: str, flush: bool = True) -> None:
+    """Send currently active node ID to frontend for NodeToolbar display"""
+    message = json.dumps({"type": "NODE_ACTIVE", "node_id": node_id})
+    print(message, flush=flush)
+
 def extract_text_from_pdf(pdf_path: str) -> str:
     """
     Extract text content from a PDF file using PyMuPDF.
@@ -594,7 +599,8 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset,brow
     print(f"[MAIN.PY DEBUG] Node Role: {node_role}", file=sys.stderr, flush=True)
     print(f"[MAIN.PY DEBUG] Node Text: {node_text[:100]}...", file=sys.stderr, flush=True)
 
-    send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
+    # Note: Progress update is now sent in the main loop before send_node_active
+    # to ensure the progress bar updates before the node is highlighted
 
     exa_context = await exa_retrieve(node_text, k=6)
     claim_context = (
@@ -806,12 +812,17 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
             for idx, node in enumerate(nodes_to_verify, start=1):
                 # Store verification result
                 node_id = str(node["id"])
+                node_text = node["text"]
+                # Send progress update BEFORE highlighting node (so text updates first)
+                send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
+                send_node_active(node_id)  # Notify frontend which node is being verified
                 verification_results[node_id] = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser, llm)
                 print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id}", file=sys.stderr, flush=True)
 
                 # Small delay between verifications
                 await asyncio.sleep(0.5)
 
+            send_node_active("")  # Clear active node when verification complete
             send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
 
             # Stage 6: Run Verification Pipeline (Pure Data Processing)

@@ -44,6 +44,12 @@ const IndexPage = () => {
   const [browserCdpUrl, setBrowserCdpUrl] = useState<string | undefined>(undefined);
   const [browserCdpWebSocket, setBrowserCdpWebSocket] = useState<string | undefined>(undefined);
 
+  // Active node being verified (for NodeToolbar indicator)
+  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
+
+  // Force browser viewer to expand (increments to trigger effect)
+  const [browserExpandTrigger, setBrowserExpandTrigger] = useState(0);
+
   // Settings state - only 3 settings that actually work
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
 
@@ -75,9 +81,13 @@ const IndexPage = () => {
           setBrowserCdpUrl(update.cdp_url);
           setBrowserCdpWebSocket(update.cdp_websocket);
           setIsBrowserOpen(true);
+        } else if (update.type === "NODE_ACTIVE") {
+          // Track which node is currently being verified
+          setActiveNodeId(update.node_id || null);
         } else if (update.type === "DONE") {
           setFinalScore(update.score);
           setIsAnalyzing(false);
+          setActiveNodeId(null);  // Clear active node when complete
           setProcessSteps((prev) =>
             prev.map((s) => ({ ...s, status: "completed" }))
           );
@@ -210,13 +220,22 @@ const IndexPage = () => {
                 novncUrl={browserNovncUrl}
                 cdpUrl={browserCdpUrl}
                 cdpWebSocket={browserCdpWebSocket}
+                hideMinimized={!!activeNodeId}
+                expandTrigger={browserExpandTrigger}
               />
 
               <div
                 className="flex-grow p-4"
                 style={{ height: "calc(100vh - 150px)" }}
               >
-                <XmlGraphViewer graphmlData={graphmlData} />
+                <XmlGraphViewer
+                  graphmlData={graphmlData}
+                  activeNodeId={activeNodeId}
+                  onBrowserClick={() => {
+                    setIsBrowserOpen(true);
+                    setBrowserExpandTrigger(prev => prev + 1);
+                  }}
+                />
               </div>
             </>
           )}

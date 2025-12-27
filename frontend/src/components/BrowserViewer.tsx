@@ -6,6 +6,8 @@ interface BrowserViewerProps {
   novncUrl?: string;
   cdpUrl?: string;
   cdpWebSocket?: string;
+  hideMinimized?: boolean;
+  expandTrigger?: number;
 }
 
 const BrowserViewer: React.FC<BrowserViewerProps> = ({
@@ -13,10 +15,19 @@ const BrowserViewer: React.FC<BrowserViewerProps> = ({
   onClose,
   novncUrl,
   cdpUrl,
-  cdpWebSocket
+  cdpWebSocket,
+  hideMinimized = false,
+  expandTrigger = 0
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  // When expandTrigger changes (incremented), un-minimize the viewer
+  useEffect(() => {
+    if (expandTrigger > 0) {
+      setIsMinimized(false);
+    }
+  }, [expandTrigger]);
 
   // Add scaling parameters to noVNC URL to fit container perfectly
   const getScaledVncUrl = (url?: string) => {
@@ -94,7 +105,11 @@ const BrowserViewer: React.FC<BrowserViewerProps> = ({
   }
 
   // Minimized state - floating indicator in top-left
+  // Hide when NodeToolbar indicator is active (during node verification)
   if (isMinimized) {
+    if (hideMinimized) {
+      return null;
+    }
     return (
       <div className="fixed top-20 left-4 z-30">
         <button
@@ -105,10 +120,10 @@ const BrowserViewer: React.FC<BrowserViewerProps> = ({
           <span className="font-medium text-gray-700 text-sm">
             Browser Active
           </span>
-          <svg 
-            className="w-4 h-4 text-gray-500" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            className="w-4 h-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
