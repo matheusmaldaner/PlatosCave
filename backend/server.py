@@ -1,5 +1,6 @@
 # PlatosCave/server.py
 import os
+import sys
 import subprocess
 import json  # Make sure json is imported
 import time
@@ -467,7 +468,7 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
         browser_info = {}  # Empty dict to signal local browser mode
 
     command = [
-        'python', 'main.py', '--pdf', filepath,
+        sys.executable, 'main.py', '--pdf', filepath,
         '--max-nodes', str(settings.get('maxNodes', 10)),
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
@@ -602,7 +603,7 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
         print(f"[SERVER DEBUG] Browser info received: {browser_info}", flush=True)
 
     command = [
-        'python', 'main.py', '--url', url,
+        sys.executable, 'main.py', '--url', url,
         '--max-nodes', str(settings.get('maxNodes', 10)),
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
