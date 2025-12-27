@@ -14,10 +14,14 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+
+# CORS configuration - restrict to your frontend domain/IP
+# For production, set ALLOWED_ORIGINS environment variable
+ALLOWED_ORIGINS = os.getenv('ALLOWED_ORIGINS', '*').split(',')
+CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
 socketio = SocketIO(
     app,
-    cors_allowed_origins="*",
+    cors_allowed_origins=ALLOWED_ORIGINS,
     ping_timeout=300,  # 5 minutes before considering connection dead
     ping_interval=25   # Send ping every 25 seconds to keep connection alive
 )
