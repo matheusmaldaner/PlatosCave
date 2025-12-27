@@ -1,3 +1,8 @@
+import os
+# Set browser_use event timeouts BEFORE importing browser_use (it reads env vars at import time)
+os.environ.setdefault('TIMEOUT_ScreenshotEvent', '45.0')  # Increase from 15s default to 45s
+os.environ.setdefault('TIMEOUT_BrowserStateRequestEvent', '60.0')  # Increase from 30s default to 60s
+
 from browser_use import Agent, ChatBrowserUse, ChatOpenAI, Browser, ChatAnthropic, ChatOllama
 from browser_use.llm.messages import BaseMessage, UserMessage
 from dotenv import load_dotenv
@@ -5,7 +10,6 @@ import asyncio
 import argparse
 import json
 import sys
-import os
 from pathlib import Path
 import fitz  # PyMuPDF for PDF text extraction
 from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, build_claim_verification_prompt, build_claim_verification_prompt_exa, parse_verification_result
