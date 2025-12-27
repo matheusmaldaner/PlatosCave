@@ -166,15 +166,15 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
     }, [charIndex, isDeleting, titleIndex, titles]);
 
     return (
-        <div className="flex h-full w-full flex-col items-center justify-center px-4 py-12 sm:py-16">
+        <div className="flex h-full w-full flex-col items-center justify-center px-4 pt-32 pb-12 sm:pt-40 sm:pb-16">
             <div className="mx-auto w-full max-w-3xl space-y-12">
                 {/* Hero Section */}
                 <div className="space-y-6 text-center">
                     <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl animate-dissolve-up">
-                        Analyze research papers
+                        analyze research papers
                     </h1>
                     <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg animate-dissolve-up-delayed">
-                        Search by name, paste a URL, or upload a PDF to verify a research paper's integrity
+                        search by name, paste a URL, or upload a PDF to verify a research paper's integrity
                     </p>
                 </div>
 
@@ -302,16 +302,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                             </button>
                         )}
                     </div>
-                </div>
-
-                {/* Footer Text */}
-                <div className="space-y-3 text-center">
-                    <p className="text-xs font-light uppercase tracking-widest text-gray-400">
-                        A software created by the FINS group for the University of Florida AI Days Hackathon
-                    </p>
-                    <p className="text-sm text-gray-400 mt-4">
-                        Platos-Cave can analyze research papers from URLs or PDF files
-                    </p>
                 </div>
             </div>
         </div>
