@@ -475,7 +475,8 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
         sys.executable, 'main.py', '--pdf', filepath,
         '--max-nodes', str(settings.get('maxNodes', 10)),
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
-        '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
+        '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8)),
+        '--mode', str(settings.get('analysisMode', 'academic'))
     ]
 
     # Set environment to suppress browser-use logs
@@ -612,7 +613,8 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
         sys.executable, 'main.py', '--url', url,
         '--max-nodes', str(settings.get('maxNodes', 10)),
         '--agent-aggressiveness', str(settings.get('agentAggressiveness', 5)),
-        '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
+        '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8)),
+        '--mode', str(settings.get('analysisMode', 'academic'))
     ]
 
     # Add flag to force browser-based verification if enabled
@@ -714,7 +716,8 @@ def upload_file() -> (tuple[dict[str, str], int]) | (tuple[str, int]):
     settings = {
         'maxNodes': request.form.get('maxNodes', 10),
         'agentAggressiveness': request.form.get('agentAggressiveness', 5),
-        'evidenceThreshold': request.form.get('evidenceThreshold', 0.8)
+        'evidenceThreshold': request.form.get('evidenceThreshold', 0.8),
+        'analysisMode': request.form.get('analysisMode', 'academic')
     }
 
     if file and file.filename:
@@ -770,7 +773,8 @@ def analyze_url() -> tuple[dict[str, str], int]:
         'maxNodes': data.get('maxNodes', 10),
         'agentAggressiveness': data.get('agentAggressiveness', 5),
         'evidenceThreshold': data.get('evidenceThreshold', 0.8),
-        'useBrowserForVerification': data.get('useBrowserForVerification', False)
+        'useBrowserForVerification': data.get('useBrowserForVerification', False),
+        'analysisMode': data.get('analysisMode', 'academic')
     }
 
     # Get session ID from request header or generate one
