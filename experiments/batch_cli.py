@@ -526,6 +526,8 @@ Examples (run from project root):
                         help="Agent aggressiveness 1-10 (default: 5)")
     parser.add_argument("--evidence-threshold", type=float, default=0.8,
                         help="Evidence threshold 0.0-1.0 (default: 0.8)")
+    # add the number of nodes 
+    # add the toggle for exa vs strict browser use
 
     # Execution settings
     parser.add_argument("--delay", type=float, default=5.0,
