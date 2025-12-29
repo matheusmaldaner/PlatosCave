@@ -1,6 +1,6 @@
 // PlatosCave/frontend/src/components/SettingsPopover.tsx
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings } from '../types';
+import { Settings, AnalysisMode, ANALYSIS_MODES } from '../types';
 
 interface SettingsPopoverProps {
   settings: Settings;
@@ -36,7 +36,7 @@ const SettingsPopover: React.FC<SettingsPopoverProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  const handleChange = (key: keyof Settings, value: number | boolean) => {
+  const handleChange = (key: keyof Settings, value: number | boolean | AnalysisMode) => {
     const updated = { ...local, [key]: value };
     setLocal(updated);
     onSettingsChange(updated);
@@ -79,7 +79,7 @@ const SettingsPopover: React.FC<SettingsPopoverProps> = ({
 
       {/* Popover */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
           <h3 className="font-semibold text-gray-900 text-sm mb-4 flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -104,6 +104,38 @@ const SettingsPopover: React.FC<SettingsPopoverProps> = ({
           </h3>
 
           <div className="space-y-4">
+            {/* Analysis Mode Selector */}
+            <div>
+              <label className="text-xs font-medium text-gray-700 mb-2 block">Analysis Mode</label>
+              <div className="grid grid-cols-3 gap-2">
+                {ANALYSIS_MODES.map((mode) => (
+                  <button
+                    key={mode.value}
+                    onClick={() => handleChange('analysisMode', mode.value)}
+                    className={`flex flex-col items-center p-2 rounded-lg border-2 transition-all duration-200 ${
+                      local.analysisMode === mode.value
+                        ? 'border-green-500 bg-green-50 shadow-sm'
+                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="text-lg mb-1">{mode.icon}</span>
+                    <span className={`text-[10px] font-medium ${
+                      local.analysisMode === mode.value ? 'text-green-700' : 'text-gray-600'
+                    }`}>
+                      {mode.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-400 mt-1.5 text-center">
+                {ANALYSIS_MODES.find(m => m.value === local.analysisMode)?.description}
+              </p>
+            </div>
+
+            <div className="border-t border-gray-100 pt-3">
+              <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-3">Advanced</p>
+            </div>
+
             {/* Max Nodes */}
             <div>
               <div className="flex justify-between items-center mb-1">

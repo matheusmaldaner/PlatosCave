@@ -26,12 +26,30 @@ type GraphEdgeData = {
 type GraphEdge = Edge<GraphEdgeData>;
 
 const roleStyles: Record<string, { badgeBg: string; badgeText: string; bodyBg: string; border: string }> = {
+  // Base roles
   context: { badgeBg: "bg-emerald-50", badgeText: "text-emerald-700", bodyBg: "bg-white", border: "border-emerald-200" },
   claim: { badgeBg: "bg-green-50", badgeText: "text-green-700", bodyBg: "bg-white", border: "border-green-200" },
   evidence: { badgeBg: "bg-sky-50", badgeText: "text-sky-700", bodyBg: "bg-white", border: "border-sky-200" },
   hypothesis: { badgeBg: "bg-teal-50", badgeText: "text-teal-700", bodyBg: "bg-white", border: "border-teal-200" },
   result: { badgeBg: "bg-lime-50", badgeText: "text-lime-700", bodyBg: "bg-white", border: "border-lime-200" },
   method: { badgeBg: "bg-cyan-50", badgeText: "text-cyan-700", bodyBg: "bg-white", border: "border-cyan-200" },
+  conclusion: { badgeBg: "bg-indigo-50", badgeText: "text-indigo-700", bodyBg: "bg-white", border: "border-indigo-200" },
+  assumption: { badgeBg: "bg-amber-50", badgeText: "text-amber-700", bodyBg: "bg-white", border: "border-amber-200" },
+  counterevidence: { badgeBg: "bg-rose-50", badgeText: "text-rose-700", bodyBg: "bg-white", border: "border-rose-200" },
+  limitation: { badgeBg: "bg-orange-50", badgeText: "text-orange-700", bodyBg: "bg-white", border: "border-orange-200" },
+  // Journal mode roles
+  peerreviewstatus: { badgeBg: "bg-violet-50", badgeText: "text-violet-700", bodyBg: "bg-white", border: "border-violet-200" },
+  statisticalmethod: { badgeBg: "bg-fuchsia-50", badgeText: "text-fuchsia-700", bodyBg: "bg-white", border: "border-fuchsia-200" },
+  replicationstatus: { badgeBg: "bg-purple-50", badgeText: "text-purple-700", bodyBg: "bg-white", border: "border-purple-200" },
+  conflictofinterest: { badgeBg: "bg-red-50", badgeText: "text-red-700", bodyBg: "bg-white", border: "border-red-200" },
+  samplesize: { badgeBg: "bg-pink-50", badgeText: "text-pink-700", bodyBg: "bg-white", border: "border-pink-200" },
+  // Finance mode roles
+  financialmetric: { badgeBg: "bg-emerald-50", badgeText: "text-emerald-700", bodyBg: "bg-white", border: "border-emerald-200" },
+  forwardguidance: { badgeBg: "bg-blue-50", badgeText: "text-blue-700", bodyBg: "bg-white", border: "border-blue-200" },
+  riskfactor: { badgeBg: "bg-red-50", badgeText: "text-red-700", bodyBg: "bg-white", border: "border-red-200" },
+  regulatorycompliance: { badgeBg: "bg-slate-50", badgeText: "text-slate-700", bodyBg: "bg-white", border: "border-slate-200" },
+  comparableanalysis: { badgeBg: "bg-zinc-50", badgeText: "text-zinc-700", bodyBg: "bg-white", border: "border-zinc-200" },
+  managementdiscussion: { badgeBg: "bg-stone-50", badgeText: "text-stone-700", bodyBg: "bg-white", border: "border-stone-200" },
 };
 
 const GraphNodeCard: React.FC<NodeProps<GraphNodeData>> = ({ data }) => {
@@ -123,7 +141,14 @@ const LAYOUT_PRESETS: Record<"default" | "compact", LayoutConfig> = {
 };
 
 const brandGreen = "#2F855A";
-const formatRole = (role: string) => role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+// Format role: convert camelCase/PascalCase to "Title Case With Spaces"
+// e.g., "PeerReviewStatus" → "Peer Review Status", "conflictOfInterest" → "Conflict Of Interest"
+const formatRole = (role: string) => 
+  role
+    .replace(/_/g, " ")                           // Replace underscores with spaces
+    .replace(/([a-z])([A-Z])/g, "$1 $2")         // Add space before uppercase letters (camelCase)
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")   // Handle acronyms like "XMLParser" → "XML Parser"
+    .replace(/\b\w/g, (c) => c.toUpperCase());    // Capitalize first letter of each word
 
 const getLayoutedElements = (nodes: GraphNode[], edges: GraphEdge[], config: LayoutConfig) => {
   dagreGraph.setGraph({ rankdir: "TB", nodesep: config.nodesep, ranksep: config.ranksep, marginx: config.margin, marginy: config.margin });
