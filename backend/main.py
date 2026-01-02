@@ -29,6 +29,9 @@ exa = Exa(api_key=exa_api_key)
 
 # Debug mode - set DEBUG=true to write debug files (.txt, .json, .graphml)
 DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
+# Number of iterative JSON repair attempts for malformed LLM outputs
+MAX_JSON_REPAIRS = int(os.environ.get("MAX_JSON_REPAIRS", "4"))
+
 
 # Suppress browser-use logs by redirecting stderr when running from server
 # (browser-use logs go to stderr, we only want JSON on stdout)
@@ -164,49 +167,91 @@ async def extract_text(paper_url: str) -> str:
     return await asyncio.to_thread(_run)
 
 
-async def attempt_json_repair(malformed_text: str, error_msg: str, llm) -> dict | None:
+async def attempt_json_repair(
+    malformed_text: str,
+    error_msg: str,
+    llm,
+    *,
+    max_repairs: int | None = None,
+) -> dict | None:
+    """Attempt to repair malformed JSON by re-prompting the LLM up to `max_repairs` times.
+
+    Each repair attempt uses the previous (faulty) model output as context, along with the
+    most recent parsing/validation error.
     """
-    Attempt to repair malformed JSON by asking the LLM to fix it.
 
-    Args:
-        malformed_text: The original malformed response
-        error_msg: The JSON parsing error message
-        llm: The LLM instance to use for repair
-
-    Returns:
-        Parsed verification result dict, or None if repair failed
-    """
-    print(f"[MAIN.PY DEBUG] Attempting JSON repair via LLM...", file=sys.stderr, flush=True)
-
-    try:
-        repair_prompt = build_json_repair_prompt(malformed_text, error_msg)
-        repair_message = UserMessage(content=repair_prompt)
-
-        # Try with JSON mode if available
-        try:
-            response = await llm.ainvoke(
-                messages=[repair_message],
-                response_format={"type": "json_object"}
-            )
-        except (TypeError, AttributeError):
-            response = await llm.ainvoke(messages=[repair_message])
-
-        repaired_text = response.completion.strip()
-        print(f"[MAIN.PY DEBUG] Repair response (first 200 chars): {repaired_text[:200]}...", file=sys.stderr, flush=True)
-
-        # Try to parse the repaired JSON
-        result = parse_verification_result(repaired_text)
-
-        if result:
-            print(f"[MAIN.PY DEBUG] ✅ JSON repair successful!", file=sys.stderr, flush=True)
-            return result
-        else:
-            print(f"[MAIN.PY DEBUG] ⚠️ JSON repair returned invalid result", file=sys.stderr, flush=True)
-            return None
-
-    except Exception as e:
-        print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed: {e}", file=sys.stderr, flush=True)
+    max_repairs = MAX_JSON_REPAIRS if max_repairs is None else max_repairs
+    max_repairs = max(0, int(max_repairs))
+    if max_repairs == 0:
         return None
+
+    last_text = malformed_text or ""
+    last_err = error_msg or "Unknown JSON parsing/validation error"
+
+    for attempt in range(1, max_repairs + 1):
+        print(
+            f"[MAIN.PY DEBUG] Attempting JSON repair (attempt {attempt}/{max_repairs})...",
+            file=sys.stderr,
+            flush=True,
+        )
+
+        try:
+            repair_prompt = build_json_repair_prompt(
+                last_text,
+                f"{last_err} (repair attempt {attempt}/{max_repairs})",
+            )
+            repair_message = UserMessage(content=repair_prompt)
+
+            # Try structured output if supported
+            try:
+                repair_response = await llm.ainvoke(
+                    messages=[repair_message],
+                    response_format={"type": "json_object"},
+                )
+            except (TypeError, AttributeError):
+                repair_response = await llm.ainvoke(messages=[repair_message])
+
+            repaired_text = getattr(repair_response, "completion", str(repair_response)).strip()
+            verification_result = parse_verification_result(repaired_text)
+            if verification_result:
+                print(
+                    f"[MAIN.PY DEBUG] ✅ JSON repair successful on attempt {attempt}/{max_repairs}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                return verification_result
+
+            # Prepare context for the next attempt: keep the most recent faulty output.
+            last_text = repaired_text
+
+            # Best-effort error message for the next pass.
+            if "{" not in last_text or "}" not in last_text or last_text.rfind("}") <= last_text.find("{"):
+                last_err = "No JSON object delimiters found in the response"
+            else:
+                try:
+                    json.loads(last_text[last_text.find("{"): last_text.rfind("}") + 1])
+                    last_err = "JSON parsed but failed required schema/constraints (missing keys and/or out-of-range metrics)"
+                except json.JSONDecodeError as e:
+                    last_err = str(e)
+                except Exception as e:
+                    last_err = f"{type(e).__name__}: {e}"
+
+            print(
+                f"[MAIN.PY DEBUG] ⚠️ JSON repair attempt {attempt}/{max_repairs} did not yield a valid verification JSON",
+                file=sys.stderr,
+                flush=True,
+            )
+
+        except Exception as e:
+            last_text = last_text[:2000]
+            last_err = f"{type(e).__name__}: {e}"
+            print(
+                f"[MAIN.PY DEBUG] ❌ JSON repair attempt {attempt}/{max_repairs} failed: {e}",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    return None
 
 
 async def create_browser_with_retry(
@@ -1096,8 +1141,12 @@ if __name__ == "__main__":
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
     parser.add_argument("--use-browser-verification", action="store_true", help="Force browser-based verification (slower but visible)")
+    parser.add_argument("--max-json-repairs", type=int, default=MAX_JSON_REPAIRS, help="Number of iterative JSON repair attempts (also settable via env MAX_JSON_REPAIRS)")
 
     args = parser.parse_args()
+
+    MAX_JSON_REPAIRS = int(args.max_json_repairs)
+    os.environ["MAX_JSON_REPAIRS"] = str(MAX_JSON_REPAIRS)
 
     # Validate that either URL or PDF is provided (but not both)
     if not args.url and not args.pdf:

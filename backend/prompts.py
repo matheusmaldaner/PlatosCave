@@ -513,6 +513,57 @@ def parse_fact_dag_json(response_text: str) -> Dict[str, Any] | None:
     except (json.JSONDecodeError, ValueError, KeyError):
         return None
 
+# ============================================================================
+# LLM-ONLY CLAIM VERIFICATION PROMPT (NO EXTERNAL RETRIEVAL)
+# ============================================================================
+
+CLAIM_VERIFICATION_PROMPT_LLM_ONLY = """
+You are verifying the following claim WITHOUT using external browsing or search.
+You MUST rely only on the claim text, the role, and general background knowledge.
+
+Claim role: {claim_role}
+Claim: {claim_text}
+
+Return a JSON object with these EXACT keys:
+- credibility
+- relevance
+- evidence_strength
+- method_rigor
+- reproducibility
+- citation_support
+- sources_checked
+- verification_summary
+- confidence_level
+
+Scoring guidance (0.0 to 1.0):
+- credibility: how plausible/likely true the claim is
+- relevance: how central the claim is to the paper’s hypothesis (estimate from role/claim phrasing)
+- evidence_strength: assume UNKNOWN unless the claim is very standard; be conservative
+- method_rigor: assume UNKNOWN unless claim implies methodology (e.g., “randomized trial”)
+- reproducibility: assume UNKNOWN unless claim is widely established
+- citation_support: set low unless you are confident it’s broadly established
+
+Confidence levels:
+- "high": only if claim is widely-established/common knowledge and uncontroversial
+- "medium": plausible but not fully certain
+- "low": default when uncertain
+- "n/a": only for nodes you were told not to verify
+
+IMPORTANT:
+- sources_checked MUST be an empty list []
+- Output ONLY the JSON object (no markdown, no prose)
+- All metric values must be numbers in [0.0, 1.0]
+- verification_summary MUST be a single line (no literal newlines or tabs)
+- DO NOT use LaTeX or backslashes. Rewrite math as plain words.
+  Example: "$\mathcal{D}$" -> "dataset D"
+- DO NOT include code blocks or markdown
+"""
+
+def build_claim_verification_prompt_llm_only(claim_text: str, claim_role: str) -> str:
+    return CLAIM_VERIFICATION_PROMPT_LLM_ONLY.format(
+        claim_text=claim_text,
+        claim_role=claim_role,
+    )
 
 # ============================================================================
 # CLAIM VERIFICATION PROMPT
@@ -638,7 +689,6 @@ Start your response with {{ and end with }}.
 }}
 """
 
-
 def build_claim_verification_prompt_exa(claim_text: str, claim_role: str, claim_context: str = "") -> str:
     """
     Build the Exa-enhanced prompt for claim verification that forces use of pre-retrieved sources.
@@ -662,91 +712,183 @@ def parse_verification_result(response_text: str) -> Dict[str, Any] | None:
     """
     Parse and validate the verification result from the agent.
 
-    Args:
-        response_text: Raw text response from the verification agent
-
-    Returns:
-        Parsed JSON dict with verification metrics, or None if parsing fails
+    This implementation is intentionally *non-lossy*:
+      - It does NOT globally unescape backslashes/newlines (which can corrupt valid JSON).
+      - It only unwraps repr-like wrappers (completion='...') via ast.literal_eval.
+      - It locally sanitizes common JSON breakages *without* calling the LLM:
+          * illegal backslash escapes inside strings (e.g., \mathcal -> \\mathcal)
+          * literal newlines/tabs inside strings (-> \\n / \\t)
     """
+    import ast
     import json
     import re
 
-    if not response_text:
+    if not response_text or not isinstance(response_text, str):
         return None
+
+    REQUIRED_KEYS = [
+        "credibility",
+        "relevance",
+        "evidence_strength",
+        "method_rigor",
+        "reproducibility",
+        "citation_support",
+        "sources_checked",
+        "verification_summary",
+        "confidence_level",
+    ]
+    METRICS = [
+        "credibility",
+        "relevance",
+        "evidence_strength",
+        "method_rigor",
+        "reproducibility",
+        "citation_support",
+    ]
+
+    def _unwrap_completion_repr(s: str) -> str:
+        """
+        Handle repr-like wrappers, e.g.:
+          completion='{\n  "credibility": ... }' thinking=None usage=...
+        """
+        m = re.search(
+            r"completion\s*=\s*(?P<q>'(?:\\.|[^'])*'|\"(?:\\.|[^\"])*\")",
+            s,
+            re.DOTALL,
+        )
+        if not m:
+            return s
+        q = m.group("q")
+        try:
+            unwrapped = ast.literal_eval(q)
+            return unwrapped if isinstance(unwrapped, str) else s
+        except Exception:
+            return s
+
+    def _unwrap_quoted_json_string(s: str) -> str:
+        """
+        If the whole response is a quoted Python/JSON string containing JSON,
+        literal-eval it once to get the inner JSON text.
+        """
+        t = s.strip()
+        if len(t) >= 2 and t[0] in ("'", '"') and t[-1] == t[0] and "{" in t and "}" in t:
+            try:
+                unwrapped = ast.literal_eval(t)
+                return unwrapped if isinstance(unwrapped, str) else s
+            except Exception:
+                return s
+        return s
+
+    def _escape_control_chars_in_json_strings(s: str) -> str:
+        """
+        JSON disallows literal newlines/tabs inside string literals.
+        Convert control chars inside strings to escaped forms.
+        """
+        out = []
+        in_str = False
+        esc = False
+        for ch in s:
+            if not in_str:
+                out.append(ch)
+                if ch == '"':
+                    in_str = True
+                continue
+
+            # in string
+            if esc:
+                out.append(ch)
+                esc = False
+                continue
+            if ch == "\\":
+                out.append(ch)
+                esc = True
+                continue
+            if ch == '"':
+                out.append(ch)
+                in_str = False
+                continue
+            if ch == "\n":
+                out.append("\\n")
+                continue
+            if ch == "\r":
+                out.append("\\r")
+                continue
+            if ch == "\t":
+                out.append("\\t")
+                continue
+
+            out.append(ch)
+
+        return "".join(out)
+
+    def _escape_illegal_backslashes(s: str) -> str:
+        """
+        Convert illegal JSON escapes like \m or \mathcal into \\m / \\mathcal.
+        Do NOT touch valid escapes: \n \t \r \\ \/ \" \b \f \\uXXXX
+        """
+        return re.sub(r'\\(?!["\\/bfnrtu])', r"\\\\", s)
 
     try:
         working_text = response_text
 
-        # Strategy 1: Handle done(text=json.dumps(...)) pattern from browser agent
-        # The LLM sometimes outputs: await done(text=json.dumps(verification_data), success=True)
-        done_match = re.search(r'done\s*\(\s*text\s*=\s*["\']?(\{.+?\})["\']?\s*[,\)]', working_text, re.DOTALL)
-        if done_match:
-            working_text = done_match.group(1)
+        # Unwrap known wrappers safely (NO global replace of \\n or \\\\).
+        working_text = _unwrap_completion_repr(working_text)
+        working_text = _unwrap_quoted_json_string(working_text)
 
-        # Strategy 2: Extract JSON from markdown code blocks
-        # Handle ```json ... ``` or ``` ... ```
-        code_block_match = re.search(r'```(?:json)?\s*(\{.+?\})\s*```', working_text, re.DOTALL)
-        if code_block_match:
-            working_text = code_block_match.group(1)
-
-        # Strategy 3: Handle double-encoded JSON (escaped quotes like \")
-        if '\\"' in working_text or "\\'" in working_text:
-            try:
-                working_text = working_text.replace('\\"', '"').replace("\\'", "'")
-                working_text = working_text.replace('\\\\', '\\')
-            except Exception:
-                pass
-
-        # Strategy 4: Extract JSON object from surrounding text
+        # Extract JSON object by braces (works even if there is surrounding text).
         json_start = working_text.find("{")
         json_end = working_text.rfind("}")
-
         if json_start == -1 or json_end == -1 or json_end <= json_start:
             return None
 
-        json_str = working_text[json_start:json_end + 1]
+        json_str = working_text[json_start : json_end + 1]
 
-        # Try parsing
-        try:
-            parsed = json.loads(json_str)
-        except json.JSONDecodeError:
-            # If that fails, try with the original text
-            json_str_orig = response_text[response_text.find("{"):response_text.rfind("}") + 1]
+        # Minimal structural fix: trailing commas.
+        json_str = re.sub(r",\s*([}\]])", r"\1", json_str)
+
+        # Deterministic sanitation to prevent Invalid \escape and newline-in-string failures.
+        json_str = _escape_control_chars_in_json_strings(json_str)
+        json_str = _escape_illegal_backslashes(json_str)
+
+        parsed = json.loads(json_str)
+        if not isinstance(parsed, dict):
+            return None
+
+        # Validate required keys exist.
+        for k in REQUIRED_KEYS:
+            if k not in parsed:
+                return None
+
+        # Validate metric ranges.
+        for mkey in METRICS:
             try:
-                parsed = json.loads(json_str_orig)
-            except json.JSONDecodeError:
-                # Last resort: try to fix common JSON issues
-                fixed_json = json_str.replace("'", '"')  # Single quotes to double
-                parsed = json.loads(fixed_json)
+                val = float(parsed[mkey])
+            except Exception:
+                return None
+            if not (0.0 <= val <= 1.0):
+                return None
+            parsed[mkey] = val
 
-        # Validate required fields
-        required_metrics = ["credibility", "relevance", "evidence_strength",
-                           "method_rigor", "reproducibility", "citation_support"]
+        # sources_checked must be list (even if empty)
+        if not isinstance(parsed["sources_checked"], list):
+            return None
 
-        for metric in required_metrics:
-            if metric not in parsed:
-                return None
-            # Convert to float if it's a string number
-            if isinstance(parsed[metric], str):
-                try:
-                    parsed[metric] = float(parsed[metric])
-                except ValueError:
-                    return None
-            if not isinstance(parsed[metric], (int, float)):
-                return None
-            # Ensure value is in [0, 1]
-            if not (0.0 <= parsed[metric] <= 1.0):
-                return None
+        # confidence_level should be a string
+        if not isinstance(parsed["confidence_level"], str):
+            return None
 
         return parsed
 
     except (json.JSONDecodeError, ValueError, KeyError, TypeError) as e:
-        # Log the error for debugging
         import sys
         print(f"[PARSE DEBUG] Failed to parse: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
         print(f"[PARSE DEBUG] Text length: {len(response_text)}", file=sys.stderr, flush=True)
         print(f"[PARSE DEBUG] First 200 chars: {response_text[:200]}", file=sys.stderr, flush=True)
-        print(f"[PARSE DEBUG] Last 200 chars: {response_text[-200:] if len(response_text) > 200 else response_text}", file=sys.stderr, flush=True)
+        print(
+            f"[PARSE DEBUG] Last 200 chars: {response_text[-200:] if len(response_text) > 200 else response_text}",
+            file=sys.stderr,
+            flush=True,
+        )
         return None
 
 
