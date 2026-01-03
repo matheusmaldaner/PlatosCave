@@ -8,6 +8,7 @@ interface XmlGraphViewerProps {
   graphmlData: string | null;
   isDrawerOpen?: boolean;
   activeNodeId?: string | null;
+  edgeUpdates?: Record<string, number>;  // Map of "source->target" to confidence value
   onBrowserClick?: () => void;
 }
 
@@ -199,7 +200,8 @@ const parseGraphML = (xmlString: string, config: LayoutConfig): { nodes: GraphNo
     const target = edgeEl.getAttribute("target")!;
     const dataElements = edgeEl.getElementsByTagName("data");
     const valueText = Array.from(dataElements).find((d) => d.getAttribute("key") === "weight")?.textContent;
-    const value = valueText ? parseFloat(valueText) : 1;
+    const hasWeight = valueText !== null && valueText !== undefined;
+    const value = hasWeight ? parseFloat(valueText) : undefined;
 
     edges.push({
       id: edgeEl.getAttribute("id") || `edge-${source}-${target}-${index}`,
@@ -207,12 +209,13 @@ const parseGraphML = (xmlString: string, config: LayoutConfig): { nodes: GraphNo
       target,
       type: "smoothstep",
       data: { value },
-      label: value.toFixed(2),
-      labelStyle: { fill: brandGreen, fontSize: 11, fontWeight: 600 },
+      // Show actual value if present, otherwise show "—" to indicate pending
+      label: hasWeight ? value!.toFixed(2) : "—",
+      labelStyle: { fill: hasWeight ? brandGreen : "#9CA3AF", fontSize: 11, fontWeight: 600 },
       labelBgStyle: { fill: "white", fillOpacity: 0.7 },
       labelShowBg: true,
       markerEnd: { type: MarkerType.ArrowClosed, color: brandGreen, width: config.markerSize, height: config.markerSize },
-      style: { stroke: brandGreen, strokeWidth: Math.max(1.2, value * 2), opacity: 0.85 },
+      style: { stroke: brandGreen, strokeWidth: hasWeight ? Math.max(1.2, value! * 2) : 1.2, opacity: hasWeight ? 0.85 : 0.5 },
     });
   });
 
@@ -247,6 +250,7 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({
   graphmlData,
   isDrawerOpen = false,
   activeNodeId = null,
+  edgeUpdates = {},
   onBrowserClick
 }) => {
   const [nodes, setNodes] = useState<GraphNode[]>([]);
@@ -293,6 +297,35 @@ const XmlGraphViewer: React.FC<XmlGraphViewerProps> = ({
       setEdges([]);
     }
   }, [graphmlData, layoutConfig, activeNodeId, onBrowserClick]);
+
+  // Apply real-time edge updates as verification progresses
+  useEffect(() => {
+    if (Object.keys(edgeUpdates).length === 0) return;
+
+    setEdges(prevEdges => prevEdges.map(edge => {
+      // Convert node IDs to match the edgeUpdates format
+      // Edge source/target are like "n0", "n1" - need to extract just the number
+      const sourceNum = edge.source.replace('n', '');
+      const targetNum = edge.target.replace('n', '');
+      const edgeKey = `${sourceNum}->${targetNum}`;
+
+      if (edgeUpdates[edgeKey] !== undefined) {
+        const confidence = edgeUpdates[edgeKey];
+        return {
+          ...edge,
+          data: { ...edge.data, value: confidence },
+          label: confidence.toFixed(2),
+          labelStyle: { fill: brandGreen, fontSize: 11, fontWeight: 600 },
+          style: {
+            ...edge.style,
+            strokeWidth: Math.max(1.2, confidence * 2),
+            opacity: 0.85,
+          },
+        };
+      }
+      return edge;
+    }));
+  }, [edgeUpdates]);
 
   const handleSaveGraph = () => {
     if (!graphmlData) return;

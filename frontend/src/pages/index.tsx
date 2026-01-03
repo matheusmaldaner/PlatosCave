@@ -50,6 +50,10 @@ const IndexPage = () => {
   // Force browser viewer to expand (increments to trigger effect)
   const [browserExpandTrigger, setBrowserExpandTrigger] = useState(0);
 
+  // Edge confidence updates (real-time as verification progresses)
+  // Map of "source->target" to confidence value
+  const [edgeUpdates, setEdgeUpdates] = useState<Record<string, number>>({});
+
   // Settings state - only 3 settings that actually work
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
 
@@ -84,6 +88,13 @@ const IndexPage = () => {
         } else if (update.type === "NODE_ACTIVE") {
           // Track which node is currently being verified
           setActiveNodeId(update.node_id || null);
+        } else if (update.type === "EDGE_UPDATE") {
+          // Real-time edge confidence update from verification
+          const edgeKey = `${update.source}->${update.target}`;
+          setEdgeUpdates(prev => ({
+            ...prev,
+            [edgeKey]: update.confidence
+          }));
         } else if (update.type === "DONE") {
           setFinalScore(update.score);
           setIsAnalyzing(false);
@@ -121,6 +132,7 @@ const IndexPage = () => {
     setBrowserNovncUrl(undefined);
     setBrowserCdpUrl(undefined);
     setBrowserCdpWebSocket(undefined);
+    setEdgeUpdates({});
 
     try {
       await axios.post(`${API_URL}/api/upload`, formData);
@@ -143,6 +155,7 @@ const IndexPage = () => {
     setBrowserNovncUrl(undefined);
     setBrowserCdpUrl(undefined);
     setBrowserCdpWebSocket(undefined);
+    setEdgeUpdates({});
 
     try {
       await axios.post(`${API_URL}/api/analyze-url`, {
@@ -233,6 +246,7 @@ const IndexPage = () => {
                 <XmlGraphViewer
                   graphmlData={graphmlData}
                   activeNodeId={activeNodeId}
+                  edgeUpdates={edgeUpdates}
                   onBrowserClick={() => {
                     setIsBrowserOpen(true);
                     setBrowserExpandTrigger(prev => prev + 1);
