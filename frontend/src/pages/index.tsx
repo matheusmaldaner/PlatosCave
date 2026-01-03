@@ -118,6 +118,7 @@ const IndexPage = () => {
     formData.append("maxNodes", settings.maxNodes.toString());
     formData.append("agentAggressiveness", settings.agentAggressiveness.toString());
     formData.append("evidenceThreshold", settings.evidenceThreshold.toString());
+    formData.append("analysisMode", settings.analysisMode);
 
     setProcessSteps(INITIAL_STAGES);
     setFinalScore(null);
@@ -162,6 +163,7 @@ const IndexPage = () => {
         maxNodes: settings.maxNodes,
         agentAggressiveness: settings.agentAggressiveness,
         evidenceThreshold: settings.evidenceThreshold,
+        analysisMode: settings.analysisMode,
       });
     } catch (error) {
       console.error("Error analyzing URL:", error);

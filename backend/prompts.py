@@ -1,4 +1,7 @@
-from typing import Any, Dict
+from typing import Any, Dict, Literal
+
+# Analysis mode type
+AnalysisMode = Literal["academic", "journal", "finance"]
 
 # ============================================================================
 # URL PAPER ANALYSIS PROMPT
@@ -210,22 +213,137 @@ TEXT TO ANALYZE:
 Remember: Output ONLY the JSON object. No explanations, no markdown, no code blocks.
 """
 
+# ============================================================================
+# MODE-SPECIFIC DAG PROMPTS
+# ============================================================================
 
-def build_fact_dag_prompt(raw_text: str, max_nodes: int = 10) -> str:
+# Journal Mode: Optimized for peer-reviewed journal articles
+# Focus on rigorous methodology, statistical analysis, peer review status
+JOURNAL_MODE_ADDITIONS = """
+=== JOURNAL-SPECIFIC ANALYSIS ===
+This is a PEER-REVIEWED JOURNAL ARTICLE. Apply enhanced scrutiny:
+
+ADDITIONAL NODE ROLES FOR JOURNALS:
+- PeerReviewStatus: Indicates journal tier, impact factor, peer review process
+- StatisticalMethod: Specific statistical tests, p-values, confidence intervals
+- ReplicationStatus: Whether findings have been replicated by independent studies
+- ConflictOfInterest: Funding sources, author affiliations, potential biases
+- SampleSize: Sample characteristics, power analysis, population validity
+
+JOURNAL-SPECIFIC EXTRACTION PRIORITIES:
+1. Extract METHODOLOGY with extreme detail (study design, controls, blinding)
+2. Capture ALL statistical claims with exact numbers (p<0.05, CI 95%, effect sizes)
+3. Note peer review status and journal reputation indicators
+4. Flag any conflicts of interest or funding disclosures
+5. Identify replication attempts or meta-analysis references
+6. Extract sample size and demographic information
+
+ENHANCED VALIDATION FOR JOURNALS:
+- Each statistical claim should be its own Evidence node
+- Methodology nodes should specify exact procedures
+- Note any limitations acknowledged by authors
+- Capture both positive AND null results
+"""
+
+# Academic Mode: General academic papers, dissertations, theses, preprints
+# Balanced approach suitable for various academic contexts
+ACADEMIC_MODE_ADDITIONS = """
+=== ACADEMIC PAPER ANALYSIS ===
+This is a GENERAL ACADEMIC DOCUMENT (paper, dissertation, thesis, or preprint).
+
+ACADEMIC-SPECIFIC EXTRACTION PRIORITIES:
+1. Identify the central thesis or research question clearly
+2. Map the logical argument structure from premises to conclusions
+3. Extract key literature citations and how they support arguments
+4. Capture theoretical frameworks and their application
+5. Note any gaps in reasoning or unsupported leaps
+6. Document both qualitative and quantitative evidence
+
+ACADEMIC DOCUMENT CONSIDERATIONS:
+- Preprints: Note lack of peer review, treat claims with appropriate caution
+- Dissertations: Capture committee-approved methodology, literature review scope
+- Theses: Focus on original contribution claims
+- Conference papers: Note venue and acceptance criteria
+
+ACADEMIC VALIDATION FOCUS:
+- Ensure logical consistency between claims
+- Check that conclusions follow from evidence presented
+- Identify any circular reasoning or logical fallacies
+- Map dependency between claims clearly
+"""
+
+# Finance Mode: Financial reports, earnings calls, SEC filings, market analysis
+# Focus on quantitative claims, regulatory compliance, forward-looking statements
+FINANCE_MODE_ADDITIONS = """
+=== FINANCIAL DOCUMENT ANALYSIS ===
+This is a FINANCIAL DOCUMENT (earnings report, SEC filing, investor presentation, or market analysis).
+
+ADDITIONAL NODE ROLES FOR FINANCE:
+- FinancialMetric: Revenue, EBITDA, EPS, margins, growth rates
+- ForwardGuidance: Future projections, guidance ranges, outlook statements
+- RiskFactor: Identified risks, uncertainties, material disclosures
+- RegulatoryCompliance: SEC requirements, GAAP/IFRS compliance notes
+- ComparableAnalysis: Peer comparisons, industry benchmarks
+- ManagementDiscussion: MD&A claims, strategic initiatives
+
+FINANCE-SPECIFIC EXTRACTION PRIORITIES:
+1. Extract ALL quantitative financial metrics with exact figures
+2. Clearly separate HISTORICAL data from FORWARD-LOOKING statements
+3. Identify risk factors and material uncertainties
+4. Note any non-GAAP measures and reconciliations
+5. Capture management's discussion and analysis claims
+6. Flag any significant accounting policy changes
+
+FINANCIAL CLAIM CATEGORIZATION:
+- Audited vs. Unaudited data
+- GAAP vs. Non-GAAP metrics
+- Guidance vs. Actual results
+- One-time items vs. Recurring operations
+
+REGULATORY AWARENESS:
+- Note safe harbor language for forward-looking statements
+- Identify material disclosures required by regulators
+- Flag any restatements or corrections
+- Capture audit opinions and qualifications
+"""
+
+def build_fact_dag_prompt(raw_text: str, max_nodes: int = 10, mode: AnalysisMode = "academic") -> str:
     """
-    Build the complete prompt for fact DAG extraction (current - rich node structure).
+    Build the complete prompt for fact DAG extraction with mode-specific optimizations.
 
     Args:
         raw_text: The academic text to be analyzed and structured
         max_nodes: Maximum number of nodes to extract (default: 10)
+        mode: Analysis mode - "academic" (default), "journal", or "finance"
 
     Returns:
         The complete formatted prompt ready to send to the LLM
     """
-    return FACT_DAG_EXTRACTION_PROMPT.format(
+    # Get mode-specific additions
+    mode_additions = {
+        "academic": ACADEMIC_MODE_ADDITIONS,
+        "journal": JOURNAL_MODE_ADDITIONS,
+        "finance": FINANCE_MODE_ADDITIONS,
+    }
+    
+    mode_specific_text = mode_additions.get(mode, ACADEMIC_MODE_ADDITIONS)
+    
+    # Combine base prompt with mode-specific additions
+    full_prompt = FACT_DAG_EXTRACTION_PROMPT.format(
         raw_text=raw_text.strip(),
         max_nodes=max_nodes
     )
+    
+    # Insert mode-specific additions before the text to analyze
+    insertion_point = full_prompt.find("TEXT TO ANALYZE:")
+    if insertion_point != -1:
+        full_prompt = (
+            full_prompt[:insertion_point] + 
+            mode_specific_text + "\n\n" + 
+            full_prompt[insertion_point:]
+        )
+    
+    return full_prompt
 
 
 def validate_fact_dag_json_deprecated(json_response: Dict[str, Any]) -> bool:
@@ -361,9 +479,16 @@ def validate_fact_dag_json(json_response: Dict[str, Any]) -> bool:
         return False
 
     # Valid roles
+    # Base roles (all modes)
     valid_roles = {
         "Hypothesis", "Conclusion", "Claim", "Evidence", "Method",
-        "Result", "Assumption", "Counterevidence", "Limitation", "Context"
+        "Result", "Assumption", "Counterevidence", "Limitation", "Context",
+        # Journal mode roles
+        "PeerReviewStatus", "StatisticalMethod", "ReplicationStatus", 
+        "ConflictOfInterest", "SampleSize",
+        # Finance mode roles
+        "FinancialMetric", "ForwardGuidance", "RiskFactor",
+        "RegulatoryCompliance", "ComparableAnalysis", "ManagementDiscussion"
     }
 
     # Validate each node
