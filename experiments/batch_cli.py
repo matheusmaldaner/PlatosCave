@@ -34,6 +34,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict, Any, TextIO
 import hashlib
+import requests
 
 
 class TeeWriter:
@@ -82,16 +83,18 @@ def setup_logging(log_file: Optional[str]) -> Optional[TextIO]:
 
     return log_handle
 
-# Add backend directory to path for imports
-backend_dir = Path(__file__).parent.parent / 'backend'
-sys.path.insert(0, str(backend_dir))
+# Add project root to path for imports
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
-# Load .env from backend directory before importing main.py
+# Load .env from backend directory (if present)
 from dotenv import load_dotenv
-load_dotenv(backend_dir / '.env')
+load_dotenv(project_root / 'backend' / '.env')
 
-# Import the analyze_paper function from main.py
-from main import analyze_paper, AnalysisResult
+# NOTE: The legacy analyze_paper / AnalysisResult API is no longer present.
+# Batch experiments now use the factorized offline pipeline.
+from backend.factorized_experiment import run_factorized_resampling_for_pdf
+from backend.llm_client import LLMConfig
 
 
 @dataclass
@@ -198,31 +201,59 @@ async def run_single_analysis(
             if verbose:
                 print(f"    [{stage}] {message}", file=sys.stderr)
 
-        # Run the analysis
-        result = await analyze_paper(
-            url=paper_source if is_url else None,
-            pdf_path=paper_source if not is_url else None,
-            output_dir=str(run_output_dir),
-            agent_aggressiveness=settings.get('agent_aggressiveness', 5),
-            evidence_threshold=settings.get('evidence_threshold', 0.8),
-            progress_callback=progress_callback if verbose else None,
-            save_artifacts=True
+        # Resolve input PDF (preferred workflow is local PDFs; URL mode supports direct PDF URLs)
+        pdf_path = paper_source
+        if is_url:
+            if not (paper_source.lower().startswith('http://') or paper_source.lower().startswith('https://')):
+                raise ValueError(f"Not a valid URL: {paper_source}")
+            if not paper_source.lower().endswith('.pdf'):
+                raise ValueError(
+                    "URL mode in batch_cli currently supports direct PDF URLs only. "
+                    "Use experiments/download_pdfs_from_collection.py to mass-download PDFs first."
+                )
+            pdf_path = str(run_output_dir / "input.pdf")
+            r = requests.get(paper_source, timeout=60)
+            r.raise_for_status()
+            with open(pdf_path, 'wb') as f:
+                f.write(r.content)
+
+        # Run the (offline) factorized pipeline with a single (K=1, M=1) trial.
+        llm_cfg = LLMConfig(
+            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=float(os.environ.get("OPENAI_TEMPERATURE", "0")),
+            max_tokens=None,
         )
+
+        summary = await run_factorized_resampling_for_pdf(
+            pdf_path=str(pdf_path),
+            out_dir=str(run_output_dir),
+            llm_cfg=llm_cfg,
+            k_dags=1,
+            m_node_resamples=1,
+            max_nodes=int(settings.get('max_nodes', 12)),
+            exa_k=int(settings.get('exa_k', 6)),
+            concurrency=int(settings.get('concurrency', 3)),
+            reuse_cached=False,
+        )
+
+        # One trial => mean is the run score.
+        score = float(summary.get("global", {}).get("mean", 0.0))
+        n_success = int(summary.get("global", {}).get("n_success", 0))
 
         duration = time.time() - run_start
 
         if verbose:
-            status = "SUCCESS" if result.success else "FAILED"
-            print(f"  [Run {run_number}] {status} - Score: {result.integrity_score:.3f} ({duration:.1f}s)", file=sys.stderr)
+            status = "SUCCESS" if n_success > 0 else "FAILED"
+            print(f"  [Run {run_number}] {status} - Score: {score:.3f} ({duration:.1f}s)", file=sys.stderr)
 
         return RunResult(
             run_number=run_number,
-            success=result.success,
-            integrity_score=result.integrity_score,
-            graph_details=result.graph_details,
+            success=n_success > 0,
+            integrity_score=score,
+            graph_details=None,
             artifacts_dir=str(run_output_dir),
             duration_seconds=duration,
-            error=result.error,
+            error=None if n_success > 0 else "No successful score produced (see run directory artifacts)",
             timestamp=timestamp
         )
 
@@ -430,10 +461,17 @@ async def run_batch(args):
 
     # Build settings dict
     settings = {
+        # Legacy knobs kept for backwards compatibility with logs/metadata
         'agent_aggressiveness': args.agent_aggressiveness,
         'evidence_threshold': args.evidence_threshold,
+        # Offline pipeline knobs (used)
+        'max_nodes': int(os.environ.get('MAX_NODES', '12')),
+        'exa_k': int(os.environ.get('EXA_K', '6')),
+        'retrieval_mode': str(os.environ.get('RETRIEVAL_MODE', 'llm')),
+        'concurrency': int(os.environ.get('SCORING_CONCURRENCY', '3')),
+        # Batch bookkeeping
         'runs_per_paper': args.runs,
-        'delay_between_runs': args.delay
+        'delay_between_runs': args.delay,
     }
 
     print(f"\nPlato's Cave Batch Analysis", file=sys.stderr)
@@ -526,8 +564,6 @@ Examples (run from project root):
                         help="Agent aggressiveness 1-10 (default: 5)")
     parser.add_argument("--evidence-threshold", type=float, default=0.8,
                         help="Evidence threshold 0.0-1.0 (default: 0.8)")
-    # add the number of nodes 
-    # add the toggle for exa vs strict browser use
 
     # Execution settings
     parser.add_argument("--delay", type=float, default=5.0,
