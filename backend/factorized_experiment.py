@@ -43,6 +43,28 @@ from .prompts import (
     parse_verification_result,
     build_json_repair_prompt,
 )
+from ._perf import timed, PerfWriter
+
+LOG = logging.getLogger(__name__)
+
+def _looks_rate_limited(*, error_type: str = "", error_message: str = "") -> bool:
+    t = (error_type or "").lower()
+    m = (error_message or "").lower()
+
+    # Type-based
+    if "ratelimit" in t or "rate_limit" in t:
+        return True
+
+    # Message-based
+    if "rate limit" in m or "too many requests" in m:
+        return True
+    if "error code: 429" in m:
+        return True
+    # Catch bare 429 mentions
+    if re.search(r"\b429\b", m):
+        return True
+
+    return False
 
 
 REQUIRED_METRICS = (
@@ -379,11 +401,17 @@ async def score_nodes_once(
     retrieval_mode: str = "llm",
     node_concurrency: int = 3,
     max_json_repairs: int = 1,
-) -> Dict[str, Dict[str, Any]]:
+) -> Dict[str, Any]:
     """Score all nodes once (one resample) and return a dict keyed by node_id.
 
-    IMPORTANT: this function now isolates per-node exceptions and aggregates them
-    so debugging doesn't depend on whichever node failed first.
+    Batch runs should produce *some* output even under partial failures (rate limits,
+    transient network errors). Therefore, per-node failures are converted into:
+      - neutral default metrics (0.5 for REQUIRED_METRICS)
+      - an attached error payload per node
+      - a top-level "_errors" list summarizing failures
+
+    Downstream graph scoring ignores non-node keys (it only indexes by node_id),
+    so the extra metadata is safe to persist in node_scores.json.
     """
     nodes = dag_json.get("nodes") or []
     if not isinstance(nodes, list):
@@ -391,42 +419,118 @@ async def score_nodes_once(
 
     sem = asyncio.Semaphore(max(1, int(node_concurrency)))
 
-    async def _run_one(n: Dict[str, Any]):
-        nid = str(n.get("id"))
-        text = str(n.get("text", ""))
-        role = str(n.get("role", ""))
+    async def _run_one(nd: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+        nid = nd.get("id")
+        role = str(nd.get("role") or "")
+        node_text = str(nd.get("text") or "")
         async with sem:
             try:
                 res = await score_single_node_once(
                     llm,
-                    node_id=nid,
-                    node_text=text,
+                    node_id=str(nid),
+                    node_text=node_text,
                     node_role=role,
-                    exa_k=exa_k,
-                    retrieval_mode=retrieval_mode,
-                    max_json_repairs=max_json_repairs,
+                    exa_k=int(exa_k),
+                    retrieval_mode=str(retrieval_mode),
+                    max_json_repairs=int(max_json_repairs),
                 )
-                return nid, res
+
+                # Ensure REQUIRED_METRICS always exist and are numeric
+                base = _default_metrics_for_role(role)
+                for k in REQUIRED_METRICS:
+                    v = res.get(k)
+                    if not isinstance(v, (int, float)):
+                        res[k] = float(base[k])
+                return str(nid), res
+
             except Exception as e:
-                raise NodeScoringError(nid, role, e) from e
+                raise NodeScoringError(node_id=str(nid), role=role, original=e) from e
 
-    results = await asyncio.gather(*[_run_one(n) for n in nodes], return_exceptions=True)
+    tasks = [_run_one(nd) for nd in nodes]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
 
-    out: Dict[str, Dict[str, Any]] = {}
-    errs: List[NodeScoringError] = []
+    out: Dict[str, Any] = {}
+    errors: List[Dict[str, Any]] = []
+    rate_limit_count = 0
+
+    # Fast map for role lookup (for unknown/aggregate exceptions)
+    role_by_id: Dict[str, str] = {str(nd.get("id")): str(nd.get("role") or "") for nd in nodes}
+
     for r in results:
-        if isinstance(r, Exception):
-            if isinstance(r, NodeScoringError):
-                errs.append(r)
-            else:
-                # Should be rare, but keep it visible.
-                errs.append(NodeScoringError(node_id="unknown", role="unknown", original=r))
-        else:
-            nid, res = r
-            out[str(nid)] = res
+        if isinstance(r, tuple) and len(r) == 2:
+            nid, metrics = r
+            out[str(nid)] = metrics
+            continue
 
-    if errs:
-        raise NodeScoringBatchError(errs)
+        if isinstance(r, NodeScoringError):
+            nid = str(r.node_id)
+            role = str(r.role or role_by_id.get(nid, ""))
+            original = getattr(r, "original", r)
+
+            emsg = str(original).replace("\n", " ")
+            if len(emsg) > 600:
+                emsg = emsg[:600] + "…"
+
+            err_type = type(original).__name__
+            is_rl = _looks_rate_limited(error_type=err_type, error_message=emsg)
+            if is_rl:
+                rate_limit_count += 1
+
+            errors.append(
+                {
+                    "node_id": nid,
+                    "role": role,
+                    "error_type": err_type,
+                    "error_message": emsg,
+                    "rate_limited": bool(is_rl),
+                }
+            )
+
+            fallback = _default_metrics_for_role(role)
+            out[nid] = {
+                **fallback,
+                "sources_checked": [],
+                "verification_summary": "Node scoring failed; using neutral defaults.",
+                "confidence_level": "failed",
+                "raw_response": "",
+                "error_type": err_type,
+                "error_message": emsg,
+                "rate_limited": bool(is_rl),
+            }
+
+
+            # Neutral fallback metrics so graph scoring can proceed
+            fallback = _default_metrics_for_role(role)
+            out[nid] = {
+                **fallback,
+                "sources_checked": [],
+                "verification_summary": "Node scoring failed; using neutral defaults.",
+                "confidence_level": "failed",
+                "raw_response": "",
+                "error_type": type(original).__name__,
+                "error_message": emsg,
+            }
+            continue
+
+        # Unexpected exception (should be rare)
+        original = r if isinstance(r, BaseException) else Exception(str(r))
+        emsg = str(original).replace("\n", " ")
+        if len(emsg) > 600:
+            emsg = emsg[:600] + "…"
+        errors.append(
+            {
+                "node_id": "",
+                "role": "",
+                "error_type": type(original).__name__,
+                "error_message": emsg,
+            }
+        )
+
+    # Attach summary metadata (ignored by graph scoring)
+    if errors:
+        out["_error_count"] = int(len(errors))
+        out["_rate_limit_count"] = int(rate_limit_count)
+        out["_errors"] = errors
 
     return out
 
@@ -501,6 +605,7 @@ async def run_factorized_resampling_for_pdf(
     pdf_path: str,
     out_dir: str,
     llm_cfg: LLMConfig,
+    llm_cfg_dag: LLMConfig | None = None,
     retrieval_mode: str = "llm",
     k_dags: int,
     m_node_resamples: int,
@@ -511,9 +616,15 @@ async def run_factorized_resampling_for_pdf(
     max_json_repairs: int = 1,
     reuse_cached: bool = False,
     llm: LLMClient | None = None,
+    llm_dag: LLMClient | None = None,
+    llm_node: LLMClient | None = None,
     paper_id: str | None = None,
     logger: Optional[logging.Logger] = None,
     debug: bool = False,
+    perf: PerfWriter | None = None,
+    run_id: str | None = None,
+    paper_index: int | None = None,
+
 ) -> Dict[str, Any]:
 
     """Run the K×M factorized resampling experiment for one PDF.
@@ -525,10 +636,30 @@ async def run_factorized_resampling_for_pdf(
       - graph_scores.csv
       - summary.json
     """
-    owned_llm = llm is None
-    if owned_llm:
-        llm = LLMClient(llm_cfg)
-    assert llm is not None
+    
+    # LLM wiring / ownership
+    # - If caller provides llm (legacy), it is used for both DAG + node scoring.
+    # - If caller provides llm_dag / llm_node, those override the legacy llm.
+    # - If a client is not provided, we create it from the corresponding config.
+    owned_llm_dag = False
+    owned_llm_node = False
+
+    if llm_dag is None:
+        if llm is not None:
+            llm_dag = llm
+        else:
+            llm_dag = LLMClient(llm_cfg_dag or llm_cfg)
+            owned_llm_dag = True
+
+    if llm_node is None:
+        if llm is not None:
+            llm_node = llm
+        else:
+            llm_node = LLMClient(llm_cfg)
+            owned_llm_node = True
+
+    assert llm_dag is not None
+    assert llm_node is not None
 
     # Best-effort paper_id derivation (keeps outputs traceable even if caller forgets).
     if not paper_id:
@@ -585,8 +716,6 @@ async def run_factorized_resampling_for_pdf(
             traceback_file=(tb_file or None),
         )
 
-
-
     try:
         out = Path(out_dir)
         _ensure_dir(out)
@@ -597,11 +726,23 @@ async def run_factorized_resampling_for_pdf(
 
         # 0) Extract text (cache)
         text_path = out / "extracted_text.txt"
-        if reuse_cached and text_path.exists():
-            raw_text = text_path.read_text(encoding="utf-8", errors="ignore")
+        ctx = {
+            "run_id": run_id or "",
+            "paper_id": paper_id or "",
+            "paper_index": paper_index if paper_index is not None else "",
+        }
+
+        if text_path.exists():
+            with timed(logger, "pdf.text_cache_read", warn_ms=5_000, perf=perf, **ctx):
+                raw_text = text_path.read_text(encoding="utf-8", errors="ignore")
         else:
-            raw_text = extract_text_from_pdf(pdf_path)
-            text_path.write_text(raw_text, encoding="utf-8")
+            with timed(logger, "pdf.extract_text", warn_ms=30_000, perf=perf, **ctx):
+                raw_text = extract_text_from_pdf(pdf_path)
+            with timed(logger, "pdf.text_cache_write", warn_ms=5_000, perf=perf, **ctx):
+                text_path.write_text(raw_text, encoding="utf-8")
+
+        logger.info("pdf.text_stats | chars=%d %s", len(raw_text or ""), f"paper_id={paper_id}")
+
 
         trials: List[TrialResult] = []
         per_dag_scores: Dict[int, List[float]] = {k: [] for k in range(int(k_dags))}
@@ -633,12 +774,13 @@ async def run_factorized_resampling_for_pdf(
             # Generate DAG
             if dag_json is None:
                 try:
-                    dag_json = await extract_dag_once(
-                        llm,
-                        raw_text=raw_text,
-                        max_nodes=int(max_nodes),
-                        max_json_repairs=int(max_json_repairs),
-                    )
+                    with timed(logger, "dag.extract_one", warn_ms=60_000, perf=perf, **ctx, k=k, max_nodes=int(max_nodes), max_json_repairs=int(max_json_repairs)):
+                        dag_json = await extract_dag_once(
+                            llm_dag,
+                            raw_text=raw_text,
+                            max_nodes=int(max_nodes),
+                            max_json_repairs=int(max_json_repairs),
+                        )
                     dag_path.write_text(json.dumps(dag_json, indent=2, ensure_ascii=False), encoding="utf-8")
                 except LLMJsonParseError as e:
                     (dag_dir / f"dag_k{k:03d}_error.txt").write_text(str(e), encoding="utf-8")
@@ -716,14 +858,34 @@ async def run_factorized_resampling_for_pdf(
 
                 if node_results is None:
                     try:
-                        node_results = await score_nodes_once(
-                            llm,
-                            dag_json=dag_json,
-                            exa_k=int(exa_k),
-                            retrieval_mode=str(retrieval_mode),
-                            node_concurrency=int(node_concurrency),
-                            max_json_repairs=int(max_json_repairs),
-                        )
+                        with timed(logger, "nodes.score_once", warn_ms=120_000, perf=perf, **ctx, k=k, m=m, node_concurrency=int(node_concurrency), retrieval_mode=str(retrieval_mode)):
+                            node_results = await score_nodes_once(
+                                llm_node,
+                                dag_json=dag_json,
+                                exa_k=int(exa_k),
+                                retrieval_mode=str(retrieval_mode),
+                                node_concurrency=int(node_concurrency),
+                                max_json_repairs=int(max_json_repairs),
+                            )
+
+                            err_n = int((node_results or {}).get("_error_count") or 0)
+                            rl_n  = int((node_results or {}).get("_rate_limit_count") or 0)
+
+                            if err_n:
+                                # warning if rate-limits involved, info otherwise
+                                if rl_n:
+                                    logger.warning(
+                                        "nodes.score_once.degraded | paper_id=%s k=%d m=%d node_errors=%d rate_limits=%d",
+                                        paper_id, k, m, err_n, rl_n
+                                    )
+                                else:
+                                    logger.info(
+                                        "nodes.score_once.degraded | paper_id=%s k=%d m=%d node_errors=%d rate_limits=%d",
+                                        paper_id, k, m, err_n, rl_n
+                                    )
+
+
+                        ns_path.write_text(json.dumps(node_results, indent=2, ensure_ascii=False), encoding="utf-8")
                     except NodeScoringBatchError as e:
                         # Persist per-node errors for debugging
                         per_k_node_dir = node_dir / f"dag_k{k:03d}"
@@ -837,6 +999,9 @@ async def run_factorized_resampling_for_pdf(
             }
 
         failure_counts = Counter([t.error_stage or "unknown" for t in failures])
+        # Model provenance (handles both legacy single-client and new split-client mode)
+        dag_cfg = getattr(llm_dag, "cfg", None) or (llm_cfg_dag or llm_cfg)
+        node_cfg = getattr(llm_node, "cfg", None) or llm_cfg
 
         summary = {
             "paper_id": str(paper_id),
@@ -847,7 +1012,18 @@ async def run_factorized_resampling_for_pdf(
             "exa_k": int(exa_k),
             "retrieval_mode": str(retrieval_mode),
             "reconcile": reconcile,
-            "llm": {"model": llm_cfg.model, "temperature": float(llm_cfg.temperature)},
+            "llm": {
+                "dag": {
+                    "provider": str(getattr(dag_cfg, "provider", "")),
+                    "model": str(getattr(dag_cfg, "model", "")),
+                    "temperature": float(getattr(dag_cfg, "temperature", 0.0)),
+                },
+                "node": {
+                    "provider": str(getattr(node_cfg, "provider", "")),
+                    "model": str(getattr(node_cfg, "model", "")),
+                    "temperature": float(getattr(node_cfg, "temperature", 0.0)),
+                },
+            },
             "global": _summ_stats(global_scores),
             "per_dag": dag_summaries,
             "node_concurrency": int(node_concurrency),
@@ -865,7 +1041,9 @@ async def run_factorized_resampling_for_pdf(
         return summary
 
     finally:
-        if owned_llm:
-            await llm.aclose()
+        if owned_llm_dag and llm_dag is not None:
+            await llm_dag.aclose()
+        if owned_llm_node and llm_node is not None and llm_node is not llm_dag:
+            await llm_node.aclose()
 
 
