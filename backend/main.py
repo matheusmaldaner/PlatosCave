@@ -16,20 +16,10 @@ from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, buil
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
-from typing import Optional, Callable, Dict, Any
-from dataclasses import dataclass
+from typing import Optional
 import textwrap
 
 load_dotenv()
-
-
-@dataclass
-class AnalysisResult:
-    """Result of a paper analysis for batch processing."""
-    success: bool
-    integrity_score: float
-    graph_details: Optional[Dict[str, float]] = None
-    error: Optional[str] = None
 
 exa_api_key = os.getenv("EXA_API_KEY")
 if not exa_api_key:
@@ -39,6 +29,9 @@ exa = Exa(api_key=exa_api_key)
 
 # Debug mode - set DEBUG=true to write debug files (.txt, .json, .graphml)
 DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
+# Number of iterative JSON repair attempts for malformed LLM outputs
+MAX_JSON_REPAIRS = int(os.environ.get("MAX_JSON_REPAIRS", "4"))
+
 
 # Suppress browser-use logs by redirecting stderr when running from server
 # (browser-use logs go to stderr, we only want JSON on stdout)
@@ -174,49 +167,91 @@ async def extract_text(paper_url: str) -> str:
     return await asyncio.to_thread(_run)
 
 
-async def attempt_json_repair(malformed_text: str, error_msg: str, llm) -> dict | None:
+async def attempt_json_repair(
+    malformed_text: str,
+    error_msg: str,
+    llm,
+    *,
+    max_repairs: int | None = None,
+) -> dict | None:
+    """Attempt to repair malformed JSON by re-prompting the LLM up to `max_repairs` times.
+
+    Each repair attempt uses the previous (faulty) model output as context, along with the
+    most recent parsing/validation error.
     """
-    Attempt to repair malformed JSON by asking the LLM to fix it.
 
-    Args:
-        malformed_text: The original malformed response
-        error_msg: The JSON parsing error message
-        llm: The LLM instance to use for repair
-
-    Returns:
-        Parsed verification result dict, or None if repair failed
-    """
-    print(f"[MAIN.PY DEBUG] Attempting JSON repair via LLM...", file=sys.stderr, flush=True)
-
-    try:
-        repair_prompt = build_json_repair_prompt(malformed_text, error_msg)
-        repair_message = UserMessage(content=repair_prompt)
-
-        # Try with JSON mode if available
-        try:
-            response = await llm.ainvoke(
-                messages=[repair_message],
-                response_format={"type": "json_object"}
-            )
-        except (TypeError, AttributeError):
-            response = await llm.ainvoke(messages=[repair_message])
-
-        repaired_text = response.completion.strip()
-        print(f"[MAIN.PY DEBUG] Repair response (first 200 chars): {repaired_text[:200]}...", file=sys.stderr, flush=True)
-
-        # Try to parse the repaired JSON
-        result = parse_verification_result(repaired_text)
-
-        if result:
-            print(f"[MAIN.PY DEBUG] ✅ JSON repair successful!", file=sys.stderr, flush=True)
-            return result
-        else:
-            print(f"[MAIN.PY DEBUG] ⚠️ JSON repair returned invalid result", file=sys.stderr, flush=True)
-            return None
-
-    except Exception as e:
-        print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed: {e}", file=sys.stderr, flush=True)
+    max_repairs = MAX_JSON_REPAIRS if max_repairs is None else max_repairs
+    max_repairs = max(0, int(max_repairs))
+    if max_repairs == 0:
         return None
+
+    last_text = malformed_text or ""
+    last_err = error_msg or "Unknown JSON parsing/validation error"
+
+    for attempt in range(1, max_repairs + 1):
+        print(
+            f"[MAIN.PY DEBUG] Attempting JSON repair (attempt {attempt}/{max_repairs})...",
+            file=sys.stderr,
+            flush=True,
+        )
+
+        try:
+            repair_prompt = build_json_repair_prompt(
+                last_text,
+                f"{last_err} (repair attempt {attempt}/{max_repairs})",
+            )
+            repair_message = UserMessage(content=repair_prompt)
+
+            # Try structured output if supported
+            try:
+                repair_response = await llm.ainvoke(
+                    messages=[repair_message],
+                    response_format={"type": "json_object"},
+                )
+            except (TypeError, AttributeError):
+                repair_response = await llm.ainvoke(messages=[repair_message])
+
+            repaired_text = getattr(repair_response, "completion", str(repair_response)).strip()
+            verification_result = parse_verification_result(repaired_text)
+            if verification_result:
+                print(
+                    f"[MAIN.PY DEBUG] ✅ JSON repair successful on attempt {attempt}/{max_repairs}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                return verification_result
+
+            # Prepare context for the next attempt: keep the most recent faulty output.
+            last_text = repaired_text
+
+            # Best-effort error message for the next pass.
+            if "{" not in last_text or "}" not in last_text or last_text.rfind("}") <= last_text.find("{"):
+                last_err = "No JSON object delimiters found in the response"
+            else:
+                try:
+                    json.loads(last_text[last_text.find("{"): last_text.rfind("}") + 1])
+                    last_err = "JSON parsed but failed required schema/constraints (missing keys and/or out-of-range metrics)"
+                except json.JSONDecodeError as e:
+                    last_err = str(e)
+                except Exception as e:
+                    last_err = f"{type(e).__name__}: {e}"
+
+            print(
+                f"[MAIN.PY DEBUG] ⚠️ JSON repair attempt {attempt}/{max_repairs} did not yield a valid verification JSON",
+                file=sys.stderr,
+                flush=True,
+            )
+
+        except Exception as e:
+            last_text = last_text[:2000]
+            last_err = f"{type(e).__name__}: {e}"
+            print(
+                f"[MAIN.PY DEBUG] ❌ JSON repair attempt {attempt}/{max_repairs} failed: {e}",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    return None
 
 
 async def create_browser_with_retry(
@@ -301,7 +336,7 @@ async def create_browser_with_retry(
     raise Exception(f"Unexpected error in browser connection retry logic: {last_error}")
 
 
-def dag_to_graphml(dag_json: dict, verification_results: dict = None, edge_confidences: dict = None) -> str:
+def dag_to_graphml(dag_json: dict, verification_results: dict = None) -> str:
     """
     Convert DAG JSON structure to GraphML XML format for frontend visualization.
 
@@ -313,7 +348,6 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None, edge_confi
                   - parents: list[int] or null
                   - children: list[int] or null
         verification_results: Optional dict mapping node_id -> verification metrics
-        edge_confidences: Optional dict mapping "source_id->target_id" string -> confidence float
 
     Returns:
         GraphML XML string ready for XmlGraphViewer component
@@ -331,7 +365,6 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None, edge_confi
         <key id="d8" for="node" attr.name="citation_support" attr.type="double" />
         <key id="d9" for="node" attr.name="verification_summary" attr.type="string" />
         <key id="d10" for="node" attr.name="confidence_level" attr.type="string" />
-        <key id="weight" for="edge" attr.name="weight" attr.type="double" />
         <graph edgedefault="directed">""")
 
     graphml_footer = """  </graph>
@@ -370,16 +403,6 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None, edge_confi
     </node>"""
         nodes_xml.append(node_xml)
 
-    # Helper to generate edge XML with optional weight
-    def make_edge_xml(source_id: int, target_id: int) -> str:
-        edge_key = f"{source_id}->{target_id}"
-        if edge_confidences and edge_key in edge_confidences:
-            weight = edge_confidences[edge_key]
-            return f'    <edge source="n{source_id}" target="n{target_id}">\n      <data key="weight">{weight:.4f}</data>\n    </edge>'
-        else:
-            # No weight available yet - omit the data element so frontend defaults appropriately
-            return f'    <edge source="n{source_id}" target="n{target_id}" />'
-
     # Build edges from both children and parents arrays to ensure completeness
     for node in dag_json["nodes"]:
         node_id = node['id']
@@ -390,7 +413,7 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None, edge_confi
                 edge_pair = (node_id, child_id)
                 if edge_pair not in edges_set:
                     edges_set.add(edge_pair)
-                    edges_xml.append(make_edge_xml(node_id, child_id))
+                    edges_xml.append(f'    <edge source="n{node_id}" target="n{child_id}" />')
 
         # Add edges from parents array (parent → child, but we're the child)
         if node['parents'] is not None:
@@ -398,7 +421,7 @@ def dag_to_graphml(dag_json: dict, verification_results: dict = None, edge_confi
                 edge_pair = (parent_id, node_id)
                 if edge_pair not in edges_set:
                     edges_set.add(edge_pair)
-                    edges_xml.append(make_edge_xml(parent_id, node_id))
+                    edges_xml.append(f'    <edge source="n{parent_id}" target="n{node_id}" />')
 
     # Combine all parts
     graphml_content = graphml_header + "\n" + "\n".join(nodes_xml) + "\n" + "\n".join(edges_xml) + "\n" + graphml_footer
@@ -1000,26 +1023,11 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
             print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
             send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
 
-            # Re-send GraphML with verification metrics and edge confidences embedded
+            # Re-send GraphML with verification metrics embedded
             print(f"[MAIN.PY DEBUG] Re-generating GraphML with verification metrics", file=sys.stderr, flush=True)
-
-            # Extract edge confidences from KGScorer
-            edge_confidences = {}
-            try:
-                edge_features = kg_scorer.export_edge_features()
-                for ef in edge_features:
-                    # Convert node IDs to match DAG format (remove 'n' prefix if present)
-                    u = ef['u'].replace('n', '') if isinstance(ef['u'], str) else str(ef['u'])
-                    v = ef['v'].replace('n', '') if isinstance(ef['v'], str) else str(ef['v'])
-                    # Use confidence (final gated value) rather than confidence_raw
-                    edge_confidences[f"{u}->{v}"] = ef['confidence']
-                print(f"[MAIN.PY DEBUG] Extracted {len(edge_confidences)} edge confidences", file=sys.stderr, flush=True)
-            except Exception as e:
-                print(f"[MAIN.PY DEBUG] Warning: Could not extract edge confidences: {e}", file=sys.stderr, flush=True)
-
-            graphml_with_metrics = dag_to_graphml(dag_json, verification_results, edge_confidences)
+            graphml_with_metrics = dag_to_graphml(dag_json, verification_results)
             send_graph_data(graphml_with_metrics)
-            print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics and edge weights", file=sys.stderr, flush=True)
+            print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics", file=sys.stderr, flush=True)
 
             # Send final score
             print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
@@ -1125,167 +1133,6 @@ async def main(url=None, pdf_path=None, max_nodes=10, use_browser_verification=F
     # all the data is being stored in temp md files
     # TODO: save the finalized md file so it is not temp
 
-
-async def analyze_paper(
-    url: Optional[str] = None,
-    pdf_path: Optional[str] = None,
-    output_dir: Optional[str] = None,
-    agent_aggressiveness: int = 5,
-    evidence_threshold: float = 0.8,
-    progress_callback: Optional[Callable[[str, str], None]] = None,
-    save_artifacts: bool = False,
-    max_nodes: int = 10,
-    use_browser_verification: bool = False
-) -> AnalysisResult:
-    """
-    Analyze a research paper and return structured results.
-
-    This is a wrapper function for batch processing that captures results
-    instead of streaming them to stdout.
-
-    Args:
-        url: URL to analyze (mutually exclusive with pdf_path)
-        pdf_path: Path to local PDF file (mutually exclusive with url)
-        output_dir: Directory to save artifacts (optional)
-        agent_aggressiveness: Number of verification agents (unused, for future)
-        evidence_threshold: Evidence quality threshold (unused, for future)
-        progress_callback: Optional callback for progress updates
-        save_artifacts: Whether to save intermediate files
-        max_nodes: Maximum nodes in the knowledge graph
-        use_browser_verification: Force browser-based verification
-
-    Returns:
-        AnalysisResult with success status, integrity score, and details
-    """
-    # Validate input
-    if not url and not pdf_path:
-        return AnalysisResult(
-            success=False,
-            integrity_score=0.0,
-            error="Either url or pdf_path must be provided"
-        )
-    if url and pdf_path:
-        return AnalysisResult(
-            success=False,
-            integrity_score=0.0,
-            error="Cannot process both URL and PDF at the same time"
-        )
-
-    is_pdf_mode = pdf_path is not None
-    browser = None
-
-    # Optionally enable debug mode for artifact saving
-    original_debug = os.environ.get('DEBUG', 'false')
-    if save_artifacts and output_dir:
-        os.environ['DEBUG'] = 'true'
-        # Change to output directory so artifacts are saved there
-        original_cwd = os.getcwd()
-        os.makedirs(output_dir, exist_ok=True)
-        os.chdir(output_dir)
-
-    try:
-        # Stage 1: Initialize browser and LLM
-        if progress_callback:
-            progress_callback("Validate", "Initializing browser and LLM...")
-        browser, llm = await stage_one(browser, is_pdf_mode, url, pdf_path)
-
-        # Stage 2: Extract content
-        if progress_callback:
-            progress_callback("Decomposing PDF", "Extracting content...")
-        valid, extracted_text = await stage_two(
-            browser=browser, llm=llm, is_pdf_mode=is_pdf_mode,
-            url=url, pdf_path=pdf_path
-        )
-        if not valid:
-            return AnalysisResult(
-                success=False,
-                integrity_score=0.0,
-                error="Failed to extract content from paper"
-            )
-
-        # Stage 3: Build DAG
-        if progress_callback:
-            progress_callback("Building Logic Tree", "Analyzing paper structure...")
-        dag_json, dag_json_str = await stage_three(
-            extracted_text=extracted_text, llm=llm, max_nodes=max_nodes
-        )
-
-        # Stages 4-6: Verification and scoring
-        # We need to capture the score instead of sending it to stdout
-        # Run verification similar to frontend_vis_chat_verification but capture result
-
-        if progress_callback:
-            progress_callback("Compiling Evidence", "Verifying claims...")
-
-        # Convert DAG JSON to GraphML
-        graphml_output = dag_to_graphml(dag_json)
-
-        # Collect nodes for verification
-        nodes_to_verify = [
-            node for node in dag_json["nodes"]
-            if node["role"] != "Hypothesis"
-        ]
-
-        # Set default scores for Hypothesis nodes
-        verification_results = {}
-        for hyp_node in [n for n in dag_json["nodes"] if n["role"] == "Hypothesis"]:
-            verification_results[str(hyp_node["id"])] = {
-                "credibility": 0.75,
-                "relevance": 1.0,
-                "evidence_strength": 0.5,
-                "method_rigor": 0.5,
-                "reproducibility": 0.5,
-                "citation_support": 0.5
-            }
-
-        # Verify each node
-        browser_needs_reset = False
-        for idx, node in enumerate(nodes_to_verify, start=1):
-            node_id = str(node["id"])
-            if progress_callback:
-                progress_callback("Compiling Evidence", f"Verifying {idx}/{len(nodes_to_verify)}: {node['text'][:50]}...")
-            verification_results[node_id] = await node_verification(
-                idx, node, nodes_to_verify, browser_needs_reset,
-                browser, llm, use_browser_verification
-            )
-
-        # Run verification pipeline for scoring
-        if progress_callback:
-            progress_callback("Evaluating Integrity", "Calculating final score...")
-
-        kg_scorer, verification_summary = run_verification_pipeline(
-            dag_json=dag_json,
-            verification_results=verification_results,
-            send_update_fn=None
-        )
-
-        integrity_score = verification_summary['graph_score']
-        graph_details = verification_summary.get('graph_details', {})
-
-        return AnalysisResult(
-            success=True,
-            integrity_score=integrity_score,
-            graph_details=graph_details,
-            error=None
-        )
-
-    except Exception as e:
-        import traceback
-        error_msg = f"{str(e)}\n{traceback.format_exc()}"
-        return AnalysisResult(
-            success=False,
-            integrity_score=0.0,
-            error=error_msg
-        )
-
-    finally:
-        await clean_up(browser)
-        # Restore original state
-        if save_artifacts and output_dir:
-            os.environ['DEBUG'] = original_debug
-            os.chdir(original_cwd)
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze research papers from URL or PDF file.")
     parser.add_argument("--url", type=str, help="URL to analyze (e.g., arXiv paper)")
@@ -1294,8 +1141,12 @@ if __name__ == "__main__":
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
     parser.add_argument("--use-browser-verification", action="store_true", help="Force browser-based verification (slower but visible)")
+    parser.add_argument("--max-json-repairs", type=int, default=MAX_JSON_REPAIRS, help="Number of iterative JSON repair attempts (also settable via env MAX_JSON_REPAIRS)")
 
     args = parser.parse_args()
+
+    MAX_JSON_REPAIRS = int(args.max_json_repairs)
+    os.environ["MAX_JSON_REPAIRS"] = str(MAX_JSON_REPAIRS)
 
     # Validate that either URL or PDF is provided (but not both)
     if not args.url and not args.pdf:
