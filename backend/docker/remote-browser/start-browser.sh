@@ -117,13 +117,3 @@ while true; do
   
   sleep 5
 done
-```
-
-### 2. Additional Chrome stability flags
-
-I added these flags which help with long-running automation:
-```
---disable-background-timer-throttling
---disable-backgrounding-occluded-windows
---disable-renderer-backgrounding
---disable-hang-monitor
