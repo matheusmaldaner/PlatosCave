@@ -4,10 +4,8 @@
  *A Human-Centered Agentic System for Validating Research Papers*
 
 [![1st Place](https://img.shields.io/badge/⭐%201st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
-[![License](https://img.shields.io/badge/license-Research%20Use%20Only-red.svg)](LICENSE.md)
-[![Commercial License](https://img.shields.io/badge/commercial%20license-contact%20author-blue.svg)](mailto:mkunzlermaldaner@ufl.edu)
+[![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/)
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
-![Patent Pending](https://img.shields.io/badge/⚖️%20Patent-Pending-orange)
 
 </div>
 
@@ -123,18 +121,6 @@ docker compose -f docker-compose.browser.yaml up --build remote-browser
 ```
 
 Once you have all three separate terminals running, you can access the application at `http://localhost:8000`
-
-## 🧩 Tech Stack
-
-
-| Component         | Technology            |
-| ----------------- | --------------------- |
-| 🖼️ Frontend      | Gatsby.js             |
-| 🧠 Backend        | Python (FastAPI)      |
-| 🌐 Web Automation | Playwright + Chromium |
-| 🤖 AI Integration | Browser-Use API       |
-| 🐳 Environment    | Docker                |
-
 
 
 <hr style="border: 0.5px solid #e5e5e5; margin: 20px 0;">
