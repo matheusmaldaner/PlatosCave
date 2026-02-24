@@ -125,19 +125,7 @@ Once you have all three separate terminals running, you can access the applicati
 
 <hr style="border: 0.5px solid #e5e5e5; margin: 20px 0;">
 
-## 🔢 Scoring Mathematics Located [Here](https://github.com/matheusmaldaner/PlatosCave/blob/main/graph_app/README.md)
-
----
-
-## 📜 License
-
-**Copyright © 2025 Matheus Kunzler Maldaner. All Rights Reserved.**
-
-This project is licensed under the **Plato's Cave Research and Academic Use License**.
-
-### 📄 Full License
-
-See [LICENSE.md](./LICENSE.md) for complete terms and conditions.
+## 🔢 Full Details Of The Math Can Be Found [Here](https://github.com/matheusmaldaner/PlatosCave/blob/main/graph_app/README.md)
 
 ### 📚 Citation
 
