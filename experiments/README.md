@@ -62,12 +62,30 @@ python -m experiments.factorized_collection_cli \
 
 Outputs:
 
-- `runs/factorized_001/summary.csv` — one row per paper (mean/std/min/max)
-- `runs/factorized_001/summary_by_dag.csv` — per-DAG statistics (aggregated across node resamples)
-- `runs/factorized_001/good_vs_bad_eval.json` — if the spreadsheet has `Rating` values like `Good`/`Bad`
+- `runs/factorized_001/papers_summary.csv` — one row per paper (status + global score stats)
 - Per-paper artifact folders with:
   - `extracted_text.txt`
-  - `dag_kXXX.json` + `dag_kXXX_validation.json`
-  - `node_scores_kXXX_mYYY.json`
+  - `dag/dag_kXXX.json` + `dag/dag_kXXX_validation.json`
+  - `node_scores/dag_kXXX/node_scores_mYYY.json`
   - `graph_scores.csv`
-  - `graph_score_kde.png`
+  - `summary.json`
+  - `record.json`
+
+## Offline ablation studies from cached runs
+
+The ablation scripts run fully offline from cached factorized artifacts (no new
+LLM calls):
+
+```bash
+python -m experiments.ablation_studies_cli \
+  --runs-root runs/factorized_001 \
+  --out-root runs/ablation_studies \
+  --studyIDs 1,2,3,4,5,6 \
+  --reuse-cache
+```
+
+Inspect available studies/variants:
+
+```bash
+python -m experiments.ablation_studies_cli --list-studies
+```
