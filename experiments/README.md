@@ -39,6 +39,15 @@ runtime-relevant code paths are:
 
 ## Typical workflow
 
+0) Configure an LLM provider key (required to generate new cached runs):
+
+```bash
+# choose one
+export OPENAI_API_KEY=...
+# or
+export BROWSER_USE_API_KEY=...
+```
+
 1) Download PDFs:
 
 ```bash
@@ -58,6 +67,18 @@ python -m experiments.factorized_collection_cli \
   --k-dags 5 \
   --m-node 3 \
   --max-nodes 12
+```
+
+Small smoke run (recommended first to build cache quickly):
+
+```bash
+python -m experiments.factorized_collection_cli \
+  --collection-xlsx "Paper collection.xlsx" \
+  --pdf-root "data/pdfs" \
+  --out-root "runs/factorized_smoke" \
+  --k-dags 2 \
+  --m-node 2 \
+  --max-nodes 10
 ```
 
 Outputs:
@@ -89,3 +110,44 @@ Inspect available studies/variants:
 ```bash
 python -m experiments.ablation_studies_cli --list-studies
 ```
+
+## Hyperparameter tuning study (cache-first)
+
+This repo uses a cache-first ablation study to tune scorer hyperparameters
+without making new LLM calls. We run studies over cached factorized outputs and
+compare variants using `study_variant_summary.csv` for each study.
+
+Tuning command used:
+
+```bash
+python -m experiments.ablation_studies_cli \
+  --runs-root runs/factorized_collection \
+  --out-root runs/ablation_studies \
+  --studyIDs 3,4,5 \
+  --reuse-cache \
+  --verbose
+```
+
+Study coverage:
+
+- Study 3 (`edge_feature_ablation`): edge feature weights and priors
+- Study 4 (`propagation_ablation`): trust propagation settings (`agg`, `alpha`, `eta`)
+- Study 5 (`graph_component_ablation`): graph-head component weights
+
+Selected default settings (kept in code after tuning):
+
+- `EdgeCombineWeights` in `graph_app/kg_realtime_scoring.py`:
+  `role_prior=0.30`, `parent_quality=0.20`, `child_quality=0.20`,
+  `alignment=0.10`, `synergy=0.20`
+- `PropagationPenalty`:
+  `enabled=True`, `agg="min"`, `alpha=1.0`, `eta=2**(-1/8)`,
+  `softmin_beta=6.0`, `dampmin_lambda=0.35`
+- `GraphScoreWeights`:
+  `bridge_coverage=0.25`, `best_path=0.25`, `redundancy=0.15`,
+  `fragility=-0.15`, `coherence=0.10`, `coverage=0.10`
+
+Outputs to inspect:
+
+- `runs/ablation_studies/study_03_edge_feature_ablation/study_variant_summary.csv`
+- `runs/ablation_studies/study_04_propagation_ablation/study_variant_summary.csv`
+- `runs/ablation_studies/study_05_graph_component_ablation/study_variant_summary.csv`

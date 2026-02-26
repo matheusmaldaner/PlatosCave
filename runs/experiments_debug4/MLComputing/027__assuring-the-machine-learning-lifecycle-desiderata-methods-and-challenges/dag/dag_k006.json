@@ -1,0 +1,158 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning components can be assured for use in safety-critical systems by generating evidence across the entire machine learning lifecycle",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        14
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The machine learning lifecycle comprises four stages relevant to assurance: Data Management, Model Learning, Model Verification, and Model Deployment",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        5,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data Management should produce training and verification data sets that satisfy four assurance desiderata: Relevant, Complete, Balanced, and Accurate",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data Management activities that support those desiderata include collection, preprocessing (including labelling and feature engineering), augmentation, and exploratory analysis",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Open challenges for Data Management include detecting data backdoors, demonstrating synthetic data represents the operational domain, detecting data leakage, measuring completeness for operational/failure/adversarial domains, finding small disjuncts and feature imbalance effects, ensuring consistency of human-collected labels, and verifying complex simulations",
+      "role": "Limitation",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Model Learning should produce models that are Performant, Robust, Reusable, and Interpretable for the intended operational context",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Model Learning methods that support those desiderata include model selection, training with validation and cross-validation, hyperparameter tuning, regularization and early stopping, data augmentation, ensemble learning, transfer learning and use of model zoos",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Open challenges in Model Learning include choosing performance measures representing operational context, multi-objective run-time evaluation, informing hyperparameter tuning from context, understanding hyperparameter impacts, decoupling perturbation effects on robustness, contextual robustness inference, identifying similar operational contexts for transfer, and ensuring transferred models are fault-free and globally interpretable",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Model Verification must produce evidence that is Comprehensive (covers requirements, data and model concerns), Contextually Relevant (maps to real-world aspects), and Comprehensible (understandable and actionable)",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Verification methods include requirement encoding into tests and formal properties, test-based verification (including simulation, fuzzing, combinatorial testing and context-driven synthetic tests), and formal techniques (SMT solvers, abstract interpretation) with model-specific verifiers where available",
+      "role": "Method",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Open verification challenges include detecting and protecting against typical ML errors, defining meaningful coverage measures for data and models, extending formal verification beyond neural networks, mapping requirements to model features and reinforcement learning states, creating general synthetic test generation frameworks, and producing comprehensible counterexamples that guide remediation",
+      "role": "Limitation",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Model Deployment must ensure a deployed model is Fit-for-Purpose in its system context, Tolerated by the system (so occasional incorrect outputs are handled), and Adaptable (supporting safe updates and fleet management)",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Deployment methods include integration practices (on-target testing, numerical precision consistency, WCET assessment), monitoring (inputs, environment, model internals, outputs), aggregation/monitoring architectures to tolerate errors, and update management approaches (safe-state updates, dual-channel rollouts, hot code loading)",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Open deployment challenges include timely detection of distribution shift (especially in high-dimensional spaces), defining what to record for incident investigation, providing reliable model confidence measures, designing suitably flexible safety monitors and aggregators, understanding independence among models trained on the same data, and controlling fleet-wide diversity during updates",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Survey conclusion: existing methods cover many assurance needs but significant, cross-stage research gaps remain; addressing these gaps requires integrating data, learning, verification and deployment methods to produce compelling assurance cases for safety-critical ML",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        1
+      ],
+      "children": null
+    }
+  ]
+}

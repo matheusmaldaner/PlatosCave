@@ -1,0 +1,161 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree-based machine learning model can classify and predict diabetes status of patients using the Pima Indians Diabetes dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Diabetes is a prevalent global health problem with rising incidence and mortality, motivating automated diagnostic tools",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We implemented a binary decision tree classifier using Python (Pandas, Scikit-learn) in the Spyder environment to build the diagnostic model",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The Pima Indians Diabetes DataBase (768 instances, 9 attributes) was used as the dataset to train and test the decision tree model",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Data preprocessing removed rows with implausible zero values for Glucose, BloodPressure and BMI (35 samples) before model training",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The model training procedure: load data, split into training and testing sets, train DecisionTreeClassifier, predict, compute accuracy, classification report, confusion matrix, and visualize the tree",
+      "role": "Method",
+      "parents": [
+        2,
+        4,
+        3
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Decision tree split criteria considered include entropy, Gini index and classification error as measures of node heterogeneity and information gain",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Three experiments were performed with different train/test splits: 70/30, 50/50 and 30/70",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experimental results show varying accuracy depending on train/test split; the best reported accuracy among experiments was 0.71 for the 50% training / 50% testing split",
+      "role": "Result",
+      "parents": [
+        5,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "An observed pattern in these experiments is interpreted as: allocating more data for training generally improves the accuracy estimate",
+      "role": "Claim",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Feature inspection indicates some attributes have greater impact on classification and some features contain outliers requiring cleaning, which affects classifier performance",
+      "role": "Claim",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Decision tree analysis is a viable predictive modeling tool for diabetes classification with fast learning, intuitive rule generation, nonparametric modeling and competitive prediction accuracy; for this study the 50/50 split yielded accuracy 0.71",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Model outputs require subsequent clinical consultation and more accurate diagnosis by a doctor; some dataset features may be unavailable to users, reducing practical system value",
+      "role": "Limitation",
+      "parents": [
+        11,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

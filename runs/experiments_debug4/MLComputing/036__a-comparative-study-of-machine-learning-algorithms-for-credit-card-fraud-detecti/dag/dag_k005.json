@@ -1,0 +1,182 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning algorithms can be used to detect fraudulent credit card transactions and a comparative evaluation can identify the most effective algorithm for a European cardholder dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The dataset is highly imbalanced: 284,807 transactions from European cardholders with only 0.172 percent labeled as fraud",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Key challenges are class imbalance (very few fraud cases) and operational trade-offs between false positives and false negatives for deployed systems",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data preprocessing used SMOTE to generate synthetic minority-class samples to address class imbalance before model training",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Four supervised algorithms were implemented and compared: Random Forest, Decision Tree, AdaBoost (with decision trees as weak learners), and Gradient Boosting; feature selection and hyperparameter tuning were mentioned as applicable techniques",
+      "role": "Method",
+      "parents": [
+        0,
+        1,
+        3
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Models were evaluated using accuracy, precision, recall, F1 score, ROC AUC, and precision-recall AUC derived from confusion matrices",
+      "role": "Method",
+      "parents": [
+        0,
+        1,
+        3
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Random Forest obtained the best overall balance: accuracy 0.999415, precision 0.857143, recall 0.825000, F1 score 0.840764, ROC AUC around 91.24, and precision-recall AUC about 0.841235",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Decision Tree showed moderate recall (0.8125) but low precision (0.3504) and low F1 (0.4896), indicating many false positives and a higher rate of misclassifying legitimate transactions",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "AdaBoost and Gradient Boosting achieved high recall (0.9000 and 0.90625 respectively) but very low precision (0.09619 and 0.11741) and low F1 scores (0.1738 and 0.2079), implying they flag many legitimate transactions as fraud",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Confusion matrix counts reported: Random Forest TP 132 TN 85265 FP 18 FN 28; Decision Tree TP 130 TN 85042 FP 241 FN 30; AdaBoost TP 144 TN 83897 FP 1386 FN 16; Gradient Boosting TP 143 TN 84239 FP 1044 FN 17",
+      "role": "Evidence",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Trade-off observation: algorithms with higher recall (AdaBoost, Gradient Boosting) reduce missed frauds but at the cost of many more false positives; Random Forest provides a better precision-recall balance reducing false alarms",
+      "role": "Claim",
+      "parents": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Random Forest is the most reliable and balanced model for this skewed credit card fraud dataset among the tested methods, minimizing both false positives and false negatives",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        6
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Study used a single public European dataset and synthetic oversampling (SMOTE), which may limit generalizability to other populations or real-world deployment without further validation",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Future directions proposed: further feature engineering, real-time/online detection and low-latency deployment, transfer learning with pre-trained models, and applying explainability methods such as LIME and SHAP",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    }
+  ]
+}

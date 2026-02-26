@@ -1,0 +1,167 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.95,
+    "relevance": 0.95,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Dropout is described as training with independent Bernoulli masks that remove units, creating a thinned subnetwork on each presentation.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.75,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the standard dropout test time scaling concept to approximate an ensemble of thinned networks, though the specific statement about scaling outgoing weights rather than activations is a minor variation but plausible in principle.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.5,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible SGD based training procedure for thinned networks with minibatch gradient averaging and optional max-norm constraints, plus aggressive hyperparameters; without further context its novelty and exact implementation are uncertain.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.7,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "max-norm regularization is a known technique that constrains the incoming weight vectors to a unit per hidden unit and can stabilize training; claim about improving SGD with dropout and allowing larger learning rates is plausible but not universally established in a single source",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.5,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim posits that Monte Carlo averaging over about fifty sampled networks yields a close match to a scaled-weight approximation on MNIST, which aligns with a plausible scaling heuristic but remains uncertain without broader empirical validation.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Dropout is claimed to substantially lower test error across domains and achieve state of the art on benchmarks such as MNIST SVHN CIFAR and ImageNet according to the provided text",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based on plausible dropout and max-norm improvements across standard datasets; no external sources consulted",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.58,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general intuition that dropout reduces co-adaptations and may encourage more interpretable first layer features and sparse activations, but evidence is mixed and depends on model and data.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.55,
+    "relevance": 0.65,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given known effects of dropout on sparsity and feature localization in unsupervised models, but lacks direct, universally accepted empirical confirmation within the claim text.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with standard interpretations of dropout as model averaging and Bayesian view; linear regression marginalization leading to a ridge-like penalty is plausible but specifics depend on noise model and dropout probability.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.55,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim links dropout in linear regression to a ridge-like regularization term and notes multiplicative Gaussian noise with a specified variance yields comparable or better results in experiments, based solely on the provided text.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that dropout can be applied to restricted Boltzmann machines via binary masks on hidden units and trained with standard methods like CD-1, producing sparser, coarser features.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim aligns with common understanding that dropout increases training time and can cause underfitting on small data or with aggressive dropout; it also notes the coupling between dropout probability and layer size.",
+    "confidence_level": "high"
+  },
+  "14": {
+    "credibility": 0.5,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes plausible neural network training heuristics such as dropout like keep probability, scaling layer sizes by inverse of keep probability, and using high learning rates with momentum and max-norm constraints, but lacks explicit empirical validation in this text",
+    "confidence_level": "medium"
+  }
+}

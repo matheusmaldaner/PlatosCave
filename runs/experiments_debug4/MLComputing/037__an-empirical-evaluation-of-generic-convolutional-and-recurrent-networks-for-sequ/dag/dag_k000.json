@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Temporal convolutional networks (TCNs) are a more appropriate and natural starting point than canonical recurrent networks (LSTM/GRU/RNN) for many sequence modeling tasks",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The generic TCN architecture: a 1D fully convolutional network with causal convolutions, dilated convolutions (exponentially increasing dilation per layer), residual blocks, ReLU activations, weight normalization and spatial dropout",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "A simple, generic TCN (with minimal tuning) outperforms canonical recurrent architectures (LSTM, GRU, vanilla RNN) across a broad suite of sequence modeling benchmarks",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        6,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "On synthetic stress tests TCNs converge faster and to better solutions: adding problem (T=200,600) achieved near-zero MSE; copy memory (T up to 1000) converged to near-zero loss while LSTM/GRU degenerated; sequential and permuted MNIST accuracies higher for TCN",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "On polyphonic music modeling (JSB Chorales, Nottingham) the generic TCN achieved lower negative log-likelihood than canonical recurrent models",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "On character-level language modeling (PTB, text8) and on several word-level datasets (WikiText-103, LAMBADA) the TCN produced lower bits-per-character or perplexity than baseline LSTM/GRU implementations without extensive task-specific tuning",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Memory experiments: on the copy-memory stress task TCNs maintain 100% recall across sequence lengths where LSTM/GRU accuracy collapses; on LAMBADA TCN yields substantially lower perplexity, indicating longer effective memory in practice",
+      "role": "Evidence",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Practical advantages of TCNs: parallelism across timesteps, flexible control of receptive field (via depth, dilation, kernel size), more stable gradients avoiding exploding/vanishing problems, lower training memory usage compared to gated RNNs, and support for variable-length inputs",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Practical disadvantages and limitations of TCNs: at evaluation time TCNs may need to store raw recent input history (higher evaluation memory), and transferring a trained TCN to a domain requiring a longer receptive field may require architectural parameter changes",
+      "role": "Limitation",
+      "parents": [
+        0,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Experimental protocol: systematic empirical comparison using the same generic TCN architecture (varying depth and kernel to cover receptive field) versus canonical LSTM/GRU/RNN baselines across many standard tasks, using comparable model sizes and standard regularizations and optimizers",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Quantitative summary: across tasks reported (adding, copy, sequential/P-permuted MNIST, JSB, Nottingham, PTB char/word, Wiki-103, LAMBADA, text8) TCN metrics were consistently better or competitive with LSTM/GRU baselines of similar parameter budgets",
+      "role": "Evidence",
+      "parents": [
+        2,
+        7,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Ablations show TCN design choices matter: dilations are required for long-term dependencies; larger kernel size can help on some tasks; residual connections stabilize training and improve convergence",
+      "role": "Result",
+      "parents": [
+        1,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Conclusion drawn from experiments: with modern components (dilations, residuals), generic convolutional architectures (TCNs) are simpler, exhibit longer effective memory, and often outperform canonical recurrent architectures, so convolutional approaches should be reconsidered as default sequence models",
+      "role": "Conclusion",
+      "parents": [
+        2,
+        6,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Caveat: state-of-the-art results on some datasets are achieved by heavily tuned or specialized recurrent-based or hybrid models; TCN has not yet benefited from equivalent task-specific tuning and may be further improved",
+      "role": "Limitation",
+      "parents": [
+        2,
+        9
+      ],
+      "children": null
+    }
+  ]
+}

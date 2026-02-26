@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Expected-utility theory (EUT) decisions can be given a dynamical interpretation: for a class of wealth dynamics that admit an ergodicity transformation, maximizing expected utility is equivalent to maximizing the time-average growth rate of wealth (growth optimality)",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics (EE) posits agents maximize the time-average growth rate of wealth (growth optimality) computed on single trajectories of stochastic wealth dynamics",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Expected utility theory (EUT) postulates agents maximize the expectation value of a nonlinear transformation of wealth (utility), treating utility as a psychological construct fitted to observed behavior",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "There exists a correspondence: the ergodicity transformation that makes a rate of change ergodic can be identified with the utility function in EUT, so for dynamics admitting such a transformation expected-utility maximization equals time-average growth maximization",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        9,
+        11,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Requirement for the equivalence: the transformed utility process u(t) must have additive, stationary, independent increments, implying u(t) is a Brownian motion with drift du = a_u dt + b_u dW",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Given an invertible utility u(x) (with smooth inverse x(u)), Ito calculus maps the Brownian utility process to a unique wealth stochastic differential equation dx = a_x(x) dt + b_x(x) dW, so each invertible u corresponds to a wealth dynamic and vice versa when consistency conditions hold",
+      "role": "Result",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Linear utility u(x)=x corresponds to additive (Brownian) wealth dynamics: dx = a_u dt + b_u dW",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Logarithmic utility u(x)=ln x corresponds to multiplicative (geometric Brownian) wealth dynamics: dx = x[(a_u + 0.5 b_u^2) dt + b_u dW]",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Square-root utility u(x)=sqrt(x) maps to a mixed dynamic with both additive and multiplicative terms, producing an SDE with drift containing x-dependent and constant parts and noise amplitude proportional to sqrt(x)",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Inversion condition: an arbitrary Ito dynamic dx = a_x(x) dt + b_x(x) dW admits a utility u(x) with Brownian increments only if coefficients satisfy b_u = b_x(x) u'(x) (constant b_u) and a_x(x) = (a_u / b_u) b_x(x) + 0.5 b_x(x) b_x'(x); these relations yield differential conditions for u(x)",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Wealth distribution derivation: if u(t) is normal N(a_u t, b_u^2 t), then the population wealth distribution P_x(x,t) = P_u(u(x),t) du/dx gives explicit time-dependent wealth densities for the corresponding dynamic",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Implication: because wealth dynamics are exogenous, the apparent utility function (and hence risk preferences) is predicted by the dynamics and will change if dynamics change, so preferences need not be fixed in time",
+      "role": "Conclusion",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Experimental evidence: recent experiments with controllable wealth dynamics support the prediction that dynamics strongly determine observed preferences, consistent with the EE interpretation",
+      "role": "Evidence",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Formal requirement and rebuttal: utility functions should be unbounded to be invertible and to avoid pathological finite-time singularities; Menger's historical claim that utilities must be bounded is invalid in this framework",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: the correspondence holds only for wealth dynamics that admit an ergodicity transformation (i.e., map to a Brownian utility); processes that do not admit such a transformation cannot be interpreted dynamically via EUT in this way and may be pathological",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": null
+    }
+  ]
+}

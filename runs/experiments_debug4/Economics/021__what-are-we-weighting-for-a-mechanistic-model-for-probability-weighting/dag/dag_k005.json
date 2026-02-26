@@ -1,0 +1,178 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The empirical pattern called probability weighting (an inverse-S mapping between decision weights and stated probabilities) can be mechanistically explained as decision makers having greater uncertainty about probabilities than disinterested observers, arising when decision makers estimate probabilities as frequencies in finite time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The observed empirical regularity is an inverse-S curve: cumulative decision weights Fw plotted versus cumulative stated probabilities Fp lie above the diagonal for low cumulative probabilities and below for high cumulative probabilities",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "If a decision maker (DM) assumes a larger scale (greater variance) or different location for outcome distributions than a disinterested observer (DO), mapping the DM CDF Fw against the DO CDF Fp yields an inverse-S shape",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "When probabilities must be estimated from finite time series, absolute estimation error decreases for rarer events but relative estimation error increases as event probability decreases",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "A DM who conservatively adjusts estimated densities upward by their standard error (to avoid surprises) produces decision weights w(x) = normalized( p_hat(x) + error(p_hat(x)) ), which enhances low estimated probabilities relatively more than high ones",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Mathematically, adding a correction proportional to the standard error to estimated densities yields w(x)>p(x) for small p and w(x)<p(x) for large p, producing an inverse-S when plotted as Fw versus Fp",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Analytic Gaussian example: if DO models X ~ N(mu, sigma^2) and DM models X ~ N(mu, (alpha sigma)^2) with alpha>1, eliminating x yields w(p) proportional to p^(1/alpha^2) and produces inverse-S behavior",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The inverse-S effect generalizes beyond Gaussians: different locations, scales, or shapes (e.g. t-distributions with differing shape and location) between DO and DM also produce inverse-S mappings",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Scaling argument: for counts n(x) ~ p(x) delta x T with standard error sqrt(n(x)), the estimated density p_hat(x)=n/(T delta x) has uncertainty epsilon[p_hat(x)]=sqrt(p_hat(x)/(T delta x)), so relative error scales as 1/sqrt(p_hat(x) T delta x) and is larger for small p",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        4,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Simulation method: DMs simulated counting outcomes in finite series, estimating p_hat(x) in bins, computing standard errors across parallel runs, then forming w(x)=normalized(p_hat+error); simulations used Gaussian and fat-tailed t data with finite T and bin width delta x",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Results: Analytical calculations and simulations produce inverse-S curves for Gaussian and t-distributions; effect is more pronounced for fat-tailed distributions and finite sample sizes",
+      "role": "Result",
+      "parents": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Model fitting: fitting two-parameter Gaussian and t models (location, scale/shape) to experimental data from Tversky and Kahneman (1992) and Tversky and Fox (1995) yields fits comparable to established phenomenological weighting functions (e.g. TK and Lattimore forms)",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Interpretation based on ergodicity: DOs often use ensemble perspectives while DMs care about time trajectories of their own wealth; non-ergodic multiplicative processes make DMs rationally cautious and justify extra uncertainty about rare adverse events",
+      "role": "Claim",
+      "parents": [
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: The inverse-S probability weighting pattern can be viewed as a principled, mechanistic response by decision makers to estimation uncertainty and time-based exposure rather than necessarily a cognitive bias or error",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Assumptions and limitations: analysis assumes decision makers estimate frequencies from finite time series, use conservative adjustments proportional to standard error, and that DO reported probabilities correspond to asymptotic model parameters; empirical noise and model choice can make functional forms indistinguishable",
+      "role": "Limitation",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

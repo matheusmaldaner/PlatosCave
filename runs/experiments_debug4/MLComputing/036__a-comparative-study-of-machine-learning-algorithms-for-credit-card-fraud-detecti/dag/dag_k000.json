@@ -1,0 +1,209 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning algorithms can be used to detect and separate fraudulent from genuine credit card transactions, and comparing multiple algorithms identifies the most effective approach for this task",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "This study conducts a comparative evaluation of Random Forest, Decision Tree, AdaBoost, and Gradient Boosting for credit card fraud detection",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dataset: 284,807 European credit card transactions from September 2013 with extreme class imbalance (0.172% fraud cases)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Algorithms used: Random Forest (random-tree variant), Decision Tree (with explicit feature selection), AdaBoost (with decision trees as weak learners), Gradient Boosting (sequential weak learners, feature importance, weighted learning)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Performance evaluation metrics: accuracy, precision, recall, F1 score, ROC AUC, and precision-recall AUC; confusion matrices used to report TP, TN, FP, FN",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "To address imbalance, SMOTE synthetic oversampling was applied to the minority (fraud) class prior to training and evaluation",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Random Forest confusion matrix: TP=132, TN=85,265, FP=18, FN=28",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        10,
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Decision Tree confusion matrix: TP=130, TN=85,042, FP=241, FN=30",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "AdaBoost confusion matrix: TP=144, TN=83,897, FP=1,386, FN=16",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Gradient Boosting confusion matrix: TP=143, TN=84,239, FP=1,044, FN=17",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Random Forest performance: accuracy=0.999415, precision=0.857143, recall=0.825000, F1=0.840764, ROC AUC ~91.24, PR AUC ~0.841235",
+      "role": "Result",
+      "parents": [
+        6,
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Decision Tree performance: accuracy=0.996828, precision=0.350404, recall=0.812500, F1=0.489642, ROC AUC ~90.48, PR AUC ~0.581628",
+      "role": "Result",
+      "parents": [
+        7,
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "AdaBoost and Gradient Boosting performance: high recall (0.900000 and 0.906250) but very low precision (0.096192 and 0.117409) and low F1 (0.173808 and 0.207886), indicating many false positives despite good detection rates",
+      "role": "Result",
+      "parents": [
+        8,
+        9,
+        4
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: Random Forest is the most reliable and balanced model in this study for fraud detection, achieving the best trade-off between precision and recall and the highest overall accuracy and F1 score",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Claim: AdaBoost and Gradient Boosting favor recall at the expense of precision on the studied dataset, producing high false positive rates that could increase operational false alarms",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation and assumption: extreme class imbalance and use of SMOTE may affect generalizability; real-time deployment requires additional work on latency, throughput, feature engineering, and explainability",
+      "role": "Limitation",
+      "parents": [
+        2,
+        5,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,1440 @@
+--- Page 1 ---
+78    communications of the acm   |  october 2012  |  vol. 55  |  no. 10
+review articles
+Machine learning systems automatically learn 
+programs from data. This is often a very attractive 
+alternative to manually constructing them, and in the 
+last decade the use of machine learning has spread 
+rapidly throughout computer science and beyond. 
+Machine learning is used in Web search, spam filters, 
+recommender systems, ad placement, credit scoring, 
+fraud detection, stock trading, drug design, and many 
+other applications. A recent report from the McKinsey 
+Global Institute asserts that machine learning (a.k.a. 
+data mining or predictive analytics) will be the driver 
+of the next big wave of innovation.15 Several fine 
+textbooks are available to interested practitioners and 
+researchers (for example, Mitchell16 and Witten et 
+al.24). However, much of the “folk knowledge” that 
+is needed to successfully develop 
+machine learning applications is not 
+readily available in them. As a result, 
+many machine learning projects take 
+much longer than necessary or wind 
+up producing less-than-ideal results. 
+Yet much of this folk knowledge is 
+fairly easy to communicate. This is 
+the purpose of this article.
+doi:10.1145/2347736.2347755
+Tapping into the “folk knowledge” needed to 
+advance machine learning applications.
+by Pedro Domingos
+A Few Useful 
+Things to 
+Know About 
+Machine 
+Learning
+ key insights
+  Machine learning algorithms can figure 
+out how to perform important tasks 
+by generalizing from examples. This is 
+often feasible and cost-effective where 
+manual programming is not. As more 
+data becomes available, more ambitious 
+problems can be tackled.
+  Machine learning is widely used in 
+computer science and other fields. 
+However, developing successful 
+machine learning applications requires a 
+substantial amount of “black art” that is 
+difficult to find in textbooks.
+  This article summarizes 12 key lessons 
+that machine learning researchers and 
+practitioners have learned. These include 
+pitfalls to avoid, important issues to focus 
+on, and answers to common questions. 
+
+
+--- Page 2 ---
+october 2012  |  vol. 55  |  no. 10  |  communications of the acm    79
+Many different types of machine 
+learning exist, but for illustration 
+purposes I will focus on the most 
+mature and widely used one: clas-
+sification. Nevertheless, the issues I 
+will discuss apply across all of ma-
+chine learning. A classifier is a sys-
+tem that inputs (typically) a vector 
+of discrete and/or continuous fea-
+ture values and outputs a single dis-
+crete value, the class. For example, 
+a spam filter classifies email mes-
+sages into “spam” or “not spam,” 
+and its input may be a Boolean vec-
+tor x = (x1,…,xj,…,xd), where xj = 1 if 
+the jth word in the dictionary appears 
+in the email and xj = 0 otherwise. A 
+learner inputs a training set of ex-
+amples (xi, yi), where xi = (xi,1 , . . . , 
+xi,d) is an observed input and yi is the 
+corresponding output, and outputs 
+a classifier. The test of the learner is 
+whether this classifier produces the 
+correct output yt for future examples 
+xt (for example, whether the spam 
+filter correctly classifies previously 
+unseen email messages as spam or 
+not spam).
+Learning = Representation + 
+Evaluation + Optimization
+Suppose you have an application that 
+you think machine learning might be 
+good for. The first problem facing you 
+is the bewildering variety of learning al-
+gorithms available. Which one to use? 
+There are literally thousands available, 
+and hundreds more are published each 
+year. The key to not getting lost in this 
+huge space is to realize that it consists 
+of combinations of just three compo-
+nents. The components are:
+˲
+˲ Representation. A classifier must 
+be represented in some formal lan-
+guage that the computer can handle. 
+Conversely, choosing a representa-
+tion for a learner is tantamount to 
+choosing the set of classifiers that it 
+can possibly learn. This set is called 
+the hypothesis space of the learner. 
+If a classifier is not in the hypothesis 
+space, it cannot be learned. A related 
+question, that I address later, is how 
+to represent the input, in other words, 
+what features to use.
+˲
+˲ Evaluation. An evaluation func-
+tion (also called objective function 
+or scoring function) is needed to dis-
+tinguish good classifiers from bad 
+ones. The evaluation function used 
+internally by the algorithm may dif-
+fer from the external one that we want 
+the classifier to optimize, for ease of 
+optimization and due to the issues I 
+will discuss.
+˲
+˲ Optimization. Finally, we need 
+a method to search among the clas-
+sifiers in the language for the high-
+est-scoring one. The choice of op-
+timization technique is key to the 
+efficiency of the learner, and also 
+helps determine the classifier pro-
+duced if the evaluation function has 
+more than one optimum. It is com-
+mon for new learners to start out using 
+off-the-shelf optimizers, which are lat-
+er replaced by custom-designed ones.
+The accompanying table shows 
+common examples of each of these 
+three components. For example, k-
+nearest neighbor classifies a test ex-
+ample by finding the k most similar 
+training examples and predicting the 
+majority class among them. Hyper-
+plane-based methods form a linear 
+Image by agsandrew/Shutterstock.com
+
+
+--- Page 3 ---
+80    communications of the acm   |  october 2012  |  vol. 55  |  no. 10
+review articles
+combination of the features per class 
+and predict the class with the high-
+est-valued 
+combination. 
+Decision 
+trees test one feature at each internal 
+node, with one branch for each fea-
+ture value, and have class predictions 
+at the leaves. Algorithm 1 (above) 
+shows a bare-bones decision tree 
+learner for Boolean domains, using 
+information gain and greedy search.20 
+InfoGain(xj, y) is the mutual informa-
+tion between feature xj and the class y. 
+MakeNode(x,c0,c1) returns a node that 
+tests feature x and has c0 as the child 
+for x = 0 and c1 as the child for x = 1.
+Of course, not all combinations of 
+one component from each column of 
+the table make equal sense. For exam-
+ple, discrete representations naturally 
+go with combinatorial optimization, 
+and continuous ones with continu-
+ous optimization. Nevertheless, many 
+learners have both discrete and con-
+tinuous components, and in fact the 
+day may not be far when every single 
+possible combination has appeared in 
+some learner!
+Most textbooks are organized by 
+representation, and it is easy to over-
+look the fact that the other compo-
+nents are equally important. There is 
+no simple recipe for choosing each 
+component, but I will touch on some 
+of the key issues here. As we will see, 
+some choices in a machine learning 
+project may be even more important 
+than the choice of learner.
+It’s Generalization that Counts
+The fundamental goal of machine 
+learning is to generalize beyond the 
+examples in the training set. This is 
+because, no matter how much data 
+we have, it is very unlikely that we will 
+see those exact examples again at test 
+time. (Notice that, if there are 100,000 
+words in the dictionary, the spam fil-
+ter described above has 2100,000 pos-
+sible different inputs.) Doing well on 
+the training set is easy (just memorize 
+the examples). The most common 
+mistake among machine learning be-
+ginners is to test on the training data 
+and have the illusion of success. If the 
+chosen classifier is then tested on new 
+data, it is often no better than ran-
+dom guessing. So, if you hire someone 
+to build a classifier, be sure to keep 
+some of the data to yourself and test 
+the classifier they give you on it. Con-
+versely, if you have been hired to build 
+a classifier, set some of the data aside 
+from the beginning, and only use it to 
+test your chosen classifier at the very 
+end, followed by learning your final 
+classifier on the whole data.
+Contamination of your classifier by 
+test data can occur in insidious ways, 
+for example, if you use test data to 
+tune parameters and do a lot of tun-
+ing. (Machine learning algorithms 
+have lots of knobs, and success of-
+ten comes from twiddling them a lot, 
+so this is a real concern.) Of course, 
+holding out data reduces the amount 
+available for training. This can be mit-
+igated by doing cross-validation: ran-
+domly dividing your training data into 
+(say) 10 subsets, holding out each one 
+while training on the rest, testing each 
+learned classifier on the examples it 
+did not see, and averaging the results 
+to see how well the particular param-
+eter setting does.
+In the early days of machine learn-
+ing, the need to keep training and test 
+data separate was not widely appreci-
+ated. This was partly because, if the 
+learner has a very limited representa-
+tion (for example, hyperplanes), the 
+difference between training and test 
+error may not be large. But with very 
+flexible classifiers (for example, deci-
+sion trees), or even with linear classifi-
+ers with a lot of features, strict separa-
+tion is mandatory.
+Notice that generalization being 
+the goal has an interesting conse-
+quence for machine learning. Unlike 
+in most other optimization problems, 
+we do not have access to the function 
+we want to optimize! We have to use 
+training error as a surrogate for test 
+error, and this is fraught with dan-
+ger. (How to deal with it is addressed 
+later.) On the positive side, since the 
+objective function is only a proxy for 
+the true goal, we may not need to fully 
+Table 1. The three components of learning algorithms.
+Representation
+Evaluation
+Optimization
+Instances
+Accuracy/Error rate
+Combinatorial optimization
+   K-nearest neighbor
+Precision and recall
+   Greedy search
+   Support vector machines
+Squared error
+   Beam search
+Hyperplanes
+Likelihood
+   Branch-and-bound
+   Naive Bayes
+Posterior probability
+Continuous optimization
+   Logistic regression
+Information gain
+   Unconstrained
+Decision trees
+K-L divergence
+      Gradient descent
+Sets of rules
+Cost/Utility
+      Conjugate gradient
+   Propositional rules
+Margin
+      Quasi-Newton methods
+   Logic programs
+   Constrained
+Neural networks
+      Linear programming
+Graphical models
+      Quadratic programming
+   Bayesian networks
+   Conditional random fields
+Algorithm 1. Decision tree induction.
+LearnDT (TrainSet) 
+if all examples in TrainSet have the same class y* then 
+return MakeLeaf(y*)
+if no feature xj has InfoGain(xj ,y) > 0 then 
+y* ← Most frequent class in TrainSet  
+return MakeLeaf(y*)
+x* ← argmaxxj InfoGain(xj, y)
+TS0 ← Examples in TrainSet with x* = 0
+TS1 ← Examples in TrainSet with x* = 1
+return MakeNode(x*, LearnDT(TS0), LearnDT(TS1))
+
+
+--- Page 4 ---
+review articles
+october 2012  |  vol. 55  |  no. 10  |  communications of the acm    81
+optimize it; in fact, a local optimum 
+returned by simple greedy search may 
+be better than the global optimum.
+Data Alone Is Not Enough
+Generalization being the goal has an-
+other major consequence: Data alone 
+is not enough, no matter how much 
+of it you have. Consider learning a 
+Boolean function of (say) 100 vari-
+ables from a million examples. There 
+are 2100 − 106 examples whose classes 
+you do not know. How do you figure 
+out what those classes are? In the ab-
+sence of further information, there is 
+just no way to do this that beats flip-
+ping a coin. This observation was first 
+made (in somewhat different form) by 
+the philosopher David Hume over 200 
+years ago, but even today many mis-
+takes in machine learning stem from 
+failing to appreciate it. Every learner 
+must embody some knowledge or as-
+sumptions beyond the data it is given 
+in order to generalize beyond it. This 
+notion was formalized by Wolpert in 
+his famous “no free lunch” theorems, 
+according to which no learner can 
+beat random guessing over all pos-
+sible functions to be learned.25
+This seems like rather depressing 
+news. How then can we ever hope to 
+learn anything? Luckily, the functions 
+we want to learn in the real world are 
+not drawn uniformly from the set of all 
+mathematically possible functions! In 
+fact, very general assumptions—like 
+smoothness, similar examples hav-
+ing similar classes, limited depen-
+dences, or limited complexity—are 
+often enough to do very well, and this 
+is a large part of why machine learn-
+ing has been so successful. Like de-
+duction, induction (what learners do) 
+is a knowledge lever: it turns a small 
+amount of input knowledge into a 
+large amount of output knowledge. 
+Induction is a vastly more powerful 
+lever than deduction, requiring much 
+less input knowledge to produce use-
+ful results, but it still needs more than 
+zero input knowledge to work. And, as 
+with any lever, the more we put in, the 
+more we can get out.
+A corollary of this is that one of the 
+key criteria for choosing a representa-
+tion is which kinds of knowledge are 
+easily expressed in it. For example, if 
+we have a lot of knowledge about what 
+makes examples similar in our do-
+main, instance-based methods may 
+be a good choice. If we have knowl-
+edge about probabilistic dependen-
+cies, graphical models are a good fit. 
+And if we have knowledge about what 
+kinds of preconditions are required by 
+each class, “IF . . . THEN . . .” rules may 
+be the best option. The most useful 
+learners in this regard are those that 
+do not just have assumptions hard-
+wired into them, but allow us to state 
+them explicitly, vary them widely, and 
+incorporate them automatically into 
+the learning (for example, using first-
+order logic21 or grammars6).
+In retrospect, the need for knowl-
+edge in learning should not be sur-
+prising. Machine learning is not 
+magic; it cannot get something from 
+nothing. What it does is get more 
+from less. Programming, like all en-
+gineering, is a lot of work: we have to 
+build everything from scratch. Learn-
+ing is more like farming, which lets 
+nature do most of the work. Farmers 
+combine seeds with nutrients to grow 
+crops. Learners combine knowledge 
+with data to grow programs.
+Overfitting Has Many Faces
+What if the knowledge and data we 
+have are not sufficient to completely 
+determine the correct classifier? Then 
+we run the risk of just hallucinating 
+a classifier (or parts of it) that is not 
+grounded in reality, and is simply en-
+coding random quirks in the data. 
+This problem is called overfitting, and 
+is the bugbear of machine learning. 
+When your learner outputs a classi-
+fier that is 100% accurate on the train-
+ing data but only 50% accurate on test 
+data, when in fact it could have output 
+one that is 75% accurate on both, it 
+has overfit.
+Everyone in machine learning 
+knows about overfitting, but it comes 
+in many forms that are not immedi-
+ately obvious. One way to understand 
+overfitting is by decomposing gener-
+alization error into bias and variance.9 
+Bias is a learner’s tendency to con-
+sistently learn the same wrong thing. 
+Variance is the tendency to learn ran-
+dom things irrespective of the real sig-
+nal. Figure 1 illustrates this by an anal-
+ogy with throwing darts at a board. A 
+linear learner has high bias, because 
+when the frontier between two classes 
+is not a hyperplane the learner is un-
+able to induce it. Decision trees do not 
+have this problem because they can 
+represent any Boolean function, but 
+on the other hand they can suffer from 
+high variance: decision trees learned 
+on different training sets generated by 
+the same phenomenon are often very 
+different, when in fact they should be 
+80
+75
+70
+65
+60
+55
+50
+10
+100
+Number of Examples
+Test-Set Accuracy (%)
+1000
+10000
+Figure 2. Naïve Bayes can outperform a state-of-the-art rule learner (C4.5rules) even  
+when the true classifier is a set of rules.
+  Bayes   
+  C4.5
+Figure 1. Bias and variance in   
+dart-throwing.
+Low 
+Variance
+High 
+Variance
+Low 
+Bias
+High 
+Bias
+
+
+--- Page 5 ---
+82    communications of the acm   |  october 2012  |  vol. 55  |  no. 10
+review articles
+the same. Similar reasoning applies 
+to the choice of optimization meth-
+od: beam search has lower bias than 
+greedy search, but higher variance, be-
+cause it tries more hypotheses. Thus, 
+contrary to intuition, a more powerful 
+learner is not necessarily better than a 
+less powerful one.
+Figure 2 illustrates this.a Even 
+though the true classifier is a set of 
+rules, with up to 1,000 examples na-
+ive Bayes is more accurate than a 
+rule learner. This happens despite 
+naive Bayes’s false assumption that 
+the frontier is linear! Situations like 
+this are common in machine learn-
+ing: strong false assumptions can be 
+better than weak true ones, because 
+a learner with the latter needs more 
+data to avoid overfitting.
+Cross-validation can help to com-
+bat overfitting, for example by using it 
+to choose the best size of decision tree 
+to learn. But it is no panacea, since if 
+we use it to make too many parameter 
+choices it can itself start to overfit.17
+Besides 
+cross-validation, 
+there 
+are many methods to combat overfit-
+ting. The most popular one is adding 
+a regularization term to the evaluation 
+function. This can, for example, pe-
+nalize classifiers with more structure, 
+thereby favoring smaller ones with 
+less room to overfit. Another option 
+is to perform a statistical significance 
+test like chi-square before adding new 
+structure, to decide whether the dis-
+tribution of the class really is differ-
+ent with and without this structure. 
+These techniques are particularly use-
+ful when data is very scarce. Neverthe-
+less, you should be skeptical of claims 
+that a particular technique “solves” 
+the overfitting problem. It is easy to 
+avoid overfitting (variance) by falling 
+into the opposite error of underfitting 
+(bias). Simultaneously avoiding both 
+requires learning a perfect classifier, 
+and short of knowing it in advance 
+there is no single technique that will 
+always do best (no free lunch).
+A common misconception about 
+overfitting is that it is caused by noise, 
+a	 Training examples consist of 64 Boolean fea-
+tures and a Boolean class computed from 
+them according to a set of “IF . . . THEN . . .” 
+rules. The curves are the average of 100 runs 
+with different randomly generated sets of 
+rules. Error bars are two standard deviations. 
+See Domingos and Pazzani10 for details.
+like training examples labeled with 
+the wrong class. This can indeed ag-
+gravate overfitting, by making the 
+learner draw a capricious frontier to 
+keep those examples on what it thinks 
+is the right side. But severe overfitting 
+can occur even in the absence of noise. 
+For instance, suppose we learn a Bool-
+ean classifier that is just the disjunc-
+tion of the examples labeled “true” 
+in the training set. (In other words, 
+the classifier is a Boolean formula in 
+disjunctive normal form, where each 
+term is the conjunction of the feature 
+values of one specific training exam-
+ple.) This classifier gets all the training 
+examples right and every positive test 
+example wrong, regardless of whether 
+the training data is noisy or not.
+The problem of multiple testing13 is 
+closely related to overfitting. Standard 
+statistical tests assume that only one 
+hypothesis is being tested, but mod-
+ern learners can easily test millions 
+before they are done. As a result what 
+looks significant may in fact not be. 
+For example, a mutual fund that beats 
+the market 10 years in a row looks very 
+impressive, until you realize that, if 
+there are 1,000 funds and each has a 
+50% chance of beating the market on 
+any given year, it is quite likely that 
+one will succeed all 10 times just by 
+luck. This problem can be combatted 
+by correcting the significance tests to 
+take the number of hypotheses into 
+account, but this can also lead to un-
+derfitting. A better approach is to con-
+trol the fraction of falsely accepted 
+non-null hypotheses, known as the 
+false discovery rate.3
+Intuition Fails in High Dimensions
+After overfitting, the biggest problem 
+in machine learning is the curse of 
+dimensionality. This expression was 
+coined by Bellman in 1961 to refer 
+to the fact that many algorithms that 
+work fine in low dimensions become 
+intractable when the input is high-
+dimensional. But in machine learn-
+ing it refers to much more. General-
+izing correctly becomes exponentially 
+harder as the dimensionality (number 
+of features) of the examples grows, be-
+cause a fixed-size training set covers a 
+dwindling fraction of the input space. 
+Even with a moderate dimension of 
+100 and a huge training set of a trillion 
+examples, the latter covers only a frac-
+tion of about 10−18 of the input space. 
+This is what makes machine learning 
+both necessary and hard.
+More 
+seriously, 
+the 
+similarity-
+based reasoning that machine learn-
+ing algorithms depend on (explicitly 
+or implicitly) breaks down in high di-
+mensions. Consider a nearest neigh-
+bor classifier with Hamming distance 
+as the similarity measure, and sup-
+pose the class is just x1 ∧ x2. If there 
+are no other features, this is an easy 
+problem. But if there are 98 irrelevant 
+features x3,..., x100, the noise from 
+them completely swamps the signal in 
+x1 and x2, and nearest neighbor effec-
+tively makes random predictions.
+Even more disturbing is that near-
+est neighbor still has a problem even 
+if all 100 features are relevant! This 
+is because in high dimensions all 
+examples look alike. Suppose, for 
+instance, that examples are laid out 
+on a regular grid, and consider a test 
+example xt. If the grid is d-dimen-
+sional, xt’s 2d nearest examples are 
+all at the same distance from it. So as 
+the dimensionality increases, more 
+and more examples become nearest 
+neighbors of xt, until the choice of 
+nearest neighbor (and therefore of 
+class) is effectively random.
+This is only one instance of a more 
+general problem with high dimen-
+sions: our intuitions, which come 
+from a three-dimensional world, of-
+ten do not apply in high-dimensional 
+ones. In high dimensions, most of the 
+mass of a multivariate Gaussian dis-
+tribution is not near the mean, but in 
+an increasingly distant “shell” around 
+it; and most of the volume of a high-
+dimensional orange is in the skin, not 
+the pulp. If a constant number of ex-
+amples is distributed uniformly in a 
+high-dimensional hypercube, beyond 
+some dimensionality most examples 
+are closer to a face of the hypercube 
+than to their nearest neighbor. And if 
+we approximate a hypersphere by in-
+scribing it in a hypercube, in high di-
+mensions almost all the volume of the 
+hypercube is outside the hypersphere. 
+This is bad news for machine learning, 
+where shapes of one type are often ap-
+proximated by shapes of another.
+Building a classifier in two or three 
+dimensions is easy; we can find a rea-
+sonable frontier between examples 
+of different classes just by visual in-
+
+
+--- Page 6 ---
+review articles
+october 2012  |  vol. 55  |  no. 10  |  communications of the acm    83
+spection. (It has even been said that if 
+people could see in high dimensions 
+machine learning would not be neces-
+sary.) But in high dimensions it is dif-
+ficult to understand what is happen-
+ing. This in turn makes it difficult to 
+design a good classifier. Naively, one 
+might think that gathering more fea-
+tures never hurts, since at worst they 
+provide no new information about the 
+class. But in fact their benefits may 
+be outweighed by the curse of dimen-
+sionality.
+Fortunately, there is an effect that 
+partly counteracts the curse, which 
+might be called the “blessing of non-
+uniformity.” In most applications 
+examples are not spread uniformly 
+throughout the instance space, but 
+are concentrated on or near a lower-
+dimensional manifold. For example, 
+k-nearest neighbor works quite well 
+for handwritten digit recognition 
+even though images of digits have 
+one dimension per pixel, because the 
+space of digit images is much smaller 
+than the space of all possible images. 
+Learners can implicitly take advan-
+tage of this lower effective dimension, 
+or algorithms for explicitly reducing 
+the dimensionality can be used (for 
+example, Tenenbaum22).
+Theoretical Guarantees  
+Are Not What They Seem
+Machine learning papers are full of 
+theoretical guarantees. The most com-
+mon type is a bound on the number of 
+examples needed to ensure good gen-
+eralization. What should you make of 
+these guarantees? First of all, it is re-
+markable that they are even possible. 
+Induction is traditionally contrasted 
+with deduction: in deduction you can 
+guarantee that the conclusions are 
+correct; in induction all bets are off. 
+Or such was the conventional wisdom 
+for many centuries. One of the major 
+developments of recent decades has 
+been the realization that in fact we can 
+have guarantees on the results of in-
+duction, particularly if we are willing 
+to settle for probabilistic guarantees.
+The basic argument is remarkably 
+simple.5 Let’s say a classifier is bad 
+if its true error rate is greater than ε. 
+Then the probability that a bad clas-
+sifier is consistent with n random, in-
+dependent training examples is less 
+than (1 − ε)n. Let b be the number of 
+bad classifiers in the learner’s hypoth-
+esis space H. The probability that at 
+least one of them is consistent is less 
+than b(1 − ε)n, by the union bound. As-
+suming the learner always returns a 
+consistent classifier, the probability 
+that this classifier is bad is then less 
+than |H|(1 − ε)n, where we have used 
+the fact that b ≤ |H|. So if we want this 
+probability to be less than δ, it suffices 
+to make n > ln(δ/|H|)/ ln(1 − ε) ≥ 1/ε (ln 
+|H| + ln 1/δ).
+Unfortunately, guarantees of this 
+type have to be taken with a large grain 
+of salt. This is because the bounds ob-
+tained in this way are usually extreme-
+ly loose. The wonderful feature of the 
+bound above is that the required num-
+ber of examples only grows logarith-
+mically with |H| and 1/δ. Unfortunate-
+ly, most interesting hypothesis spaces 
+are doubly exponential in the number 
+of features d, which still leaves us 
+needing a number of examples expo-
+nential in d. For example, consider 
+the space of Boolean functions of d 
+Boolean variables. If there are e pos-
+sible different examples, there are 
+2e possible different functions, so 
+since there are 2d possible examples, 
+the total number of functions is 22d. 
+And even for hypothesis spaces that 
+are “merely” exponential, the bound 
+is still very loose, because the union 
+bound is very pessimistic. For exam-
+ple, if there are 100 Boolean features 
+and the hypothesis space is decision 
+trees with up to 10 levels, to guarantee 
+δ = ε = 1% in the bound above we need 
+half a million examples. But in prac-
+tice a small fraction of this suffices for 
+accurate learning.
+Further, we have to be careful 
+about what a bound like this means. 
+For instance, it does not say that, if 
+your learner returned a hypothesis 
+consistent with a particular training 
+set, then this hypothesis probably 
+generalizes well. What it says is that, 
+given a large enough training set, with 
+high probability your learner will ei-
+ther return a hypothesis that general-
+izes well or be unable to find a consis-
+tent hypothesis. The bound also says 
+nothing about how to select a good 
+hypothesis space. It only tells us that, 
+if the hypothesis space contains the 
+true classifier, then the probability 
+that the learner outputs a bad classi-
+fier decreases with training set size. 
+One of the major 
+developments of 
+recent decades has 
+been the realization 
+that we can have 
+guarantees on the 
+results of induction, 
+particularly if we 
+are willing to settle 
+for probabilistic 
+guarantees.
+
+
+--- Page 7 ---
+84    communications of the acm   |  october 2012  |  vol. 55  |  no. 10
+review articles
+If we shrink the hypothesis space, the 
+bound improves, but the chances that 
+it contains the true classifier shrink 
+also. (There are bounds for the case 
+where the true classifier is not in the 
+hypothesis space, but similar consid-
+erations apply to them.)
+Another common type of theoreti-
+cal guarantee is asymptotic: given in-
+finite data, the learner is guaranteed 
+to output the correct classifier. This 
+is reassuring, but it would be rash to 
+choose one learner over another be-
+cause of its asymptotic guarantees. In 
+practice, we are seldom in the asymp-
+totic regime (also known as “asymp-
+topia”). And, because of the bias-vari-
+ance trade-off I discussed earlier, if 
+learner A is better than learner B given 
+infinite data, B is often better than A 
+given finite data.
+The main role of theoretical guar-
+antees in machine learning is not as 
+a criterion for practical decisions, 
+but as a source of understanding and 
+driving force for algorithm design. In 
+this capacity, they are quite useful; in-
+deed, the close interplay of theory and 
+practice is one of the main reasons 
+machine learning has made so much 
+progress over the years. But caveat 
+emptor: learning is a complex phe-
+nomenon, and just because a learner 
+has a theoretical justification and 
+works in practice does not mean the 
+former is the reason for the latter.
+Feature Engineering Is The Key
+At the end of the day, some machine 
+learning projects succeed and some 
+fail. What makes the difference? Eas-
+ily the most important factor is the 
+features used. Learning is easy if you 
+have many independent features that 
+each correlate well with the class. On 
+the other hand, if the class is a very 
+complex function of the features, you 
+may not be able to learn it. Often, the 
+raw data is not in a form that is ame-
+nable to learning, but you can con-
+struct features from it that are. This 
+is typically where most of the effort in 
+a machine learning project goes. It is 
+often also one of the most interesting 
+parts, where intuition, creativity and 
+“black art” are as important as the 
+technical stuff.
+First-timers are often surprised by 
+how little time in a machine learning 
+project is spent actually doing ma-
+A dumb algorithm 
+with lots and lots  
+of data beats  
+a clever one  
+with modest 
+amounts of it.
+chine learning. But it makes sense if 
+you consider how time-consuming it 
+is to gather data, integrate it, clean it 
+and preprocess it, and how much trial 
+and error can go into feature design. 
+Also, machine learning is not a one-
+shot process of building a dataset and 
+running a learner, but rather an itera-
+tive process of running the learner, 
+analyzing the results, modifying the 
+data and/or the learner, and repeat-
+ing. Learning is often the quickest 
+part of this, but that is because we 
+have already mastered it pretty well! 
+Feature engineering is more diffi-
+cult because it is domain-specific, 
+while learners can be largely general 
+purpose. However, there is no sharp 
+frontier between the two, and this is 
+another reason the most useful learn-
+ers are those that facilitate incorpo-
+rating knowledge.
+Of course, one of the holy grails 
+of machine learning is to automate 
+more and more of the feature engi-
+neering process. One way this is often 
+done today is by automatically gener-
+ating large numbers of candidate fea-
+tures and selecting the best by (say) 
+their information gain with respect 
+to the class. But bear in mind that 
+features that look irrelevant in isola-
+tion may be relevant in combination. 
+For example, if the class is an XOR of 
+k input features, each of them by it-
+self carries no information about the 
+class. (If you want to annoy machine 
+learners, bring up XOR.) On the other 
+hand, running a learner with a very 
+large number of features to find out 
+which ones are useful in combination 
+may be too time-consuming, or cause 
+overfitting. So there is ultimately no 
+replacement for the smarts you put 
+into feature engineering.
+More Data Beats  
+a Cleverer Algorithm
+Suppose you have constructed the 
+best set of features you can, but the 
+classifiers you receive are still not ac-
+curate enough. What can you do now? 
+There are two main choices: design a 
+better learning algorithm, or gather 
+more data (more examples, and pos-
+sibly more raw features, subject to 
+the curse of dimensionality). Machine 
+learning researchers are mainly con-
+cerned with the former, but pragmati-
+cally the quickest path to success is 
+
+
+--- Page 8 ---
+review articles
+october 2012  |  vol. 55  |  no. 10  |  communications of the acm    85
+ers are seductive, but they are usually 
+harder to use, because they have more 
+knobs you need to turn to get good re-
+sults, and because their internals are 
+more opaque.
+Learners can be divided into two 
+major types: those whose representa-
+tion has a fixed size, like linear classi-
+fiers, and those whose representation 
+can grow with the data, like decision 
+trees. (The latter are sometimes called 
+nonparametric learners, but this is 
+somewhat unfortunate, since they 
+usually wind up learning many more 
+parameters than parametric ones.) 
+Fixed-size learners can only take ad-
+vantage of so much data. (Notice how 
+the accuracy of naive Bayes asymptotes 
+at around 70% in Figure 2.) Variable-
+size learners can in principle learn any 
+function given sufficient data, but in 
+practice they may not, because of limi-
+tations of the algorithm (for example, 
+greedy search falls into local optima) 
+or computational cost. Also, because 
+of the curse of dimensionality, no ex-
+isting amount of data may be enough. 
+For these reasons, clever algorithms—
+those that make the most of the data 
+and computing resources available—
+often pay off in the end, provided you 
+are willing to put in the effort. There 
+is no sharp frontier between design-
+ing learners and learning classifiers; 
+rather, any given piece of knowledge 
+could be encoded in the learner or 
+learned from data. So machine learn-
+ing projects often wind up having a 
+significant component of learner de-
+sign, and practitioners need to have 
+some expertise in it.12
+In the end, the biggest bottleneck 
+is not data or CPU cycles, but human 
+often to just get more data. As a rule 
+of thumb, a dumb algorithm with lots 
+and lots of data beats a clever one with 
+modest amounts of it. (After all, ma-
+chine learning is all about letting data 
+do the heavy lifting.)
+This does bring up another prob-
+lem, however: scalability. In most of 
+computer science, the two main lim-
+ited resources are time and memory. 
+In machine learning, there is a third 
+one: training data. Which one is the 
+bottleneck has changed from decade 
+to decade. In the 1980s it tended to 
+be data. Today it is often time. Enor-
+mous mountains of data are avail-
+able, but there is not enough time 
+to process it, so it goes unused. This 
+leads to a paradox: even though in 
+principle more data means that more 
+complex classifiers can be learned, in 
+practice simpler classifiers wind up 
+being used, because complex ones 
+take too long to learn. Part of the an-
+swer is to come up with fast ways to 
+learn complex classifiers, and indeed 
+there has been remarkable progress 
+in this direction (for example, Hulten 
+and Domingos11).
+Part of the reason using cleverer 
+algorithms has a smaller payoff than 
+you might expect is that, to a first ap-
+proximation, they all do the same. 
+This is surprising when you consider 
+representations as different as, say, 
+sets of rules and neural networks. But 
+in fact propositional rules are readily 
+encoded as neural networks, and sim-
+ilar relationships hold between other 
+representations. All learners essen-
+tially work by grouping nearby exam-
+ples into the same class; the key dif-
+ference is in the meaning of “nearby.” 
+With nonuniformly distributed data, 
+learners can produce widely different 
+frontiers while still making the same 
+predictions in the regions that matter 
+(those with a substantial number of 
+training examples, and therefore also 
+where most test examples are likely to 
+appear). This also helps explain why 
+powerful learners can be unstable but 
+still accurate. Figure 3 illustrates this 
+in 2D; the effect is much stronger in 
+high dimensions.
+As a rule, it pays to try the simplest 
+learners first (for example, naïve Bayes 
+before logistic regression, k-nearest 
+neighbor before support vector ma-
+chines). More sophisticated learn-
+cycles. In research papers, learners 
+are typically compared on measures 
+of accuracy and computational cost. 
+But human effort saved and insight 
+gained, although harder to measure, 
+are often more important. This favors 
+learners that produce human-under-
+standable output (for example, rule 
+sets). And the organizations that make 
+the most of machine learning are 
+those that have in place an infrastruc-
+ture that makes experimenting with 
+many different learners, data sources, 
+and learning problems easy and effi-
+cient, and where there is a close col-
+laboration between machine learning 
+experts and application domain ones.
+Learn Many Models, Not Just One
+In the early days of machine learn-
+ing, everyone had a favorite learner, 
+together with some a priori reasons 
+to believe in its superiority. Most ef-
+fort went into trying many variations 
+of it and selecting the best one. Then 
+systematic 
+empirical 
+comparisons 
+showed that the best learner varies 
+from application to application, and 
+systems containing many different 
+learners started to appear. Effort now 
+went into trying many variations of 
+many learners, and still selecting just 
+the best one. But then researchers 
+noticed that, if instead of selecting 
+the best variation found, we combine 
+many variations, the results are bet-
+ter—often much better—and at little 
+extra effort for the user.
+Creating such model ensembles is 
+now standard.1 In the simplest tech-
+nique, called bagging, we simply gen-
+erate random variations of the train-
+ing set by resampling, learn a classifier 
+on each, and combine the results by 
+voting. This works because it greatly 
+reduces variance while only slightly 
+increasing bias. In boosting, training 
+examples have weights, and these are 
+varied so that each new classifier fo-
+cuses on the examples the previous 
+ones tended to get wrong. In stacking, 
+the outputs of individual classifiers 
+become the inputs of a “higher-level” 
+learner that figures out how best to 
+combine them.
+Many other techniques exist, and 
+the trend is toward larger and larger 
+ensembles. In the Netflix prize, teams 
+from all over the world competed to 
+build the best video recommender 
+Figure 3. Very different frontiers can yield 
+similar predictions.  (+ and – are training 
+examples of two classes.)
+N. Bayes
+kNN
+SVM
+D. Tree
+
+
+--- Page 9 ---
+86    communications of the acm   |  october 2012  |  vol. 55  |  no. 10
+review articles
+continues to improve by adding clas-
+sifiers even after the training error has 
+reached zero. Another counterexam-
+ple is support vector machines, which 
+can effectively have an infinite num-
+ber of parameters without overfitting. 
+Conversely, the function sign(sin(ax)) 
+can discriminate an arbitrarily large, 
+arbitrarily labeled set of points on the 
+x axis, even though it has only one pa-
+rameter.23 Thus, contrary to intuition, 
+there is no necessary connection be-
+tween the number of parameters of a 
+model and its tendency to overfit.
+A more sophisticated view instead 
+equates complexity with the size of 
+the hypothesis space, on the basis that 
+smaller spaces allow hypotheses to be 
+represented by shorter codes. Bounds 
+like the one in the section on theoreti-
+cal guarantees might then be viewed 
+as implying that shorter hypotheses 
+generalize better. This can be further 
+refined by assigning shorter codes to 
+the hypotheses in the space we have 
+some a priori preference for. But 
+viewing this as “proof” of a trade-off 
+between accuracy and simplicity is 
+circular reasoning: we made the hy-
+potheses we prefer simpler by design, 
+and if they are accurate it is because 
+our preferences are accurate, not be-
+cause the hypotheses are “simple” in 
+the representation we chose.
+A further complication arises from 
+the fact that few learners search their 
+hypothesis 
+space 
+exhaustively. 
+A 
+learner with a larger hypothesis space 
+that tries fewer hypotheses from it 
+is less likely to overfit than one that 
+tries more hypotheses from a smaller 
+space. As Pearl18 points out, the size of 
+the hypothesis space is only a rough 
+guide to what really matters for relat-
+ing training and test error: the proce-
+dure by which a hypothesis is chosen.
+Domingos7 surveys the main argu-
+ments and evidence on the issue of 
+Occam’s razor in machine learning. 
+The conclusion is that simpler hy-
+potheses should be preferred because 
+simplicity is a virtue in its own right, 
+not because of a hypothetical connec-
+tion with accuracy. This is probably 
+what Occam meant in the first place.
+Representable Does Not 
+Imply Learnable
+Essentially all representations used in 
+variable-size learners have associated 
+Just because  
+a function can  
+be represented  
+does not mean  
+it can be learned.
+system (http://netflixprize.com). As 
+the competition progressed, teams 
+found they obtained the best results 
+by combining their learners with oth-
+er teams’, and merged into larger and 
+larger teams. The winner and runner-
+up were both stacked ensembles of 
+over 100 learners, and combining the 
+two ensembles further improved the 
+results. Doubtless we will see even 
+larger ones in the future.
+Model ensembles should not be 
+confused with Bayesian model av-
+eraging 
+(BMA)—the 
+theoretically 
+optimal approach to learning.4 In 
+BMA, predictions on new examples 
+are made by averaging the individual 
+predictions of all classifiers in the 
+hypothesis space, weighted by how 
+well the classifiers explain the train-
+ing data and how much we believe 
+in them a priori. Despite their su-
+perficial similarities, ensembles and 
+BMA are very different. Ensembles 
+change the hypothesis space (for ex-
+ample, from single decision trees to 
+linear combinations of them), and 
+can take a wide variety of forms. BMA 
+assigns weights to the hypotheses in 
+the original space according to a fixed 
+formula. BMA weights are extremely 
+different from those produced by 
+(say) bagging or boosting: the latter 
+are fairly even, while the former are 
+extremely skewed, to the point where 
+the single highest-weight classifier 
+usually dominates, making BMA ef-
+fectively equivalent to just selecting 
+it.8 A practical consequence of this is 
+that, while model ensembles are a key 
+part of the machine learning toolkit, 
+BMA is seldom worth the trouble.
+Simplicity Does Not 
+Imply Accuracy
+Occam’s razor famously states that 
+entities should not be multiplied be-
+yond necessity. In machine learning, 
+this is often taken to mean that, given 
+two classifiers with the same training 
+error, the simpler of the two will likely 
+have the lowest test error. Purported 
+proofs of this claim appear regularly 
+in the literature, but in fact there are 
+many counterexamples to it, and the 
+“no free lunch” theorems imply it can-
+not be true.
+We saw one counterexample previ-
+ously: model ensembles. The gener-
+alization error of a boosted ensemble 
+
+
+--- Page 10 ---
+review articles
+october 2012  |  vol. 55  |  no. 10  |  communications of the acm    87
+More often than not, the goal 
+of learning predictive models is to 
+use them as guides to action. If we 
+find that beer and diapers are often 
+bought together at the supermar-
+ket, then perhaps putting beer next 
+to the diaper section will increase 
+sales. (This is a famous example in 
+the world of data mining.) But short 
+of actually doing the experiment it is 
+difficult to tell. Machine learning is 
+usually applied to observational data, 
+where the predictive variables are not 
+under the control of the learner, as 
+opposed to experimental data, where 
+they are. Some learning algorithms 
+can potentially extract causal infor-
+mation from observational data, but 
+their applicability is rather restrict-
+ed.19 On the other hand, correlation 
+is a sign of a potential causal connec-
+tion, and we can use it as a guide to 
+further investigation (for example, 
+trying to understand what the causal 
+chain might be).
+Many researchers believe that cau-
+sality is only a convenient fiction. For 
+example, there is no notion of causal-
+ity in physical laws. Whether or not 
+causality really exists is a deep philo-
+sophical question with no definitive 
+answer in sight, but there are two 
+practical points for machine learn-
+ers. First, whether or not we call them 
+“causal,” we would like to predict the 
+effects of our actions, not just corre-
+lations between observable variables. 
+Second, if you can obtain experimen-
+tal data (for example by randomly as-
+signing visitors to different versions of 
+a Web site), then by all means do so.14
+Conclusion
+Like any discipline, machine learn-
+ing has a lot of “folk wisdom” that can 
+be difficult to come by, but is crucial 
+for success. This article summarized 
+some of the most salient items. Of 
+course, it is only a complement to the 
+more conventional study of machine 
+learning. Check out http://www.
+cs.washington.edu/homes/pedrod/
+class for a complete online machine 
+learning course that combines formal 
+and informal aspects. There is also a 
+treasure trove of machine learning 
+lectures at http://www.videolectures.
+net. A good open source machine 
+learning toolkit is Weka.24 
+Happy learning!	
+References
+1.	 Bauer, E. and Kohavi, R. An empirical comparison of 
+voting classification algorithms: Bagging, boosting 
+and variants. Machine Learning 36 (1999), 105–142.
+2.	 Bengio, Y. Learning deep architectures for AI. 
+Foundations and Trends in Machine Learning 2, 1 
+(2009), 1–127.
+3.	 Benjamini, Y. and Hochberg, Y. Controlling the false 
+discovery rate: A practical and powerful approach 
+to multiple testing. Journal of the Royal Statistical 
+Society, Series B, 57 (1995), 289–300.
+4.	 Bernardo, J.M. and Smith, A.F.M. Bayesian Theory. 
+Wiley, NY, 1994.
+5.	 Blumer, A., Ehrenfeucht, A., Haussler, D. and 
+Warmuth, M.K. Occam’s razor. Information 
+Processing Letters 24 (1987), 377–380.
+6.	 Cohen, W.W. Grammatically biased learning: 
+Learning logic programs using an explicit antecedent 
+description language. Artificial Intelligence 68 
+(1994), 303–366.
+7.	 Domingos, P. The role of Occam’s razor in knowledge 
+discovery. Data Mining and Knowledge Discovery 3 
+(1999), 409–425.
+8.	 Domingos, P. Bayesian averaging of classifiers and 
+the overfitting problem. In Proceedings of the 17th 
+International Conference on Machine Learning 
+(Stanford, CA, 2000), Morgan Kaufmann, San Mateo, 
+CA, 223–230.
+9.	 Domingos, P. A unified bias-variance decomposition 
+and its applications. In Proceedings of the 17th 
+International Conference on Machine Learning 
+(Stanford, CA, 2000), Morgan Kaufmann, San Mateo, 
+CA, 231–238.
+10.	Domingos, P. and Pazzani, M. On the optimality of 
+the simple Bayesian classifier under zero-one loss. 
+Machine Learning 29 (1997), 103–130.
+11.	 Hulten, G. and Domingos, P. Mining complex models 
+from arbitrarily large databases in constant time. In 
+Proceedings of the 8th ACM SIGKDD International 
+Conference on Knowledge Discovery and Data Mining 
+(Edmonton, Canada, 2002). ACM Press, NY, 525–531.
+12.	 Kibler, D. and Langley, P. Machine learning as an 
+experimental science. In Proceedings of the 3rd 
+European Working Session on Learning (London, UK, 
+1988). Pitman.
+13.	 Klockars, A.J. and Sax, G. Multiple Comparisons. 
+Sage, Beverly Hills, CA, 1986.
+14.	 Kohavi, R., Longbotham,  R., Sommerfield, D. and 
+Henne, R. Controlled experiments on the Web: 
+Survey and practical guide. Data Mining and 
+Knowledge Discovery 18 (2009), 140–181.
+15.	 Manyika, J., Chui, M., Brown, B., Bughin, J., Dobbs, 
+R., Roxburgh, C. and Byers, A. Big data: The next 
+frontier for innovation, competition, and productivity. 
+Technical report, McKinsey Global Institute, 2011.
+16.	 Mitchell, T.M. Machine Learning. McGraw-Hill,  
+NY, 1997.
+17.	 Ng, A.Y. Preventing “overfitting” of cross-validation 
+data. In Proceedings of the 14th International 
+Conference on Machine Learning (Nashville, TN, 
+1997). Morgan Kaufmann, San Mateo, CA, 245–253.
+18.	 Pearl, J. On the connection between the complexity 
+and credibility of inferred models. International 
+Journal of General Systems 4 (1978), 255–264.
+19.	 Pearl, J. Causality: Models, Reasoning, and 
+Inference. Cambridge University Press, Cambridge, 
+UK, 2000.
+20.	Quinlan, J.R. C4.5: Programs for Machine Learning. 
+Morgan Kaufmann, San Mateo, CA, 1993.
+21.	 Richardson, M. and P. Domingos. Markov logic 
+networks. Machine Learning 62 (2006), 107–136.
+22.	 Tenenbaum, J., Silva, V. and Langford, J. A global 
+geometric framework for nonlinear dimensionality 
+reduction. Science 290 (2000), 2319–2323.
+23.	Vapnik, V.N. The Nature of Statistical Learning 
+Theory. Springer, NY, 1995.
+24.	Witten, I., Frank, E. and Hall, M. Data Mining: 
+Practical Machine Learning Tools and Techniques, 
+3rd Edition. Morgan Kaufmann, San Mateo, CA, 2011.
+25.	Wolpert, D. The lack of a priori distinctions between 
+learning algorithms. Neural Computation 8 (1996), 
+1341–1390.
+Pedro Domingos (pedrod@cs.washington.edu) is a 
+professor in the Department of Computer Science and 
+Engineering at the University of Washington, Seattle.
+© 2012 ACM 0001-0782/12/10 $15.00 
+theorems of the form “Every function 
+can be represented, or approximated 
+arbitrarily closely, using this repre-
+sentation.” Reassured by this, fans of 
+the representation often proceed to 
+ignore all others. However, just be-
+cause a function can be represented 
+does not mean it can be learned. For 
+example, standard decision tree learn-
+ers cannot learn trees with more leaves 
+than there are training examples. In 
+continuous spaces, representing even 
+simple functions using a fixed set of 
+primitives often requires an infinite 
+number of components. Further, if 
+the hypothesis space has many local 
+optima of the evaluation function, as 
+is often the case, the learner may not 
+find the true function even if it is rep-
+resentable. Given finite data, time and 
+memory, standard learners can learn 
+only a tiny subset of all possible func-
+tions, and these subsets are different 
+for learners with different represen-
+tations. Therefore the key question is 
+not “Can it be represented?” to which 
+the answer is often trivial, but “Can it 
+be learned?” And it pays to try different 
+learners (and possibly combine them).
+Some representations are exponen-
+tially more compact than others for 
+some functions. As a result, they may 
+also require exponentially less data to 
+learn those functions. Many learners 
+work by forming linear combinations 
+of simple basis functions. For exam-
+ple, support vector machines form 
+combinations of kernels centered at 
+some of the training examples (the 
+support vectors). Representing parity 
+of n bits in this way requires 2n basis 
+functions. But using a representation 
+with more layers (that is, more steps 
+between input and output), parity can 
+be encoded in a linear-size classifier. 
+Finding methods to learn these deeper 
+representations is one of the major re-
+search frontiers in machine learning.2
+Correlation Does Not 
+Imply Causation
+The point that correlation does not 
+imply causation is made so often that 
+it is perhaps not worth belaboring. 
+But, even though learners of the kind 
+we have been discussing can only 
+learn correlations, their results are 
+often treated as representing causal 
+relations. Isn’t this wrong? If so, then 
+why do people do it?

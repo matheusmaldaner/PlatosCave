@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Adam, an adaptive moment estimation algorithm using first and second moment estimates of gradients, provides an efficient stochastic optimization method suitable for large-scale, high-dimensional, noisy, and/or sparse problems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Adam computes per-parameter adaptive learning rates by maintaining exponential moving averages of the gradient (first moment) and the squared gradient (second raw moment) and applies bias correction to these estimates",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Adam's parameter update rule is theta_t = theta_{t-1} - alpha * bmt / (sqrt(bvt) + epsilon) where bmt and bvt are bias-corrected first and second moment estimates",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Adam is invariant to diagonal rescaling of gradients, approximately bounds effective step magnitude by the stepsize hyperparameter alpha, naturally anneals steps near optima, and works with sparse and non-stationary objectives",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Bias correction is required because initializing moment estimates at zero biases them toward zero, especially when decay rates beta are close to one, and dividing by (1 - beta^t) corrects this initialization bias",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "AdaMax, a stable variant of Adam using the infinity norm limit, and temporal averaging are practical extensions that simplify updates and improve generalization respectively",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Algorithm 1 (Adam) requires hyperparameters alpha, beta1, beta2, epsilon and updates m_t = beta1*m_{t-1} + (1-beta1)*g_t and v_t = beta2*v_{t-1} + (1-beta2)*(g_t elementwise squared) with bias corrections bmt = mt/(1-beta1^t) and bvt = vt/(1-beta2^t)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Initialization bias correction is especially important when beta2 is close to one (e.g., for sparse gradients); without correction, initial steps can be excessively large and cause divergence",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Under common settings (alpha=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8) Adam is computationally efficient, memory light, and elementwise operations allow simple implementation",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "The effective step Delta_t = alpha * bmt/sqrt(bvt) has approximate upper bounds and typically satisfies |Delta_t| approximately less than or equal to alpha, providing a trust-region-like behavior",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Empirical experiments across logistic regression, sparse bag-of-words, multilayer neural networks, and convolutional networks show Adam converges as fast or faster than SGD with momentum, AdaGrad, RMSProp and some quasi-Newton methods, and handles sparse features well",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Empirical test on a variational autoencoder demonstrates that removing bias-correction yields instabilities for beta2 close to one, while bias-corrected Adam remains stable across learning rates and beta settings",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "On MNIST logistic regression and IMDB bag-of-words experiments Adam converged similarly to SGD with Nesterov momentum and as fast as AdaGrad on sparse features, confirming adaptive advantage on sparse problems",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "On multilayer neural networks (two 1000-unit ReLU hidden layers) Adam outperformed other first-order methods and was faster in wall-clock time than SFO quasi-Newton due to lower per-iteration cost and memory",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "On convolutional neural networks Adam and SGD eventually outperform AdaGrad; Adam adapts per-layer learning rates and gives marginal improvement over SGD with momentum in deep CNN experiments",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Under online convex optimization assumptions with bounded gradients and bounded parameter distances, and with decaying alpha_t proportional to 1/sqrt(t) and decaying beta1,t, Adam achieves O(sqrt(T)) regret and average regret O(1/sqrt(T)), comparable to best known bounds",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

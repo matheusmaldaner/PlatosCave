@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim reflects known HPC pressures from large data volumes and the use of accelerators; GPU side lossy compression with user controlled error bounds is plausible but not supported by the given text.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines three plausible limitations of existing GPU lossy compressors—generalization across diverse data features, memory footprint due to preallocated worst case buffers, and poor random access to regions of interest—based solely on the claim and general knowledge, without external validation.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the stated design elements appear plausible but no external evidence is provided.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.6,
+    "relevance": 0.75,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a multi stage compression pipeline with per block lossy integer quantization, lossless dimension aware delta encoding, fixed length encoding, optional outlier preservation, and blockwise processing with a global prefix sum to concatenate blocks; without external sources, assessment relies on generic knowledge of compression pipelines and the stated sequence",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.55,
+    "relevance": 0.65,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.3,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based on claim text, VGC has three per-dimension modes No-delta Delta Outlier and supports 1D-3D blocking; no external evidence provided.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Evaluates plausibility of dimension aware delta encoding that performs row wise and fused column or depth delta within blocks to preserve spatial locality while enabling vectorized and coalesced GPU memory access with low register and shared memory usage",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.7,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible two pass kernel approach for memory efficient compression on GPUs, but no specific source is cited and the statement is general rather than tied to a particular implementation.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the concept of early-stopping during global prefix-sum over block metadata to decompress specific blocks for a region of interest and allowing writes back into compressed array for homomorphic operations is plausible but not evidenced.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "No external sources consulted; assessment based solely on the claim text and general knowledge about GPU memory bandwidth.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "No external verification performed; assessment based solely on the provided claim text and general background knowledge.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the role, and general background knowledge, the claim asserts VGC-O Outlier has highest or near-highest compression across 13 HPC datasets at REL 1e-4, outperforming cuSZp2 on 12 of 13 with up to 86 percent higher ratio; without external data, assessment remains uncertain.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.2,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that moving from 1D to 3D dimension information increases compression ratio, with RTM field data showing up to 51 percent higher VGC-O ratio in 3D versus 1D, implying benefits from dimension-aware blocking and delta encoding.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based on claim text and general GPU memory compression knowledge; no external data used.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Without external data the claim cannot be verified; it appears plausible for specialized hardware and indicates high throughputs but no corroborating evidence provided.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim cites two real world use-case evaluations with specific numbers but no external sources are checked here.",
+    "confidence_level": "medium"
+  }
+}

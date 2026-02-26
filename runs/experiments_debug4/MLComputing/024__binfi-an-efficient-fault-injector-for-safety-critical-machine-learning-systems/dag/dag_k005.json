@@ -1,0 +1,197 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An efficient binary-search fault injection method leveraging (approximate) monotonicity of ML error propagation can identify safety-critical bits and measure resilience in safety-critical machine learning systems with far lower cost than exhaustive FI",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Safety-critical ML systems (e.g., autonomous vehicles) are vulnerable to hardware transient faults (soft errors) that can cause silent data corruptions (SDCs) and violate safety requirements",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Exhaustive fault injection (flipping every bit) finds critical bits but is prohibitively expensive because time grows linearly with number of bits; random FI cannot reliably discover clustered critical bits",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Many common ML computations and their compositions exhibit monotonicity or approximate monotonicity (convolution/MatMul, ReLu, pooling, batch norm, SoftMax, data transforms), so error propagation functions (EP) are often monotonic or approximately monotonic",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "When EP is (approximately) monotonic, larger input deviations (from higher-order bit flips) produce larger output deviations and are more likely to cause SDCs, implying an SDC boundary in bit significance",
+      "role": "Claim",
+      "parents": [
+        3,
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "BinFI: a binary-search-like FI algorithm that converts operator outputs to binary, separates 0- and 1-bits, and searches for the SDC-boundary by bisecting bit significance per operator output element",
+      "role": "Method",
+      "parents": [
+        4,
+        0
+      ],
+      "children": [
+        6,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Fault model and injection mapping: single-fault-per-execution in processor data path (pipeline registers and ALUs), map faults to operator outputs in TensorFlow graph, emulate single-bit flips (sufficient to approximate multi-bit effects)",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Traditional heavy-weight protections (replication, instruction duplication) incur high cost and latency unsuitable for real-time safety-critical ML (e.g., AVs) motivating selective protection guided by identifying critical bits",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Random FI has poor coverage for discovering clustered critical bits even with many trials; exhaustive FI is the only comprehensive baseline but is slow and costly",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Implementation: extended open-source TensorFI to support DNN operators and added BinFI modes (binary, exhaustive, random); injections performed at operator output values in TensorFlow",
+      "role": "Method",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Evaluation setup: ran BinFI, exhaustive FI and random FI across 8 ML models and 6 datasets (including driving frames and traffic signs), using 32-bit fixed-point representation and 10 inputs per benchmark for tractability",
+      "role": "Method",
+      "parents": [
+        5,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "BinFI identified 99.56% of safety-critical bits with 99.63% precision across evaluated benchmarks, substantially outperforming random FI with the same number of trials",
+      "role": "Result",
+      "parents": [
+        10,
+        9,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Knowing critical bits enables selective, low-cost protection strategies (dynamic fault tolerance, voltage scaling, focused defenses) and guides security/hardening efforts against fault-based attacks",
+      "role": "Claim",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "BinFI reduces number of FI trials to approximately 20% of exhaustive FI (about 5x speedup) and produces overall SDC probability estimates that closely match exhaustive FI (low deviation), while overhead scales logarithmically with bit width",
+      "role": "Result",
+      "parents": [
+        11,
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitations and inaccuracy sources: EP functions are sometimes only approximately monotonic so BinFI can miss a small fraction of critical bits (<0.5% reported); not 100% coverage necessitates caution if exhaustive guarantees are required",
+      "role": "Limitation",
+      "parents": [
+        13,
+        11,
+        3
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: BinFI is a practical first-step tool for low-cost identification of safety-critical bits in ML inference, enabling selective protection tradeoffs; future work includes other ML frameworks, more safety domains and selective protection schemes",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        13,
+        12,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

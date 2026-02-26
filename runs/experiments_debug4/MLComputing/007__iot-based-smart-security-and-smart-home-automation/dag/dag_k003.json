@@ -1,0 +1,178 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU can implement integrated smart security, smart home automation, and environment monitoring that overcomes range and reliability drawbacks of existing short range wireless methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing home automation methods have limitations: Bluetooth has limited range (~10 m), voice systems suffer from low signal to noise ratio dependent accuracy, ZigBee has limited range (10-20 m, extendable with DSSS), and GSM SMS delivery is unreliable",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Proposed system design: use Node MCU as main IoT controller, connect sensors (IR, DHT11, MQ135), use relays to switch appliances, connect OV7670 camera to Arduino UNO, and provide user interface via smartphone/Blink app and email notifications",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "System claim: combining the same sensor set can address both home security (motion detection and image alert) and home automation (remote control of appliances) while also providing environment monitoring",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "System advantage claim: using Node MCU with internet connectivity allows control over Wi-Fi or cellular networks (3G/4G) enabling long distance operation and support for handicapped and aged users",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Motivation: these identified limitations motivate implementing an IoT based system that uses internet connectivity to overcome short range and reliability issues",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Hardware detail: Node MCU (ESP8266-based) is used as the primary IoT board with 16 GPIO pins and Wi-Fi, while Arduino UNO is used to interface the OV7670 camera because Node MCU has only one analog pin",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Sensors used and roles: IR sensor for motion detection, DHT11 for temperature and humidity, MQ135 for air purity/gas detection, relay board for switching high current appliances",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Camera integration and behavior: OV7670 camera provides 640x480 VGA output, is powered at 3.3V, is connected to Arduino UNO, and is activated when the IR sensor detects motion",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Data flow and notifications: when motion is detected the camera captures an image, the image is stored on a PC folder and the system sends the captured image to the predefined user email as an intruder alert",
+      "role": "Result",
+      "parents": [
+        8,
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Security workflow claim: upon receiving an emailed image the owner can remotely trigger lights/fans via mobile keypad input or forward the image to authorities if the person is an intruder",
+      "role": "Claim",
+      "parents": [
+        9,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Environment monitoring result: DHT11 and MQ135 continuously send readings to the smartphone (updated every second) enabling the user to detect high temperature or gas concentration and remotely turn on fans",
+      "role": "Result",
+      "parents": [
+        7,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Advantage evidence: the prototype can be controlled from long distance via smartphone and shown on the Blink app, demonstrating remote control capability and usability for handicapped and aged people",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: the implemented IoT system provides a low cost integrated solution for home security, automation, and environment monitoring that leverages internet connectivity to extend range and usability",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation and future scope: the system requires internet connectivity to operate, and future implementations could use Raspberry Pi as an alternative platform",
+      "role": "Limitation",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

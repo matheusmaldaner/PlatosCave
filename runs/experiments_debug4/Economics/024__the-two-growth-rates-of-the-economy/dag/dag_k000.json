@@ -1,0 +1,187 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Reporting both the ensemble-average (GDP per capita) growth rate and the time-average (DDP per capita) growth rate, and their difference, yields a more complete and policy-relevant picture of national economic performance than reporting GDP per capita growth alone",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Under random multiplicative income dynamics (Gibrat type models) incomes evolve by successive proportional multiplicative shocks and the ergodicity transformation is the logarithm of income",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The ensemble-average growth rate is the growth rate of the population mean income (GDP per capita) and is approximately an income-weighted (plutocratic) average of individual growth rates",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The time-average growth rate equals the long-time growth experienced by an individual and is the growth rate of the geometric mean income (DDP per capita), i.e. an equally weighted (democratic) average of individual growth rates",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The difference between ensemble-average and time-average growth rates defines a natural inequality measure, the ergodicity gap J(t) = ln(mean income) - mean(ln income), equal to the mean logarithmic deviation (MLD) or Theil index two",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Policy implication: if GDP per capita grows faster than DDP per capita citizens may experience stagnating or lower long-run typical growth leading to political disconnect; statistical authorities should report GDP per capita growth, DDP per capita growth, and the ergodicity gap",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Mathematical result: after log transformation the additive growth rate g = delta ln x / delta t is ergodic, so ensemble and time averages of g coincide in the model",
+      "role": "Method",
+      "parents": [
+        1,
+        2,
+        3
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Analytic example (geometric Brownian motion): ensemble-average growth rate g_mean = mu, time-average growth rate g_time = mu - sigma squared over two, so ensemble-average exceeds time-average by sigma squared over two",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Practical estimation claim: the time-average growth rate and the ergodicity gap depend only on initial and terminal income distributions (geometric mean and mean of log incomes) and thus can be estimated from cross-sectional or quantile data without panel data or mobility information",
+      "role": "Claim",
+      "parents": [
+        6,
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Model implication: under pure multiplicative random growth (GBM) the ergodicity gap (MLD) grows linearly over time (J(t) = sigma squared times t over two) and inequality increases without bound absent other mechanisms",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Method used on data: compute ensemble-average growth from mean income series, compute time-average growth from changes in geometric mean estimated using quantile averages and truncation safeguards for low incomes",
+      "role": "Method",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Empirical evidence: United States 1966-2014 shows divergence since 1980 with GDP per capita growth exceeding DDP per capita growth (ensemble +40% vs time +20%), while France shows much closer ensemble and time growth rates over the last fifty years",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical evidence: the ergodicity gap evolution correlates strongly with top 10% income share (correlation 0.94 US, 0.79 France) indicating the ergodicity gap tracks standard inequality measures",
+      "role": "Evidence",
+      "parents": [
+        11,
+        4
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Assumption: income dynamics are reasonably approximated by random multiplicative processes for the theoretical comparisons and analytic results to apply",
+      "role": "Assumption",
+      "parents": [
+        1,
+        7
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: pure multiplicative models ignore redistribution, interactions, and institutional reallocation mechanisms which can reduce divergence; empirical deviations (e.g. France) indicate those mechanisms matter",
+      "role": "Limitation",
+      "parents": [
+        13,
+        11
+      ],
+      "children": [
+        5
+      ]
+    }
+  ]
+}

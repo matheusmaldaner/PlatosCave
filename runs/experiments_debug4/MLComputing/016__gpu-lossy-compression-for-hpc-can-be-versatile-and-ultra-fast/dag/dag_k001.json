@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A versatile, ultra-fast GPU lossy compression framework that is dimension-aware, supports multiple algorithms, reduces GPU memory footprint, and enables selective decompression can address major data-movement and memory challenges in HPC",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing GPU lossy compressors have three key limitations: poor generalization across diverse HPC data features, inability to reduce actual GPU memory footprint due to pre-allocation of maximum compressed size, and lack of effective dimension-aware random access",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Design VGC: provide three compression algorithms (No-delta, Delta, Outlier), 1D/2D/3D dimension-aware processing, a kernel-fission memory-efficient compression mode, and a selective decompression mode with early stopping",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Implement VGC as fused high-performance CUDA kernels (single kernel for standard modes, two-kernel fission for memory-efficient mode), with blockwise processing, integer quantization, dimension-aware delta encoding, fixed-length encoding, and optional outlier preservation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "VGC supports error-bounded lossy quantization and produces compressed outputs compatible with standard decompression and selective decompression workflows",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Characterization evidence: diverse HPC datasets (mesh, slice, particle, ML weights) show markedly different spatial structure and correlation requiring adaptive algorithms and dimension awareness",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Dimension-aware Delta Encoding: perform register-level fused row-wise (and slice/depth) delta passes to preserve spatial locality, enable coalesced/vectorized memory access, and avoid Lorenzo overhead and branch divergence",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Memory-efficient Compression (kernel fission): first kernel profiles per-block compressed sizes and prefix-sum to compute exact total compressed size; then allocate exact GPU memory and second kernel writes compressed blocks using synchronized offsets",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Selective Decompression with early stopping: read block metadata and perform prefix-sum only up to target ROI to locate and decompress ROI without full decompression, supporting writing back to compressed array",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Provide three algorithms per dimensionality: No-delta for random data, Delta for sparse/locally-smooth data, Outlier (full pipeline) for globally smooth data with optional preservation of first block values",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evaluation setup: implementation ~15k lines CUDA, block sizes 32 (1D), 8x8 (2D), 4x4x4 (3D); evaluated on NVIDIA A100 using 13 real-world HPC datasets and comparisons to cuZFP, FZ-GPU, cuSZp1, cuSZp2, PFPL under REL error mode",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 11,
+      "text": "VGC preserves error-bound guarantees because integer quantization is the only lossy stage and subsequent stages (delta, fixed-length, outlier) are lossless; reconstructed data matches quantization error bounds",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Result: Memory-efficient Compression allocates exact compressed size and reduces GPU memory footprint substantially (example SCALE fields reduced from hundreds of MB to single-digit MB) while retaining ~70% throughput of standard mode",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: Selective Decompression achieves very high ROI-access throughput (average ~1.11 TB/s single-precision, ~2.08 TB/s double-precision) and supports in-place read/write of compressed regions",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Performance results: on A100 across 13 datasets VGC average throughput ~320 GB/s (compression) and ~470 GB/s (decompression) for single-precision, and ~600 / ~1000 GB/s for double-precision; memory-efficient mode averages ~70% throughput",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Compression ratio and quality: VGC-O achieves highest or second-highest compression ratios on most datasets (higher than cuSZp2 on 12/13 datasets, up to 86% improvement on JetIn) while maintaining PSNR/SSIM comparable to other error-bounded methods",
+      "role": "Evidence",
+      "parents": [
+        10,
+        14
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Use-case evidence: (a) LLM KV cache compression (VGC-N 1D, memory-efficient) reduces KV memory by ~46% while compression/decompression are fast (avg 211/296 GB/s) with preserved BLEU ~90; (b) In-situ inter-node transfer of a 256 GB turbulence field shows pipeline transfer time reduced up to 12.5x using VGC",
+      "role": "Result",
+      "parents": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "CONDA provides versatile, low-cost datapath soft error detection for HPC by using compiler-driven code transformation and static analysis to detect both data-flow and control-flow errors with low runtime and latency overhead",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "CONDA design: duplicate instructions and compute software signatures with a lazy checking motion, aggregate checks via register-level domination propagation, and place detection branches using adaptive detection placement",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Two root causes increase runtime overhead in prior holistic datapath protections: (A) extra branches that complicate program control-flow, and (B) frequent global memory accesses that break memory access patterns",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Lazy Checking Motion buffers per-basic-block comparison results in registers by duplicating instructions and signature computations, performing local AND/OR reductions to avoid inserting extra basic-block reporting branches",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Domination Propagation aggregates buffered checking registers across basic blocks using domination-tree analysis so aggregation stays in registers (no global memory load/store), preserving memory behavior",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Adaptive Detection Placement statically analyzes function control-flow and outermost loops and places detection branches at function exits, loop backedges, or loop exits to balance detection latency and control-flow complexity",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "CONDA is implemented as an automated LLVM-15 compiler pass workflow that transforms LLVM IR to protected LLVM IR without requiring dynamic profiling",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Evaluation methodology: experiments on 15-node cluster and an anonymous supercomputer, 38 benchmarks from 7 suites, LLVM- and assembly-level fault injection, measuring runtime overhead, fault coverage (SDC reduction), and detection latency",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Runtime overhead result: CONDA incurs 57.79% average runtime overhead across 38 benchmarks, which is 41.84% lower than the baseline holistic combination of EDDI+CFCSS",
+      "role": "Result",
+      "parents": [
+        0,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Performance and code-structure effects: CONDA simplifies program control-flow (dynamic basic-block overhead reduced to 22.82% vs 224.17% baseline) and preserves memory access patterns (CONDA outperforms CONDA-mem which uses global memory sync)",
+      "role": "Result",
+      "parents": [
+        0,
+        3,
+        4,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Fault coverage: CONDA achieves equivalent detection effectiveness to EDDI for data-flow errors and to CFCSS for control-flow errors (similar SDC reduction in LLVM- and assembly-level injections)",
+      "role": "Result",
+      "parents": [
+        0,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Detection latency and tradeoff: CONDA reduces detection latency by 16.28x compared with placing detection only at function exits, while adaptive placement introduces only 4.65% additional runtime overhead",
+      "role": "Result",
+      "parents": [
+        0,
+        5,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Parallel compatibility: CONDA is compatible with OpenMP multi-threaded HPC applications; in a case study with SimpleMOC CONDA incurred 46.23% to 64.23% runtime overhead varying with thread count",
+      "role": "Result",
+      "parents": [
+        0,
+        6,
+        7
+      ],
+      "children": null
+    }
+  ]
+}

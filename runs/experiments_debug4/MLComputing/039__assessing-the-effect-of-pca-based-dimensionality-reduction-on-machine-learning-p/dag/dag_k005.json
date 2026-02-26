@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "PCA-based dimensionality reduction can improve machine learning performance for hyperspectral optical imaging soil moisture estimation",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset: 679 samples collected during a five-day field campaign in May 2017 on an undisturbed bare-soil sample; each sample contains soil moisture and 125 spectral bands from 450 nm to 950 nm with ~4 nm resolution",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Preprocessing: spectral features standardized using StandardScaler and dataset split into train and test with test size 0.3 and fixed random state 42 for reproducibility",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Dimensionality reduction: PCA applied to standardized spectral features; number of principal components chosen to retain more than 99 percent of total variance using covariance matrix, eigenvalue distribution, and scree plot",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Prediction model: Random Forest regressor with 100 trees, random state 42, trained on PCA-transformed features and evaluated with coefficient of determination R2",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Dataset composition table: spectral bands reported from 454 nm to 950 nm and auxiliary soil temperature column; soil moisture values range approximately 25 percent to 43 percent with center near 32 percent",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Data inspection: correlation heatmap shows strong interband correlations and representative bands with high redundancy (example bands at 642 nm and 742 nm), indicating virtual dimensionality lower than nominal",
+      "role": "Evidence",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Explained variance ratios for first four principal components: PC1 = 0.9889, PC2 = 0.0064, PC3 = 0.0023, PC4 = 0.0016; cumulative after PC2 = 0.9953 (>99 percent)",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result of PCA component selection: retaining only PC1 and PC2 preserves over 99 percent of dataset variance, validated by scree plot showing sharp eigenvalue drop after PC2",
+      "role": "Result",
+      "parents": [
+        3,
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "PCA projection visualization: projection onto PC1 and PC2 reveals clearer separation and clustering by soil moisture values compared to higher-dimensional space, while projections including PC3 show stronger overlap",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Random Forest baseline result: model trained on PCA-transformed features achieved R2 = 0.947, explaining approximately 94.7 percent of variance in soil moisture",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Claim: Compressing 125 spectral bands into two principal components reduces redundancy and data complexity while preserving key predictive information relevant to soil moisture",
+      "role": "Claim",
+      "parents": [
+        9,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Claim: PCA-based reduction supports computational efficiency and improved interpretability in hyperspectral machine learning workflows",
+      "role": "Claim",
+      "parents": [
+        10,
+        8
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: PCA is an effective baseline dimensionality reduction strategy for hyperspectral optical imaging that can produce efficient feature representations and strong predictive capability for soil moisture estimation",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitations and future work: study uses a single dataset from one campaign and one target variable; authors recommend evaluating alternative feature extraction methods and testing across diverse imaging scenarios and sensors",
+      "role": "Limitation",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "VGC is a versatile, error-bounded GPU lossy compression framework for HPC that provides high compression ratios, ultra-fast throughput, reduced GPU memory footprint, and efficient random access to compressed data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "VGC supports multiple compression algorithms (No-delta, Delta, Outlier) and dimension-aware processing (1D, 2D, 3D) to adapt to diverse HPC data features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "VGC provides a Memory-efficient Compression mode that computes actual compressed size on-GPU and allocates exactly that memory using a kernel-fission design",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "VGC provides Selective Decompression enabling direct random access to region(s) of interest in compressed data via an early-stopping global prefix-sum mechanism",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        14
+      ]
+    },
+    {
+      "id": 4,
+      "text": "VGC is implemented as highly optimized GPU kernels (single fused kernel for normal mode, two kernels for memory-efficient mode) and applies blockwise, register-level optimizations to maximize throughput while keeping error bounds",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        10,
+        11,
+        16
+      ]
+    },
+    {
+      "id": 5,
+      "text": "VGC evaluation across 13 real-world HPC datasets and two use cases (LLM KV cache compression, inter-node transfer) demonstrates its performance, compression ratio advantage, memory savings, and selective access benefits",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Dimension-aware Delta Encoding: VGC applies row-wise (then fused column/depth) delta on 2D/3D blocks to preserve spatial locality with coalesced memory access and low register/shared-memory pressure",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Compression pipeline: data blocking, integer quantization (error-bounded), dimension-aware delta encoding, fixed-length encoding, optional outlier preservation, per-block prefix-sum and block concatenation in GPU kernels",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Kernel-fission Memory-efficient Compression: first kernel profiles per-block compressed sizes and global scan to obtain total compressed size; second kernel reuses offsets to write compressed blocks into exactly allocated GPU memory",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Selective Decompression method: store one-byte-per-block metadata, perform local reduce then a global scan with early stopping at the block preceding ROI to compute offsets and decompress only needed blocks",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Result: On single-precision datasets VGC achieves on average ~320 GB/s compression and ~470 GB/s decompression (VGC-D/VGC-O reported averages: 324.8/320.6 GB/s compress; 479.9/455.7 GB/s decompress) on NVIDIA A100",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Result: On double-precision datasets VGC achieves on average ~600 GB/s compression and ~1000 GB/s decompression (VGC-O example: 618.22 GB/s compress, 1059.31 GB/s decompress)",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Result: Compression ratios at REL 1E-4: VGC-O attains the highest ratio on 7 of 13 datasets and higher ratio than cuSZp2 on 12 of 13 datasets; it is comparable to or better than PFPL while delivering higher throughput",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: Memory-efficient Compression reduces real-time GPU memory footprint by allocating exact compressed size (example: SCALE QG field reduced from 539 MB pre-allocated to 7.8–9.9 MB actual), while achieving ~70% throughput of standard mode",
+      "role": "Result",
+      "parents": [
+        2,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Result: Selective Decompression achieves very high ROI access throughput (average ~1.11 TB/s single-precision and ~2.08 TB/s double-precision) for dimension-aware blocks, enabling fast random access and write-back",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Use-case Result (LLM KV cache): Applying VGC-N (No-delta, 1D) with memory-efficient mode on KV caches of four LLMs achieved average compression throughput ~211 GB/s, decompression ~296 GB/s, and reduced KV cache memory by ~46%, with BLEU ~90 indicating preserved response semantics",
+      "role": "Result",
+      "parents": [
+        2,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Use-case Result (inter-node transfer): In a pipeline GPUDirect RDMA simulation on a 256 GB turbulence field split into 128 2GB chunks, VGC (3D Outlier) reduced end-to-end transfer time by 12.5x vs uncompressed (e.g., total transfer down to ~1.21 s or 0.79 s at 25 GB/s), with compression throughput ~327.8 GB/s and decompression ~404.7 GB/s",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

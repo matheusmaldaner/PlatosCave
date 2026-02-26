@@ -1,0 +1,223 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A single-kernel, pure-GPU error-bounded lossy compressor (CUSZP2) can achieve extreme end-to-end throughput and optimized compression ratios while preserving reconstructed data quality for HPC workloads",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "HPC simulations and large language model training produce data at rates that make CPU-GPU data movement (PCIe) a bottleneck, motivating pure-GPU, ultra-fast lossy compression",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "CUSZP2 is designed as a single CUDA kernel pure-GPU compressor that performs lossy conversion, lossless encoding, device-level prefix-sum, and block concatenation entirely on GPU",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Outlier fixed-length encoding (Outlier-FLE): a novel lossless encoding that stores per-element sign bits, an adaptive small fixed-length field, and preserves larger outliers using 1-4 bytes with a mode flag in block offset",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Vectorized memory accesses: use vector types within blocks and coalesced warp-level accesses across blocks to reduce memory instructions and maximize global memory bandwidth utilization",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Global prefix-sum via decoupled lookback: a compression-aware adaptive lookback strategy that hides device-level synchronization latency when computing concatenation offsets",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "CUSZP2 workflow compresses data in uniform blocks with steps: lossy conversion (quantize to integers within error bound), lossless encoding (plain-FLE or Outlier-FLE), device-level prefix-sum, and block concatenation; decompression reverses steps",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Measured end-to-end throughput on NVIDIA A100 (9 real-world HPC datasets): average compression 332.42 GB/s and decompression 513.04 GB/s (end-to-end including cudaMemcpy and GPU APIs)",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "children": [
+        8,
+        11,
+        12,
+        16
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Throughput comparison: CUSZP2 achieves around 2x throughput vs state-of-the-art pure-GPU compressors and approx. 200x vs CPU-GPU hybrid compressors in end-to-end measurements",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Memory bandwidth utilization: CUSZP2-P and CUSZP2-O achieve measured global memory throughput near 1175.34 GB/s and 1103.45 GB/s respectively on A100, approaching device peak (1555 GB/s) and far exceeding baselines",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        7,
+        16
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Synchronization latency hiding: decoupled lookback attains 846.85 GB/s device-level synchronization throughput on representative datasets, 2.41x faster than plain chained-scan",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        7,
+        16
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Compression ratio results: CUSZP2 with Outlier-FLE achieves higher compression ratios than state-of-the-art error-bounded GPU compressors in 24 of 27 evaluated cases; Outlier-FLE beneficial on globally smooth datasets",
+      "role": "Result",
+      "parents": [
+        3,
+        6,
+        7
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Reconstructed data quality: CUSZP2 preserves high-quality isosurfaces and has the best rate-distortion among error-bounded GPU compressors (same lossy quantization), and outperforms cuZFP visually at high compression ratios",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Double-precision support: CUSZP2 maps single- and double-precision values to quantization integers so lossless encoding is unchanged; measured double-precision throughput ranges 612.83 to 809.71 GB/s depending on mode and operation",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Random access: block-granularity compression enables high-throughput random access; measured throughput for accessing one arbitrary compressed block averages 1010.07 GB/s across datasets",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Multi-dimensional first-order differencing (2D/3D Lorenzo) can increase compression ratio modestly but complicates memory access and partial-sum logic and reduces throughput substantially, justifying CUSZP2's 1D design",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        11,
+        7
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: CUSZP2 demonstrates that combining Outlier-FLE, vectorized memory access, and decoupled lookback in a single-kernel pure-GPU implementation yields extreme end-to-end throughput and optimized compression ratios suitable for HPC workloads",
+      "role": "Conclusion",
+      "parents": [
+        2,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

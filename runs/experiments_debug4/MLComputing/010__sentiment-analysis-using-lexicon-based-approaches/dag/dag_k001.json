@@ -1,0 +1,198 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based sentiment analysis method (SO-CAL) that uses hand-ranked, part-of-speech specific dictionaries plus linguistic contextual handling (intensiﬁcation, negation, irrealis blocking, weighting) yields robust, domain-portable polarity classification and reliable strength estimates",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL uses manually created, hand-ranked dictionaries for adjectives, nouns, verbs, and adverbs with scores on a scale from -5 to +5 and excludes neutral/ambiguous items to improve reliability",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "SO-CAL implements contextual valence shifters: intensifiers/downtoners modeled as percentage multipliers, negation implemented primarily as a polarity shift toward the opposite polarity (shift amount 4) rather than a simple sign flip, and irrealis blocking to ignore non-factual contexts",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "SO-CAL includes text-level and heuristic features: repetition weighting (nth occurrence weighted 1/n), increased weight for negative expressions (+50%), XML or positional sentence weighting, handling of multi-word expressions, and lemmatization/PoS-tagging",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Dictionaries were constructed from multiple sources (Epinions corpora, Polarity Dataset subset, General Inquirer), manually reviewed by a committee, and multi-word expressions and intensifier/adjectival intensifier lists were included",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Manual dictionary design choices: exclude ambiguous words or words with domain-dependent senses, hand-assign strength values, provide separate PoS dictionaries, and prefer restrained coverage over maximal automatic coverage to reduce noise",
+      "role": "Claim",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Negation handling: conservative backward search for negators with part-of-speech tailored skip lists; shifted polarity negation (reduce toward opposite by fixed amount) better models pragmatic effects than simple polarity flip",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Text-level heuristics (negative weighting, repetition weighting, and XML/positional weighting) improve robustness by compensating for positive bias and descriptive repetition",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evaluation setup: tested on multiple balanced corpora (Epinions1 dev 400 reviews, Epinions2 unseen 400, Movie Polarity Dataset ~1900, Camera 2400) and on shorter-text domains (MPQA sentences, MySpace comments, news/blog sentences, SemEval headlines)",
+      "role": "Method",
+      "parents": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Ablation and feature tests show that combined linguistic features (negation shift + intensification + irrealis + negative weighting + repetition) significantly improve accuracy versus basic word-sum approaches and versus simplified dictionaries",
+      "role": "Result",
+      "parents": [
+        5,
+        6,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Dictionary coverage trade-off: adding many automatically derived words can decrease performance due to noise from rare descriptive vocabulary, PoS/sense mismatches, and domain-speciﬁc artifacts",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "SO-CAL achieved high and consistent polarity accuracy across domains: full system overall accuracies reported around 78.7% on review corpora (80.25% Epinions1, 80.00% Epinions2, 76.37% Movie, 80.16% Camera) and comparable performance (75–83%) on sentence/headline datasets when non-empty texts are considered",
+      "role": "Evidence",
+      "parents": [
+        8,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Comparisons to other lexicons and methods: SO-CAL with manual dictionaries outperformed or was more robust than automatic PMI-based dictionaries, SentiWordNet variants, the Maryland thesaurus-derived lexicon, General Inquirer and Subjectivity lexicons when combined with SO-CAL features; automatically derived lexicons often showed positive bias or noisy coverage",
+      "role": "Evidence",
+      "parents": [
+        8,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Mechanical Turk validation: human judgments over single-word polarity and pairwise strength comparisons correspond substantially to SO-CAL manual rankings (manual dictionary MT correspondence higher than automatic dictionary correspondence), supporting the reliability of manual SO rankings and granularity",
+      "role": "Evidence",
+      "parents": [
+        5,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: A lexicon-based system that combines fine-grained, manually validated PoS dictionaries with linguistically motivated context handling provides robust, domain-portable sentiment polarity and usable strength estimates; linguistic enhancements are most effective when paired with reliable lexicons",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitations and future work: negation remains complex beyond simple shift/flip models; reduced performance on very short texts or SO-empty items; potential gains from discourse parsing, topic/paragraph weighting, sense disambiguation, and extending methods to other languages (Spanish shown promising), to be addressed in future research",
+      "role": "Limitation",
+      "parents": [
+        14,
+        6,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

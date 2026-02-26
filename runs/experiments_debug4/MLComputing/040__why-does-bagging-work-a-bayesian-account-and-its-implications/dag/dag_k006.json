@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Bagging reduces classification error; this paper tests two Bayesian explanations for why bagging works: (A) bagging approximates Bayesian model averaging with an implicit prior, and (B) bagging changes the learner's model space and/or implicit prior to better fit the domain",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Hypothesis A: Bagging works because it approximates the Bayesian model averaging classifier (Equation 4) more closely than the single model output by the learner",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Hypothesis B: Bagging works because it effectively changes the learner's model space and/or implicit prior (e.g., counteracts an over-strong simplicity bias), producing models that better fit the domain",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Empirical evaluation using C4.5 decision-tree learner (C4.5 release 8) on 26 UCI datasets, using m bootstrap replicates (initially m=25, also tested m=10,50,100) and ten-fold cross-validation; meta-learning constructed large synthetic training sets labeled by the bagged ensemble and induced trees/rules from them",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Context: Prior theoretical accounts include Breiman's order-correctness and instability explanation and Friedman's bias-variance view; Bayesian learning theory suggests model averaging using posterior weights",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Evidence: Weighing bagged models by Bayesian posterior approximations (uniform class noise model and region-based probability model, in both pure-class and class-probability forms) performed worse than uniform voting bagging on a large majority of datasets (e.g., 19 out of 25) and on average, across m values",
+      "role": "Evidence",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: Bayesian model averaging with a uniform prior consistently performed worse than bagging in experiments, contradicting Hypothesis A (bagging as approximation to Bayesian model averaging under uninformed prior)",
+      "role": "Result",
+      "parents": [
+        1,
+        5,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Evidence: Correlation between in-bag (training) error and out-of-bag error across models was positive in all but four of 26 datasets, and greater than 0.5 in half of those with positive correlation, indicating lower in-bag error usually corresponds to lower out-of-bag error",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Method / Claim: Meta-learning approximation to find a single model representing the bagged ensemble: generate many random examples labeled by the bagged ensemble, then induce a single decision tree or rule set with the base learner to compare complexity and error under the same simplicity bias",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence / Result: Meta-learned rule sets approximating bagged ensembles had lower error than single-rule outputs in most cases (in all but four of 22 databases where bagging improved), with error reductions averaging about 60% of bagging's reductions; the meta-learned rule sets were more complex (typically 2x to 6x more antecedents/consequents)",
+      "role": "Result",
+      "parents": [
+        2,
+        8,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Interpretation: The poor performance of Bayesian posterior weighting under uninformed priors implies bagging is not simply approximating Bayesian model averaging with a uniform prior",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Interpretation: Positive in-bag vs out-of-bag error correlation contradicts the idea that bagging implicitly uses an error-favoring prior that increases prior for models with higher training error; such a prior would increase error rather than reduce it",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: Empirical evidence contradicts the Bayesian model-averaging explanation (Hypothesis A) and supports that bagging at least partly works by counteracting an overly strong simplicity bias of the base learner, shifting effective prior/model space toward more complex models that reduce error",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        9,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: Bagging reduced the error of a decision-tree learner on 19 of 26 databases in the reported empirical study, by 4% on average",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: The meta-learning construction only approximates the bagged ensemble behavior and yields about 60% of bagging's error reduction, so representation differences and approximation error remain",
+      "role": "Limitation",
+      "parents": [
+        9
+      ],
+      "children": [
+        12
+      ]
+    }
+  ]
+}

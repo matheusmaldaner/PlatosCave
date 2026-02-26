@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Compare machine learning algorithms to identify the most effective approach for detecting fraudulent credit card transactions",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Apply four ML algorithms: Random Forest, Decision Tree, AdaBoost, and Gradient Boosting to the fraud detection task",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Use the European credit card transactions dataset (284,807 records from Kaggle, September 2013) with class imbalance (0.172% fraud)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Preprocess with SMOTE to balance classes and evaluate models using accuracy, precision, recall, F1 score, ROC AUC, and precision-recall AUC",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Benchmark algorithms to find a model that balances precision (reducing false positives) and recall (detecting fraud) on the imbalanced dataset",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Random Forest confusion matrix: TP=132, TN=85,265, FP=18, FN=28; metrics: accuracy=0.999415, precision=0.857143, recall=0.825, F1=0.840764, ROC AUC ~91.24",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Decision Tree confusion matrix: TP=130, TN=85,042, FP=241, FN=30; metrics: accuracy=0.996828, precision=0.350404, recall=0.8125, F1=0.489642, ROC AUC ~90.48",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "AdaBoost confusion matrix: TP=144, TN=83,897, FP=1,386, FN=16; metrics: accuracy=0.983978, precision=0.096192, recall=0.9, F1=0.173808, ROC AUC ~94.21",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Gradient Boosting confusion matrix: TP=143, TN=84,239, FP=1,044, FN=17; metrics: accuracy=0.987067, precision=0.117409, recall=0.90625, F1=0.207885, ROC AUC ~94.67",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Conclusion: Random Forest is the most reliable and balanced model for this dataset because it attains the best combined precision and recall and lowest false positives and negatives",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Algorithms implemented with typical configurations: Random Forest (random-tree variant), Decision Tree with explicit feature selection, AdaBoost combining decision tree weak learners, Gradient Boosting with sequential learning and weighted correction",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Address class imbalance assumption: SMOTE synthetic sampling is used to create minority-class examples to enable fair training and evaluation",
+      "role": "Assumption",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Future work and limitations: explore feature engineering, real-time/online detection, transfer learning, and explainability (LIME/SHAP); acknowledge imbalanced-data challenges and operational FP/FN trade-offs",
+      "role": "Limitation",
+      "parents": [
+        9
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based sentiment extraction method that uses hand-ranked semantic orientation dictionaries plus linguistic context handling yields robust, accurate, and domain-portable polarity classification",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        10,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL uses dictionaries of words annotated with semantic orientation (polarity and strength) and incorporates intensification and negation handling",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        10,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dictionaries were manually created and hand-ranked on a scale from -5 to +5 for adjectives, nouns, verbs, adverbs, plus multiword entries and an adjectival intensifier list",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        7,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "SO-CAL implements linguistic features: negation (polarity shift model), intensifiers as percentage modifiers applied recursively, irrealis blocking, repetition weighting, negative weighting, and XML/text-span weighting",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        7,
+        9,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Mechanical Turk experiments (single-word neutral/positive/negative and pairwise strength judgments) were used to validate dictionary rankings and negation/intensifier behavior",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "SO-CAL with the full dictionaries and features achieved consistently high polarity accuracies across held-out corpora (Epinions1/2, Polarity Movie dataset, Camera corpus) with overall accuracy about 78.7% (full system)",
+      "role": "Result",
+      "parents": [
+        2,
+        3,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "SO-CAL shows cross-domain robustness: on MPQA sentences, MySpace comments, news/blog sentences, and news headlines SO-CAL (excluding texts with no SO words) attains roughly 77–83% accuracy",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Ablation and dictionary-replacement experiments show that manually ranked, part-of-speech specific, moderate-size dictionaries combined with SO-CAL features outperform large automatically generated lexicons (Google PMI, SentiWordNet variants, Maryland) in overall polarity classification",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        13,
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Negation implemented as a polarity shift toward the opposite polarity (fixed amount) better matches pragmatic human judgments than a simple polarity flip in many cases",
+      "role": "Claim",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Modeling intensifiers as percentage modifiers (including multiword intensifiers, caps, exclamation marks and discourse but) applied recursively improves handling of degree and interacts correctly with adjectives, verbs, and adverbs",
+      "role": "Claim",
+      "parents": [
+        3,
+        8
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Including nouns, verbs, adverbs, and multiword expressions (not only adjectives) in the dictionaries increases coverage and improves polarity prediction versus adjective-only approaches",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Mechanical Turk validation: manual SO dictionary shows higher correspondence with human judgements (about 73.7% MT correspondence on adjectives) than Google PMI (~48.5%) and SentiWordNet (~57.8%), with pairwise/polarity distributions supporting the manual rankings",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        7,
+        5
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Very large automatically generated dictionaries can introduce noise (coverage is double-edged) and sometimes reduce performance due to ambiguous senses, POS mismatches, and tangential descriptive vocabulary",
+      "role": "Limitation",
+      "parents": [
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: Lexicon-based sentiment extraction that combines carefully curated multi-POS lexicons with linguistic context handling (negation, intensification, irrealis, weighting) is a robust, domain-portable approach and a strong alternative to domain-dependent statistical classiﬁers",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        6,
+        7,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

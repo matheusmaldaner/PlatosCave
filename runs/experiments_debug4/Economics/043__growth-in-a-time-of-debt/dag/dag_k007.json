@@ -1,0 +1,187 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Expected utility theory can be given a dynamical interpretation: if utility is the ergodicity transformation for an agent's wealth dynamics, then maximising expected utility is equivalent to maximising the time average growth rate of wealth",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics posits agents maximise the time average growth rate of wealth (growth optimality) under stochastic wealth dynamics, contrasting with EUT which maximises expectation of transformed wealth",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "There exists a correspondence between growth optimality and expected utility theory: the ergodicity transformation required to extract an ergodic growth rate from wealth dynamics can be identified as a utility function in EUT",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Wealth dynamics are exogenous and thus predict apparent utility functions and risk preferences a priori; if dynamics change, apparent preferences change",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Decision criterion in EE: choose the stochastic process x(t) that, for sufficiently large time interval, yields higher wealth than alternatives with probability arbitrarily close to one, formulated probabilistically (Eq. 1) and as maximising time-average rate r = lim as Delta t -> infinity of Delta u / Delta t",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "To obtain a well defined time-average growth rate, introduce a monotonic transformation u(x) and require that the time-average of r = Delta u / Delta t exists; this leads to seeking u such that r is ergodic",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Sufficient condition for r to be ergodic: the process u(t) must have additive, stationary, independent increments (a Levy process); restricting to continuous paths implies u(t) must be Brownian motion with drift du = a_u dt + b_u dW",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Central theorem: For EUT to be equivalent to optimisation over time, utility must follow an additive stochastic process with stationary increments, taken as Brownian motion with drift in this framework",
+      "role": "Claim",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Consequence: every invertible utility function u(x) corresponds to a unique wealth stochastic differential equation dx obtained by applying Ito's lemma to du = a_u dt + b_u dW, hence expected utility optimisation equals time-average growth optimisation under that dx",
+      "role": "Result",
+      "parents": [
+        2,
+        7
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Because utility functions are implied by dynamics, experiments with controllable wealth dynamics support the prediction that dynamics determine preferences (referenced experimental evidence)",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Interpretation difference: convex or concave utility functions are not direct psychological traits but reflect corresponding wealth dynamics (for example convex utility arises from dynamics where fluctuations shrink with increasing wealth)",
+      "role": "Conclusion",
+      "parents": [
+        3,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Methodologically, mapping between u(x) and dx: given invertible u(x) and du Brownian, Ito calculus yields dx = a_x(x) dt + b_x(x) dW with formulas linking a_x and b_x to u and its derivatives; conversely, given dx as an Ito process, consistency conditions determine if a u exists",
+      "role": "Method",
+      "parents": [
+        4,
+        5,
+        6,
+        8
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conditions and equations: for dx = a_x(x) dt + b_x(x) dW to map to du = a_u dt + b_u dW, the relations b_u = b_x(x) u'(x) and a_u = a_x(x) u'(x) + 1/2 b_x(x)^2 u''(x) must hold, which constrain permissible drift given noise via a_x(x) = (a_u / b_u) b_x(x) + 1/2 b_x(x) b_x'(x)",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Examples illustrating mapping: linear u(x)=x -> additive Brownian dx; logarithmic u=ln x -> geometric Brownian dx; square-root u=x^{1/2} -> mixed additive and multiplicative dx; an exponential u(x)=b_u e^x + C maps to a dx with decreasing volatility e^{-x}",
+      "role": "Evidence",
+      "parents": [
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Using the mapping, wealth distributions follow from known distribution of u(t): since u(t) is normal with mean a_u t and variance b_u^2 t, Px(x,t) = Pu(u(x),t) du/dx yields explicit wealth distributions for the corresponding dynamics",
+      "role": "Result",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Formal requirement and implication: u(x) should be unbounded and invertible for the dynamic interpretation to be well posed, which invalidates historical arguments for bounded utility and avoids finite-time singularities",
+      "role": "Claim",
+      "parents": [
+        7,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

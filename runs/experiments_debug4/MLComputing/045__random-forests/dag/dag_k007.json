@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests, ensembles of tree predictors grown from independent identically distributed random vectors and voting by majority, can produce accurate classifiers and regressors without overfitting and with favorable properties compared to other ensemble methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Definition and formalization: a random forest is a collection of tree classifiers h(x, theta_k) where the theta_k are iid random vectors and each tree casts a unit vote for the most popular class at input x",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Convergence theorem: as the number of trees increases, the generalization error converges almost surely to a limiting value given by the sign of P_theta(h(X,theta)=Y) minus the max over other classes, implying random forests do not overfit as trees are added",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Strength-correlation bound: an upper bound for generalization error is c/squared_strength where c is the average correlation between raw margins and strength is the expected margin, indicating error decreases with higher strength and lower correlation",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Practical method: build forests by combining bagging (bootstrap samples) with random feature selection at each node (Forest-RI: random input subset; Forest-RC: random linear combinations), not pruning trees",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Out-of-bag estimation: use the observations left out of each bootstrap sample to compute internal estimates of generalization error, strength, correlation and variable importance without a separate test set",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Empirical result (classification): random forests with random feature selection give test error rates comparable to or better than Adaboost on many UCI and synthetic data sets, while being faster and often more robust to noise",
+      "role": "Result",
+      "parents": [
+        4,
+        5,
+        3
+      ],
+      "children": [
+        7,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical result (noise robustness): when 5% of training labels are randomized, Adaboost's error rates typically increase markedly while Forest-RI and Forest-RC show much smaller changes, attributed to Adaboost concentrating weight on persistent mislabels",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Empirical finding on feature group size: for many smaller data sets strength plateaus at small feature subset sizes (F about 1-4) while correlation increases with F, explaining insensitivity to F and often optimality of small F",
+      "role": "Result",
+      "parents": [
+        6,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Variable importance method: permute values of a variable in out-of-bag examples, measure increase in misclassification rate to rank variable importance and validate by rerunning forests on selected variables",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical finding on interpretability: out-of-bag variable importance identifies dominant predictors (examples: diabetes, congressional votes) and can guide reduced-variable reruns to verify contribution, but interactions and redundancy complicate interpretation",
+      "role": "Result",
+      "parents": [
+        9,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Regression theory and result: regression forests converge (averaging trees) and generalization MSE of the forest is bounded by average tree MSE times a weighted residual correlation, so low residual correlation and low tree error lead to improved forest MSE",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical regression results: random-feature forests reduce mean-squared error relative to bagging on many regression data sets; performance depends on tradeoff between reducing per-tree error and increasing residual correlation, and adding output noise instead of bagging sometimes helps",
+      "role": "Result",
+      "parents": [
+        11,
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conjecture about Adaboost: Adaboost may behave like a random forest in later stages because its sequence of training-set weight updates could be ergodic yielding an invariant distribution on weights, making Adaboost equivalent to randomly sampling weightings according to a stationary measure",
+      "role": "Claim",
+      "parents": [
+        6,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Assumptions and limitations: theoretical bounds (c/squared_strength) may be loose; choice of randomness, feature construction, and feature group size affect strength and correlation; some empirical gains vary by data set and further research is needed to understand bias reduction mechanism",
+      "role": "Limitation",
+      "parents": [
+        3,
+        4,
+        6,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

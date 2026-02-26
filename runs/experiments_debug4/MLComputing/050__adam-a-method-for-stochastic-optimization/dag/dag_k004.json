@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Adam is an efficient, robust first-order algorithm for stochastic optimization of high-dimensional machine-learning objectives that adapts per-parameter learning rates using estimates of first and second moments",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Adam computes exponential moving averages of gradients (first moment m_t) and squared gradients (second raw moment v_t) and applies bias correction to both estimates",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Adam updates parameters using theta_t <- theta_{t-1} - alpha * m_hat_t / (sqrt(v_hat_t) + epsilon), producing per-parameter adaptive stepsizes invariant to diagonal rescaling of gradients",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Adam requires little memory and is computationally efficient since all operations are elementwise and only two additional moving-average vectors are stored",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Adam is well-suited for non-stationary objectives, noisy gradients, and sparse gradients, combining advantages of AdaGrad (sparsity) and RMSProp (non-stationarity)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Initialization bias in the moving averages causes underestimation early in training; dividing by (1 - beta^t) corrects this bias and stabilizes updates when beta2 is close to 1",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Adamax is a stable variant of Adam obtained by using the infinity-norm limit, updating u_t = max(beta2 * u_{t-1}, |g_t|) and using m_t / u_t for parameter updates",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Temporal averaging (exponential moving average of parameters) can be added to Adam to reduce noise in final iterates and improve generalization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Derivation: v_t = (1 - beta2) sum_{i=1..t} beta2^{t-i} * g_i^2, and E[v_t] = E[g_t^2] * (1 - beta2^t) + small term, motivating division by (1 - beta2^t)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Algorithm pseudocode: initialize m_0 = 0, v_0 = 0; iterate t: g_t = grad; m_t = beta1*m_{t-1}+(1-beta1)g_t; v_t = beta2*v_{t-1}+(1-beta2)g_t^2; correct bias and update theta",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "The effective per-parameter step Delta_t = alpha * m_hat_t / sqrt(v_hat_t) is approximately bounded by alpha, yields automatic annealing as signal-to-noise ratio decreases, and is invariant to gradient scaling",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirical results on logistic regression (MNIST, IMDB), multilayer nets, and convolutional nets show Adam matches or outperforms SGD with momentum, AdaGrad, RMSProp and SFO across tasks and settings",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical experiment training a VAE shows omission of bias-correction with beta2 near 1 causes instability and worse loss; bias correction prevents large initial steps and improves convergence",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Specific experimental findings: Adam converged as fast as or faster than competitors on MNIST logistic regression and IMDB sparse features, outperformed others on MLPs with dropout, and matched or slightly improved over SGD momentum on CNNs",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Theoretical convergence: under convex online learning assumptions and bounded gradients, Adam achieves O(sqrt(T)) regret with explicit bound comparable to best known results; average regret goes to zero as T->infty",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Limitation: the formal convergence proof applies to convex online settings with decaying alpha_t and decaying beta1,t; analysis does not guarantee convergence for non-convex objectives though empirical success is reported",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

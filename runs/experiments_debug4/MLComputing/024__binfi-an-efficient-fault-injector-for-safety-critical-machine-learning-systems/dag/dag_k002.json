@@ -1,0 +1,198 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "BinFI can efficiently identify safety-critical bits in machine learning applications under hardware transient faults by exploiting monotonicity in ML computations",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many common ML operations and their compositions exhibit monotonic or approximately monotonic behavior, so error propagation from a bit flip can be modeled by an monotonic or approximately monotonic error propagation function",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Using monotonicity, one can search for an SDC boundary bit where flips of higher-order bits cause SDCs and flips of lower-order bits are masked, enabling pruning of the fault injection space",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "BinFI implements a binary-search-like fault injection algorithm that converts operator outputs to binary, separates 0-bits and 1-bits, and locates SDC boundary bits per element using recursive bisection",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "BinFI is implemented by extending the TensorFI fault injection tool to support DNN operators and the binary-search injection modes, and is publicly available",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Assumptions and fault model: single-fault-per-execution, faults mapped to operator outputs (data path), main memory and register file assumed protected, faults during inference only, single- and multi-bit flips approximated by single-bit analysis",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Survey of common ML computations shows monotonicity: Conv/MatMul, ReLu/ELu, pooling, batch normalization in inference, SoftMax derivative positive; some functions like LRN and certain residual compositions are only approximately monotonic or non-monotonic",
+      "role": "Evidence",
+      "parents": [
+        1,
+        5
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Approximate monotonicity can cause minor inaccuracies because some small-magnitude faults may violate monotonic ordering, but these cases are rare and unlikely to change safety outcomes substantially",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Binary search over sorted fault-impact magnitudes reduces injection trials exponentially compared to exhaustive per-bit injection, by logarithmic dependence on data bitwidth",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evaluation setup: modified TensorFI (TensorFI-BinaryFI), 8 ML models including NN, kNN, LeNet, AlexNet, VGG11/16, Nvidia Dave and Comma.ai steering models, 6 datasets including MNIST, CIFAR-10, ImageNet, German traffic signs, driving frames; 32-bit fixed-point used in major experiments",
+      "role": "Method",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Experimental results: BinFI identified on average 99.56% of critical bits with 99.63% precision across evaluated benchmarks, significantly outperforming random FI with the same number of trials",
+      "role": "Result",
+      "parents": [
+        3,
+        9,
+        8
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Tool modifications: added support for complex DNN operators by using native TensorFlow operators in customized operators and fixing parameter parsing, and added injection modes: random single-bit, binary FI, exhaustive FI",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 12,
+      "text": "BinFI accurately estimates overall SDC probability: deviations from exhaustive-ground-truth SDC were very small (often near zero for monotonic models), while random FI with same trials showed larger deviations",
+      "role": "Result",
+      "parents": [
+        10,
+        9,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Performance overhead: BinFI requires about 20% of the fault injection trials compared to exhaustive FI (roughly loд2(bitwidth) behavior), yielding approximately 5X speedup over exhaustive FI; overhead scales logarithmically with bitwidth",
+      "role": "Result",
+      "parents": [
+        8,
+        9,
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitations and applicability: BinFI is less effective or has lower precision on models with strongly non-monotonic operators (e.g., LRN); coverage is not 100% so selective protection based on BinFI may miss a small fraction of critical bits but offers practical tradeoffs for safety-critical ML",
+      "role": "Limitation",
+      "parents": [
+        7,
+        10,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion and implications: BinFI is a practical first step to identify safety-critical bits in ML systems enabling targeted low-cost protection and security guidance; future work includes extending to other ML frameworks, more safety-critical domains, and selective protection strategies",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

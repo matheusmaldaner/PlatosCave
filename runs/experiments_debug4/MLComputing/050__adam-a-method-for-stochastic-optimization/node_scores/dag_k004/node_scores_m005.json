@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the core steps of Adam optimizer: compute first and second moments with exponential moving averages and apply bias correction.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.72,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the standard Adam update formula and the statement about diagonal rescaling invariance is plausible given the normalization by the second moment, though not universally proven as a strict property in all settings.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with Adam optimizer storing two moving-average vectors for first and second moments and performing elementwise updates, suggesting low memory footprint relative to full gradient storage.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.2,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general understanding that Adam inherits per parameter learning rate adaptation like AdaGrad and includes RMSProp style decay for non stationary objectives, making it plausible for sparse and noisy gradients, though exact benefits for sparsity and non stationary objectives may vary by context",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.75,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the common bias correction idea in Adam where initialization bias in the moment estimates is mitigated by dividing by one minus beta raised to the power t, which helps stabilize updates when beta2 is near one.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Adamax uses the infinity norm update for u_t as the maximum of beta two times the previous u and the absolute gradient, and updates parameters with m_t divided by u_t, aligning with the claim.",
+    "confidence_level": "high"
+  },
+  "7": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Temporal averaging with an exponential moving average of parameters is a plausible and commonly used technique to reduce noise and improve generalization when using optimizers like Adam, analogous to Polyak averaging.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.75,
+    "relevance": 0.78,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.65,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with the standard Adam v_t update derivation as a decayed sum of squared gradients; the expected value relation holds under mild assumptions (independence and stationarity) with a small term reflecting deviations when those assumptions do not strictly hold.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.9,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim describes an Adam-like optimizer update with initialization of first and second moment estimates to zero, exponential moving averages for g t, bias correction, and parameter update to theta, which aligns with standard optimization practice.",
+    "confidence_level": "high"
+  },
+  "10": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim mixes a true gradient scaling invariance with a questionable bound by alpha and automatic annealing depending on SNR, which is not universally guaranteed in Adam-type updates.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim, Adam generally performs favorably in reported experiments across common datasets and models compared to several optimizers.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.45,
+    "relevance": 0.65,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general intuition about bias correction in adaptive optimizers but the specific empirical result for beta2 near one in VAE training without bias correction cannot be verified from the given text alone.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes specific experimental results across tasks and architectures that align with expected performance of Adam, but no sources are provided in this context.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on claim text, under convex online learning with bounded gradients, Adam is stated to achieve sqrt(T) regret with explicit bound and vanishing average regret; no external sources used.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that the formal convergence proof requires convex online settings with decaying alpha and decaying beta1, and that convergence is not guaranteed for non convex objectives though empirical success is reported.",
+    "confidence_level": "medium"
+  }
+}

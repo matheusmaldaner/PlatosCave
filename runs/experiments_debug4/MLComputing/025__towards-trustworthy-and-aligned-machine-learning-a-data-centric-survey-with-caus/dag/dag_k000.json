@@ -1,0 +1,165 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A data-centric view plus Pearl's causality hierarchy provides a unified, principled framework to understand and improve trustworthy machine learning across robustness, adversarial robustness, interpretability, and fairness",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many trustworthiness problems arise because models learn undesired, spurious or confounding features from training data rather than the desired (causal/semantic) features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "A converged mathematical theme underlies many methods: (a) adversarial/worst-case augmentation, (b) domain-adversarial/invariance regularization, and (c) sample weighting, each expressible as ERM variants",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Equations 13, 14, 15 summarize core families: domain-adversarial invariance term, max-data-augmentation (adversarial training), and sample-reweighting plugged into ERM",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Randomized controlled trial style data augmentation (randomize or generate confounders) implements intervention (L2) and can de-confound predictive associations",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Domain-adversarial architectures (DANN) and representation alignment enforce invariance across domains or confounder strata and operationalize backdoor-like adjustment at representation level",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Adversarial training and consistency/embedding-alignment losses implement worst-case augmentation (max over perturbations) to improve adversarial robustness and can be seen as counterfactual/augmentation interventions",
+      "role": "Method",
+      "parents": [
+        1,
+        3,
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Causal-inference tools (backdoor/frontdoor adjustment, instrumental variables, inverse probability weighting, treatment effects) map to ML remedies: adjustment via strata/attention, IV-like perturbations, propensity/sample weights, and counterfactual augmentation",
+      "role": "Claim",
+      "parents": [
+        4,
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Counterfactual data generation and latent-variable interventions (SCM + generative models, VAE/GAN) support level-3 counterfactual reasoning for explanation, debiasing, and robust augmentation",
+      "role": "Method",
+      "parents": [
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Techniques for large pretrained models (fine-tuning, prompting, parameter-efficient fine-tuning, RLHF) are ERM variants or additions that can incorporate the above causal/data-centric interventions to improve trustworthiness of foundation models",
+      "role": "Claim",
+      "parents": [
+        2,
+        7,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical and theoretical observations: (a) many independent methods across robustness, fairness, interpretability converge to the same statistical backbone, (b) adversarially robust models often yield more human-aligned representations but are not sufficient alone",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: framing trustworthy ML as identifying and intervening on spurious/confounding features under SCM/Pearl hierarchy yields unified master equations and suggests direct extensions to pretrained models and future causal-grounded methods, with caveats about unobserved confounders and practical limits",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        7,
+        9,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

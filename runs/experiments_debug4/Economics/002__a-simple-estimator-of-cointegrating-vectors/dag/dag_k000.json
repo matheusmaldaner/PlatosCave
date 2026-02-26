@@ -1,0 +1,206 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A simple dynamic OLS/GLS estimator provides efficient and practical estimation and inference for cointegrating vectors in systems with deterministic components and variables integrated of general orders, and these estimators can be used to study long-run relations such as U.S. Ml money demand",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Derive two computationally simple estimators (dynamic OLS, DOLS, and dynamic GLS, DGLS) from a two-sided triangular representation of I(d) systems by regressing integrated dependent variables on contemporaneous levels, leads and lags of first differences, and deterministic terms",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Claim: Under general conditions (Gaussian or weak conditions), DOLS and DGLS are asymptotically efficient (local asymptotic mixed normal), produce Wald statistics with asymptotic chi-squared distributions, and are asymptotically equivalent to Johansen/Ahn-Reinsel MLE in the I(1) single cointegrating vector case",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Extend the triangular representation and the DOLS/DGLS estimators to general I(d) systems with polynomial trends by partitioning series into blocks by stochastic trend order and orthogonalizing errors via two-sided filters",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Use Monte Carlo experiments to evaluate finite-sample performance of DOLS, DGLS, Johansen MLE, Phillips spectral and fully modified estimators, and static OLS across designs mimicking money, income, and interest-rate dynamics",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: The feasible DGLS (using a finite-order parametric transform) and DOLS (OLS with leads/lags) estimators yield estimators whose scaled distributions converge to mixed-normal limits and whose Wald tests are asymptotically chi-squared under stated assumptions",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Assumption: The data-generating processes satisfy (a) finite moments and martingale-difference shocks, (b) summability and nonsingularity conditions on lag polynomials, and (c) finite-parameter approximations for two-sided projection polynomials to obtain feasible estimators",
+      "role": "Assumption",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5,
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Theoretical consequence: When regressors include integrated components and deterministic trends, DOLS and DGLS may have components converging at different rates (T and higher powers), but coefficients on integrated regressors are asymptotically normal/mixed-normal and Wald statistics for cointegrating restrictions are chi-squared",
+      "role": "Claim",
+      "parents": [
+        2,
+        5,
+        6
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Limitation: Feasible DGLS requires finite-parameter specification of the GLS filter; constructing consistent covariance estimators for DOLS and implementing spectral estimators require parametric or truncated approximations and involve pretesting, which can affect finite-sample behavior",
+      "role": "Limitation",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        9,
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence (Monte Carlo): In simulated bivariate VAR designs mimicking money-income-interest dynamics, SOLS is biased; DOLS and DGLS reduce bias and often perform best overall (DOLS showing lower RMSE in some realistic designs), but all estimators show finite-sample bias and t-statistics with heavier tails than asymptotic theory predicts, especially in highly persistent designs",
+      "role": "Evidence",
+      "parents": [
+        4,
+        7,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: In Monte Carlo designs where the true projection filter is infinite order, truncation of leads/lags in DOLS/DGLS induces bias that diminishes with larger samples or more included leads/lags; autoregressive spectral covariance estimators (DOLS2) yield t-ratios closer to normal than kernel estimators",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Application claim: Applying DOLS/DGLS and other estimators to annual U.S. data 1900-1989 for log nominal Ml, log price level, log real income, and short-term interest rates yields a stable long-run Ml demand cointegrating relation over 1900-1989 with income elasticity approximately 1 and interest-rate semielasticity about -0.10",
+      "role": "Claim",
+      "parents": [
+        0,
+        7,
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Evidence (empirical): Full-sample (1900-1989) DOLS 95% confidence intervals are (0.88, 1.06) for the income elasticity and (-0.127, -0.075) for the interest semielasticity; various efficient estimators give qualitatively similar full-sample estimates",
+      "role": "Evidence",
+      "parents": [
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Result/Claim about subsamples: Postwar (1946 onward) estimates are highly imprecise and unstable across estimators and subsamples because postwar data are dominated by a single low-frequency trend (income and interest rising, real balances flat), so the ratio of elasticities is well determined but individual elasticities are not",
+      "role": "Result",
+      "parents": [
+        11,
+        9
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Combining theoretical properties, Monte Carlo evidence, and the long-span empirical application implies DOLS (with AR-based covariance) is a practical preferred estimator in the money-demand application, and long-span data are necessary for precise long-run cointegrating estimates",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        11,
+        12,
+        13,
+        8
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation/Recommendation: Inference using these estimators requires pretesting for orders of integration and cointegration and estimating nuisance filters; finite-sample uncertainty and pretesting can materially affect precision, so practitioners should use multiple efficient estimators and long data spans and be cautious interpreting postwar-only results",
+      "role": "Limitation",
+      "parents": [
+        13,
+        14,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

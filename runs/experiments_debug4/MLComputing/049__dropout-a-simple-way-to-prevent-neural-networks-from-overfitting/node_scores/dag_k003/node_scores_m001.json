@@ -1,0 +1,134 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.7,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the standard dropout training procedure of sampling Bernoulli masks per layer and training on the thinned network during backpropagation.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Test time averaging via scaling by retention probability matches ensemble of thinned models and corresponds to standard dropout practice of scaling at test time to approximate the average of multiple thinned networks",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.75,
+    "relevance": 0.85,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the widely cited intuition that dropout disrupts co adaptation and acts like ensemble averaging over thinned networks with shared weights.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on general neural network training practices described in the claim, without external sources, feasibility is plausible though not verifiable here.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that dropout generalizes beyond feed-forward networks to convolutional nets, Restricted Boltzmann Machines, and other neuron based architectures, including a Dropout RBM variant, which aligns with general knowledge that dropout can regularize various neural architectures.",
+    "confidence_level": "high"
+  },
+  "6": {
+    "credibility": 0.55,
+    "relevance": 0.65,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with the idea that multiplicative noise with unit mean preserves expected activations and can substitute Bernoulli dropout without test time scaling, though practical effectiveness depends on training dynamics and noise variance.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.58,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts dropout yields large generalization gains and state of the art on several benchmarks, which is plausible for MNIST and CIFAR era but questionable for ImageNet and overall SOTA status; without sources, uncertainty remains moderate.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.8,
+    "relevance": 0.7,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim that dropout yields sparser, more local interpretable features and fewer co adapted features relative to training without dropout on MNIST and RBMs aligns with common expectations about dropout reducing co adaptation, though the exact characterization as sparser and more local interpretable features is impressionistic and not universally quantified across all studies",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general training dynamics, dropout can slow training and increase gradient noise, but combining with max norm, high momentum, and learning rate scheduling can mitigate overfitting and preserve gains.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim posits that dropout RBM augments RBM with a binary retention vector resulting in a mixture over many RBMs with shared weights, yielding sparser, coarser features and leveraging dropout sampling during contrastive divergence training.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general background knowledge, the specific quantitative improvements across multiple datasets cannot be independently verified without external sources.",
+    "confidence_level": "medium"
+  }
+}

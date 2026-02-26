@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Dynamic OLS (DOLS) and dynamic GLS (DGLS), based on a two-sided triangular representation, provide simple computationally feasible and asymptotically efficient estimators of cointegrating vectors in systems with variables of general integration orders and deterministic components, and can be used to conduct valid inference (Wald tests with asymptotic chi-square distributions) and to study long-run economic relations such as US M1 money demand",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Represent cointegrated I(d) systems via a two-sided triangular representation that partitions series by stochastic trend orders and orthogonalizes errors by projecting onto leads and lags, yielding regression equations suitable for GLS or OLS estimation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Claim: Under regularity assumptions (martingale-difference shocks, summability of lag polynomials, nonsingularity at nonzero frequencies, finite-parameterization/truncation of two-sided filters), feasible DGLS and DOLS are asymptotically mixed normal for parameter estimates and yield Wald statistics that converge to chi-square distributions for tests on cointegrating vectors",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Evidence (Monte Carlo): In finite samples DOLS and DGLS generally reduce bias relative to static OLS, but performance varies with short-run dynamics and truncation of infinite filters; DOLS often performed best in designs calibrated to U.S. real money dynamics, though small-sample distributions of t-statistics can be more dispersed than asymptotic approximations",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Application claim: Using DOLS/DGLS and related estimators on annual U.S. data 1900-1989 for nominal M1, price level, real income, and short-term interest rates, a stable long-run nominal money demand cointegrating relation is plausible across the full sample, with income elasticity near one and interest semielasticity near -0.10",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Conclusion: Based on full-sample estimation, 95% DOLS confidence intervals for the income elasticity and interest semielasticity are approximately (0.88, 1.06) and (-0.127, -0.075), respectively, supporting a roughly unit income elasticity and an interest semielasticity near -0.1 for long-run M1 demand",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Limitation: Inference depends on correct identification of integration orders and cointegrating rank (pretesting), finite-sample distortions (small samples, many nuisance parameters, truncated filters) can substantially understate sampling uncertainty especially in postwar-only subsamples, and some estimators (e.g., JOH) can be sensitive to lag choice",
+      "role": "Limitation",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Method detail: Define canonical regressors by transforming lead/lag regressors to isolate trend components (zt = B xt) so regressions have nondegenerate asymptotics across integrated orders; estimate cointegrating coefficients via OLS on the dynamic regression (DOLS) or feasible GLS with estimated serial-correlation filter (DGLS)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Assumption: For feasible implementation assume finite-parameter or truncated approximations to two-sided projection polynomials (Assumption B) and sufficient summability and moment conditions (Assumptions A and C) so that asymptotic theory applies",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Theoretical result: Under these assumptions (Theorems 1-4) scaled DGLS and DOLS parameter estimators converge to mixed normal limits with blockwise rates depending on integration orders, and Wald tests of linear restrictions on cointegrating vectors have asymptotic chi-square distributions even when regressors include deterministic polynomials or time trends",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Monte Carlo specifics: Across designs (Cases A-C) SOLS often biased; DOLS and DGLS unbiased in many designs but biased when true projection filter decays slowly (truncation bias), PBSR and PHFM sometimes inherit SOLS bias, JOH unbiased if correctly specified but can have high dispersion; autoregressive spectral estimators for standard errors (DOLS2) improved t-statistic behavior in highly persistent designs",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Empirical result: Full-sample (1900-1989) cointegration tests and DOLS/DGLS estimates indicate cointegration among real M1 balances, real income, and interest rates; prewar and full-sample estimators yield similar elasticities, while postwar-only estimates are unstable and imprecise because postwar data are dominated by a single low-frequency trend",
+      "role": "Result",
+      "parents": [
+        4,
+        9,
+        10
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical diagnostic: Postwar residuals computed with prewar-estimated cointegrating coefficients are consistent with stationarity, supporting stability across pre- and postwar periods; instability of postwar parameter estimates arises from low-frequency dominance (multicollinearity) making only the ratio of coefficients (trend line) well determined",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        5,
+        6
+      ]
+    }
+  ]
+}

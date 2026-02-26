@@ -1,0 +1,197 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Characterize how transient soft errors propagate in DNN accelerator systems and develop cost-effective mitigation techniques that reduce silent data corruptions while incurring low area and performance overheads",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Perform large-scale fault-injection experiments by modifying a Tiny-CNN simulator to inject single-event transient bit-flips into datapath latches and buffer storage, mapping simulator code to hardware components",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Study four convolutional neural networks (ConvNet, AlexNet, CaffeNet, NiN) with pre-trained weights and datasets (CIFAR-10, ImageNet) and evaluate multiple data types (DOUBLE, FLOAT, FLOAT16, 32b_rb26, 32b_rb10, 16b_rb10)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Analyze both datapath faults (PE ALU latches) and buffer faults using nine accelerators abstraction for datapath and a case study of the Eyeriss accelerator for buffer reuse and FIT projection to 16nm",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: Define DNN-specific SDC metrics (SDC-1, SDC-5, SDC-10%, SDC-20%) and compute FIT rates using per-component size, raw FIT density, and SDC probabilities",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: Propose two mitigation techniques based on characterization: symptom-based detectors (software, checking activation value ranges) and selective latch hardening (hardware, protect most-sensitive bits/latches)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result/Evidence: Conducted 3,000 random single-bit fault injections per latch/component per configuration, analyzed error propagation across bit positions, layers, values, data types, and data reuse; used 95% confidence intervals for error bars",
+      "role": "Evidence",
+      "parents": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "children": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: SDC sensitivity depends strongly on data type and bit position — high-order exponent bits in floating point and high integer bits in fixed-point cause most SDCs; narrower dynamic range data types reduce SDC probability",
+      "role": "Result",
+      "parents": [
+        6,
+        2
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result: Network topology and layer types affect resilience — shallower networks (ConvNet) and fully-connected layers are more SDC-sensitive; normalization layers (LRN) and pooling/ReLU mask many faults",
+      "role": "Result",
+      "parents": [
+        6,
+        2
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: Data reuse in buffers dramatically increases SDC probability and projected FIT rates because buffer faults can be read multiple times and spread; Eyeriss case study shows some buffers can raise FIT by over 100x",
+      "role": "Result",
+      "parents": [
+        6,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: Datapath and buffer FIT rates vary by network and data type; datapath FITs can be non-negligible (up to ~2.45 in worst cases) and buffers often contribute orders-of-magnitude higher FITs, possibly exceeding ISO 26262 budgets without protection",
+      "role": "Result",
+      "parents": [
+        6,
+        3,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Claim: Large numeric deviations in activations caused by faults are strongly correlated with SDCs; correct activation values are typically clustered in small per-layer ranges, enabling value-range based detection",
+      "role": "Claim",
+      "parents": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result/Evidence: Symptom-based detectors using learned per-layer activation bounds (with 10% cushion) achieve average precision ~90.21% and recall ~92.5%, and can reduce Eyeriss FIT (FLOAT) from 8.55 to 0.35 (96% reduction)",
+      "role": "Result",
+      "parents": [
+        11,
+        5
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Result/Evidence: Selective Latch Hardening that prioritizes protection of most-sensitive bits yields exponential FIT reduction vs protected-latch fraction; combined use of multiple hardening primitives can achieve ~100x latch FIT reduction with ~20-25% latch-area overhead",
+      "role": "Result",
+      "parents": [
+        7,
+        5
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: By choosing just-enough data types, leveraging normalization layers, applying symptom-based detectors to buffers, and selectively hardening sensitive datapath latches, DNN accelerator SDC rates and FITs can be reduced by orders of magnitude with acceptable area and performance overheads",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13,
+        10,
+        9,
+        8,
+        7
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A likelihood-based vector autoregressive (VAR) framework can model cointegration among nonstationary time series and provide valid inference on cointegration rank, cointegrating vectors, adjustment parameters, and related hypotheses",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Three parametric formulations represent cointegration: regression residual approach (Engle-Granger), autoregressive error-correction VAR formulation Delta x_t = alpha beta' x_{t-1} + ... , and unobserved components formulation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The I(1) VAR model with deterministic terms is specified as Delta x_t = alpha(beta' x_{t-1} + Upsilon D_t) + sum Gamma_i Delta x_{t-i} + Phi d_t + epsilon_t and under conditions produces stationary Delta x_t and stationary cointegrating relations beta' x_t",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        3,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Granger Representation Theorem: under unit roots and the I(1) condition rank(alpha_perp Gamma beta_perp) not zero, the VAR solution decomposes into r stationary cointegrating relations beta' x_t and p-r common stochastic trends, with a moving average representation x_t = cumulative shocks + stationary part + deterministic part",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        5,
+        7,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "I(1) condition: characteristic polynomial roots either outside unit circle or equal one, and the nondegeneracy condition |alpha_perp Gamma beta_perp| != 0 is required to ensure solutions are I(1) and avoid I(2) or higher",
+      "role": "Assumption",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        3,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Interpretation of cointegrating coefficients: a cointegrating vector beta relates to long-run equilibrium relations; coefficients can be interpreted as long-run effects (counterfactual keeping other long-run values fixed) via the projector C linking current shocks to long-run adjustments",
+      "role": "Claim",
+      "parents": [
+        3,
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Likelihood-based inference: Gaussian maximum likelihood estimators for VAR cointegration parameters are obtained via reduced rank regression (RRR) on residuals from conditioning lags and deterministic terms",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        7,
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Reduced rank regression algorithm: solve eigenvalue problem of residual covariance matrices to obtain beta and alpha estimates and maximized likelihood |Omega_hat| = |S00| product_{i=1}^r(1-lambda_hat_i), yielding the likelihood ratio statistic -2 log LR = -T sum_{i=r+1}^p log(1-lambda_hat_i) for testing cointegration rank",
+      "role": "Result",
+      "parents": [
+        6,
+        3
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Asymptotic distribution of the rank test depends on deterministic terms and number of common trends p-r: the limit is a functional of Brownian motion (Dickey-Fuller family) and tables must account for trend/deterministic specification",
+      "role": "Result",
+      "parents": [
+        7,
+        3
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Asymptotic distribution of estimators: the estimator of beta (cointegrating vectors), scaled by T, is mixed Gaussian (conditional Gaussian given common trends) while alpha and short-run parameters are asymptotically Gaussian and asymptotically independent of beta; likelihood ratio and Wald tests on beta are asymptotically chi-square",
+      "role": "Result",
+      "parents": [
+        3,
+        7
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Practical specification checks are crucial: choose lag length; test residuals for normality, autocorrelation, heteroscedasticity; model outliers, structural breaks, parameter instability because violations (especially autocorrelation or parameter changes) invalidate asymptotic results",
+      "role": "Method",
+      "parents": [
+        6,
+        8,
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Weak exogeneity and conditional inference: if some rows of alpha are zero the corresponding variables are weakly exogenous and full maximum likelihood inference on remaining cointegration parameters can be done via the conditional model",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Extensions and alternative models: the VAR cointegration framework extends to rational expectations restrictions, I(2) dynamics with associated parametrizations and new asymptotic distributions, seasonal or explosive roots, fractional integration, and nonlinear cointegration models",
+      "role": "Claim",
+      "parents": [
+        3,
+        8,
+        9
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitations and open problems: small sample distortions require corrections or bootstrap; nonlinear cointegration theory is underdeveloped; economic theory must better integrate empirical findings on nonstationary data",
+      "role": "Limitation",
+      "parents": [
+        10,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: the likelihood-based cointegrated VAR provides a coherent toolkit for empirical macro and financial time series analysis, but requires careful specification testing, appropriate asymptotic/small-sample adjustments, and further theoretical and applied development",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

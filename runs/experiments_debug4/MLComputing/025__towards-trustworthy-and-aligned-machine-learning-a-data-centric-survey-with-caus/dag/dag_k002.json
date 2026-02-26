@@ -1,0 +1,178 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Hypothesis: Trustworthiness failures of machine learning largely originate from structures in training data (spurious features, confounders, dataset bias) and can be understood and mitigated by a unified, data-centric view connected to Pearl's causality hierarchy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Claim: Many disparate trustworthy-ML methods (robustness, adversarial defense, interpretability, fairness) converge to two core formulations: (a) adversarial/worst-case data augmentation and (b) domain-invariance via adversarial representation learning, with sample reweighting as a plug-in",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Claim: Pearl's causal hierarchy (associational L1, interventional L2, counterfactual L3) provides a principled unifying framework to categorize, interpret, and guide trustworthy-ML techniques from the data perspective",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Represent master equations for trustworthy ML: (13) ERM + adversarial domain discriminator regularizer (DANN-style), (14) ERM with inner max data augmentation (adversarial training/worst-case), and (15) ERM with sample weights alpha(x,y,theta)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Causality techniques map to practical ML solutions: randomized controlled-trial style data augmentation implements interventions (L2); backdoor, front-door, instrumental variables, and inverse-propensity weighting deconfound correlations; counterfactual data generation and treatment-effect analyses correspond to L3 tools",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: The same data-centric, causality-aligned principles extend to large pretrained models via fine-tuning, parameter-efficient tuning, prompting, and RL with human feedback by viewing these as constrained ERM variants",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Evidence/Result: Domain adversarial methods (DANN and multi-domain variants) empirically reduce domain-specific spurious signals by learning domain-invariant representations and are expressible by master equation (13)",
+      "role": "Evidence",
+      "parents": [
+        1,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Evidence/Result: Adversarial training and consistency-based losses (inner max or embedding alignment) achieve adversarial robustness and correspond to master equation (14) and its regularized variants",
+      "role": "Evidence",
+      "parents": [
+        1,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Evidence/Result: Bias mitigation and long-tail/generalization improvements are achieved by sample reweighting or group-DRO, implementing master equation (15)",
+      "role": "Evidence",
+      "parents": [
+        1,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Claim: Practically, trustworthy ML requires stakeholder specifications (what shifts to be robust against, which features to consider causal) because solutions depend on those specifications and priors",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Method/Evidence: Intervention (L2) implemented as randomized confounder augmentation or feature-level invariance eliminates P(x|c) confounding and yields models learning P(y|do(x)) instead of P(y|x); formalized via do-calculus and backdoor adjustment",
+      "role": "Method",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Method: Backdoor, front-door, instrumental variable, and inverse-propensity weighting map to concrete ML procedures: stratified covariate fusion, mediator-based front-door on intermediate features, IV two-stage estimation, and propensity-based sample weights",
+      "role": "Method",
+      "parents": [
+        2,
+        4,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Method/Evidence: Counterfactual (L3) approaches generate or approximate x_tilde under alternative non-causal settings via generative models or latent interventions, enabling counterfactual data augmentation, explanation, and treatment-effect estimation for individual-level analysis",
+      "role": "Method",
+      "parents": [
+        2,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: Large pretrained models retain the same failure modes (spurious reliance, bias, hallucination) despite scale; fine-tuning/prompting/PEFT can transfer or amplify trustworthiness solutions when adapted to constrained ERM objectives",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Combining causality-informed data interventions, invariance regularizers, and stakeholder-specified priors (and, for large models, RLHF or retrieval grounding) is a promising integrated path to more trustworthy ML but open problems remain (unobserved confounders, entangled causal/non-causal features, and lack of single model satisfying all trust properties)",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        9,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

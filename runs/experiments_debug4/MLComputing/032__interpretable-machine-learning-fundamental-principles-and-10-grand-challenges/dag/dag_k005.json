@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Interpretable machine learning models should be preferred for high-stakes decision-making because they enable troubleshooting, clearer accountability, and can be as accurate as black-box models when designed and evaluated within the full data-science process",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Interpretable ML is defined as models constrained by domain-specific constraints (sparsity, monotonicity, decomposability, case-based reasoning, disentanglement, generative/physics constraints, etc.) to make reasoning understandable to humans",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "There is no general empirical tradeoff between interpretability and accuracy across real-world problems when the full data-science process (including troubleshooting and reﬁnement) is considered; interpretability can often improve accuracy",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Black-box models have led to serious practical harms (medical errors, unfair legal outcomes, wildfire public-safety failures) and explanations of black boxes (posthoc XAI) can be misleading or give false assurance",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Formal optimization framework for interpretable supervised learning: minimize average loss plus interpretability penalty subject to interpretability constraints (generalization of equation (1)), enabling explicit trade-offs and constraints",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Challenge 1: Sparse logical models (decision trees, decision lists, decision sets) — optimizing accuracy and sparsity is NP-hard in general; modern approaches include MIP/SAT, stochastic search, and branch-and-bound dynamic programming, but scalability, continuous-variable handling, and global constraints remain open",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Challenge 2: Scoring systems (sparse linear models with small integer coefficients) are widely used in medicine and justice; exact optimization via mixed-integer programming (RiskSLIM and variants), approximate LP/rounding, and interactive tools exist but scaling, constraint elicitation, and handling continuous variables remain hard",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Challenge 3: Generalized additive models (GAMs) provide interpretable component functions per feature and are powerful for continuous tabular data; challenges include controlling sparsity, smoothness, monotonicity, and using GAMs to troubleshoot complex biased medical datasets",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Challenge 4: Modern case-based reasoning and prototype/part-based methods (deep kNN, prototype layers, ProtoPNet and variants) enable interpretable comparisons to training examples or parts for both tabular and raw data; open problems include video, human-in-the-loop prototype supervision, and incremental prototype repair",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Challenge 5: Supervised disentanglement aims to align latent neurons with human concepts so all information about a concept flows through a designated neuron or axis; partial methods exist (concept classiﬁers, concept whitening) but disentangling whole layers, all neurons, selecting concept sets, and making the c->y mapping interpretable remain unsolved",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Challenge 6: Unsupervised disentanglement (discovering interpretable latent factors without labels) has approaches via VAEs/GANs, capsule/slot architectures and generative models but fails on complex real-world scenes; evaluation metrics, architectural generalization to other domains, and part-whole discovery at scale are open problems",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Challenge 7: Dimension reduction for visualization (PCA, t-SNE, UMAP, PaCMAP, TriMap, etc.) offers unsupervised interpretable projections but must balance local vs global structure, be robust to hyperparameter choices, and provide mappings/explanations linking low-dimensional axes back to high-dimensional features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Challenge 8: Physics- or generative-constrained models (e.g., physics-informed neural networks) incorporate known ODE/PDE constraints into learning, enabling solutions with little or no labeled data; open problems include training pathologies, co-design with experiments to reduce uncertainty, and integrating PDE constraints into non-differentiable or nonparametric models",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Challenge 9: The Rashomon set (many nearly-equally-good models) explains why accurate interpretable models often exist; key research directions are: characterizing and measuring the Rashomon set (volume, pattern ratio, variable-importance cloud), visualizing it, and designing interactive methods to choose models with desired properties (fairness, sparsity, monotonicity)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Challenge 10: Interpretable reinforcement learning needs policies and value functions that humans can understand (decision trees, relational rules, hierarchical/skill-based decompositions); central questions are which constraints preserve performance, when interpretable policies exist, and how to simplify or explain state representations",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Survey-level conclusions and principles: (1) interpretability is domain-specific and implemented via constraints, (2) interpretable models enable decisions about trust not automatic trust, (3) interpretability need not sacrifice accuracy and often aids troubleshooting, (4) metrics and interpretability definitions should be iteratively reﬁned in the full data science process, and (5) for high-stakes decisions prefer inherently interpretable models over explaining black boxes",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

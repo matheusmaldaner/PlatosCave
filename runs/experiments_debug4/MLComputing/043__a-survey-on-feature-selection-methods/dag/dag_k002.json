@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Applying feature selection to high dimensional data reduces computation, improves prediction performance, and yields better understanding of data in machine learning and pattern recognition",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Feature selection is distinct from dimension reduction methods like PCA because it eliminates input features rather than creating new features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Feature selection methods are broadly classified into Filter, Wrapper, and Embedded approaches",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Feature relevance can be defined: a feature is irrelevant if it is conditionally independent of the class labels",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Stability of feature selection is important: an algorithm must produce consistent feature subsets under perturbations of training data to be reliable",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Inter-feature correlation and redundant features can degrade selection; selecting features that are individually relevant may still yield redundant subsets",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Filter methods rank features using criteria such as Pearson correlation and mutual information and then select top-ranked features as a preprocessing step",
+      "role": "Method",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Wrapper methods use the predictor performance as the objective and search the feature subset space with sequential or heuristic search algorithms",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Embedded methods integrate feature selection into the model training process using criteria such as max-relevance min-redundancy (mRMR) or classifier weight based ranking (SVM-RFE, neural network saliency)",
+      "role": "Method",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Filter criteria details: Pearson correlation detects only linear dependencies; mutual information measures dependency but requires PDF estimation and can ignore inter-feature redundancy",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Wrapper search details: sequential algorithms include SFS, SBS, SFFS and variants (ASFFS, Plus-L-Minus-r); heuristic searches include GA, CHCGA, and PSO which trade optimality for tractability",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirical evaluation on seven datasets using SVM and RBF classifiers shows wrapper embedded-like search (SFFS, CHCGA) generally attains higher classification performance than simple filter ranking",
+      "role": "Evidence",
+      "parents": [
+        6,
+        7,
+        8,
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Ensemble and stability-aware methods (bootstrapped aggregation of feature selectors, multicriterion fusion) can improve robustness of selected feature sets",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Results summary: CHCGA with SVM produced high accuracies on datasets (examples: Breast cancer 97.36% with 5 features, Ionosphere 94.29% with 16 features) and SFFS-SVM matched these trends; filter methods produced irregular performance curves",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Choose feature selection method based on simplicity, stability, reduction goal, classifier choice, storage and computation; applying feature selection yields benefits including insight, improved generalization and reduced irrelevant variables",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests, ensembles of tree predictors built with independent random vectors, achieve strong predictive performance because ensemble strength and low inter-tree correlation control generalization error",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Definition and construction: a random forest is a collection of tree classifiers h(x, theta_k) where theta_k are i.i.d. random vectors and each tree casts one vote for the predicted class",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Convergence theorem: as the number of trees grows, the generalization error converges almost surely to a limit given by the probability that the expected vote margin is negative",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Error decomposition claim: an upper bound on generalization error depends on two quantities—strength s (expected margin) and mean correlation rho_bar between raw margins—yielding PE* <= rho_bar(1 - s^2)/s^2 and motivating minimizing correlation while maintaining strength",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Practical methods: inject randomness via (a) random selection of input variables at each split (Forest-RI) and (b) random linear combinations of inputs at each split (Forest-RC); combine with bagging and use unpruned CART trees",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Out-of-bag estimation: using bootstrap sampling, aggregate votes only from classifiers for which an observation was out-of-bag to obtain unbiased ongoing estimates of generalization error, strength, correlation and variable importance",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Two-class simplification: margin becomes 2P(h = Y) - 1, strength positive implies weak learning condition P(h = Y) > 0.5, and rho_bar equals average correlation between classifier indicator functions",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Empirical claim on F sensitivity: in many data sets selecting one or a few random features per split (F=1 or small F) yields near-optimal accuracy because strength plateaus with small F while correlation increases as F grows",
+      "role": "Result",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Forest-RI empirical finding: random input selection (F=1 or F=int(log2 M +1)) yields test errors that compare favorably to Adaboost on numerous UCI and synthetic data sets and is computationally much faster",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Forest-RC empirical finding: using random linear combinations (L variables combined, small F) often matches or outperforms Forest-RI and compares favorably with Adaboost, especially on synthetic and larger data sets",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Variable importance method: permute an input's values in out-of-bag examples and measure percent increase in misclassification to rank variable importance and guide verification by reruns with selected variables",
+      "role": "Method",
+      "parents": [
+        5,
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Regression extension and bound: for regression forests the ensemble MSE converges and satisfies PE*(forest) <= rho_bar * PE*(tree), meaning accuracy requires both low residual correlation and low individual-tree error",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Robustness and special-case experiments: (a) random forests show much less degradation than Adaboost when 5% label noise is injected; (b) on simulated many-weak-input data, Forest-RI with larger F reduces error near Bayes rate by increasing strength while keeping correlation low",
+      "role": "Evidence",
+      "parents": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusions: random forests do not overfit as trees increase, can match or exceed boosting under many conditions, offer useful internal diagnostics via out-of-bag estimates, and require designing randomness to minimize correlation while preserving strength",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        2,
+        3,
+        8,
+        9,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

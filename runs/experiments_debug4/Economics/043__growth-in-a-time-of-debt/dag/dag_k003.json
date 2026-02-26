@@ -1,0 +1,196 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Expected-utility theory decisions can be given a time interpretation: agents who maximise time-average growth of wealth (ergodicity economics) correspond to expected-utility maximisers when the utility function equals the ergodicity transformation of the underlying wealth dynamics",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics (EE) postulates that individual agents maximise the time-average growth rate of wealth (growth optimality) rather than ensemble expectation values",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Expectation values (ensemble averages) and time averages differ for non-ergodic observables encountered in wealth dynamics, so expectation values lack mechanistic relevance for single agents",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: model individual wealth as a stochastic process (wealth dynamics) and introduce a monotonic transformation u(x), the ergodicity transformation, to extract a growth rate r = Delta u / Delta t whose long-time limit is the time-average growth rate",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Result/Theorem: EUT is equivalent to optimisation over time only if u(t) has additive, stationary, independent increments; restricting to continuous paths implies u(t) must be a Brownian motion with drift du = a_u dt + b_u dW",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: use Ito calculus to invert the mapping; if u(x) is invertible and twice differentiable then applying Ito's lemma to du = a_u dt + b_u dW yields the SDE for wealth dx with explicit drift a_x(x) and diffusion b_x(x)",
+      "role": "Method",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Theorem: Every invertible utility function u(x) defines a unique corresponding wealth dynamic dx such that maximizing expected changes in u is equivalent to maximizing time-average growth under that dynamic",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        7,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Given an Ito process dx = a_x(x) dt + b_x(x) dW, a corresponding utility u(x) exists iff relations hold: b_u = b_x(x) u'(x) constant and a_u = a_x(x) u'(x) + 0.5 b_x(x)^2 u''(x) constant; solving gives consistency conditions linking drift and diffusion",
+      "role": "Method",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Example result: linear utility u(x)=x corresponds to additive Brownian-motion wealth dynamics dx = a_u dt + b_u dW",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Example result: logarithmic utility u(x)=ln x corresponds to multiplicative geometric Brownian-motion dx = x[(a_u + 0.5 b_u^2) dt + b_u dW]",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Example result: square-root utility u(x)=sqrt(x) yields a mixed dynamic with both additive and multiplicative terms, specifically dx = (2 a_u sqrt(x) + b_u^2) dt + 2 b_u sqrt(x) dW",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Constructed example: the SDE dx = (a_u/b_u e^{-x} - 0.5 e^{-2x}) dt + e^{-x} dW is internally consistent and maps to exponential utility u(x)=b_u e^{x} + C; under this dynamic fluctuations shrink with wealth so high wealth is sticky",
+      "role": "Evidence",
+      "parents": [
+        7,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Result: knowing that u(t) is Brownian with drift gives Pu(u,t) = Normal(a_u t, b_u^2 t) and the wealth distribution follows by transformation Px(x,t) = Pu(u(x),t) du/dx, yielding analytical wealth distributions for the mapped dynamics",
+      "role": "Result",
+      "parents": [
+        6,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion/Claim: The correspondence gives a theoretical basis for choosing utility functions in EUT (utility = ergodicity transformation) and predicts that wealth dynamics are primary determinants of observed risk preferences and that preferences change if dynamics change",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        0
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Claim/Limitation: For the mapping and dynamical interpretation to be well behaved, utility functions should be unbounded and invertible; bounded u(x) cause mathematical pathologies like finite-time singularities and loss of invertibility",
+      "role": "Limitation",
+      "parents": [
+        5,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Context: Historically EUT treated randomness via expectation values and introduced utility functions as a psychological patch; EE reverses this by modelling physical wealth dynamics and using time averages to obtain mechanistically relevant decisions",
+      "role": "Context",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: Recasting expected-utility maximisation as growth optimisation under specified wealth dynamics unifies EE and EUT, provides physical interpretation for utility functions, enables prediction of apparent preferences from exogenous dynamics, and offers testable empirical implications",
+      "role": "Conclusion",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Expected utility theory can be given a dynamic interpretation: for a class of wealth dynamics the ergodicity transformation equals the utility function, so maximizing expected utility is equivalent to maximizing time-average growth of wealth",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Context: Ergodicity economics distinguishes time averages from expectation values and posits agents maximize time-average growth rate of wealth (growth optimality) instead of expectation values",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Claim: For some wealth dynamics there exists an ergodicity transformation u(x) such that the time-average growth rate of wealth equals the expectation rate of change of u, making r = Delta u / Delta t an ergodic observable",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Model wealth as a stochastic process x(t) and introduce a monotonic transformation u(x); consider long-time limit of r = Delta u / Delta t and compare time average and ensemble average",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Every invertible utility function u(x) corresponds to a unique wealth dynamics x(t) for which u(t) follows an additive process with stationary increments (Brownian motion with drift), and optimizing expected Delta u is growth-optimal",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Assumption: Decision maker considers alternative stochastic processes and seeks actions that make wealth under the chosen process larger than alternatives with probability arbitrarily close to one for sufficiently large time",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: Requiring time and ensemble averages of r to coincide leads to the condition that u(t) have stationary independent additive increments, implying u(t) is a Brownian motion with drift du = a_u dt + b_u dW",
+      "role": "Result",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Consequence: When u(t) is Brownian with drift the long-time limit of r exists and equals a_u, so the probabilistic decision criterion becomes optimization of the time-average growth rate",
+      "role": "Conclusion",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Method / Claim: Using Ito calculus, invertible twice-differentiable u(x) with u(t) Brownian yields an Ito SDE for x: dx = a_x(x) dt + b_x(x) dW with coefficients determined by u and Brownian parameters",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Claim: Conversely, given an Ito diffusion dx = a_x(x) dt + b_x(x) dW, a corresponding utility u(x) exists iff the coefficients satisfy relations that make a_u and b_u constant, yielding differential constraints relating a_x and b_x to u",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: Examples recover known mappings: linear u(x)=x corresponds to additive Brownian wealth; logarithmic u(x)=ln x corresponds to geometric Brownian motion; square-root u(x)=sqrt(x) yields mixed additive-multiplicative dynamics",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Example / Result: Integrating b_u = b_x(x) u'(x) gives u'(x) = b_u / b_x(x) and u(x) = integral of b_u / b_x(x) dx + constant; applied example with b_x = e^{-x} yields exponential utility u(x)=b_u e^{x}+C and corresponding dynamics where fluctuations shrink with x",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Method / Result: The consistency condition yields ax(x) = (a_u / b_u) b_x(x) + (1/2) b_x(x) b_x'(x), so checking these relations determines existence of u without constructing it explicitly",
+      "role": "Method",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: From u(t) normal distribution Pu(u,t) = Normal(a_u t, b_u^2 t) and change of variables gives closed-form wealth distribution Px(x,t)=Pu(u(x),t) du/dx, exemplified for u(x)=b_u e^{x}+C producing a skewed distribution with heavy lower tail",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: The correspondence gives a theoretical basis for choosing utility functions from exogenous wealth dynamics and predicts that risk preferences depend on dynamics rather than fixed psychological traits",
+      "role": "Conclusion",
+      "parents": [
+        11
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation / Note: The framework requires invertible, unbounded utility functions and continuous-path processes (Brownian in utility); dynamics that do not admit such u(x) cannot be given the same EUT-by-time interpretation",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

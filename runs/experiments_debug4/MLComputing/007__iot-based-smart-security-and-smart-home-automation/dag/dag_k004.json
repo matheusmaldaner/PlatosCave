@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU and Wi-Fi can implement integrated smart home automation and smart security that overcomes range and reliability drawbacks of Bluetooth, ZigBee and GSM based methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The proposed system architecture uses Node MCU as the central IoT board, Arduino UNO for the camera, sensors (IR, DHT11, MQ135), relay board for appliances, and Wi-Fi or 3G/4G for remote access",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The system provides smart security by detecting motion with an IR sensor, activating a camera, storing captured images on a PC folder, and sending the captured image to the owner via email",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The system provides home automation by controlling lights and fans via relay interface controlled by Node MCU and allowing remote user commands over the Internet or cellular data",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The system performs environment monitoring: DHT11 reports temperature and humidity and MQ135 reports air purity; readings update approximately every second on the user smartphone",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Hardware components include Node MCU (ESP8266 based, 128 KB memory, 16 GPIO), Arduino UNO (ATmega328), OV7670 camera, IR sensor, DHT11, MQ135, and 5V 4-channel relay board",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Camera module is connected to Arduino UNO because Node MCU has only one analog pin and the OV7670 requires multiple analog/parallel signals",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "System uses Blink app on a smartphone to display results and a web/email mechanism to transmit alerts and captured images to a predefined owner email",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 8,
+      "text": "When IR sensor detects motion the microcontroller triggers the camera, the image is captured, stored on a PC folder and emailed to the owner stating possible intruder",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "After receiving the captured image the owner can remotely command the system to turn on lights/fans or forward the image to police via SMS if intruder is identified",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Relays controlled by the microcontroller can switch AC appliances (rated AC250V 10A) allowing remote activation of lights and fans",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Remote control operates over Wi-Fi and, if Wi-Fi is unavailable, over 3G or 4G cellular data to allow long distance control",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "DHT11 and MQ135 continuously send humidity, temperature and air quality values to the Node MCU and these values are displayed on the smartphone; high temperature or poor air quality can trigger fan activation",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Prototype implementation results are visible in the Blink app and captured OV7670 images are successfully stored and emailed to the user",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Advantages of the implemented system include low cost, support for handicapped and aged users, long distance control, improved security and time savings",
+      "role": "Conclusion",
+      "parents": [
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation: the system depends on internet or cellular connectivity to provide remote functionality, and future work could port the design to alternative platforms such as Raspberry Pi",
+      "role": "Limitation",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

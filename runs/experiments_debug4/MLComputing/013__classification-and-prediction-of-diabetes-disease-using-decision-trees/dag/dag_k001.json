@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree based machine learning model can classify and predict diabetes status from clinical attributes in the Pima Indians dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Used dataset: Pima Indians Diabetes Database with 768 instances and 9 patient attributes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Modeling method: binary decision tree classifier implemented in Python using Pandas and Scikit-learn in Spyder environment",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Decision tree splitting criteria and impurity measures considered: information gain (entropy), Gini index, and classification error; binary splits used to reduce search space",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Data preprocessing: identified zero values as invalid for Glucose, BloodPressure, and BMI and removed rows with zeros in those fields (35 samples affected)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Rationale: zero values in physiological features (e.g., glucose, blood pressure) are impossible/erroneous and should be removed before training",
+      "role": "Assumption",
+      "parents": [
+        1,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Data exploration revealed outliers and some zero entries requiring cleaning prior to model fitting",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Experimental procedure: split cleaned data into training and testing subsets and train DecisionTreeClassifier; generate accuracy, classification report, confusion matrix, and tree visualization",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experiment 1: train-test split 70% training / 30% testing produced specific accuracy and tree visualization (results presented in paper figures)",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Experiment 2: train-test split 50% training / 50% testing produced accuracy of 0.71 and corresponding tree visualization",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Experiment 3: train-test split 30% training / 70% testing produced specific accuracy and tree visualization (results presented in paper figures)",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: best observed classification accuracy among tested splits was 0.71 with 50% training / 50% testing",
+      "role": "Conclusion",
+      "parents": [
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Claim: allocating more data to training generally improves accuracy estimates of the decision tree model",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: decision trees offer advantages for diagnostic modeling including fast training, interpretable rule generation, intuitive classification, competitive prediction accuracy, and nonparametric modeling",
+      "role": "Conclusion",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: model outputs require further clinical consultation and more accurate diagnosis; some dataset features may not be reliably available from users",
+      "role": "Limitation",
+      "parents": [
+        4,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

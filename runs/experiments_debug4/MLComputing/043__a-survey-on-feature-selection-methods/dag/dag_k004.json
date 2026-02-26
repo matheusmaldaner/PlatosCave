@@ -1,0 +1,187 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Feature selection methods (filter, wrapper, embedded) can reduce dimensionality to lower computation, improve prediction performance, and increase data understanding in supervised machine learning",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Filter methods rank features using criteria before classification and select top features via thresholding",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Wrapper methods use a predictor as a black box and search heuristically for feature subsets that maximize predictor performance",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Embedded methods incorporate feature selection into model training to reduce re-training cost and consider inter-feature relevance during selection",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Common filter criteria include Pearson correlation to class labels and mutual information between feature and class; these detect linear and general dependencies respectively but ignore inter-feature redundancy",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Sequential and heuristic wrapper search algorithms exist: sequential methods (SFS, SBS, SFFS, ASFFS) add/remove features iteratively; heuristic methods use evolutionary/metaheuristic searches (GA, CHCGA, PSO) to explore subsets",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Embedded approaches such as mRMR and SVM-RFE use mutual information or classifier-derived feature weights to select features balancing relevance and redundancy",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Feature selection methods have trade-offs: filters are computationally light and avoid overfitting risk from classifier bias, wrappers can find better subsets but are computationally expensive and prone to overfitting, embedded methods aim to balance both",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Mutual information based ranking requires PDF estimation from finite samples, which can yield poor single-feature MI estimates and miss inter-feature redundancy",
+      "role": "Limitation",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "RELIEF and other filter variants rank features by relevance but selecting an appropriate threshold or accounting for feature interactions remains difficult",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "SFFS (sequential floating forward selection) reduces nesting by allowing conditional exclusion steps; ASFFS and Plus-L-Minus-r further attempt to reduce redundancy with adaptive parameters",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "CHCGA and other evolutionary wrapper variants maintain diversity (e.g., HUX crossover, mating thresholds, cataclysmic mutation) to avoid premature convergence and improve search for good feature subsets",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "mRMR selects features maximizing relevance to class and minimizing redundancy with already selected features; SVM-RFE uses changes in classifier objective to rank and recursively remove features",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Empirical comparison on seven datasets using SVM and RBF classifiers shows SFFS and CHCGA wrappers with SVM yield consistently high test accuracy and compact feature subsets",
+      "role": "Result",
+      "parents": [
+        4,
+        5,
+        6
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Experimental evidence: CHCGA with SVM achieved high maximum test accuracies across datasets (examples: Breast cancer 97.36% with 5 features; Ionosphere 94.29% with 16 features; discrete FaultMode 98.83% with 6 features)",
+      "role": "Evidence",
+      "parents": [
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Computational cost and classifier parameter optimization (e.g., RBF kernel centers and variances per subset) substantially increase wrapper method runtime and can affect apparent selection quality",
+      "role": "Limitation",
+      "parents": [
+        7,
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Stability of feature selection algorithms is an important concern: algorithms that produce inconsistent subsets under small data perturbations are unreliable; ensemble and stability measures can improve robustness",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

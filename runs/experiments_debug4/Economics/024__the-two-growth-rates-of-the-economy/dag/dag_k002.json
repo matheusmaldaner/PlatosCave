@@ -1,0 +1,192 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "National economic performance should be reported using both the ensemble-average (GDP per capita) and the time-average (DDP per capita) growth rates because together they give a more complete picture of aggregate productive capacity and typical individual experience",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Under random multiplicative income dynamics, the ensemble-average growth rate exceeds the time-average growth rate (ensemble > time)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The ensemble-average growth rate corresponds to GDP per capita growth and is approximately a plutocratic (income-weighted) average of individual growth rates",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The time-average growth rate corresponds to the DDP per capita (geometric mean income) and is a democratic (equally weighted) average of individual growth rates",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The difference between ensemble-average and time-average growth rates defines the ergodicity gap, which under multiplicative growth equals the mean logarithmic deviation (MLD, second Theil index) and measures inequality",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The ergodicity gap grows at the rate ensemble-minus-time; in geometric Brownian motion (GBM) the gap growth rate equals sigma squared over two, implying unbounded inequality growth over time",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "In GBM the ensemble-average (GDP per capita) growth rate equals mu, the time-average (DDP per capita) growth rate equals mu minus sigma squared over two, and the ergodicity gap J(t) = sigma squared times t over two (up to constant)",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Jensen's inequality implies g_ensemble - g_time >= 0 for multiplicative dynamics and equals zero only when incomes are equal, so divergence of the two rates indicates rising inequality",
+      "role": "Claim",
+      "parents": [
+        1,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "GDP per capita is the arithmetic mean of incomes and for small changes can be approximated as the income-share weighted average of individual growth rates (plutocratic measure)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "DDP per capita equals exp(mean log income) and the time-average growth rate can be estimated from changes in mean log incomes between two cross-sectional distributions, making it independent of rank mobility",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Because the time-average growth rate depends only on initial and terminal log-income distributions, it can be estimated from cross-sectional quantile data without panel data",
+      "role": "Claim",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirical analysis of US and France income data (World Inequality Database, quantiles, with bottom-decile truncation for low-income sensitivity) shows the US experienced divergence since about 1980 (GDP growth > DDP growth) while France shows the two rates much closer",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "In the United States between 1980 and 2014 ensemble-average income rose about 40% while time-average income rose about 20%, indicating growing ergodicity gap and rising inequality",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "In France the ensemble-average and time-average growth rates have remained close since 1970, suggesting weaker divergence mechanisms or stronger convergence mechanisms than in the US",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "If policymakers focus only on GDP per capita (ensemble-average growth), they can be misled about typical individual wellbeing, creating potential political disconnect between governments and citizens",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        2,
+        3
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Recommendation: national statistical authorities should compile and report ensemble-average (GDP per capita), time-average (DDP per capita), and the ergodicity gap (MLD) to better inform policymaking",
+      "role": "Conclusion",
+      "parents": [
+        14,
+        4,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Limitation: DDP per capita (geometric mean) is sensitive to measurement error or zeros at the low tail, so truncation of the lowest incomes (e.g., bottom decile) affects quantitative values though not qualitative conclusions",
+      "role": "Limitation",
+      "parents": [
+        9,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

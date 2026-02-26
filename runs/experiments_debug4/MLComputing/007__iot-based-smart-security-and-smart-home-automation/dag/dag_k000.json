@@ -1,0 +1,191 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU and Arduino UNO can provide integrated smart security, home automation, and environment monitoring that overcomes range and reliability drawbacks of existing short range wireless methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing home automation approaches using Bluetooth, ZigBee, voice recognition, and GSM have limitations: short range or unreliable message delivery and sensitivity to noise",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Proposed architecture uses Node MCU (ESP8266) as main controller, Arduino UNO for camera interfacing, relay board for appliance control, IR, DHT11, MQ135 sensors and OV7670 camera",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "System design enables remote control of lights and fans via smartphone over Wi-Fi or cellular data (3G/4G) and updates sensor values every second to the mobile app",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "System provides smart security by triggering the camera via IR motion detection, storing images on a PC, and emailing captured images to a predefined user address",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Range limitation of Bluetooth and ZigBee (approx 10-20 m) and GSM unreliability motivate using Internet-connected modules to allow long distance control",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Node MCU is used to connect sensors and send their readings to the smartphone; Arduino UNO is used to interface OV7670 camera due to Node MCU's limited analog pins",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Relays provide isolation and switching to control high current AC or DC appliances and are driven by microcontroller GPIOs",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Remote control over internet enables handicapped and elderly users to operate appliances from long distance, improving comfort and accessibility",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Sensor monitoring (DHT11 for temperature and humidity, MQ135 for air quality) provides real time environment data and can automatically trigger fans when unsafe conditions are detected",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "When IR sensor detects motion it triggers the camera, the captured image is stored on PC and emailed to the owner with an intruder alert",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Owner can respond to received email by remotely turning on lights or fans or forwarding the image to authorities via SMS or email",
+      "role": "Claim",
+      "parents": [
+        4,
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Prototype implementation displays sensor and control results on a smartphone app (Blink app) and stores/sends camera images as described",
+      "role": "Result",
+      "parents": [
+        6,
+        9
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "OV7670 camera module can output VGA images at 30 fps and operates at 3.3V with I2C configuration and pixel clock signals",
+      "role": "Context",
+      "parents": [
+        6
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Advantages of the implemented system include low cost, dual functionality (security and automation), long distance control, accessibility benefits, and time saving",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        11,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation: The system depends on internet connectivity to provide remote features; alternative implementations could use Raspberry Pi",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

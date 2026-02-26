@@ -1,0 +1,213 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A single-kernel, block-wise GPU error-bounded lossy compressor design (cuSZp) can achieve ultra-fast end-to-end throughput while maintaining high compression ratios and high reconstructed data quality for scientific HPC datasets",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "cuSZp implements compression and decompression entirely inside one GPU kernel using a block-wise pipeline to avoid CPU interactions and extra data movements",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "cuSZp pipeline consists of four major steps per block: (S1) pre-quantization and lightweight 1D 1-layer Lorenzo prediction, (S2) fixed-length encoding using per-block effective-bit detection and sign map, (S3) hierarchical global synchronization (exclusive prefix-sum) implemented with thread/warp/global levels, and (S4) block bit-shuffle to align bits into bytes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Design choices: use lightweight Lorenzo prediction (intra-block) to reduce bit entropy, use block fixed-length encoding instead of Huffman to trade some compression for much higher parallel throughput, and implement hierarchical prefix-sum to compute block offsets on GPU",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Evaluation uses NVIDIA Ampere A100 GPU and six representative real-world HPC datasets (Hurricane, NYX, QMCPack, RTM, HACC, CESM-ATM) drawn from SDRBench; metrics include end-to-end throughput, kernel throughput, compression ratio, PSNR, SSIM, and visualization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Experimental evidence: comprehensive experiments on A100 with 6 datasets and multiple relative error bounds (REL 1E-1..1E-4) comparing cuSZp to cuSZ, cuSZx, and cuZFP",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Putting all computations into one GPU kernel eliminates CPU computation and CPU-GPU memcpy overheads that dominate end-to-end runtime in prior GPU compressors (e.g., cuSZ, cuSZx)",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Fixed-length per-block encoding plus bit-shuffle is more GPU-friendly and achieves high compression ratios on typical scientific data because blocks are spatially smooth (empirical CDFs show most blocks have small relative value ranges)",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5,
+        14
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Quantization and prediction: pre-quantization maps floats to integers with guaranteed max absolute error within user error bound; Lorenzo prediction stores per-block differences li = ri - r_{i-1} to reduce effective bits",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Fixed-length encoding: for each non-zero block compute max absolute quantized integer to determine per-block fixed bit-width F_k, store sign map, and compute compressed block size CmpL_k = (F_k + 1) * L / 8 (bytes)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Global synchronization: compute exclusive prefix-sum of per-block compressed sizes using hierarchical thread->warp->global scheme and chained-scan to produce start offsets for concatenation fully on GPU",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Block bit-shuffle: reorganize bits across block elements into aligned bytes by bit-offset so writing variable-bit-width encoded data becomes regular and parallel-storeable",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Evaluation measures end-to-end throughput from data resident in GPU memory to compressed bytes stored in GPU memory (so single-kernel implementations equate kernel and end-to-end throughput)",
+      "role": "Assumption",
+      "parents": [
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Throughput results: cuSZp achieves average end-to-end throughput 93.63 GB/s (compression) and 120.04 GB/s (decompression) on A100, which is 95.53x faster than cuSZ and 55.18x faster than cuSZx; kernel throughput of cuSZp is comparable to or higher than state-of-the-art single-kernel compressors",
+      "role": "Result",
+      "parents": [
+        5,
+        6,
+        10,
+        12
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Compression ratio and data smoothness evidence: on 24 benchmark cases cuSZp attains the highest average compression ratio in 16 cases across tested error bounds; block smoothness analysis (CDFs) supports effectiveness of fixed-length block encoding",
+      "role": "Result",
+      "parents": [
+        5,
+        7,
+        9,
+        11
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Reconstructed data quality: rate-distortion and visualization show cuSZp preserves higher PSNR and SSIM than cuZFP at comparable bit rates and removes artifacts produced by some block-constant or fixed-rate methods (evidenced on RTM, CESM-ATM, HACC, etc.)",
+      "role": "Evidence",
+      "parents": [
+        5,
+        7,
+        9
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: cuSZp demonstrates that a carefully engineered single-kernel, block-wise GPU error-bounded compressor can deliver ultra-fast end-to-end throughput while achieving competitive or superior compression ratios and reconstructed data quality for diverse scientific datasets, making it suitable for inline GPU HPC simulations",
+      "role": "Conclusion",
+      "parents": [
+        13,
+        14,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

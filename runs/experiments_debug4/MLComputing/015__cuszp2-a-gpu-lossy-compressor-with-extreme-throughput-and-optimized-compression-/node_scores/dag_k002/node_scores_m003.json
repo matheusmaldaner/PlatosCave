@@ -1,0 +1,167 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general concerns about GPU lossy compression implementations suffering from CPU overhead, data movement, memory bandwidth contention and synchronization latency, which are commonly cited performance bottlenecks.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim argues that end to end throughput including API calls and device memory operations better reflects practical performance of GPU compressors than kernel only throughput, which aligns with general intuition that real workloads involve memory transfers and API overhead beyond kernels.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a GPU based single kernel lossy compressor called CUSZP2 that converts floats to quantization integers, applies lossless encoding per block, computes block offsets via device level prefix sum, and concatenates blocks into one compressed byte array entirely on GPU, which is plausible but not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a hypothetical encoding technique with per-integer sign bits, fixed-length field for most integers, and adaptive outliers in 1-4 bytes with a mode flag; no independent verification is provided.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with common GPU memory optimization strategies such as using vectorized loads and stores and ensuring coalesced memory accesses across warp threads to maximize bandwidth.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a plausible GPU optimization concept for global prefix sum using decoupled lookback and compression aware adaptation, but lacks evidence or references, yielding moderate credibility and relevance with uncertain rigor and reproducibility.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text and general knowledge; no external sources consulted.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text; no external data consulted; corroboration not established.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.3,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that CUSZP2 with Outlier-FLE achieves higher compression ratios than competing GPU error bounded compressors in 24 of 27 tested cases, with Outlier-FLE improving ratios on globally smooth datasets; based solely on the claim text, this appears plausible but cannot be independently verified from the provided information.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.45,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the provided claim without external data.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim plausibly describes a computational shortcut where a fixed length is inferred by scanning absolute integer values within a block, reducing recomputation, but the level of support and rigor is uncertain without specific empirical evidence or algorithmic details.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, the reported throughput figures suggest a substantial improvement from prior methods and near maximum hardware bandwidth, but no independent validation is provided in this context.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.4,
+    "relevance": 0.85,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, no external sources were consulted, so the reported throughput figure and improvement are taken at face value and not independently verified.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.58,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the role, and general background knowledge, the claim appears plausible but not verifiable without the paper's data.",
+    "confidence_level": "medium"
+  }
+}

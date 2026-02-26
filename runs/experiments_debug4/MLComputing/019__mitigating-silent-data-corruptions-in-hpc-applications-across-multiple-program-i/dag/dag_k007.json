@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Automatically identifying and re-prioritizing input-sensitive \"incubative\" instructions via MINPSID increases selective instruction duplication (SID) SDC coverage and mitigates coverage loss when programs run with multiple inputs",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing SID evaluations that select instructions based on a single reference input can suffer large loss of SDC coverage when the protected program is executed with different inputs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "A small subset of instructions, called incubative instructions, have near-zero measured SDC probability on the reference input but much higher SDC probability on other inputs and are responsible for most of the SDC coverage loss",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "MINPSID identifies incubative instructions using static CFG analysis, a genetic algorithm guided input search that generates weighted CFGs per input, per-instruction fault injection on selected inputs, and re-prioritizes incubative instructions by updating their benefit to the observed upper bounds before knapsack selection and code transformation for duplication",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "MINPSID mitigates the loss of SDC coverage across multiple inputs compared to state-of-the-art SID, producing more conservative and more predictable expected coverage",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Preliminary fault injection experiments on 11 HPC benchmarks show average SDC coverage under existing SID dropped from 96.12% to 58.76% across multiple inputs, with up to 100% loss in Kmeans and on average 37.58% of inputs causing coverage loss per benchmark",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Analysis method to identify incubative instructions: collect instructions causing SDCs under reference input and under many other inputs, then select instructions that are non-overlapping (no SDC with reference input but cause SDCs on other inputs) and whose measured benefit shifts from near zero into high-percentiles across inputs",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Characterization evidence: incubative instructions account for on average 15.79% of instructions per program (range 6.20% to 32.09%) and are responsible for at least 97% of observed SDC coverage loss",
+      "role": "Evidence",
+      "parents": [
+        2,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "MINPSID implements a genetic algorithm input search with mutation and crossover, using a fitness based on average Euclidean distance between indexed weighted CFG lists to prioritize inputs that produce distinct execution paths",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Per-input dynamic profiling constructs weighted CFGs by counting edge or basic-block execution frequencies and converts them into indexed lists for computing fitness and distinguishing inputs",
+      "role": "Method",
+      "parents": [
+        3,
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Fault injection methodology: LLVM-level single-bit-flip injections using LLFI; per-instruction SDC probabilities measured with 100 injections per static instruction per input and program-level SDC probability measured with 1000 injections per input",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evaluation results: MINPSID reduces average percentage of inputs that cause SDC coverage loss from 37.58% (baseline SID) to 8.36%; MINPSID mitigates 97% of the coverage loss averaged over benchmarks and protection levels; expected coverage produced by MINPSID is more conservative",
+      "role": "Result",
+      "parents": [
+        4,
+        10,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Additional findings: MINPSID identifies 45.60% more incubative instructions than a random input search within the time budget and takes on average 63.71 minutes (one-time compilation cost) versus 3.87 minutes for baseline SID preparation",
+      "role": "Result",
+      "parents": [
+        4,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Assumptions and fault model: focus on transient processor computing component faults (pipeline stages, flip-flops, functional units), single transient bit flips, ignore memory/cache faults assumed protected by ECC and control logic/instruction encoding faults",
+      "role": "Assumption",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitations and threats: MINPSID increases one-time analysis cost and shares performance overhead variance across inputs with SID; evaluation uses LLVM-level FI and a selected set of benchmarks which may affect generality; mitigation of performance overhead variance is future work",
+      "role": "Limitation",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A sequence transduction model based solely on attention mechanisms (the Transformer) can replace recurrent and convolutional layers, provide greater parallelism, and achieve state-of-the-art translation quality while requiring less training time and compute",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The Transformer architecture uses stacked encoder and decoder stacks composed exclusively of multi-head self-attention and position-wise feed-forward sub-layers, with residual connections and layer normalization",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Scaled dot-product attention computes attention as softmax(Q K^T / sqrt(dk)) V and is efficient to implement via matrix multiplications",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Multi-head attention projects queries, keys, and values into multiple subspaces, performs attention in parallel (h heads) and concatenates outputs to allow attending to different representation subspaces",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Since the model has no recurrence or convolution, positional encodings (sinusoidal or learned) are added to input embeddings to inject token order information",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Position-wise feed-forward networks consisting of two linear transformations with ReLU (inner dimension dff) are applied identically at each position between attention layers",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "A Transformer encoder stack comprises N identical layers (N=6 in base model), each with multi-head self-attention then feed-forward sub-layer, producing outputs of dimension dmodel=512",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "The decoder stack has N identical layers (N=6 base) with an extra encoder-decoder multi-head attention sub-layer and masked self-attention to preserve autoregressive decoding",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Residual connections and layer normalization are applied around each sub-layer, and embeddings share weight matrix with pre-softmax linear transformation, scaled by sqrt(dmodel)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Self-attention reduces maximum path length between positions to O(1) and enables more parallelization than recurrent layers, making it computationally favorable for typical sentence lengths where sequence length n < representation dimension d",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Compared to recurrent and convolutional layers, self-attention has per-layer complexity O(n^2 * d), O(1) sequential operations, and constant maximum path length, enabling faster training and easier learning of long-range dependencies",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirical architecture ablations show multi-head attention with h=8 and dk=dv=64 performs best; reducing attention key size dk degrades quality; too few or too many heads hurts BLEU; larger models and dropout improve performance",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Sinusoidal positional encodings and learned positional embeddings yield nearly identical results, but sinusoids may allow extrapolation to longer sequences",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Training setup: byte-pair or word-piece tokenization, batching by approximate sequence length, Adam optimizer with warmup learning rate schedule (warmup_steps=4000), dropout (Pdrop=0.1), label smoothing (epsilon_ls=0.1), trained on 8 P100 GPUs",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "On WMT 2014 English-to-German, the big Transformer achieved 28.4 BLEU (state-of-the-art, >2 BLEU over prior best), and on WMT 2014 English-to-French the big Transformer achieved 41.0 BLEU as a single model",
+      "role": "Result",
+      "parents": [
+        13,
+        1
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "The Transformer trained faster and used substantially less estimated FLOPs than previous top models and ensembles (e.g., base model trains in ~12 hours on 8 P100 GPUs; big model trains in 3.5 days), achieving better or comparable BLEU at lower training cost",
+      "role": "Evidence",
+      "parents": [
+        14,
+        10
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: Attention-only Transformer is effective for machine translation, offering state-of-the-art quality, improved parallelism and reduced training cost; future work includes extending attention models to other modalities and investigating local/restricted attention for very long inputs",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        15,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

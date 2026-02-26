@@ -1,0 +1,177 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Dropout, which randomly removes units and their connections during training, prevents overfitting and improves neural network generalization by approximating model averaging over many thinned networks",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: During training sample a binary mask per layer with Bernoulli(p) and multiply layer activations elementwise to produce a thinned network; backpropagate gradients through the sampled subnetwork",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: At test time approximate averaging of exponentially many thinned networks by using the full network with outgoing weights scaled by p (or equivalently scaling activations by 1/p during training)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Training details that improve dropout performance include stochastic gradient descent with momentum, high learning rates with decay, and max-norm constraint on incoming weight vectors",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Combining dropout with max-norm regularization, large decaying learning rates and high momentum further improves generalization and enables training very large networks without severe overfitting",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Evidence: Across multiple supervised domains (vision: MNIST, SVHN, CIFAR, ImageNet; speech: TIMIT; text: Reuters; computational biology: alternative splicing) networks trained with dropout consistently reduced test error versus comparable non-dropout baselines and achieved state-of-the-art on many benchmarks",
+      "role": "Evidence",
+      "parents": [
+        0,
+        2,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result (MNIST): Dropout reduced error from ~1.60% to as low as 0.95% with ReLUs and max-norm; DBN/DBM pretraining plus dropout achieved 0.79% in permutation-invariant setting",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Result (SVHN/CIFAR/ImageNet): Dropout in convolutional nets reduced SVHN error to 2.55% (further improved by maxout), CIFAR-10 error down to 12.61% (without augmentation), and contributed to winning ILSVRC-2012 with large conv nets (top-5 ~16%)",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Result (TIMIT/Text/Biology): Dropout reduced TIMIT phone error (eg 23.4% to 21.8%, and pretrained nets to ~19.7%), gave modest gains on Reuters text classification, and on the small alternative-splicing genetics data dropout outperformed standard nets but was slightly worse than Bayesian neural nets",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Claim: Dropout reduces co-adaptation of hidden units so that individual units learn more useful, robust features that generalize better",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Evidence: Empirical analyses show dropout-trained networks learn qualitatively different first-layer features (more interpretable edge/stroke detectors), induce sparser activations, and reduce units that rely on precise partners",
+      "role": "Evidence",
+      "parents": [
+        9,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Claim: Variants and theoretical views — dropout can be seen as stochastic multiplicative noise, approximates model averaging, can be applied with Gaussian multiplicative noise having same mean/variance as Bernoulli, and the weight-scaling test approximation is empirically close to Monte-Carlo averaging (k~50)",
+      "role": "Claim",
+      "parents": [
+        2,
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Claim/Method extension: Dropout generalizes to graphical models such as Restricted Boltzmann Machines (Dropout RBM); training samples a mask r and trains using Contrastive Divergence on the thinned RBM, yielding sparser/coarser features",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Claim/Theory: Marginalizing dropout noise yields deterministic regularizers; for linear regression marginalization is equivalent (in expectation) to ridge regression with data-dependent scaling of the weight penalty, and approximate marginalization techniques exist for logistic regression",
+      "role": "Claim",
+      "parents": [
+        1,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: Dropout increases training time and gradient noise, typically requiring 2-3x more training time and careful hyperparameter tuning; stochasticity speeds training exploration but slows convergence",
+      "role": "Limitation",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    }
+  ]
+}

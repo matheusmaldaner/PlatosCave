@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Comparing a broad set of supervised learning algorithms across multiple metrics and datasets and applying probability calibration will reveal which methods provide the best overall predictive performance and probability estimates",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ten supervised learning algorithms were compared: SVMs, neural networks (ANN), logistic regression, naive Bayes, memory-based learning (KNN), random forests, decision trees, bagged trees, boosted trees, and boosted stumps",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Evaluation used 11 binary classification problems, eight performance metrics grouped as threshold, ordering/rank, and probability metrics, and model selection via 5-fold cross validation with 4000 train, 1000 validation per fold and a large final test set",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Model search explored wide parameter ranges and common variants (about 2000 models per trial), and predictions were evaluated both raw and after calibration using Platt Scaling and Isotonic Regression",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Before calibration the top average performers across eight metrics were bagged trees, random forests, and neural networks",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "After calibration (Platt or Isotonic), boosted decision trees produced the best overall performance on the eight metrics and eleven problems, with calibrated random forests and bagged trees also among the top methods",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        9,
+        15,
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Neural networks were already well calibrated and in some cases calibration (Platt or Isotonic) slightly degraded their probability metric performance",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Support Vector Machines, after Platt Scaling or Isotonic Regression, achieved performance comparable to neural nets and approached the top ensembles on probability and ordering metrics",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Some methods were consistently weaker on average: naive Bayes, logistic regression, single decision trees, and boosted stumps performed poorly relative to top methods on the averaged metrics",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Aggregate evidence comes from normalized scores averaged over five cross-validation trials, eight metrics and eleven problems and significance assessed by paired t-tests; tables show mean normalized scores and an optimal-selection column",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "A bootstrap analysis resampled problems and metrics 1000 times to evaluate stability of rankings under different problem/metric selections",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Bootstrap results show ensembles of trees (boosted trees, random forests, bagged trees) rank first through third the vast majority of resamples, indicating ranking stability and a low chance of unrelated methods outperforming them",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Performance varies substantially by problem and metric; no single algorithm is best on every problem (No Free Lunch implication) and some methods that are poor on average can be best on particular metrics or datasets",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Platt Scaling (sigmoid mapping) and Isotonic Regression (PAV algorithm) were used to map raw model outputs to posterior probability estimates using the same 1000-point validation sets used for model selection",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: calibrated boosted decision trees were the best overall on the chosen datasets and metrics, with random forests and bagged trees close behind; calibration substantially improves probability metrics for several algorithms while some models (neural nets, bagged trees, KNN, logistic) gain little from calibration",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

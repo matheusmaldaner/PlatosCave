@@ -1,0 +1,185 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Replacing neural networks with support vector machines at the segment classification level will improve handwritten numeral recognition and increase the recognition rate, including in a hybrid SVM/HMM word recognizer",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Handwriting recognition suffers from large variability and distortions which local elastic models like HMM are sensitive to and handle poorly",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Support Vector Machines provide better global discrimination and generalization (via structural risk minimization and large margin) compared to neural networks and thus are a suitable alternative for segment classification",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We developed an SVM-based character recognizer and produced probabilistic SVM outputs to integrate with an HMM module for word recognition",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Feature extraction for SVM used moment invariants (7), thinned-moment variants (7) and affine moment invariants (4) totaling 18 global features, and for online spatial resampling 7 local features per point leading to 350 feature values per example",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Multiclass numeral recognition was implemented with one-versus-rest SVM strategy; experiments used RBF kernel with grid search to select C and gamma (final C = 8)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Datasets used include the UCI Optdigits dataset (32x32 or preprocessed 8x8 block form), an Assamese handwritten characters dataset of 8235 samples from 45 writers, and mixtures of IRONOFF and UNIPEN databases",
+      "role": "Method",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Preprocessing included filtration, normalization, segmentation into character units, thinning, and extraction of the described features to produce input vectors for SVM",
+      "role": "Method",
+      "parents": [
+        3,
+        4,
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Grid search over SVM hyperparameters was performed to select model parameters for the final SVM models",
+      "role": "Method",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "On the testing data the discriminant classifier in the application correctly identified 98% of testing data (testing and training sets were disjoint and independent)",
+      "role": "Result",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Across three isolated character databases, SVM recognition rates exceeded those of Hidden Markov Models in the reported comparisons",
+      "role": "Result",
+      "parents": [
+        9,
+        6
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "SVM requires significantly more parameter storage because memory scales with number of support vectors times number of features (here 350), whereas HMMs need less space via weight-sharing",
+      "role": "Claim",
+      "parents": [
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "The isolated character recognition improvements suggest that replacing NN/HMM with SVM/HMM at the character hypothesis level could improve hybrid word recognition rates",
+      "role": "Claim",
+      "parents": [
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Space-saving strategies for SVM are possible by storing compact original online signals and pen-up/pen-down status and dynamically expanding models at recognition time",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Work is ongoing to integrate SVM character recognition into an HMM-based word recognizer; expected final conclusion is that SVM's better discrimination will yield improved word recognition",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

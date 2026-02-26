@@ -1,0 +1,189 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim about cuSZp implementing compression and decompression entirely within a single GPU kernel with a blockwise pipeline to minimize CPU interactions is plausible but not verifiable from the given text alone and lacks established evidence.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the provided claim text; no external sources consulted.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes plausible GPU compression design choices (intra-block Lorenzo prediction, fixed length encoding for throughput, hierarchical prefix-sum for block offsets) that align with common techniques, but without evidence or sources it's speculative.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts specific hardware, datasets, and metrics; without external sources, cannot verify; plausibility moderate.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim describes experimental evidence on an A100 with six datasets and multiple relative error bounds comparing cuSZp to cuSZ, cuSZx, and cuZFP, but no external sources are provided in this prompt.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that combining all computations into a single GPU kernel removes CPU computations and CPU to GPU transfer overheads that previously dominated runtime in GPU compressors such as cuSZ and cuSZx, which is plausible but not guaranteed without empirical evidence of kernel fusion efficiency and the impact on overall workflow.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim plausibly links block based encoding and bit shuffle to GPU friendliness and compression in spatially smooth data, but without specific empirical data provided, evidence is not established.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a pre quantization step that maps floats to integers with a guaranteed max absolute error within a user specified bound, and a Lorenzo style prediction that stores per block differences li = ri minus r i minus one to reduce effective bits; assessment is cautious due to lack of detailed methodology or empirical validation in the text.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.58,
+    "relevance": 0.65,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.45,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a per block fixed width encoding scheme with non zero blocks, which is plausible and aligns with common quantization and compression techniques; however, the claim lacks details on how blocks are defined, quantization levels, and how sign maps are stored, so overall assessment is cautiously plausible but not guaranteed.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim proposes computing exclusive prefix-sum of per-block compressed sizes using hierarchical thread to warp to global scheme with chained scan for start offsets on GPU, which aligns with standard GPU prefix-sum techniques but specifics about per-block compressed data and chained scan are not verified here.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a transformation to align bits into bytes to enable regular parallel writes for variable-bit-width data.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.45,
+    "relevance": 0.8,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.2,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts end to end throughput equals kernel throughput when both input data and compressed output reside in GPU memory with a single kernel; this depends on negligible data movement and overhead, which is not universally guaranteed, so the assumption is plausible but not universally valid.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents specific throughput figures for cuSZp on A100 and comparisons to cuSZ and cuSZx, but there is no independent source verification provided here.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Claim asserts that cuSZp achieves the highest average compression ratio in 16 of 24 cases and that block smoothness CDF analysis supports fixed length block encoding, but no supporting data or references are provided in the claim text.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the claim asserts that cuSZp achieves higher PSNR and SSIM than cuZFP at similar bit rates and reduces artifacts on several datasets; without external data, evaluation of actual evidence cannot be done.",
+    "confidence_level": "medium"
+  },
+  "16": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, the statement about cuSZp being a single kernel, block-wise GPU compressor delivering ultra fast throughput with competitive compression and data quality is plausible but unverified; no external data cited and the assessment relies on assumed methodological details.",
+    "confidence_level": "medium"
+  }
+}

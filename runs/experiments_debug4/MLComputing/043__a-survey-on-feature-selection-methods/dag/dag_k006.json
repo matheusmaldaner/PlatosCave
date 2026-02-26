@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Feature selection methods can reduce computation, improve prediction performance and provide better data understanding in high dimensional machine learning problems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Context: high dimensional data contain irrelevant and redundant variables that increase computation, harm generalization and obscure discriminative information (examples: gene microarray, sensor data)",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Assumption: a feature is irrelevant if it is conditionally independent of class labels, and redundant features can be removed without losing discrimination",
+      "role": "Assumption",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Feature selection approaches are categorized as Filter (rank-based preprocessing), Wrapper (classifier-performance driven subset search), and Embedded (feature selection integrated into training)",
+      "role": "Method",
+      "parents": [
+        0,
+        1,
+        2
+      ],
+      "children": [
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Choice among filter, wrapper, and embedded methods trades off computational cost, risk of overfitting, dependency on classifier bias, and ability to account for inter-feature redundancy",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: Stability (consistency of selected features under perturbations) is an important criterion for evaluating feature selection algorithms and can be improved by ensemble or multicriterion fusion methods",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Method - Filter: rank features by criteria such as Pearson correlation or mutual information, then select top ranked features by threshold; advantages: light computation and avoids classifier bias; drawbacks: ignores inter-feature redundancy and interactions",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Method - Wrapper and search: use classifier performance as objective and apply sequential search (SFS, SBS, SFFS, ASFFS, plus-L-minus-r) or heuristic search (GA, CHCGA, PSO) to find suboptimal subsets; drawbacks: high computation and overfitting risk",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Method - Mutual information and conditional mutual information based criteria (mRMR and related) aim to maximize relevance to class while minimizing redundancy with already selected features",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Method - Embedded: use model weights or training regularization (e.g., SVM-RFE, neural net saliency, network pruning) to select features during model training to reduce repeated reclassification",
+      "role": "Method",
+      "parents": [
+        6,
+        8,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Method - Specific heuristic: CHC genetic algorithm variant preserves diversity using HUX crossover, adaptive mating threshold and cataclysmic mutation to avoid stagnation and speed convergence",
+      "role": "Method",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Method/Evidence: Experimental protocol used seven datasets (five UCI sets, RF generator Fault Mode continuous and discretized), split 50% train/50% test, evaluated filter (correlation, MI), SFFS wrapper, and CHCGA wrapper with SVM and RBF classifiers; RBF parameters optimized per subset",
+      "role": "Method",
+      "parents": [
+        3,
+        7,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result/Evidence: Filter rankings produced irregular performance curves and often inferior subsets; SFFS and CHCGA wrapper methods with SVM achieved consistently higher maximum test accuracies across datasets",
+      "role": "Result",
+      "parents": [
+        11,
+        6,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Result: Example numeric outcomes with CHCGA+SVM show high peak accuracies for datasets (e.g., breast cancer 97.36% with 5 features, ionosphere 94.29% with 16 features, FaultMode discrete 98.83% with 6 features), indicating effective subset selection",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Applying feature selection yields benefits (insight, reduced features, improved generalization and computation); method choice should consider simplicity, stability, reduced feature count, accuracy, storage and computational cost",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        4,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

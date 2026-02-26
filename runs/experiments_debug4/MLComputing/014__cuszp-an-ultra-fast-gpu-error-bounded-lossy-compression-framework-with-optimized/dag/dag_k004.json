@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A single-kernel GPU error-bounded lossy compression framework (cuSZp) can achieve ultra-fast end-to-end throughput while also delivering high compression ratios and high reconstructed data quality for scientific HPC datasets",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "cuSZp implements four main components inside one GPU kernel: (S1) quantization and lightweight Lorenzo prediction, (S2) block-wise fixed-length encoding with sign map, (S3) hierarchical global synchronization (prefix-sum) implemented on-GPU, and (S4) block bit-shuffle to produce aligned bytes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Quantization converts floating-point data to integers within the user error bound and a 1D 1-layer Lorenzo prediction records differences between adjacent quantized integers inside each block to reduce effective bits",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Fixed-length encoding: for each nonzero block cuSZp computes the maximum absolute quantized integer and stores only that many bits per value plus a sign map; compressed block size CmpLk = (Fk + 1) * L / 8 bytes",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Global synchronization is implemented hierarchically (thread-level, warp-level, global-level) on GPU as an exclusive prefix-sum to compute per-block offsets and final compressed size entirely on device",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Block bit-shuffle rearranges fixed-length encoded bits by bit-offset into bytes (k-th offset into byte k), enabling aligned writes to final compressed memory and efficient parallel storage",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Design choices favor fixed-length encoding and lightweight Lorenzo to trade expensive variable-length encoders (e.g., Huffman) for single-kernel parallelism, relying on block smoothness in scientific data to retain compression effectiveness",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evaluation: experiments on an NVIDIA A100 GPU across 6 representative scientific datasets (Hurricane, NYX, QMCPack, RTM, HACC, CESM-ATM) and multiple error bounds or fixed rates to measure end-to-end throughput, kernel throughput, compression ratio, PSNR, SSIM, and visualization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Lorenzo prediction reduces effective bits per quantized integer within blocks (example: effective bits reduced from 14 to 4), making fixed-length encoding more efficient",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Fixed-length encoding is appropriate because many scientific dataset blocks are spatially smooth (CDF analysis shows majority of blocks have small relative value range for L=8 and L=32), enabling high compression within blocks",
+      "role": "Evidence",
+      "parents": [
+        3,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "cuSZp's hierarchical on-GPU global synchronization achieves high throughput (profiled average ~208.06 GB/s across datasets; range 120.52–260.77 GB/s), enabling concatenation of variable-length blocks without CPU-GPU transfers",
+      "role": "Result",
+      "parents": [
+        4,
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Block bit-shuffle implementation allows efficient aligned writes and avoids irregular bit-shifting control flow, supporting high parallelism in storing compressed bytes",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Single-kernel design eliminates CPU preprocessing/postprocessing and host-device data movement overheads that degrade end-to-end throughput in prior error-bounded GPU compressors (e.g., cuSZ, cuSZx)",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Performance results: cuSZp achieves average end-to-end throughput 93.63 GB/s (compression) and 120.04 GB/s (decompression), which is 95.53x faster than cuSZ and 55.18x faster than cuSZx; kernel throughput is comparable to state-of-the-art",
+      "role": "Result",
+      "parents": [
+        7,
+        10,
+        12
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Compression ratio and fidelity: cuSZp attains highest compression ratios in 16 of 24 benchmark cases vs cuSZ and cuSZx at same error bounds while preserving high PSNR and SSIM and producing better visual reconstructions than cuZFP and avoiding cuSZx artifacts",
+      "role": "Result",
+      "parents": [
+        7,
+        6,
+        9
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: cuSZp demonstrates that an error-bounded lossy compressor can be implemented entirely inside a single GPU kernel and simultaneously meet the three design goals (high end-to-end throughput, high compression ratio, high reconstructed data quality) for many scientific datasets",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

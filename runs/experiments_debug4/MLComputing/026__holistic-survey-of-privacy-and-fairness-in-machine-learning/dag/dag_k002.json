@@ -1,0 +1,152 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Investigate whether and how privacy and fairness can be simultaneously achieved in machine learning across supervised, unsupervised, semi-supervised, and reinforcement learning",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The interrelation between privacy and fairness is not well understood: some studies report trade-offs while others report alignment",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We conducted a holistic survey analyzing nearly 200 recent studies across SL, UL, SSL and RL to consolidate terminology, notions, architectures, interactions, and open challenges",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "There are five common system architectures for combining privacy and fairness: (A) sanitize then debias, (B) joint private+fair training, (C) split sanitization of sensitive attributes, (D) federated learning with local privacy and global fairness, (E) privacy-preserving fairness auditing via MPC",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": []
+    },
+    {
+      "id": 4,
+      "text": "Privacy mechanisms (e.g., differential privacy, DP-SGD) can both reduce and amplify unfairness depending on setting, dataset distribution, and algorithmic choices",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Applying fairness interventions can affect privacy risk: some fairness methods reduce attribute leakage, while others increase membership or link inference risk for subgroups",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Existing algorithms attempt concurrent privacy and fairness objectives (examples: FairDP adaptive clipping, FairFL with secure aggregation, FairRec reward shaping, privfair auditing frameworks)",
+      "role": "Result",
+      "parents": [
+        0,
+        2,
+        4
+      ],
+      "children": []
+    },
+    {
+      "id": 7,
+      "text": "Surveyed core privacy techniques and cryptographic primitives: differential privacy (Laplace, exponential, DP-SGD), homomorphic encryption variants (PHE, SHE, FHE), secure aggregation and MPC",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": []
+    },
+    {
+      "id": 8,
+      "text": "Fairness is multi-faceted with many notions: group notions (statistical parity, equalized odds/opportunity, calibration) and individual notions (individual fairness, counterfactual fairness) and domain-specific variants for clustering and RL",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": []
+    },
+    {
+      "id": 9,
+      "text": "Key limitations include: lack of unified fairness metric, privacy-fairness interactions depend on data skew and minority representation, cryptographic approaches are computationally restrictive, and limited study on large language models",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": []
+    },
+    {
+      "id": 10,
+      "text": "Conclusions: achieving both goals requires careful co-design, choice of architecture, empirical tuning of privacy budgets and fairness constraints, and further research especially on LLMs, fair privacy, and cryptographic implementations",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": []
+    },
+    {
+      "id": 11,
+      "text": "Evidence: Empirical and theoretical studies show DP-SGD can disproportionately reduce accuracy for underrepresented classes and hide rare examples, increasing disparate impact in some settings",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": []
+    },
+    {
+      "id": 12,
+      "text": "Evidence: Other studies show DP mechanisms (e.g., exponential mechanism as post-processing) can sometimes preserve or be combined with fairness-aware post-processing to mitigate disparate impacts",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": []
+    }
+  ]
+}

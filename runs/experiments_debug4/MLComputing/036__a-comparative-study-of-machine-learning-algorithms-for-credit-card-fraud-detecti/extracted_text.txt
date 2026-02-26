@@ -1,0 +1,848 @@
+--- Page 1 ---
+A Comparative Study of Machine Learning 
+Algorithms for Credit Card Fraud Detection 
+ 
+ 
+1st Mohammad Aburass 
+Management Information Systems 
+Department 
+Al-Zaytoonah University of Jordan 
+Amman, Jordan 
+mohaburass97@gmail.com 
+2nd Rehab Aburass 
+Software Enginnering Department  
+Al-Zaytoonah University of Jordan 
+Amman, Jordan 
+rehab.aburass@zuj.edu.jo 
+3rd Marwa Hamza 
+Computer Science Department  
+Al-Zaytoonah University of Jordan 
+Amman, Jordan 
+Marwa.hamza@zuj.edu.jo 
+Abstract—This paper explores the relationship between 
+machine learning (ML) algorithms-based fraud detection 
+techniques and the accuracy of identifying fraudulent credit 
+card transactions. Credit cards serve as a main role-player in 
+the digital era to meet different financial needs, creating a 
+crucial demand for efficient fraud detection techniques to 
+protect both consumers and financial institutions. These 
+companies require consistent fraud detection systems to ensure 
+consumers can safely use their credit cards to purchase goods, 
+rent properties, or make loan payments. The study aims to 
+separate fraudulent transactions from genuine ones by 
+employing machine learning techniques including Random 
+Forest, Decision Trees, Adaptive Boosting, and Gradient 
+Boosting to evaluate credit card transaction data. To improve 
+fraud detection accuracy, the prediction models assess accuracy, 
+precision, recall, and F1 score. Using European credit card data, 
+this paper evaluates several machine-learning techniques to 
+identify the most successful approach in accurately detecting 
+fraudulent transactions. 
+Keywords—Credit 
+Cards 
+Fraud, 
+Machine 
+Learning 
+Algorithms, Prediction, Confusion matrix. 
+I. 
+INTRODUCTION 
+Financial transactions with Credit Cards are on the rise as 
+a dominant method of payment both online and offline, Credit 
+card fraud detection has become a critical challenge in the 
+digital payment era, with global losses projected to reach $43 
+billion by 2026 [1]. While machine learning (ML) could 
+provide promising answers, current research [5], [10] does not 
+assess ensemble approaches on the class imbalanced real-
+world datasets, a gap this work seeks to address. 
+A. Key Challenges 
+Some of the challenges this study faced are:   
+• 
+Imbalanced Data: Model training is made more 
+difficult by the fact that fraud instances only make up 
+0.172 percent of transactions [4]. 
+• 
+Operational Trade-offs: High false positives (FP) 
+creates a pressure on banks with unnecessary alerts, 
+while false negatives (FN) enable fraud [2]. 
+B. Study Contribution 
+• 
+Comparative Analysis: We evaluate Random Forest, 
+AdaBoost, Gradient Boosting, and Decision Trees on 
+a European cardholder dataset, using SMOTE to 
+address class imbalance. 
+• 
+Practical Focus: Minimizing FP (for example Random 
+Forest reduces FP by 85% when compared with 
+AdaBoost) for deployed algorithms. 
+C. Study Objectives 
+• 
+Benchmarking ML algorithms for fraud detection. 
+• 
+Propose a model balancing precision (security) and 
+recall (usability). 
+II. 
+RESEARCH 
+A. Study Problem 
+First, the Federal Trade Commission (FTC) received 
+416,582 reports in 2023 about Credit Cards fraud, making it 
+one of the most common types of fraud,  However, that 
+statistic does not provide a whole picture of the global issue 
+since the cited reports show that the information about the 
+individuals was misused whether applying for a new credit 
+card or carrying an existing one. Regardless of where fraud 
+happens either from cardholder abuse or criminal attacks, 
+there is a result leading to more chargebacks, lost revenue, and 
+threats to the business. 
+It is a fact that Credit Cards are now a daily life 
+requirement to carry out most typical actions associated with 
+it, and due to their significance as a service they cannot be just 
+neglected, and the financial industry recognizes this need, so 
+multiple efforts are being presented to fight the risks that 
+correspond with it. Using many techniques and technologies, 
+credit card fraud prevention protects clients against identity 
+theft and fraudulent behavior.   The exponential growth in data 
+and the notable rise in card transactions in recent years have 
+greatly shifted credit fraud detection toward digitalization and 
+automation. Advanced solutions for credit card fraud 
+detection utilize artificial intelligence and machine learning to 
+analyze data, predict possible fraud, enhance decision-
+making, generate warnings, and manage individual fraud 
+cases, serving as a vital component in the business. 
+B. Study Aims 
+The aims of this study are: 
+• 
+Testing existing machine algorithms that detect Credit 
+Cards fraud. 
+• 
+Ensure payment integrity by optimizing FP/FN trade-
+offs. 
+• 
+A comparison between the machine learning 
+algorithms used in this study via precision, recall, and 
+F1-score. 
+C. Study Significance 
+The use of machine learning algorithms can detect fraud, 
+by classifying transactions as fraud or genuine, which 
+provides a breakthrough with the results showing how each 
+2025 12th International Conference on Information Technology (ICIT)
+201
+979-8-3315-0894-4/25/$31.00 ©2025 IEEE
+2025 12th International Conference on Information Technology (ICIT) | 979-8-3315-0894-4/25/$31.00 ©2025 IEEE | DOI: 10.1109/ICIT64950.2025.11049254
+Authorized licensed use limited to: University of Florida. Downloaded on December 29,2025 at 23:16:32 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- Page 2 ---
+algorithm can be used for credit fraud detection at high 
+accuracy, ensuring the security of the bank payment system. 
+This foresight is critical to stay ahead of ever-evolving 
+cybercriminal tactics that constantly seek to bypass existing 
+defenses. 
+Our work enables banks to: 
+• 
+Reduce false alarms (for example Random Forest’s 
+precision: 0.857). 
+• 
+Adapt to evolving fraud tactics through ML-driven 
+detection. 
+III. 
+LITERATURE REVIEW 
+A. Credit Cards 
+The card is a plastic card issued to be held by the users 
+allowing authorized users to do their financial transactions, 
+and later on, pay for them, according to United States Credit 
+Cards statistics published on the Statista website, between 
+2012 and 2018 the number of Credit Cards reached 1.1 trillion 
+surpassing the number of debit cards by three times, with Visa 
+being the largest Credit Cards issuer [6]. The use of Credit 
+Cards has become more common in different aspects of life 
+such as shopping, paying bills, and online transactions. 
+However, along with this increase, the risk of fraud is rising 
+[7]. 
+B. Credit Cards fraud 
+This can be defined as the use of Credit Cards information 
+for malicious activities without the approval of the card 
+owner, or the bank's knowledge at that time with permission 
+to access their funds through various ways causing financial 
+loss, and risk for businesses and banks, using fraud detection 
+systems this can be prevented, such as using machine learning 
+algorithms. 
+C. Artificial intelligence 
+Artificial Intelligence (AI) is the science and engineering 
+of making intelligent machines learn like somewhat human 
+beings do. AI is a broad term that includes both ML and deep 
+learning, AI is divided into symbolic intelligence and 
+computational intelligence, with symbolic intelligence being 
+the one that uses predefined rules and logic to process 
+information, while computational intelligence is based on 
+learning and adaptation from data [8]. 
+D. Machine Learning 
+Since the dawn of time, humans have been using various 
+tools to acquire data and use it further to evolve this creativity 
+led to the invention of machines, to further evolve they needed 
+to teach machines how to use data so they developed the 
+machine learning concept to grant the ability for computers to 
+learn without being given exact programming commands but 
+rather through learning, and relying on algorithms, training the 
+computer to reach higher and better accuracy results by trial 
+and error, this interest in MI comes from the ability to make 
+patterns and models that can assist in almost all life situation; 
+with no single algorithm that fits all; MI includes Supervised 
+and unsupervised learning [9]. 
+People prefer digital and paperless transactions using 
+Credit Card transactions increasing their popularity, and all of 
+these transactions are subjected to fraud. So, to detect fraud 
+researchers analyzed this data, where a model was designed 
+and developed using machine learning. A comparison was 
+made among the machine-learning algorithms that were used 
+to select the best model for fraud detection and 
+identification[10]. 
+A study that deals with the un-even dataset mentions that 
+in order to stay away from the noise in the data, it proposes a 
+non-overlapped risk-based bagging ensemble (NRBE) mixed 
+with a misrepresentation location framework creating a 
+model. The model broke all the irregularities in the dataset and 
+its non-vital nature. Eradicating the problem of imbalanced 
+data, as for the noisiness created in the transactions it was 
+destroyed by Naïve Bayes. The model proposed was beaten 
+by a score of 5% in BCR and BER, half that in the recall, and 
+decreased expense to fraud detection by about 2x to 2.5 by 
+using the NBRE, clearing that the NBRE model is best for 
+dynamic business techniques for fraud detection[11].  
+Another study with a performance analysis of machine 
+learning algorithms cleared that the transactions made with 
+Credit Cards that are classified as fraudulent or legitimate are 
+mainly a binary classification. That is how data mining 
+classification comprises such fraud problems. Some other 
+techniques also come in handy with data mining for fraud 
+detection such as Web-services-based collaborative schemes 
+to enable private sectors such as banks to share information 
+about fraud frequencies and patterns to enhance the detection 
+process, reducing the financial loss. The study simplifies the 
+basic procedure that was used in the study to develop the 
+Machine Learning algorithms as shown in Fig. 1 [12]. 
+ 
+Fig. 1. The flow process diagram for developing a machine learning 
+algorithm. 
+E. Machine Learning in Credit Cards fraud Detection 
+As challenging as it sounds, it is very tedious and 
+important to find ways to detect fraud at an early stage and 
+help prevent it. As the name itself implies when a need to 
+detect whether a Credit Cards transaction was done by the 
+owner or a fraudulent one accurately. Most models tend to 
+identify as false positives meaning even the transactions that 
+were done by the owner would be identified as fraudulent 
+ones. Because of that data needs to be available for training as 
+machine learning methods are the main tool for such concerns 
+with their different types. Some of the most common 
+algorithms used in fraud detection include Support Vector 
+2025 12th International Conference on Information Technology (ICIT)
+202
+Authorized licensed use limited to: University of Florida. Downloaded on December 29,2025 at 23:16:32 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- Page 3 ---
+Machine (SVM), Decision Tree, Random Forest, XGBoost, k-
+Nearest Neighbors (kNN), Principal Component Analysis 
+(PCA), and AdaBoost. 
+F. Credit Cards Fraud Patterns 
+Common methods of Credit Cards fraud include[6],[14]: 
+• 
+Stolen or misplaced cards 
+• 
+Data breaches 
+• 
+Electronic or manual Credit Cards imprints 
+• 
+Triangulation  
+IV. 
+METHODOLOGY 
+Arthur Samuel in his talk about Machine learning defined 
+it as the field of study that gives the ability to computers to 
+learn without explicitly programming it, through his famous 
+checkers playing program. Machine learning is considered a 
+way to teach machines how to handle data, interpret it, and 
+extract information. Since machine learning relies on different 
+algorithms to solve problems, each algorithm needs to be 
+employed depending on the problem [15]. 
+A. Machine Learning Algorithms 
+The Algorithms that were used as follows: 
+ 
+Random Forest: An ensemble learning method that 
+combines multiple decision trees to improve 
+predictivity and accuracy. 
+ 
+Decision Tree: A predictive model shaped like a tree 
+for classification or regression tasks. 
+ 
+AdaBoost: An ensemble learning method that 
+combines weak classifiers to form a strong classifier. 
+ 
+Gradient Boosting: An ensemble learning method that 
+builds decision trees sequentially to correct errors 
+from previous models. 
+ 
+1. Random Forest 
+There are two kinds of random forests based on their 
+classifiers, to differentiate between them an example is given 
+below, where the dataset is described as D with n examples 
+(i.e., |D| = n): 
+ 
+ = ,	
+,  = 1, … ,  
+(1) 
+where xi ∈ X is an instance in the m-dimensional feature 
+space  
+ 
+ = ,  … ,  
+(2) 
+and yi ∈ Y = {0, 1} is the class label associated with 
+instance xi; and named as: 
+• 
+Random forest based on random trees 
+• 
+Random forest based on CART 
+But for this investigation, we used a random forest based 
+on a random tree, which is just a random decision tree inserted. 
+ 
+ Whereas the replacement samples are chosen at random 
+from the trained set. Next, at each internal node, a subset of 
+characteristics is chosen at random, and the centers of each 
+class are calculated in the data's current node. Then, class 0 
+and class 1 centers are denoted by Left Center and Right 
+Center, respectively. The kth element of a center can be found 
+using the following formulas: 
+ 
+[] =
+
+ ∑
+ !
+
+"
+( = 0) 
+(3) 
+ 
+&ℎ[] =
+
+ ∑
+ !
+
+"
+( = 1) 
+(4) 
+ 
+((, ()*) = ∑
+|([] −()*[]| 
+∈/01
+ (5) 
+2. Decision Tree 
+Even though that decision tree can be combined with other 
+models to form an Ensemble Learning to enhance 
+performance, this study used the basic form of the decision 
+tree, and the algorithm itself still holds various techniques to 
+increase the performance of the model, such as the use of 
+Pruning techniques or Feature Selection, according for this 
+study the technique handled was the Explicit Feature 
+Selection; Decision trees mostly use Inherent Feature 
+Selection; however, explicit features are ones like Recursive 
+Feature Elimination (RFE) or when using domain knowledge 
+which pre-determines features that can further improve model 
+performance if they are relevant [16].  
+In short, the reduction of the dimensionality in a dataset is 
+for feature selection, resulting in a simplified model with less 
+power or fewer computational requirements and overfitting 
+risk being reduced than a normal one [16]. 
+3. AdaBoost 
+In the approach of AdaBoost, most of the time it is often 
+combined with decision trees, in this study, the ensemble 
+AdaBoost algorithm was used in conjunction with decision 
+tree classifiers which also use the feature selection method to 
+reduce noise and focus on the predictive attributes, then the 
+results are combined by using a weighted sum, which 
+represents the combined result of the boosted classifier, as 
+shown below: 
+ 
+23() = ∑
+4()
+3
+4"
+ 
+(6) 
+The weak learner in this scenario, 4 is recognized as a 
+classifier and provides a prediction class based on input x. 
+Each training sample is given an output prediction, ℎ(), by 
+every weak learner. We select a weak learner at iteration t and 
+add a coefficient, 54, to it so that the final t-stage boosted 
+classifier minimizes the sum of training errors, 64. 
+ 
+64 = ∑6[247() + 54ℎ()]
+
+ 
+(7) 
+Where 47() considered the boosted classifier that was 
+built in the stage before, E (F) is an error function, and 4() =
+54ℎ() is the weal learner, which will be taken for the final 
+classifier in consideration. AdaBoost favors misclassified data 
+samples to teach weak learners. It is worth noticing the 
+algorithm itself is sensitive to noise and outliers, as long as the 
+performance of the classifier is not randomized, it will be able 
+to increase the performance of individual results by using 
+different algorithms. 
+ 
+4. Gradient Boosting 
+Along the flexibility it holds in handling imbalanced data, 
+this makes it a great algorithm for this study to handle the high 
+dimensional dataset and the possible skewed nature of the 
+2025 12th International Conference on Information Technology (ICIT)
+203
+Authorized licensed use limited to: University of Florida. Downloaded on December 29,2025 at 23:16:32 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- Page 4 ---
+dataset. A hyperparameter tunning can be required to reach the 
+highest performance, alongside the number of estimators, 
+learning rate, and tree depth. 
+The gradient Boosting Classifier used in this study used the 
+following methodology to improve the model's effectiveness: 
+• 
+Sequential Learning: Where weak learners in this 
+study are trained to correct the errors of the previous 
+model generated since each model built learns the 
+mistakes of the previous one and focuses on the 
+residual output (errors) [17]. 
+• 
+Feature Importance: a measure or a score that helps 
+identify the attributes that affect predictions the most, 
+their importance is calculated based on the ability to 
+reduce the impurity of the dataset. [18]. 
+• 
+Weighted Learning: The misclassified data points 
+gain more weight to make sure that the next learner 
+focuses on them, this is identified as an iterative 
+learning mechanism, allowing to switch the focus of 
+the next model on correcting those data points’ errors. 
+Improving classification accuracy, in the case of 
+imbalanced data [19]. 
+B. Data Preprocessing and Performance Metrics 
+The dataset used contains 284807 records obtained from 
+Kaggle website, representing the transactions made by credit 
+cards in September 2013 by European cardholders. The 
+dataset is highly imbalanced being skewed, due to only 
+0.172% of fraud cases that were recorded in the dataset. To 
+balance the dataset SMOTE technique was used to generate 
+synthetic samples for the minority class. 
+Then the performance of the models is evaluated using the 
+following metrics accuracy, precision, recall, F1 score, and 
+ROC AUC. 
+1. Gradient Boosting 
+The confusion matrix in Fig 2 is a table that summarizes 
+the classification model's accuracy by grouping examples 
+into different categories. The confusion matrix has the actual 
+label on one axis and the expected label of the model on the 
+other, the green diagonal in the confusion matrix table above 
+shows that they are essentially one and the model likewise 
+predicted that outcome. The model projected it to be 
+something else, but the red diagonal shows that they are 
+actually one thing. 
+ 
+Fig. 2. Confusion matrix 
+2. Accuracy 
+The calculation involves dividing the total number of cases 
+that were successfully classified by the total number of 
+examples that were classified let's consider that about a 
+confusion matrix. 
+ 
+9((:9( =
+3;<3=
+3;<3=<>;<>= 
+(8) 
+This statistic is critical when the error's predictive value for 
+each class is equal. In this case, false positives need to be 
+addressed more than false negatives. To determine whether an 
+email is spam or not, let's examine an example. In this case, if 
+an email sent by the owner didn't show that it was more 
+harmful than classifying a tiny number of emails as spam, our 
+method would classify it as spam. 
+ 
+3. Precision 
+It is calculated by dividing the number of correct 
+predictions made by the model overall by the actual number 
+of correct forecasts. To put it another way: In this case, the 
+precision is 3/7 = 0.428 if our model predicts that, out of 10 
+people, 7 have heart disease, but only 3 of those 7 do, in this 
+case, the true positive (TP) is 3 and the false positive (FP) is 
+7-3, which equals 4. 
+ 
+?(@) =
+3;
+3;<>; 
+(9) 
+4. Recall 
+In a two-class classification problem, the recall is 
+calculated as the number of true positives divided by the sum 
+of true positives and false negatives. Suppose there are seven 
+patients with heart disease, but only five of them would 
+develop the illness based on our model; in this case, recall is 
+5/7=0.714 
+ 
+(9 =
+3;
+3;<>= 
+(10) 
+5. F1 Score 
+The F1 score is a weighted average of recall and precision. 
+Since it is commonly recognized that FPR and false negative 
+findings can occur in accuracy and recall, both are included. 
+Generally speaking, the F1 score is more useful than accuracy, 
+especially when there is uneven class distribution. Accuracy 
+performs best when false negatives and FPR are almost equal 
+in cost. If there is a considerable difference in the costs of false 
+negatives and false positives, it is better to incorporate both 
+precision and recall. 
+ 
+21 @() = 2 ∗((9 ∗?(@))/((9 + ?(@)) (11) 
+V. 
+RESULTS AND DISCUSSION 
+A.  Confusion Matrix 
+ Random Forest attained the greatest accuracy among all 
+algorithms, with a relatively low number of false positives 
+(18) and false negatives (28), proving its efficiency in 
+separating between fraudulent and real transactions and so on 
+reducing false alarms. As for the Decision Tree With 130 true 
+positives, also performs 
+well in identifying fraud; 
+nevertheless, its larger false positive rate (241) suggests a 
+propensity to misclassify legitimate transactions, which can 
+2025 12th International Conference on Information Technology (ICIT)
+204
+Authorized licensed use limited to: University of Florida. Downloaded on December 29,2025 at 23:16:32 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- Page 5 ---
+result in unwarranted alarms in practical settings. AdaBoost 
+was highly effective in spotting fraudulent transactions with a 
+high true positive rate (144) and a very low false negative rate 
+(16); yet, its much higher false positives (1,386) point to a 
+trade-off between recall and precision, a typical difficulty in 
+imbalanced data. With 143 true positives and 17 false 
+negatives, Gradient Boosting behaved similarly to AdaBoost; 
+yet, its high false positive rate (1,044) still shows a tendency 
+for false alarm generation even if it is somewhat less than 
+AdaBoost. Random Forest is the best balanced and 
+dependable fraud detection model, hence minimizing false 
+positives and false negatives, usually confusion matrix results 
+are presented in separate tables for each model but for 
+shortness they were combined in Table I. 
+TABLE I.  
+CONFUSION MATRIX RESULTS 
+Algorithm 
+True 
+Positives 
+(TP) 
+True 
+Negatives 
+(TN) 
+False 
+Positives 
+(FP) 
+False 
+Negatives 
+(FN) 
+Random 
+Forest 
+132 
+85,265 
+18 
+28 
+Decision 
+Tree 
+130 
+85,042 
+241 
+30 
+AdaBoost 
+144 
+83,897 
+1,386 
+16 
+Gradient 
+Boosting 
+143 
+84,239 
+1,044 
+17 
+ 
+B. Perormance Metrics 
+The performance metrics in Table II provide a comparison 
+of the four machine learning algorithms used in this study: 
+• 
+Random Forest proved able to appropriately 
+categorize both fraudulent and legitimate transactions 
+with minimum mistakes, with the best accuracy 
+(0.999415) and precision (0.857143), maintaining a 
+low rate of false positives and false negatives, its 
+recall (0.825000) and F1 score (0.840764) further 
+support its robustness in identifying fraudulent 
+activity. Random Forest appears to be the most 
+reliable and balanced method available for fraud 
+detection in this research. 
+• 
+Decision Tree with a strong recall of 0.812500 
+indicates a success in identifying fraudulent 
+transactions. However the low precision (0.350404) 
+and F1 score (0.489642) points to a higher chance of 
+misclassifying real-world events as fraudulent, which 
+would cause more false alarms in practical uses. 
+• 
+AdaBoost and Gradient Boosting demonstrated strong 
+recall 
+(0.900000 
+and 
+0.906250, 
+respectively), 
+therefore demonstrating their ability to identify 
+fraudulent transactions. However their poor precision 
+(0.096192 and 0.117409) and F1 scores (0.173808 
+and 0.207886) come with a notable trade-off: these 
+models are more likely to identify real transactions as 
+fraudulent, hence producing a high proportion of false 
+positives. 
+In 
+imbalanced 
+datasets—where 
+the 
+minority class in this case the fraudulent transactions 
+are much smaller than the majority class this is a 
+common difficulty. 
+• 
+By analyzing AUC scores, an idea of how well the 
+model is performing distinguishing positive and 
+negative cases and identifying positive cases. A high 
+AUC score suggests that the model is better at this 
+task. However, it's also important to consider other 
+metrics such as accuracy, precision, recall, and F1 
+score to get a more complete picture of the model's 
+performance. Even though Gradient Boosting and 
+AdaBoost had high recall scores they were very low 
+in precision, which means they are more prone to false 
+positives, and that Random Forest is the best overall 
+model, demonstrating a good score on all metrics of 
+precision and recall, which is also reflected in its high 
+F1 score. The accuracy is also the highest, indicating 
+overall strong performance. 
+• 
+The precision-recall AUC calculates the area under 
+the curve. The AUC function takes two arguments: the 
+values of recall and precision at different thresholds. 
+A 
+higher 
+AUC-PRC 
+value 
+indicates 
+better 
+performance of the model in terms of precision and 
+recall. By doing such we can get an insight into the 
+accurate detection of positive instances, indicating 
+that the Random Forest is the best model. 
+TABLE II.  
+COMPARISON OF PERFORMANCE METRICS RESULTS 
+Algorith
+m 
+Accura
+cy 
+Precisi
+on 
+Recall 
+F1 
+score 
+ROC 
+AUC 
+Precision-
+recall 
+AUC 
+Random 
+Forest 
+0.9994
+15 
+0.8571
+43 
+0.825
+000 
+0.8407
+64 
+91.24 
+0.841235
+28049610
+34 
+Decision 
+Tree 
+0.9968
+28 
+0.3504
+04 
+0.812
+500 
+0.4896
+42 
+90.48 
+0.581627
+71196781
+22 
+AdaBoo
+st 
+0.9839
+78 
+0.0961
+92 
+0.900
+000 
+0.1738
+08 
+94.21 
+0.498189
+82205601
+24 
+Gradient 
+Boosting 
+0.9870
+67 
+0.1174
+09 
+0.906
+250 
+0.2078
+85 
+94.67 
+0.511917
+23125808
+56 
+VI. 
+CONCLUSION AND FUTURE WORK 
+A. Conclusion 
+This study focused mostly on Machine-learning algorithm 
+utilization. Random Forest, Decision Trees, AdaBoost, and 
+Gradient Boosting models are utilized for identifying 
+fraudulent Credit Card transactions. The study dataset is 
+imbalanced. One of the tactics used to balance the data and 
+guarantee accurate training and testing because the dataset 
+was naturally biased towards non-fraudulent transactions, was 
+the SMOTE method. We then implement the proposed 
+machine-learning methods. 
+The proposed model with the highest accuracy, precision, 
+recall, and F1 scores among the four methods was Random 
+Forest. It was able to minimize false positives and false 
+negatives while detecting fraudulent transactions in a 
+noteworthy balance. This outcome demonstrates the Random 
+Forest algorithm's resilience, especially when working with 
+skewed datasets when recall and precision are crucial. 
+AdaBoost and Gradient Boosting showed strong recall 
+scores, but their precision was less consistent, suggesting a 
+propensity for false positives. Although they were somewhat 
+successful, Decision Trees did not perform as consistently 
+across all measures. 
+The total results highlight how crucial model selection is 
+when it comes to fraud detection. The results of this study 
+demonstrate how using algorithms like Random Forest, which 
+2025 12th International Conference on Information Technology (ICIT)
+205
+Authorized licensed use limited to: University of Florida. Downloaded on December 29,2025 at 23:16:32 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+--- Page 6 ---
+can handle imbalanced data more effectively, has a substantial 
+impact on the outcomes.  
+B. Future Work 
+Future research can be expanded in the following 
+directions by building on this study: 
+• 
+Feature Engineering: You can improve the forecasting 
+ability of the model by investigating more feature 
+engineering methods. To gain a greater understanding 
+of transaction behaviors, this involves transforming 
+pre-existing features into new ones. For example, 
+utilizing external data sources or calculating ratios and 
+patterns across time can reveal relationships that were 
+previously unknown. 
+• 
+Real Time Detection: Low latency and high 
+throughput optimization are necessary for the 
+implementation of these models in real-time detection 
+systems. It is possible to look at the use of online 
+learning and ensemble learning algorithms to handle 
+streaming data in real-time. 
+• 
+Pre-trained Models with Transfer Learning: Using 
+transfer learning and pre-trained models together has 
+the potential to greatly increase performance, 
+particularly when used with big datasets. This can 
+improve model generalization and cut down on the 
+amount of training time needed. 
+• 
+Explainability and Interpretability: By making models 
+easier to interpret using strategies like LIME (Local 
+Interpretable Model-agnostic Explanations) and 
+SHAP (SHapley Additive exPlanations), financial 
+institutions will be able to better comprehend and have 
+more faith in these models. 
+REFERENCES 
+[1] "The 
+growth 
+of 
+the 
+credit 
+card 
+industry 
+in 
+2023," 
+ClearlyPayments.com. 
+[Online]. 
+Available: 
+https://www.clearlypayments.com/blog/growth-of-credit-card-
+industry-in-2023. Accessed: Feb. 20, 2025. 
+[2] R. Barker, "The use of proactive communication through knowledge 
+management to create awareness and educate clients on e-banking 
+fraud prevention," S. Afr. J. Bus. Manag., vol. 51, no. 1, pp. 1-10, 2020. 
+[3] J. L. Bele, Financial Scams, Frauds, and Threats in the Digital Age: 
+Modern Approaches to Knowledge Management Development. New 
+York: Springer, 2020. 
+[4] J. F. Roseline et al., "Autonomous credit card fraud detection using 
+machine learning approach," Comput. Electr. Eng., vol. 102, p. 
+108132, 2022. 
+[5] Z. Chen, "Performance comparison of machine learning algorithms for 
+credit card fraud detection," Appl. Comput. Eng., vol. 6, pp. 713-721, 
+2023. 
+[6] K. Ayorinde, A Methodology for Detecting Credit Card Fraud. 
+Mankato, MN: Minnesota State Univ., 2021. 
+[7] Y. Jain et al., "A comparative analysis of various credit card fraud 
+detection techniques," Int. J. Recent Technol. Eng., vol. 7, no. 5, pp. 
+402-407, 2019. 
+[8] Z. Shi, "Cognitive machine learning," Int. J. Intell. Sci., vol. 9, no. 4, 
+pp. 111-121, 2019. 
+[9] Q. Bi et al., "What is machine learning? A primer for the 
+epidemiologist," Amer. J. Epidemiol., vol. 188, no. 12, pp. 2222-2239, 
+2019. 
+[10] I. Sadgali, N. Sael, and F. Benabbou, "Fraud detection in credit card 
+transaction using neural networks," in Proc. 4th Int. Conf. Smart City 
+Appl., 2019, pp. 1-4. 
+[11] S. Akila and U. S. Reddy, "Risk based bagged ensemble (RBE) for 
+credit card fraud detection," in Proc. Int. Conf. Inventive Comput. 
+Informat., 2017, pp. 670-674. 
+[12] F. Z. El Hlouli et al., "Credit cards fraud detection based on multilayer 
+perceptron and extreme learning machine architectures," in Proc. Int. 
+Conf. Intell. Syst. Comput. Vis., 2020, pp. 1-5. 
+[13] V. Keskar, "Comparing different models for credit cards fraud 
+detection," J. Crit. Rev., vol. 7, no. 2, pp. 981-986, 2020. 
+[14] I. H. Sarker, "Machine learning: Algorithms, real-world applications 
+and research directions," SN Comput. Sci., vol. 2, no. 3, p. 160, 2021. 
+[15] Y. Xie et al., "A spatial–temporal gated network for credit card fraud 
+detection by learning transactional representations," IEEE Trans. 
+Autom. Sci. Eng., vol. 21, no. 4, pp. 6978-6991, 2023. 
+[16] J. H. Friedman, "Greedy function approximation: A gradient boosting 
+machine," Ann. Statist., vol. 29, no. 5, pp. 1189-1232, 2001. 
+[17] T. Chen and C. Guestrin, "XGBoost: A scalable tree boosting system," 
+in Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data Min., 
+2016, pp. 785-794. 
+[18] . Natekin and A. Knoll, "Gradient boosting machines, a tutorial," Front. 
+Neurorobot., vol. 7, p. 21, 2013. 
+2025 12th International Conference on Information Technology (ICIT)
+206
+Authorized licensed use limited to: University of Florida. Downloaded on December 29,2025 at 23:16:32 UTC from IEEE Xplore.  Restrictions apply. 

@@ -1,0 +1,158 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Adam is an algorithm for first-order stochastic optimization that adaptively estimates first and second moments of gradients to produce per-parameter learning rates and thereby improve optimization for large-scale, high-dimensional, noisy, and/or sparse problems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Algorithm: Adam maintains exponential moving averages of gradients (m_t) and squared gradients (v_t), bias-corrects these estimates (bmt, bvt), and updates parameters with theta_t = theta_{t-1} - alpha * bmt / (sqrt(bvt) + epsilon)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Adam has practical properties: computationally efficient, low memory, element-wise invariant to diagonal rescaling of gradients, robust to non-stationary objectives, suitable for noisy and sparse gradients, and requires little hyperparameter tuning",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Bias-correction: initializing m0 and v0 to zero biases moment estimates toward zero, and dividing by (1 - beta1^t) and (1 - beta2^t) yields bias-corrected estimates that prevent oversized initial steps especially for beta2 near 1",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Convergence theorem: under bounded convex gradients and bounded parameter distances, with alpha_t proportional to 1/sqrt(t) and decaying beta1,t, Adam achieves O(sqrt(T)) regret and average regret O(1/sqrt(T)) in the online convex optimization framework",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "AdaMax extension: a stable variant derived by taking the p-norm to infinity, using an exponentially weighted infinity norm u_t = max(beta2 * u_{t-1}, |g_t|), yielding simple updates and a bound |Delta_t| <= alpha",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Effective stepsize analysis: the effective parameter step Delta_t = alpha * bmt / sqrt(bvt) is approximately bounded by alpha, invariant to gradient scaling, exhibits automatic annealing via decreasing signal-to-noise ratio, and sets an interpretable trust region for alpha choice",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Pseudo-code and default hyperparameters: algorithm 1 presents the loop with defaults alpha=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8 and element-wise operations; an efficient reorder gives alpha_t = alpha * sqrt(1 - beta2^t)/(1 - beta1^t)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Empirical claim: across experiments on logistic regression, multi-layer neural nets, and convolutional nets, Adam equals or outperforms comparable stochastic optimizers (SGD with momentum, Adagrad, RMSProp, AdaDelta, SFO) in convergence speed and robustness",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical importance of bias correction: experiments training a variational autoencoder show that removing bias-correction (as in RMSProp-like variants) causes instability and divergence when beta2 is close to 1, while bias-corrected Adam is stable and performs better",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Theoretical conditions and implications: the regret bound requires beta2_1 / sqrt(beta2) < 1, bounded gradients and bounded parameter distances; under sparse bounded features Adam and adaptive methods can improve dependence on dimension compared to non-adaptive methods",
+      "role": "Assumption",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Logistic regression experiments: on MNIST and sparse IMDB bag-of-words features, Adam converges as fast as Adagrad on sparse features and faster than SGD with Nesterov momentum, validating Adam's performance on convex and sparse problems",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Multi-layer neural network experiments: on fully connected networks with dropout Adam converges faster in iterations and wall-clock time than several baselines and faster than SFO when SFO's curvature updates and memory cost make it slower",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Convolutional network experiments: on CIFAR-10 convnets Adam shows rapid initial progress and converges marginally faster than SGD with momentum, while Adagrad performs worse because bvt can vanish and be dominated by epsilon in these architectures",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitations and practical notes: theoretical convergence is proven for convex online setting under boundedness assumptions and decaying alpha_t; analysis does not directly apply to non-convex problems though empirical results are positive; choice of beta and bias correction matter especially for sparse gradients",
+      "role": "Limitation",
+      "parents": [
+        4,
+        3,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

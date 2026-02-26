@@ -1,0 +1,182 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods that explain internal components of deep neural networks can help build mechanistic understanding, guide manual modifications, detect latent failures, and improve trustworthy AI",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "A taxonomy dividing inner interpretability by target (weights, neurons, subnetworks, latent representations) and by timing (intrinsic during training vs post hoc) structures the field and guides method selection",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Major motivations for inner interpretability include enabling open-ended evaluation beyond test sets, showcasing failure modes, fixing bugs, determining accountability, improving basic scientific understanding, and enabling 'microscope' AI",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Weights-focused methods include intrinsic continual learning to specialize weights and post hoc weight-masking to identify task-relevant subnetworks, but many weights can be frivolous and pruned",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Neuron-focused methods include intrinsic neuron-specialization/expansion, dataset-based neuron dissection, feature synthesis, neural perturbation/ablation, and gradient-based internal attribution; hazards include polysemantic and frivolous neurons",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Subnetwork methods include intrinsic sparsity and modularity, post hoc modular partitioning, and circuits analysis to identify small causally-relevant subnetworks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Latent representation methods include self-explaining models, adversarial training, disentanglement, token and attention analysis in transformers, concept vectors, probing, and representation comparison",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Interpretability methods have practical connections to adversarial robustness, continual learning, modularity, network compression, and modeling the human visual system, suggesting interdisciplinary opportunities",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Current status quo in interpretability research is often unproductive: many methods generate hypotheses without rigorous validation, evaluations cherry-pick best cases, and few tools scale to large models or assist engineers in debugging",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Organizing methods by the network element they target (weights, neurons, subnetworks, representations) better matches engineering goals than only organizing by intrinsic vs post hoc",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evidence: pruning and lottery-ticket results show many weights are unnecessary for performance, enabling weight-masking and subnetwork identification but also implying interpretability hazards from frivolous weights",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Evidence: dataset dissection, feature synthesis, ablation studies, Shapley/neuron-Shapley, and gradient attributions have been used to characterize neurons, but polysemantic neurons and dataset/label limitations undermine faithfulness",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Evidence: sparsification and pruning can vastly reduce network size with little performance loss; modular architectures and soft modularity methods can induce specialization but post hoc partitioning has limited success",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Evidence: adversarially trained models tend to produce more interpretable and robust representations and better transfer in some settings; disentanglement techniques and probing reveal but also mislead about latent concept structure",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Interpretability techniques should be evaluated rigorously with tests that convert hypotheses into testable predictions, quantify uncertainty, avoid cherry-picking, and measure usefulness for engineers (diagnostics, debugging, finding implanted flaws)",
+      "role": "Conclusion",
+      "parents": [
+        8
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Future work should emphasize scalability, efficient human oversight, rigorous benchmarks and competitions, combining complementary methods, and focusing on producing tools usable in real-world engineering and safety applications",
+      "role": "Conclusion",
+      "parents": [
+        8
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Limitation/Assumption: Many interpretability methods produce plausible explanations but not guaranteed faithful mechanistic accounts; validation is only as reliable as the data and tests used and may not generalize beyond tested distributions",
+      "role": "Limitation",
+      "parents": [
+        14,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

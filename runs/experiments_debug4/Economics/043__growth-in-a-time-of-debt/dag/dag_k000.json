@@ -1,0 +1,215 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Expected utility theory can be given a dynamical interpretation: for a class of wealth dynamics, maximising the time-average growth rate of wealth is equivalent to maximising expected changes in a utility function, with the ergodicity transformation identified as the utility function",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        16
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics (EE) postulates individual agents maximise the time-average growth rate of wealth (growth optimality) as the decision criterion",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        13
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Expected utility theory (EUT) models agents as maximising expectation values of a nonlinear transformation of wealth (the utility function), representing stable psychological risk preferences",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "There is a correspondence: for processes that admit an ergodicity transformation, identifying that transformation as the utility function makes expected-utility maximisation equivalent to time-average growth maximisation; conversely, every invertible utility function corresponds to wealth dynamics for which expected utility maximisation is growth optimal",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        7,
+        13,
+        15
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: model wealth x(t) as a stochastic process and formulate decision criterion to pick the process that with probability approaching one yields larger long-time wealth increments, operationalised via a monotonic transformation u(x) and the long-time rate r = lim Delta t->infinity Delta u / Delta t",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5,
+        6,
+        16
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result/Theorem: The criterion r's time average equals its expectation value if the increments of u(t) are stationary and independent, implying u(t) must be a Levy process and, restricting to continuous paths, a Brownian motion with drift du = a_u dt + b_u dW; then the time-average growth rate exists and equals a_u",
+      "role": "Result",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        16
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Method/Derivation: Given invertible u(x) and u(t) following Brownian motion with drift, apply Ito's lemma to invert and obtain the corresponding wealth SDE dx = a_x(x) dt + b_x(x) dW expressed in terms of u and its derivatives (Eq. 18)",
+      "role": "Method",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: Every invertible and twice-differentiable utility function encodes a unique wealth dynamic (via Ito calculus) such that optimising expected changes in that utility function is equivalent to optimising time-average growth under the corresponding dynamic",
+      "role": "Result",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        3,
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Example: Linear utility u(x)=x corresponds to additive (Brownian) wealth dynamics dx = a_u dt + b_u dW",
+      "role": "Example",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Example: Logarithmic utility u(x)=ln x corresponds to multiplicative (geometric Brownian) wealth dynamics dx = x[(a_u + 1/2 b_u^2) dt + b_u dW]",
+      "role": "Example",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Example: Square-root utility u(x)=sqrt(x) yields a mixed dynamic with drift containing additive and multiplicative components and noise amplitude proportional to sqrt(x), analogous to Cox-Ingersoll-Ross type SDE",
+      "role": "Example",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Constructed example dynamic dx = [(a_u/b_u) e^{-x} - 1/2 e^{-2x}] dt + e^{-x} dW maps to exponential utility u(x)=b_u e^x + C, a convex utility producing diminishing fluctuations at high wealth and time-optimal 'risk-seeking' behavior",
+      "role": "Example",
+      "parents": [
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result: Given u(t) normal as N(a_u t, b_u^2 t), the wealth distribution Px(x,t) is obtained by transformation Px(x,t)=Pu(u(x),t) du/dx, yielding explicit formulas (e.g., for the exponential utility example) and predictions of wealth concentration and tail behavior",
+      "role": "Result",
+      "parents": [
+        6,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Implication/Conclusion: Because wealth dynamics are exogenous, the ergodicity-based correspondence provides a theoretical basis for choosing utility functions and predicts that wealth dynamics strongly determine apparent risk preferences; changes in dynamics imply changes in apparent preferences",
+      "role": "Conclusion",
+      "parents": [
+        1,
+        2,
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Evidence: Experimental work with controllable wealth dynamics supports the prediction that dynamics are strong determinants of preferences (reference to empirical studies)",
+      "role": "Evidence",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Discussion/Conclusion: The dynamical perspective reframes nonlinear utility functions as encoding the nonlinearity of wealth dynamics rather than purely psychological risk preferences",
+      "role": "Conclusion",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Assumptions and limitations: analysis assumes invertible, twice-differentiable utility functions, continuous-path wealth processes, and focuses on processes where u(t) increments are stationary and independent (Brownian motion with drift); pathological processes may not admit this mapping",
+      "role": "Assumption",
+      "parents": [
+        0,
+        4,
+        5
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 17,
+      "text": "Claim/Result on boundedness: Utility functions should be unbounded for the formalism because bounded u(x) are non-invertible and lead to mathematical pathologies like finite-time singularities or bounded time",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    }
+  ]
+}

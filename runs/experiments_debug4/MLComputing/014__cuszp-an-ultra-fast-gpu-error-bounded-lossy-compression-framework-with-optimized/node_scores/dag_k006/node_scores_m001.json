@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessing the plausibility of implementing the entire compression and decompression pipeline in a single GPU kernel to eliminate CPU and CPU-GPU data movement overheads, while noting typical challenges of kernel fusion and data transfer costs.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on claim text and general knowledge; specifics of cuSZp pipeline cannot be confirmed without external sources.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim posits a design choice in cuSZp favoring fixed-length blocks and sign maps over variable-length encoding due to data smoothness, implying high parallel throughput with maintained ratio; no external validation performed.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.3,
+    "relevance": 0.6,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that a single kernel eliminates CPU and data movement overhead so kernel throughput matches end-to-end throughput, which contradicts typical end-to-end breakdown where data transfer and CPU work contribute; without evidence, this is unlikely to be universally true.",
+    "confidence_level": "low"
+  },
+  "5": {
+    "credibility": 0.66,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible GPU technique where hierarchical synchronization computes exclusive prefix sums of per block sizes to obtain per block start indices within a single kernel.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.58,
+    "relevance": 0.92,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text and general knowledge; details of quantization bounds and Lorenzo based delta encoding are not verifiable without source.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.5,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Without external references, the claim asserts a specific relationship between fixed length encoding and sign map tracking maximum bit position to determine Fk, resulting in a compressed block size formula; no independent evidence provided.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a block bit-shuffle that aligns bit offsets into bytes for parallel writes and avoids irregular shifts when Fk not divisible by eight; with only the brief claim and general background, evidence and reproducibility cannot be established.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim states that six real world HPC datasets were used on an NVIDIA A100 to measure end-to-end throughput, kernel throughput, compression ratio, PSNR, SSIM, and visualization, but no external sources are provided and no methodological details are given.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, empirical results indicate most blocks are tightly bounded in value range, which supports using fixed-length per block for L equals eight.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Assessment based on general knowledge that fixed length encoding offers deterministic size and lower overhead than Huffman coding in scenarios with uniform or low per-block symbol frequency, which can favor throughput over compression ratio.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.35,
+    "relevance": 0.7,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the reported end-to-end throughput figures are unverified and lack context; no external sources were consulted.",
+    "confidence_level": "low"
+  },
+  "13": {
+    "credibility": 0.65,
+    "relevance": 0.95,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim plausibly aligns with the idea that eliminating multi kernel launches and CPU bottlenecks can boost GPU compressor throughput toward or beyond one hundred gigabytes per second, but without empirical data or citations the strength is uncertain.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the result asserts cuSZp achieves highest or comparable compression across many benchmarks and outperforms cuZFP while avoiding artifacts of cuSZx, but no external evidence is provided.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a novel first in error bounded GPU compression with all computation in one kernel and high performance, but without external sources or context the claim appears plausible yet unverified within this evaluation.",
+    "confidence_level": "medium"
+  }
+}

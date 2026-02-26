@@ -1,0 +1,2137 @@
+--- Page 1 ---
+NBER WORKING PAPER SERIES
+STATE-LEVEL ECONOMIC POLICY UNCERTAINTY
+Scott R. Baker
+Steven J. Davis
+Jeffrey A. Levy
+Working Paper 29714
+http://www.nber.org/papers/w29714
+NATIONAL BUREAU OF ECONOMIC RESEARCH 
+1050 Massachusetts Avenue
+Cambridge, MA 02138
+February 2022, Revised August 2022
+We gratefully acknowledge financial support from the U.S. National Science Foundation [SES 
+1324257]. Our monthly state-level Economic Policy Uncertainty indexes are freely available and 
+updated at https://policyuncertainty.com/state_epu.html. We thank the editor and an anonymous 
+referee for helpful comments on a previous draft. The views expressed herein are those of the 
+authors and do not necessarily reflect the views of the National Bureau of Economic Research.
+NBER working papers are circulated for discussion and comment purposes. They have not been 
+peer-reviewed or been subject to the review by the NBER Board of Directors that accompanies 
+official NBER publications.
+© 2022 by Scott R. Baker, Steven J. Davis, and Jeffrey A. Levy. All rights reserved. Short 
+sections of text, not to exceed two paragraphs, may be quoted without explicit permission 
+provided that full credit, including © notice, is given to the source.
+
+
+--- Page 2 ---
+State-Level Economic Policy Uncertainty
+Scott R. Baker, Steven J. Davis, and Jeffrey A. Levy 
+NBER Working Paper No. 29714
+February 2022, Revised August 2022
+JEL No. D80,E32,E66,G18,H70,R50
+ABSTRACT
+We quantify and study state-level economic policy uncertainty. Tapping digital archives for 
+nearly 3,500 local newspapers, we construct three monthly indexes for each state: one that 
+captures state and local sources of policy uncertainty (EPU-S), one that captures national and 
+international sources (EPU-N), and a composite index that captures both. EPU-S rises around 
+gubernatorial elections and own-state episodes like the California electricity crisis of 2000-01 and 
+the Kansas tax experiment of 2012. EPU-N rises around presidential elections and in response to 
+9-11, Gulf Wars I and II, the 2011 debt-ceiling crisis, the 2012 fiscal cliff episode, and federal 
+government shutdowns. Close elections elevate policy uncertainty much more than the average 
+election. VAR models fit to pre-COVID data imply that upward shocks to own-state EPU 
+foreshadow weaker economic performance in the state, as do upward EPU shocks in contiguous 
+states. The COVID-19 pandemic drove huge increases in policy uncertainty and unemployment, 
+more so in states with stricter government-mandated lockdowns.
+Scott R. Baker
+Kellogg School of Management
+Northwestern University
+2211 Campus Drive
+Evanston, IL 60208
+and NBER
+s-baker@kellogg.northwestern.edu
+Steven J. Davis
+Booth School of Business
+The University of Chicago
+5807 South Woodlawn Avenue
+Chicago, IL 60637
+and NBER
+Steven.Davis@ChicagoBooth.edu
+Jeffrey A. Levy
+University of Chicago
+Harris School of Public Policy
+1307 E 60th St
+Office 3101
+Chicago, IL 60637
+United States
+levyjeff@uchicago.edu
+A State-level economic policy measures is available at https://policyuncertainty.com/state_epu.html
+A replication package is available at https://stevenjdavis.com/s/State-EPU-Replication-Package.zip
+
+
+--- Page 3 ---
+1
+Introduction
+Policy uncertainty and its economic consequences are salient concerns in the United States and
+around the world. High uncertainty can depress economic activity by causing ﬁrms to defer in-
+vestments that are costly to undo, by raising credit spreads and risk premiums (thereby dampening
+business investment and hiring), and by prompting consumers to postpone purchases of durable
+goods.1 Several studies provide evidence that uncertainty increases around political elections and
+that election-related uncertainty has material effects on corporate investment, capital ﬂows, pre-
+cautionary savings, and stock price volatility.2 Baker et al. (2014) document an upward drift in
+U.S. policy uncertainty since the 1960s that broadly coincides with rising political polarization
+and growth in government spending, taxes, and regulations.
+Previous research focuses on national measures of policy uncertainty and national outcomes,
+as in Alexopoulos and Cohen (2015), Baker et al. (2016), Davis (2016), Ozturk and Sheng (2018),
+and Ahir et al. (2018). Uncertainty related to sub-national policy also matters for business and
+household decision-making. State and local governments differ greatly in the design of their tax
+systems and their choice of tax rates. Their spending amounts to almost 15 percent of U.S. GDP
+(Nunn et al., 2019). They also determine land-use policies, business and occupational licensing
+rules, education standards, minimum wages, unemployment beneﬁts, eligibility rules for social
+programs, environmental regulations, health and safety regulations, and more. Indeed, Justice
+Louis Brandeis famously characterized the states as ‘laboratories of democracy.’3
+Whether experimentation per se is the intent, the power to set policies and change them is
+a source of economic uncertainty. States also differ in industry mix, energy sources, population
+1See, for example, Bernanke (1983) and McDonald and Siegel (1986) on the value of waiting to invest when
+uncertainty is unusually high; Christiano et al. (2014), Gilchrist et al. (2014) and Arellano et al. (2019) on uncertainty
+effects that work through credit spreads and risk premiums; and Eberly (1994) on how uncertainty affects consumer
+expenditures on durable goods. Fernández-Villaverde et al. (2015) show how ﬁscal policy uncertainty depresses output
+in a New Keynesian model by intensifying monopoly pricing distortions. Bloom (2014) reviews the larger literature.
+Pástor and Veronesi (2013) and Arbatli et al. (2022) consider the two-way interplay between policy uncertainty and
+economic performance.
+2See Canes-Wrone and Park (2012), Julio and Yook (2012, 2016), Giavazzi and McMahon (2012), Kelly et al.
+(2016), Hassan et al. (2019) and Baker et al. (2020), among others. Many other studies investigate the economic
+effects of policy uncertainty more generally. See, for example, Baker et al. (2016) and Gulen and Ion (2016).
+3New State Ice Co. v. Liebmann, 285 U.S. 262 (1932).
+1
+
+
+--- Page 4 ---
+characteristics, and the economic footprint of the federal government. As a consequence, states
+are differently exposed to federal tax policy, defense spending, energy prices, and other economic
+developments inﬂuenced by federal policy.4 As an example, national policy efforts to promote a
+shift from fossil fuels to renewable energy sources have profoundly uneven effects across the ﬁfty
+states. As another example, hikes in the federal minimum wage may matter little in high-wage
+states while materially raising the cost of low-wage labor in other states.
+In light of these remarks, we utilize the digital archives of nearly 3,500 local newspapers to
+construct three monthly indexes of economic policy uncertainty for each state: one that captures
+state and local sources of policy uncertainty (EPU-S), another that captures national and inter-
+national sources (EPU-N), and a composite index (EPU-C) that captures both state + local and
+national + international sources. Half the articles that feed into our composite indexes discuss state
+and local policy, conﬁrming that sub-national matters are major sources of policy uncertainty.
+Our EPU measures exhibit enormous increases in the wake of the COVID-19 pandemic, in line
+with evidence for a wide range of other uncertainty indicators in Altig et al. (2020). Looking over
+our full sample (which for a dozen states extends back to 1985), EPU-S rises around presidential
+and own-state gubernatorial elections and in response to own-state episodes such as the California
+electricity crisis of 2000-01 and the Kansas tax experiment of 2012. EPU-N rises around pres-
+idential elections and in response to the 9-11 terrorist attacks, the July 2011 debt-ceiling crisis,
+federal government shutdowns, and other "national" events. Close elections (winning vote mar-
+gin under 4 percent) elevate policy uncertainty much more than less competitive elections. Using
+statistical models that include controls for common trends, seasonal effects, and state-level eco-
+nomic conditions, a close presidential election contest raises EPU-N by 60 percent and a close
+gubernatorial contest raises EPU-S by 35 percent.
+More broadly, the relative importance of state and national sources of policy uncertainty differs
+greatly across states and over time. As a simple metric, consider the ratio of EPU-S to EPU-N
+for a given state. The time-averaged value of this ratio ranges from 0.35 in the District of Columbia
+4For evidence, see Davis et al. (1997), Albuoy (2009), and Nakamura and Steinsson (2014). Mumtaz et al. (2018)
+provide evidence that national uncertainty shocks have heterogeneous effects across the states.
+2
+
+
+--- Page 5 ---
+to 1.51 in Alaska. The cross-state average value rose from 0.65 in the pre-pandemic years to
+1.1 in the period from March 2020 to June 2021. Since the timing, stringency, and duration of
+gathering restrictions, school closure orders, business closure orders, and shelter-in-place orders
+during the pandemic were largely set by state and local authorities, it makes sense that EPU-S
+saw an especially large increase after February 2020.5
+Our state-level measures make it feasible to leverage sub-national variation when studying
+policy uncertainty and its effects, while also controlling for local institutions and economic con-
+ditions.6 We provide the ﬁrst evidence on the relative importance of state and national sources of
+state-level policy uncertainty, how these sources differ across states, and how they vary over time
+within states. By exploiting the richness of our state-level data, we show that closer elections for
+political leaders bring greater policy uncertainty. We also show, in several ways, that state-level
+policy uncertainty matters for state-level economic performance. Using VAR models, we ﬁnd that
+upward innovations in own-state EPU-C foreshadow higher unemployment, lower employment,
+and weaker housing markets. Extending the VAR models to allow for spatial spillovers, we also
+provide the ﬁrst evidence that upward policy uncertainty shocks in neighboring states negatively
+affect own-state activity.7 And we develop the ﬁrst evidence on how government-mandated lock-
+downs during the pandemic impacted policy uncertainty differently across the 50 states.
+Four other studies feature sub-national measures of policy uncertainty. Shoag and Veuger
+(2016) examine state-level indicators of policy uncertainty in the Great Recession. Their measures
+lack a time-series dimension. Rauh (2019) develops text-based uncertainty indicators for Cana-
+dian provinces and territories. In concurrent work, Elkamhi et al. (2021) also use newspapers to
+construct state-level EPU measures. We differ from their work in building indexes that separately
+quantify national and state sources of state-level policy uncertainty. Like Elkamhi et al. (2021), we
+ﬁnd a great deal of state-speciﬁc time variation in policy uncertainty. And like them, we ﬁnd that
+5See Arnon et al. (2020), Coibion et al. (2020) and Goolsbee et al. (2020) on the prevalence of restrictive orders
+issued by state and local governments during the pandemic.
+6Our data are freely available at www.policyuncertainty.com/state_epu.html. We update our state-level EPU mea-
+sures on a regular basis, following our customary practice for the national EPU measures featured on the same site.
+7This aspect of our results complements work on the spillover of national (policy) uncertainty shocks across coun-
+tries. See, for example, Colombo (2013), Klössner and Sekkel (2014), Bhattarai et al. (2020), and Arbatli et al. (2022).
+3
+
+
+--- Page 6 ---
+upward shocks in state-level EPU foreshadow weaker economic performance in the state. Their
+measures end in 2019, before the COVID-19 pandemic and the huge increases in policy uncer-
+tainty that came with it. Finally, Ash et al. (2020) consider state-level EPU – as measured by the
+frequency of “economic policy uncertainty” in local newspapers – to test one implication of their
+incomplete-contracts theory of legislative detail.
+The next section explains how we construct our state-level indexes and summarizes their be-
+havior. Section 3 explores several drivers of state-level EPU, with particular attention to election-
+related uncertainty and a variety of state, national, and international episodes that involve high
+levels of policy uncertainty. In Section 4, we use pre-COVID data to estimate panel VAR models
+that relate state-level economic activity to state-level EPU. We apply the models to characterize
+the dynamic response of state-level activity to own-state and border-state EPU shocks, with spe-
+cial attention to California in view of its size, policy-induced electricity crisis in 2000-01, and
+gubernatorial recall in 2003. Section 5 focuses on developments during the pandemic. We ﬁnd
+that states with stricter lockdowns had bigger rises in policy uncertainty relative to 2019, bigger
+rises in unemployment, and bigger falls in employment – all conditional on pandemic severity, as
+measured by COVID deaths per capita. Section 6 offers concluding remarks.
+2
+State-level Economic Policy Uncertainty Indexes
+To measure state-level economic policy uncertainty (EPU), we turn to local newspapers in
+each state and track the fraction of articles that discuss policy-related economic uncertainty. We
+follow the approach of Baker et al. (2016) in constructing our measures but develop an extensive
+collection of new term sets to disentangle state and local from national (and international) sources
+of policy uncertainty.
+2.1
+Why Newspapers?
+Newspapers have many attractive attributes for our purposes. They publish frequently, facili-
+tating the creation of monthly, weekly and even daily measures. Their timely character allows for
+the production of forward-looking uncertainty indicators in real time, which is especially valuable
+4
+
+
+--- Page 7 ---
+amidst novel developments like the COVID-19 pandemic (Altig et al., 2020). Digital newspaper
+archives often extend back for decades, letting us create panel data with a long time-series di-
+mension. Newspaper coverage of a particular topic expands and contracts as concerns and news
+ﬂow related to the topic wax and wane. Moreover, the richness of newspaper text lets us drill
+into the forces that drive uncertainty in response to particular state, national and international de-
+velopments. By using multiple newspapers in a given state and month, we average out much of
+the idiosyncratic noise present in the coverage of a single newspaper, and we reduce biases that
+might arise from slanted coverage in particular papers. Finally, newspapers offer one of the few
+sources for creating sub-national uncertainty measures on a frequent and timely basis. In con-
+trast, uncertainty proxies based on option prices or ﬁnancial market volatility are difﬁcult to create
+for sub-national units. And survey data typically lack the combination of spatial granularity, fre-
+quency, and topical density that is easily achieved with newspapers.
+2.2
+Tracking Newspapers
+To construct our EPU measures, we draw on the digital archives provided by the Access World
+News Newsbank service. We include daily and weekly newspapers, ranging from small, local
+papers to ﬂagship newspapers that circulate throughout the state. We exclude papers with a strong
+national reach like the New York Times and the Wall Street Journal. Our sample runs from January
+1985 onward, is shorter for many states, and covers all states since 2006. All told, we use about
+3,500 newspapers, and the median number of papers per state-month observation is 49.
+The average coverage duration for the newspapers in our sample is about 14 years. Once
+included, coverage usually extends through the present day, although about 250 papers disappear
+from the archives by 2010. These sample exits typically occur because the paper ceased operations
+or was absorbed by a competitor (who is often in our sample). Papers that disappear from the
+sample tend to have smaller circulation and lower article counts. There are no instances in which
+the state’s largest newspaper exits the sample. Appendix Table A.2 provides additional statistics
+on newspaper counts, circulation, and sample start dates by state.
+5
+
+
+--- Page 8 ---
+2.3
+Using Term Sets to Flag Relevant Newspaper Articles
+We ﬂag newspaper articles that contain at least one of ‘economic’ or ‘economy’ (E); and at
+least one of ‘uncertain’, ‘uncertainties’, or ‘uncertainty’ (U); and at least one term in a policy set
+that differs between EPU-N and EPU-S to reﬂect their different objectives. In devising the
+policy sets for EPU-N and EPU-S, we avoid terms like ‘taxes’ and ‘tax policy’ that refer to
+shared responsibilities among federal, state, and local governments.8
+The policy term set for EPU-N mainly contains terms for national policy-making institutions
+and regulatory agencies but also includes ‘monetary policy’ and terms that refer to the election of
+federal ofﬁcials. See Appendix Table A.1. For EPU-S, we tailor the policy sets to cover relevant
+state and local ofﬁcials, policy-making bodies, and regulatory agencies. Thus, our state-speciﬁc
+policy sets include terms like ‘governor’, ‘mayor’, ‘state senate’, ‘city council’, and the like. To
+assemble these terms, we consulted government websites for the titles of ofﬁcials and names of
+legislatures and state bodies with authority over regulations pertaining to the environment, labor
+and unemployment, gambling, transportation, energy and utilities, banking, and other ﬁnancial
+services. We include ‘zoning’ in our EPU-S policy sets, because zoning functions as an important
+policy lever that is exercised mainly by state and local governments. We also include ‘referendum’
+for states that have provisions for putting direct votes on policy matters before their citizens.9 For
+comparison, Table A.1 also reports the “BBD” policy term set developed by Baker et al. (2016).
+8We investigated whether the inclusion of tax-related terms improve our EPU-N and EPU-S indexes. Not sur-
+prisingly, tax-related terms are unhelpful in distinguishing between articles about national sources of policy uncertainty
+and articles about state and local sources. Moreover, conditional on our other policy terms, the inclusion of tax-related
+terms ﬂags few articles about policy uncertainty that we otherwise miss. On the margin, tax-related terms yield a low
+ratio of true positives to false positives in ﬂagging articles. Baker et al. (2016) reached the same conclusion, based on
+a large-scale human audit study, regarding the potential use of tax-related terms in their national EPU index.
+9Table A.1 reports our policy set for Michigan. The full collection of state-speciﬁc policy term sets is available on
+the Economic Policy Uncertainty website at https://policyuncertainty.com/state_epu_terms.html.
+6
+
+
+--- Page 9 ---
+2.4
+EPU Index Construction
+Having ﬂagged a suitable set of articles, we compute the raw state-level indexes by calculating
+Raw EPU-Ns,t = (# of Articles with E, U and National Policy Terms)s,t
+(Total # of Articles in Same Newspapers)s,t
+,
+(1)
+Raw EPU-Ss,t = (# of Articles with E, U and Own-State Policy Terms)s,t
+(Total # of Articles in Same Newspapers)s,t
+,
+and
+(2)
+Raw EPU-Cs,t = (# of Articles with E, U and (Own-State or National Policy Terms))s,t
+(Total # of Articles in Same Newspapers)s,t
+, (3)
+where s and t index the state and monthly time period, respectively. To obtain our ﬁnal indexes,
+we divide each raw index value by the average of Raw EPU-N from 2006 to 2019 for the state
+in question and multiply by 100. This normalization preserves information about the relative
+magnitudes of EPU-N, EPU-S and EPU-C within each state.10 We take the same approach in
+calculating our EPU-BBD measures for each state.
+2.5
+A First Look at the Sources of State-Level Policy Uncertainty
+Figure 1 displays a quarterly series for the equal-weighted average value of EPU-C and its
+three-way decomposition by source of policy uncertainty. Our decomposition reﬂects the content
+of articles the feed into the EPU-C indexes – speciﬁcally, whether they discuss only national (and
+international) policy matters, only state and local policy matters, or both. From 1985 to February
+2020, articles that discuss only national policy matters account for 50% of the average EPU-C
+value. Articles that discuss only state and local policy matters account for 30%, and those that
+discuss both account for 20%. From March 2020 to June 2021, the shares are 38% for national
+only, 40% for state and local only, and 22% for articles that discuss both. These results establish
+the importance of state and local policy matters as sources of state-level policy uncertainty.
+The sources of EPU also vary greatly across states. At the extremes, articles that mention only
+10Our normalization method equalizes the level of EPU-Ns,t across states over the normalization period. We
+make this choice deliberately based on our sense that cross-state variation in average levels is heavily inﬂuenced by
+differences in newspaper practices across states, e.g., the share of newspaper articles devoted to sports or weather.
+7
+
+
+--- Page 10 ---
+state and local policy matters account for 45% of EPU-C in Alaska from 1985 to 2021 but only
+18% in South Dakota and 10% in Washington, DC. Articles that mention only national and inter-
+national policy matters account for 75% of EPU-C in Washington, DC and 62% in Pennsylvania
+but only 26% in Wyoming and Alaska. We offer many examples of shocks and developments that
+drive common and state-speciﬁc movements in our EPU measures in the analysis below.
+2.6
+State-Level EPU Behavior over Time and Across States
+Figure 2 displays monthly values for the cross-state averages of EPU-N and EPU-S. Gulf
+Wars I and II, close presidential elections, ﬁnancial crises, major political conﬂicts over ﬁscal
+policy, the June 2016 Brexit referendum, trade policy tensions during the Trump presidency, and
+Trump’s impeachment in December 2019 all leave visible marks on the indexes, especially EPU-
+N. The pandemic pushed (average) EPU-N to 2.7 times its pre-COVID peak and pushed EPU-S
+to more than four times its previous peak. The times-series correlation between the two measures
+displayed in Figure 2 is 0.74 from 1985 to 2019 and 0.88 when using data through June 2021.
+Even before the pandemic struck, policy uncertainty levels had drifted upward over time: The
+average EPU-N value is 114 from 2008 to 2019, as compared to 96 from 1985 to 2007. This
+pattern broadly aligns with the newspaper-based evidence in Baker et al. (2016). They also ﬁnd
+an upward drift in policy uncertainty measures derived from the periodic Beige Books compiled
+by economists in the Federal Reserve System and in descriptions of “Risk Factors” in the annual
+10-K ﬁlings of listed ﬁrms. Hassan et al. (2019) ﬁnd an upward drift in political risks facing ﬁrms
+based on their analysis of quarterly earnings conference calls. Aside from the COVID episode,
+the cross-state average EPU-N measure ﬂuctuates with greater amplitude than average EPU-S,
+because many state-level sources of EPU are idiosyncratic and average out in the cross section.
+Appendix Figure A.1 plots the average between-state EPU correlations in rolling samples of
+the last 60 observations. The 9-11 attacks, the ﬁnancial crisis in September 2008, the onset of the
+COVID pandemic, and (to a lesser extent) the November 2016 election victory of Donald Trump
+brought abrupt increases in the average pairwise correlations. This illustrates how major political,
+geopolitical, and economic developments can drive simultaneous increases in state-level EPU.
+8
+
+
+--- Page 11 ---
+Nevertheless, there is much state-speciﬁc time variation in our EPU measures. The average
+pairwise time-series correlation between states is only 0.23 for EPU-S and 0.39 for EPU-N for
+the period ending in 2019. The ﬁrst principal component accounts for only 26% of the monthly
+time-series variation in the state-level EPU-S measures, and the next four components account
+for another 27%. Not surprisingly, the EPU-N measures exhibit more commonality: The ﬁrst
+principal component accounts for 47% of the state-level variation, and the next four components
+account for another 16%.11 There is also much index-speciﬁc variation. Looking within states over
+time in the pre-pandemic period, the correlation between EPU-N and EPU-S ranges from 0.17
+to 0.76, with a mean of 0.45.
+To investigate whether and how co-movements in the state-level EPU measures depend on
+spatial proximity, we estimate dyadic regression models of the following form:
+Cij = ai + aj + β1B(i, j) + β2Dist(i, j) + ϵij,
+(4)
+where Cij denotes the pairwise correlation between EPU measures for states i and j over the
+longest available time span, ai and aj are ﬁxed effects for states i and j, B(i, j) is an indicator
+function that equals 1 when states i and j share a border, and Dist(i, j) is the log distance between i
+and j (hundreds of miles). There are 51(50)/2=1,275 pairwise correlations for each EPU measure.
+When we ﬁt (4) by least squares to the pairwise EPU-N correlations, we obtain ˆβ1 = 0.001
+[0.005] and ˆβ2 = 0.006 [0.011].12 Similarly, ﬁtting (4) to the pairwise EPU-S correlations also
+yields small and statistically insigniﬁcant values for ˆβ1 and ˆβ2. Thus, we ﬁnd no evidence that
+state-level EPU movements are more similar for states in closer proximity.
+There is, however, a geographic structure to state-level EPU co-movements. Speciﬁcally, Fig-
+ure A.2 shows how each state-level EPU measure correlates over time with the corresponding
+national average EPU value. EPU measures for the Mountain states, Alaska, the Dakotas, Ne-
+braska, Kansas, Oklahoma, several Southern states (but not Texas and Florida), Maine, Vermont
+and New Hampshire correlate more weakly with national average values than other states. Roughly
+11We use a balanced panel of 44 states from January 2001 to July 2021 in the principal components analysis.
+12We adjust standard errors for the dyadic structure following Fafchamps and Gubert (2006).
+9
+
+
+--- Page 12 ---
+speaking, “hinterland” states exhibit more idiosyncratic EPU variation than other states.
+In summary, there is much commonality in measured EPU ﬂuctuations across states and over
+time within states, but there is also a great deal of state-speciﬁc and index-speciﬁc variation. This
+idiosyncratic variation is quite useful in downstream econometric applications, a fact we exploit
+in the rest of the paper. Perhaps surprisingly, we ﬁnd no evidence that states in closer physical
+proximity exhibit stronger EPU co-movements.
+3
+Drivers of State-Level Economic Policy Uncertainty
+3.1
+Election-Related Uncertainty
+Elections are an obvious source of policy uncertainty. Indeed, Baker et al. (2020) ﬁnd that
+national EPU indices exhibit a clear tendency to rise in the months leading up to national elections
+in a sample of 23 countries around the world. We now investigate whether and how our state-level
+EPU measures respond to U.S. presidential and own-state gubernatorial elections.
+In Table 1, we regress our monthly state-level EPU indexes on election indicators that equal
+one in an election month and the prior month, zero otherwise. Column (1) reports a least-squares
+regression of log EPU-Ns,t on these indicators.13 We control for state ﬁxed effects and time-
+varying economic conditions, as measured by the state’s contemporaneous unemployment rate
+and a summary measure of its coincident economic indicators. On average and conditional on the
+controls, EPU-Ns,t is 33 log points higher around presidential elections, with a t-statistic of 13.
+Gubernatorial elections also raise EPU-Ns,t, but the effect is much smaller and only marginally
+signiﬁcant. When we add common year effects (controlling for any drift over time in the under-
+lying level of EPU) and common month effects (controlling for unobserved seasonal forces that
+affect EPU in Novembers, for example), the coefﬁcient on the presidential election indicator is
+nearly unchanged, but the gubernatorial election indicator becomes smaller and statistically in-
+signiﬁcant. We ﬁnd strong statistical evidence that presidential and gubernatorial elections have
+13In practice, we use the inverse hyperbolic sine of the state-level EPU measures. The inverse hyperbolic sine
+transformation handles zero values while closely approximating the natural log transformation. See Bellemare and
+Wichman (2020).
+10
+
+
+--- Page 13 ---
+sizable positive effects on EPU-Ss,t in columns (4) and (5). Notably, we ﬁnd substantially higher
+effects of gubernatorial elections on EPU-Ss,t relative to EPU-Ns,t.
+Close elections (winning margin less than 4 percent) yield especially large increases in our
+state-level policy uncertainty measures, as shown in columns (3) and (6). The total estimated
+effect of a close presidential election on EPU-Ns,t is 47 log points, or 60 percent. The total effect
+of a close, own-state gubernatorial election on EPU-Ss,t is 30 log points, or 35 percent.
+The results in Table 1 tell us that elections have powerful effects on state-level policy uncer-
+tainty, and that they alter the mix between EPU-N and EPU-S over time. We isolate the mix
+effect in Figure 3, which plots the average time path of EPU-S relative to EPU-N in the months
+around presidential and gubernatorial elections, conditional on state-level economic conditions and
+other controls. Gubernatorial elections raise the ratio of EPU-S relative to EPU-N, with a peak
+estimated effect of about 18 log points in the election month. Presidential elections pull down the
+ratio of EPU-S relative to EPU-N, with a peak estimated effect of about -31 log points.
+3.2
+Selected National and International Events
+We now investigate how our state-level EPU measures respond to several national and interna-
+tional events that created policy uncertainty directly or that raised profound questions about policy
+responses: the terrorist attacks on the World Trade Center in New York City and the Pentagon
+building on 11 September 2001; the U.S. debt-ceiling crisis in July 2011; the June 2016 Brexit ref-
+erendum in the United Kingdom, which reverberated through ﬁnancial markets around the world;
+Donald Trump’s election victory in November 2016, the biggest U.S. presidential election surprise
+since Harry Truman defeated Thomas Dewey in the 1948 contest; and partial federal government
+shutdowns that commenced in October 2013 and December 2018.
+Figure 4 displays histograms of one-month log changes, ln(EPU-Ns,t
+
+EPU-Ns,t−1), where
+s indexes states as before, and t is the event month. All six events drove increases in EPU-N in
+most states, and the increases are often quite large. For example, the November 2016 presidential
+election outcome triggered EPU-N increases in 86 percent of states, with a median jump of 80 log
+points. Four states (Georgia, Maryland, Maine, and Rhode Island) had EPU-N jumps of 200 log
+11
+
+
+--- Page 14 ---
+points or more in reaction to Trump’s election win. The debt-ceiling crisis and the two government
+shutdowns drove EPU-N increases in 80 percent or more of states, and the 9-11 attacks raised
+EPU-N in all but three states.14 The median EPU-N spike ranges from 45 to 120 log points
+across these four episodes. Lastly, in reaction to the surprise Brexit referendum outcome, EPU-N
+rose in 84 percent of states, with a median jump of 64 log points. As the Brexit case shows, major
+policy developments in other countries can drive large, heterogeneous changes in state-level policy
+uncertainty. Figure 2 identiﬁes other foreign developments that drove large increases in EPU-N.
+3.3
+The California Electricity Crisis of 2000-01
+California experienced a spectacular electricity crisis from May 2000 to June 2001 after a
+multi-year effort to reform its wholesale and retail markets.15 Wholesale prices rose by a factor
+of six from the second half of 1999 to the second half of 2000. Average spot prices for wholesale
+power in the ﬁrst few months of 2001 were ten times their levels in 1998 and 1999. Regulators
+froze retail electricity prices in the summer of 2000, before letting them rise in early 2001. Even
+then, they let retail prices rise much less than wholesale power costs. By January 2001, California’s
+two largest utilities were insolvent and had ceased paying their bills for wholesale power. Gov-
+ernor Gray Davis declared a state of emergency on January 17th, and the state began purchasing
+power directly at very high costs to head off widespread blackouts. Many Californians had already
+experienced rolling blackouts and mandatory cutbacks in electricity consumption.
+The electricity crisis was a principal factor in the ultimately successfully effort to recall Gov-
+ernor Davis. That effort began in early 2003 and gained momentum in May 2003, when U.S.
+Representative Darrell Issa announced he would contribute substantial sums to help gather signa-
+tures to force a recall election. By July 2003 the recall campaign had gathered enough signatures
+to put the question on the ballot. The recall election on October 7 removed Governor Davis and
+elected Arnold Schwarzenegger as his successor. This episode remains one of only two successful
+gubernatorial recall efforts in U.S. history, the other taking place in North Dakota in 1921.
+14Alaska, Maine, and Nevada, where it rose with a 1-2 month delay.
+15Our summary of what was a multi-faceted and highly contentious regulatory, political, and economic crisis draws
+on Joskow (2001), Wolak (2003), and Bushnell (2004). See those sources for a fuller discussion of the crisis.
+12
+
+
+--- Page 15 ---
+California’s electricity crisis and gubernatorial recall are clearly visible in Figure 5, which plots
+the quarterly paths of EPU-S and EPU-N for the state from 1996 to 2006. Its EPU-S levels
+during the electricity crisis and around the recall campaign and election are more than twice as high
+as in the preceding and following years. Its EPU-S index rose much more during this period than
+the average of EPU-S index values, as seen by comparing to Figure 2. EPU-N also rose to high
+levels from 2000 to 2004, largely because of national and international developments that affected
+all states. California-centric aspects of federal policy actions also contributed to the state’s high
+EPU-N values in this period. Speciﬁcally, the Federal Energy Regulatory Commission (FERC)
+played a signiﬁcant role in California’s electricity crisis.16
+3.4
+Other Illustrative Episodes with High State-Level EPU
+Figure 6 highlights selected episodes with high levels of EPU in three other states. The chart
+for Kansas shows that EPU-S more than doubled in late 2010, when Sam Brownback prevailed in
+the state’s gubernatorial election. He ran on a platform that stressed tax reform and, once elected,
+followed through. The ‘Kansas Experiment’ to reduce income taxes, enacted in 2012, and the
+passage of additional tax cuts in early 2013 are both clearly visible in the state’s EPU-S index.
+The chart for Louisiana illustrates a different example. Hurricane Katrina struck the state in
+late August 2005, causing widespread destruction of private property and public infrastructure and
+a near-total exodus from New Orleans. The devastation wrought by the hurricane also brought
+great uncertainty about how local, state, and federal policymakers and ofﬁcials would respond.
+Accordingly, Louisiana’s EPU-S and EPU-N series rose dramatically in the wake of Katrina
+and, in the case of EPU-S, remained elevated through 2007. As revealed by a glance at Figure 2,
+nothing similar happened to the cross-state average values of EPU-S and EPU-N in this period.
+16FERC initiated a formal investigation into California’s wholesale electricity markets in August 2000, identiﬁed
+“structural reforms that must be addressed” and placed a ceiling on electricity price bids in California’s wholesale
+markets in November, and waived rules for generating facilities to increase power supplies in December. Later in
+December, FERC took additional steps to regulate pricing and other aspects of California’s wholesale power markets
+and to create independent “Governing Boards” to monitor those markets. In March 2001, FERC issued its “ﬁrst
+refund order directing sellers to provide refunds of excess amounts charged for certain electric energy sales during
+the month of January 2001.” That same month, FERC staff issued a proposal for “monitoring and mitigating prices
+prospectively” in California’s wholesale power markets. See the chronology of FERC actions from 2000 to 2002 at
+https://www.ferc.gov/sites/default/ﬁles/2020-05/pr-07-26-00.pdf and the links therein.
+13
+
+
+--- Page 16 ---
+Indeed, the average EPU series ﬂuctuated around unusually low levels in and around 2005.
+Finally, the chart for Michigan considers the period before, during, and after the global ﬁnancial
+crisis and Great Recession. National developments ﬁgure prominently in the behavior of EPU-S
+and EPU-N for Michigan, partly because the cyclically sensitive auto industry is a major part of
+Michigan’s economy. That makes Michigan unusually exposed to policy uncertainty that causes or
+responds to national economic ﬂuctuations. For example, the federal government played a major
+role in rescuing U.S. automobile manufacturers (and their employees) during the Great Recession.
+The economic uncertainty associated with that rescue effort was accentuated for Michigan by
+virtue of the state’s industrial structure.
+In summary, the examples highlighted by Figures 5 and 6 illustrate that high state-level EPU
+can arise in several ways – as a consequence of shocks interacting with bad policy design (Califor-
+nia’s electricity crisis) and the resulting political turmoil (gubernatorial recall), policy reforms
+designed to lower taxes and promote growth (the Kansas tax experiment), devastating natural
+disasters that raise policy issues about whether and how a state will rebuild (Katrina), and state
+economies that are unusually exposed to national developments and sources of policy uncertainty
+by virtue of their industrial structure (Michigan in the Great Recession).
+3.5
+The Main Locus of Policy Uncertainty Shifted after the Pandemic
+Recall from Figures 2 and 1 that our state-level policy uncertainty measures rose enormously in
+the wake of the pandemic. What’s easy to overlook in these ﬁgures is the simultaneous shift in the
+predominant source of policy uncertainty. Figure 7 highlights this shift, showing that the ratio of
+EPU-S to EPU-N rose in all but a few states after the pandemic. The ratio rose by a factor of two
+or more in Georgia, Illinois, Kentucky, Nevada, New Jersey, New Mexico, Oklahoma, Tennessee,
+Texas and Utah, while falling slightly in Delaware, Maine, Mississippi, New Hampshire, Rhode
+Island, and South Dakota. The cross-state average value of this ratio rose from 0.65 in the pre-
+pandemic part of our sample to 1.1 in the period from March 2020 to June 2021.
+It is perhaps no surprise that the locus of policy uncertainty shifted to state and local policy
+matters after the pandemic struck. State and local authorities largely determined the parameters of
+14
+
+
+--- Page 17 ---
+government-mandated restrictions on economic and social activity during the pandemic. The scale
+of the shift is remarkable nonetheless. It constitutes a major break in the sources of policy-related
+uncertainty within the federal system of American government. Whether, and how fully, this shift
+will persist remains to be seen.
+4
+State-level EPU and Economic Performance
+This section investigates how economic activity responds to state-level policy uncertainty shocks
+in vector autoregressive (VAR) models. The results yield clear evidence that upward own-state pol-
+icy uncertainty shocks foreshadow weaker activity in the state, and in contiguous states. As we
+illustrate for California, states sometimes experience a sequence of EPU shocks that drive – or at
+least foreshadow – material movements in the state-level unemployment rate.
+4.1
+Panel VAR Analysis
+We ﬁt a panel VAR to monthly, state-level data on ln(EPU-C) and economic activity. We use
+the composite EPU measure here, because we aim to capture all relevant sources of policy uncer-
+tainty for the state – whether due to local, state, national or international developments. For now,
+our activity measure is either the state’s unemployment rate or the natural log of its employment
+multiplied by 100. Unless noted otherwise, all speciﬁcations include state-speciﬁc intercept terms
+and six lags of state-level activity and ln(EPU-C) in each equation. To identify shocks, we use
+a Cholesky decomposition with ln(EPU-C) placed ﬁrst in the recursive causal ordering. We also
+consider results when placing ln(EPU-C) last in the causal ordering. Appendix A.3 sets forth an
+explicit statement of our structural VAR and its identiﬁcation.
+We estimate the VAR by least squares, using data for 44 states from January 2001 to December
+2019. Starting in January 2001 maximizes the number of state-month observations in a balanced
+panel design.17 We stop in December 2019 in view of the economy’s highly atypical dynamic
+response to the COVID shock and attendant uncertainty: the lag between the COVID shock and
+17The omitted states are Arkansas, Delaware, Hawaii, New Mexico, South Dakota, West Virginia, and Wyoming.
+While we have EPU data for New Mexico and West Virginia from 1996, the sample of newspapers (and articles) for
+these states is thin and variable, resulting in very noisy EPU series.
+15
+
+
+--- Page 18 ---
+the trough was extraordinarily short, the recession was extremely short-lived, and the early pace
+of recovery was unusually rapid.18 Thus, it makes little sense to include the COVID episode when
+seeking to characterize the normal dynamic relationship of EPU to economic activity.
+Figure 8 displays estimated dynamic responses to unit standard deviation ln(EPU-C) shocks,
+along with 95% conﬁdence intervals. Our preferred speciﬁcation uses the ﬁlter proposed by Hamil-
+ton (2018) with his recommended look-back horizon (h = 24) and one year of lags (p = 12). We
+also report results using the Hodrick-Prescott (HP) ﬁlter with λ = 129, 600, and using unﬁltered
+data.19 Since we lose six observations for lags, our estimation sample runs from July 2001 to De-
+cember 2019 for VARs ﬁt to raw data or to HP-ﬁltered data. The Hamilton ﬁlter uses an extra 35
+observations, yielding an estimation sample that runs from June 2004 to December 2019.
+As the ﬁgure shows, own-state policy uncertainty shocks foreshadow lower employment and
+higher unemployment in the state, with hump-shaped dynamic responses that peak after about one
+year. The EPU shock responses are modest in size but estimated with good precision, owing to
+the richness of our state-level data. Using the Hamilton ﬁlter, the unemployment rate response to
+a unit standard deviation upward innovation in ln(EPU-C) peaks 11 to 14 months later at 0.103
+percentage points, with a 95% conﬁdence interval of 0.05 to 0.15 points. The peak employment
+response is -0.131 log points after about one year. HP-ﬁltered data yield similar results. Unﬁltered
+data also yield similar results, except the impulse responses are more persistent.
+The dynamic response to a ln(EPU-C) shock in Figure 8 is qualitatively similar to what Baker
+et al. (2016) ﬁnd in a 12-country panel VAR but smaller in magnitude. They estimate a peak
+unemployment rate response of 0.25 percentage points one year after a 90-point shock to the level
+of EPU, which amounts to 65 log points on an EPU base of 100.20 Scaling up to account for
+18U.S. and global stock markets fell about 40% from 17 February to 23 March 2020 in reaction to the esca-
+lating COVID-19 pandemic, and economic activity underwent a spectacular collapse by mid-April (Davis et al.
+(2021)).
+According to the NBER Business Cycle Dating Committee, the COVID recession lasted only two
+months, making it the shortest on record back to 1854. See the Committee’s announcement on 19 July 2021 at
+www.nber.org/research/business-cycle-dating.
+19Hamilton (2018) argues that the HP ﬁlter produces spurious dynamic relations, and that standard choices of λ,
+which are almost universally drawn from Hodrick and Prescott’s original work, are not justiﬁed by the data. Despite
+Hamilton’s criticisms, the HP ﬁlter remains in widespread use, so we report results for both ﬁlters. As it turns out, the
+two ﬁltering approaches yield similar results in our setting.
+20Baker et al. (2016) normalize each country’s mean EPU level to 100, but the country-speciﬁc normalization period
+16
+
+
+--- Page 19 ---
+the larger EPU shock in their study, our panel VAR yields a peak unemployment response of
+(0.65/0.45)(0.103) = 0.15 percentage points. Thus, our peak unemployment rate response to a
+same-size EPU shock is only 60 percent as large as theirs. One possible reason is that state-level
+data are nosier than national data, leading to more attenuation of estimated effects in our setting.
+Especially for less populous states, monthly activity measures are subject to sampling variability
+and our EPU measures draw on fewer newspapers. In fact, re-estimating our panel VAR using only
+the 12 largest states yields a peak unemployment rate response of 0.155 percentage points to a unit
+standard deviation policy uncertainty shock of size 0.369.21 Re-scaling the shock size as before,
+our 12-state panel VAR yields a peak unemployment response of (0.65/0.369)(0.155) = 0.27
+percentage points, slightly larger than Baker et al. (2016) ﬁnd.
+4.2
+Robustness Checks on the Baseline VAR
+We explored several alternative speciﬁcations and assumptions. First, we ﬁt analogous VAR
+models to each state separately. As shown in Appendix Figure A.3, the pattern in Figure 8 holds
+in the vast majority of states and is not driven by extreme behavior in a few states. Second, we
+obtained similar results using shorter and longer lags in the VARs. See Figure A.4, which dis-
+plays unemployment responses when using the Hamilton ﬁlter. Third, placing ln(EPU-C) last in
+the Cholesky ordering also yields similar results, but peak responses are attenuated. When using
+the Hamilton ﬁlter, placing ln(EPU-C) last reduces the peak unemployment response by about
+12% (Figure A.5). Fourth, replacing EPU-C with EPU-N, EPU-S, or EPU-BBD in our VAR
+models yields qualitatively similar dynamic response functions but smaller peak responses in all
+cases. For example, when using Hamilton-ﬁltered data, the peak unemployment response to a
+unit policy uncertainty shock is 23% greater for ln(EPU-C) as compared to ln(EPU-N), 18%
+greater as compared to ln(EPU-S), and 37% greater as compared to ln(EPU-BBD). This pat-
+tern indicates that the broader (and tailored) nature of our ln(EPU-C) measure captures relevant
+does not always coincide with the sample period they use in their VAR estimation. In addition, their multi-country
+VAR system includes two variables that are unavailable at the state level: a national stock price index, and an industrial
+production index. For these reasons, our comparison to their EPU shock response magnitude is not exact.
+21The 12 largest states are California, Florida, Georgia, Illinois, Michigan, North Carolina, New Jersey, New York,
+Ohio, Pennsylvania, Texas, Virginia.
+17
+
+
+--- Page 20 ---
+information that the other measures miss.
+In summary, the estimated dynamic responses to state-level policy uncertainty shocks are of
+modest size, estimated with good precision, and qualitatively robust to a range of alternative speci-
+ﬁcations and identiﬁcation assumptions. As we show next, realized EPU shocks can have material
+effects on state-level unemployment rate movements.
+4.3
+An Illustration: EPU Shocks and Their Effects in California
+California is the largest state in the union, and its recent history features a good deal of policy-
+related economic uncertainty. Motivated by these facts, we now consider the role of EPU shocks
+as a driver of unemployment rate movements in the state.
+As a ﬁrst step, we re-ﬁt our six-lag VAR model using monthly Hamilton-ﬁltered data on the
+unemployment rate and ln(EPU-C) for California. Here, we exploit the fact that our data for Cal-
+ifornia extend back to January 1985. After accounting for lags and ﬁltering, our estimation sample
+runs from June 1988 to December 2019. In identifying the structural VAR, we place ln(EPU-C)
+last in the recursive causal ordering. This amounts to assuming that policy uncertainty shocks have
+no same-month impact on the state’s unemployment rate, while allowing the unemployment rate
+shock to contemporaneously affect ln(EPU-C).
+Figure A.6 displays the estimated dynamic response of California’s unemployment rate to the
+identiﬁed ln(EPU-C) shock. The shape is similar to the response function in the upper right panel
+in Figure 8, but the implied peak effect for a same-size shock is nearly twice as large. To see this,
+multiply the peak estimated response of California’s unemployment rate (0.12) by the ratio of the
+shock sizes to obtain (0.12)(0.45/.28) = 0.19. Recall that the peak response obtained from the
+identiﬁed panel VAR is only 0.10, even with ln(EPU-C) placed ﬁrst in the causal ordering. Thus,
+the results for California reinforce our earlier conclusion that larger states yield larger estimated
+effects of policy uncertainty shocks.
+We now use the structural VAR to examine the contribution of policy uncertainty shocks to
+movements in California’s unemployment rate. Inspecting the time path of structural ln(EPU-C)
+shocks (not shown), we ﬁnd large positive values of 59 log points in October 2000 and 42 log
+18
+
+
+--- Page 21 ---
+points in November, followed by essentially no shock in December (-4 log points) and a sequence
+of positive shocks from January to May 2001 that average 19 log points. This pattern aligns well
+with our earlier discussion of the California electricity crisis in 2000-01. Surprisingly though, we
+ﬁnd little trace of California’s gubernatorial recall in the path of the structural ln(EPU-C) shocks.
+Next, we feed the realized shock sequences through a Wold moving-average representation
+of our structural VAR. This exercise delivers a VAR-based historical decomposition of monthly
+movements in California’s unemployment rate, expressed as deviations from the model-implied
+equilibrium values. As seen in Figure 9, the electricity crisis produced one of two episodes in
+which large upward policy uncertainty shocks elevated California’s unemployment rate by 50-60
+basis points or more for an extended period. The maximal swing in California’s unemployment rate
+due to policy uncertainty shocks is about two percentage points. In short, California’s experience
+shows that policy uncertainty shocks materially affect state-level economic performance.
+4.4
+Spatial Spillover Effects
+We now extend our VAR speciﬁcation to incorporate EPU shocks in neighboring states. For
+each state s in month t, we compute BEPUst = P
+b∈B(s) pb(EPU-Cb,t), where B(s) is the set of
+states that border s and pb is the state-b share of population among states in s ∪B(s).22 This mea-
+sure has two desirable properties: It weights neighboring states in proportion to their populations,
+and it gets scaled down for states that are populous compared to neighboring states. This scaling
+incorporates the assumption that EPU shocks in California, for example, have bigger effects on
+economic activity in Oregon than the other way round. We add ln(BEPUst) to our baseline panel
+VAR, placing it after ln(EPU-Cst) in the Cholesky ordering and before the unemployment rate.
+As before, we include six lags of each variable and state-speciﬁc intercepts. We also use the same
+sample as before, except for dropping Alaska.
+Figure 10 displays the estimated responses (and 95% conﬁdence intervals) of state-level un-
+employment rates to unit standard deviation upward shocks to own-state and border-state policy
+22When EPU-Cb,t is missing, which happens for some smaller states early in the sample, we redeﬁne B(s) to
+exclude the state in question.
+19
+
+
+--- Page 22 ---
+uncertainty. Both shocks raise state-level unemployment by statistically signiﬁcant amounts. The
+response functions have similar shapes for the two EPU shocks, which makes sense given their
+similar nature. As expected, border-state EPU shocks are smaller in magnitude, as measured by
+the standard deviation of the structural innovations. For own-state and border-state EPU shocks of
+equal size, the peak unemployment rate response is about the same in both cases.
+How important are policy uncertainty shocks for state-level unemployment rate ﬂuctuations?
+One way to address this question is to consider their role in generating model-implied forecast
+errors at a horizon of, say, thirty months. Using our extended panel VAR speciﬁcation, own-state
+and border-adjusted EPU shocks jointly account for about one-tenth of the unemployment-rate
+forecast error variance at this horizon. This result says that EPU shocks account for a modest
+share of state-level unemployment ﬂuctuations. Recall, however, two results of our descriptive
+analysis in Section 2.6. First, policy uncertainty is subject to occasional large upward spikes, as
+shown in Figure 2. Second, these extreme episodes also tend to involve greater synchronicity in
+state-level EPU movements, as shown in Figure 1 and illustrated in Figure 4. Thus, unusually large
+upward shocks in own-state EPU tend to arrive at the same time as unusually large upward shocks
+in border-state EPU. For both reasons, policy uncertainty shocks can occasionally drive sizable
+increase in state-level unemployment rates, even though they play a minor role most of the time.
+4.5
+Additional Outcome Variables
+We also consider VAR models that include other state-level outcome variables: the (natural)
+log of housing prices, the log of new permits for private housing units, and the log of business
+starts.23 Because these variables are noisier than the corresponding employment and unemploy-
+ment measures, we focus on the twelve largest states, which yield sharper results. We add one
+variable at a time to our baseline panel VAR, placing it last in the Cholesky ordering. As before,
+we include six lags of each variable and state-speciﬁc intercepts. The sample start is determined
+23As measured, respectively, by the FHFA House Price Index for single-family housing at www.fhfa.gov/DataTools,
+the Census Bureau’s Building Permits Survey at www.census.gov/construction/bps/, and new applications for an Em-
+ployer Identiﬁcation Number by businesses with a high propensity to hire. Speciﬁcally, we use the seasonally adjusted
+HBA series available from the U.S. Census Bureau at https://www.census.gov/econ/bfs/index.html.
+20
+
+
+--- Page 23 ---
+by data availability and continues through December 2019.
+Appendix Figures A.7 and A.8 display the estimated dynamic responses to own-state EPU-
+C shocks. Unemployment responses remain highly signiﬁcant and are not much affected by the
+additional variables. Upward EPU shocks reduce new housing permits and home prices. The
+impact on housing permits is statistically signiﬁcant but small, peaking at about minus one percent
+after ﬁve months. It vanishes within a year and then reverses. The negative effect on home prices
+holds for HP-ﬁltered and raw data but not for Hamilton-ﬁltered data. Upward EPU shocks impart
+a signiﬁcant negative effect on business formation when using Hamilton-ﬁltered data but not when
+using HP-ﬁltered or raw data. In short, the evidence favors the view that policy uncertainty shocks
+depress housing markets, and perhaps business formation as well, but these results are weaker and
+more fragile than the earlier results for employment and unemployment.
+5
+EPU and Economic Performance during the Pandemic
+COVID-19 led to enormous increases in policy uncertainty (Figure 2), more so in some states
+than others. As an indication of this heterogeneity, the cross-state standard deviation of the change
+in EPU-C from 2019 to the third quarter of 2020 is 44 log points. We now use this state-level
+variation to develop evidence on how the pandemic raised policy uncertainty and how, in turn,
+policy uncertainty relates to state-level economic performance during the pandemic.
+5.1
+What Drove Policy Uncertainty during the Pandemic?
+We consider two hypotheses about the drivers of state-level EPU during the pandemic:
+1. Policy uncertainty rises with the severity of the pandemic’s health consequences.
+2. Policy uncertainty rises with the extent of government-mandated restrictions on economic
+and social activities.
+The ﬁrst hypothesis captures the view that greater pandemic severity generates more uncer-
+tainty about how policy makers will respond and about the economic consequences of their re-
+sponses. To operationalize this hypothesis, we measure severity as quarterly COVID deaths per
+21
+
+
+--- Page 24 ---
+capita in the state.24 Of course, deaths alone do not capture the full range of health consequences
+associated with COVID-19. We use data on deaths because they are readily available, of relatively
+high quality, comparable across states and over time, and correlated with other health outcomes
+associated with COVID. In short, per capita deaths are a reasonable and practical proxy for the
+severity of a pandemic’s health consequences.25
+Our second hypothesis reﬂects the idea that government restrictions on activity create economic
+uncertainty, and that more extensive restrictions create greater uncertainty. To operationalize this
+hypothesis, we consider four types of government orders that were widely deployed during the
+pandemic:
+• Shelter-in-place orders (SIPOs) that conﬁne persons to their residences except when per-
+forming essential activities.
+• Business closure orders (BCOs) that require “non-essential” businesses in multiple industries
+to halt operations.
+• Restaurant closure orders (RCOs) that cover bars, restaurants, taverns, and other eating fa-
+cilities while typically allowing take-out and delivery services.
+• School closure orders (SCOs).
+We combine data on these four types of orders to create a Lockdown Stringency Index for each
+state from the second quarter of 2020 through the second quarter of 2021.
+Speciﬁcally, for a given state and month, we set SIPO = 1 when a shelter-in-place order is in
+effect, 0 otherwise. We assign a fractional value if the SIPO is in effect for a fraction of the month.
+We deﬁne BCO, RCO, and SCO analogously. In using these state-level indicator variables,
+we treat RCOs (i.e., restaurant closure orders) as a limited form of the broader BCOs. We treat
+24Our data on death rates are from the COVID Data Tracker provided by the U.S. Centers for Disease Control and
+Prevention at https://covid.cdc.gov/covid-data-tracker/#datatracker-home. We average the
+daily data to the quarterly level for each state.
+25Alternatively, one might consider COVID case rates per capita. However, using case rates to proxy for pandemic
+severity is highly problematic for two reasons. First, reported case rates depend on testing rates, which vary greatly
+across states and over time. Second, conditional on contracting COVID, the likelihood of death or serious illness
+changed greatly as treatments improved, vaccination rates rose, and the demographic mix of infected persons shifted.
+For both reasons, case rates are an unsuitable measure for our purposes. That said, our results are not materially
+different when using reported case rates in place of death rates.
+22
+
+
+--- Page 25 ---
+the combination of a BCO and SCO as equivalent to a SIPO. Thus, we compute the following
+Lockdown Stringency Index value for each state and month:
+LSI = Max{SIPO, 0.75 ∗BCO + 0.25 ∗SCO, 0.25 ∗RCO + 0.25 ∗SCO},
+(5)
+which ranges from 0 to 1. We then average the LSI values over months in the calendar quarter to
+obtain the state’s quarterly Lockdown Stringency Index value. Appendix A.4 describes our data
+sources for government orders and provides more details about our calculations.
+To assess hypotheses 1 and 2, we estimate least-squares regressions of the following form:
+ln(EPU-Cs,q/EPU-Cs,2019) = c + β1CDRs,q + β2LSIs,q, +ϵs,q,
+(6)
+where the dependent variable is the log change in EPU-C for state s from 2019 to quarter q for
+q = 2020Q2, 2020Q3, ..., 2021Q2; CDRs,q is COVID deaths per 100,000 persons in state s during
+quarter q; LSIs,q is the Lockdown Stringency Index value for state s in q ; and ϵs,q is an error term.
+Since CDR and LSI equal zero in 2019, (6) is effectively a difference-in-difference regression.
+We ﬁt (6) separately for each q in light of frequent references in the popular discourse to “COVID
+fatigue,” “mounting resistance to government restrictions,” and the like. These developments may
+have prompted changes over time in how newspapers reported on pandemic-related policy uncer-
+tainty. The regulatory approval of anti-COVID vaccines in December 2020 – widely perceived as
+a watershed development – may also have altered newspaper coverage of uncertainties associated
+with the pandemic.
+Table 2 reports the results of estimating (6) for several values of q. To our surprise, we ﬁnd
+no evidence that greater COVID death rates in a state raised its level of policy uncertainty. The
+marginally signiﬁcant coefﬁcient on CDR in column (3) says that states with greater COVID death
+rates in the fourth quarter of 2020 experienced smaller increases in EPU-C from 2019 to 2020
+Q4 – the opposite of the hypothesized effect. None of the other regressions in Table 2 yield a
+statistically signiﬁcant effect of COVID death rates on own-state policy uncertainty.
+In contrast, we ﬁnd strong evidence that states with stricter lockdowns had larger increases
+in policy uncertainty relative to 2019. This pattern holds for each value of q in Table 2, with
+23
+
+
+--- Page 26 ---
+some attenuation by the second quarter of 2021. A unit standard deviation between-state LSI
+differential of 0.32 in the third quarter of 2020, for example, implies an increase in state-level
+policy uncertainty (relative to 2019) of 24 log points. That is more than one-half the standard
+deviation of the corresponding dependent variable for column (2) in Table 2. Bin scatters displayed
+in Appendix Figure A.9 indicate that this pattern is not driven by a few outliers among the states. In
+unreported results, we ﬁnd weaker evidence that states with higher values of LSI also experienced
+an increase in the ratio of EPU-S to EPU-N after the onset of the pandemic.
+In summary, we ﬁnd no evidence that the severity of COVID-related health consequences af-
+fected state-level policy uncertainty during the pandemic. We ﬁnd strong evidence that policy
+uncertainty rose more in states with stricter government-mandated lockdowns.
+5.2
+State-Level Economic Performance During the Pandemic
+We now investigate how state-level economic performance during the pandemic relates to pan-
+demic severity, lockdown stringency, and policy uncertainty. To do so, we estimate state-level
+difference-in-difference regressions of the following form:
+UNs,q −UNs,2019 = a + γ1CDRs,q + γ2LSIs,q, +γ3ln(EPU-Cs,q/EPU-Cs,2019) + φs,q,
+(7)
+where the dependent variable is the change in the unemployment rate for state s from 2019 to
+quarter q for q = 2020Q2, 2020Q3, ..., 2021Q2, and φs,q is a regression error.
+Table 3 reports the results. There are three messages. First, we ﬁnd no evidence that pandemic
+severity matters for a state’s relative economic performance. Second, states that imposed stricter
+lockdowns had bigger unemployment rate increases relative to 2019. As an example, consider the
+regression for q = 2020Q2. Multiplying the LSI coefﬁcient by a unit standard deviation differen-
+tial in LSI values across states in 2020Q2 gives (4.11)(0.24) = 0.99, essentially one percentage
+point. Analogous calculations for the other values of q yield unemployment responses that range
+from 0.56 to 0.84 percentage points. Thus, there is clear evidence that stricter lockdowns were as-
+sociated with sharper state-level unemployment rate increases during the pandemic. Third, there is
+weaker evidence that state-level unemployment also rose with increases in policy uncertainty dur-
+24
+
+
+--- Page 27 ---
+ing the pandemic (conditional on lockdown stringency and pandemic severity). Multiplying the
+coefﬁcient on the log change in EPU-C in column (2) by its unit standard deviation differential
+across states gives (1.51)(0.244) = 0.66, nearly two-thirds of a percentage point.
+These results suggest that stricter (and longer) lockdowns and higher policy uncertainty both
+raised a state’s unemployment rate during the pandemic. Still, caution is warranted in drawing
+causal inferences from these regression results. States may differ in unobserved ways that inﬂu-
+enced both the vulnerability of their economies to the COVID-19 pandemic and their choices over
+lockdown policies. In addition, states that imposed stricter lockdowns may also have adopted other
+policies that raised unemployment. Thus, we see the results in Table 3 as strong motivation for
+more research into the effects of lockdown mandates and policy uncertainty during the pandemic
+on unemployment during (and after) the pandemic.
+6
+Concluding Remarks
+We tap digital archives for thousands of newspapers to construct three monthly indexes of
+economic policy uncertainty (EPU) for each U.S. state: one that captures state and local sources of
+policy uncertainty (EPU-S), one that captures national and international sources (EPU-N), and
+a composite index that captures both (EPU-C). Our indexes date to 1985 for some states and are
+freely available at www.PolicyUncertainty.com with regular updates.
+Drawing on our indexes and other state-level data, we develop several new ﬁndings about the
+sources of policy uncertainty and its relationship to state-level economic performance:
+The Importance of State and Local Policy
+State and local matters are major sources of policy uncertainty. Even before COVID-19, half
+of all newspaper articles that feed into our composite EPU index discuss state and local policy.
+That share rose to 62% in the period from March 2020 (when the pandemic struck in force) to June
+2021 (the end of our sample period).
+The Pandemic and Policy Uncertainty
+The COVID-19 pandemic drove huge increases in policy uncertainty, pushing (average) EPU-
+25
+
+
+--- Page 28 ---
+N to 2.7 times its pre-COVID peak and (average) EPU-S to more than four times its previous
+peak. Policy uncertainty rose more sharply in states with stricter lockdowns – as measured by the
+incidence and duration of shelter-in-place orders, business closure orders, restaurant closure orders,
+and school closure orders. This lockdown effect is large relative to between-state variation in
+pandemic-era jumps in policy uncertainty. Surprisingly, policy uncertainty exhibits no discernible
+response to pandemic severity, as measured by COVID deaths per capita in the state.
+Elections and Policy Uncertainty
+Elections are recurring sources of state-level policy uncertainty. Close elections (vote margin
+less then four percent) bring especially large increases in policy uncertainty. We estimate that a
+close presidential election contest raises EPU-N by 60 percent and a close gubernatorial contest
+raises EPU-S by 35 percent. The richness of our state-level data lets us estimate these election
+effects with good precision, while controlling for several potential confounders.
+Other Sources of Policy Uncertainty
+The cross-state average of our EPU-N indexes rose in response to 9-11, Gulf Wars I and II,
+major ﬁnancial crises, the 2011 debt-ceiling crisis, the 2012 ﬁscal cliff episode, the June 2016
+Brexit referendum, trade policy tensions during the Trump presidency, and partial federal gov-
+ernment shutdowns that commenced in October 2013 and December 2018. As we illustrate by
+example, EPU-S can rise sharply in reaction to shocks that interact with poor policy design (Cal-
+ifornia’s electricity crisis of 2000-01), political turmoil in the wake of economic mismanagement
+(California’s gubernatorial recall in 2003), major tax reforms that aim to promote economic de-
+velopment (the Kansas tax experiment of 2012), natural disasters that raise questions about how
+policymakers will respond (Louisiana after Hurricane Katrina in 2005), and state-speciﬁc expo-
+sures to major national developments and policy actions (Michigan in the Great Recession).
+Upward Policy Uncertainty Shocks Foreshadow Weaker Economic Activity
+Upward policy uncertainty innovations in VAR models foreshadow higher state-level unem-
+ployment rates and lower employment, with peak responses of modest size about one year later.
+26
+
+
+--- Page 29 ---
+They also foreshadow lower home prices and fewer new permits for housing construction. As illus-
+trated by California’s experience, realized EPU shocks can generate sizable swings in state-level
+unemployment rates – about two percentage points in California’s case.
+Policy Uncertainty Shocks Spill Over Across State Borders
+Own-state economic activity also deteriorates in the wake of upward policy uncertainty shocks
+in neighboring states. Own-state and border-state policy uncertainty shocks of equal size have
+similar effects on own-state unemployment rates.
+Lockdowns, Policy Uncertainty, and State-Level Performance during the Pandemic
+States that imposed stricter lockdowns during the pandemic had bigger jumps in unemploy-
+ment, conditional on pandemic severity and policy uncertainty. Bigger increases in state-level
+policy uncertainty during the pandemic also came with bigger increases in unemployment. There
+are sound reasons for caution in drawing causal inferences from these patterns, as we discuss.
+Nevertheless, they highlight the value of more research into how lockdown stringency and policy
+uncertainty during the pandemic affected unemployment and other outcomes.
+The foregoing summary underscores the usefulness of our new state-level EPU indexes. We
+see several fruitful directions for future research:
+(1) How does political polarization inﬂuence election-related policy uncertainty? It’s natural
+to hypothesize that elections generate more uncertainty when the electorate is more polarized.
+Baker et al. (2020) ﬁnd support for this view in the behavior of national policy uncertainty around
+U.S. presidential elections. By exploiting state-level data on EPU, polarization and elections, it
+becomes feasible to scrutinize this hypothesis more carefully and to differentiate among the effects
+of different types of political polarization.
+(2) Why has U.S. policy uncertainty drifted upward since the late 1960s? Baker et al. (2014)
+advance two explanations for this drift. One stresses growth in government spending, taxes, and
+regulation. Another stresses increased political polarization and its implications for the policy-
+making process and policy choices. Both explanations ﬁnd support in the evidence they amass,
+but it’s hard to develop a convincing evaluation based only on national data. Our work opens the
+27
+
+
+--- Page 30 ---
+door to a more persuasive assessment that exploits the abundant state-level variation in government
+growth, polarization, and – now – policy uncertainty.
+(3) How does uncertainty affect ﬁrm-level investment and employment? Much previous re-
+search tackles this question using panel regression designs and identiﬁcation strategies that exploit
+election-related uncertainty and national policy uncertainty measures. Prominent examples include
+Baker et al. (2016), Gulen and Ion (2016) and Jens (2017). Our state-level EPU indexes greatly
+expand the measured variation that is available to study how ﬁrms respond to policy uncertainty.
+(4) How does the categorical mix of policy uncertainty vary across states and over time within
+states? Given the volume and topical density of newspaper articles, it is feasible to construct state-
+level measures of policy uncertainty for particular policy categories. By adapting the newspaper-
+based methods in Baker et al. (2016), Husted et al. (2020), and Caldara et al. (2020), one could
+construct state-level measures of uncertainties related to tax policy, government spending, labor
+market policy, monetary policy, trade policy, and more. Such measures would provide new tools
+for studying the drivers of policy uncertainty and effects on ﬁrm-level and state-level outcomes.
+28
+
+
+--- Page 31 ---
+References
+Hites Ahir, Nick Bloom, and Davide Furceri. The world uncertainty index. Working Paper, 2018.
+David Albuoy. The uneven geographic burden of federal taxation. Journal of Political Economy,
+2009.
+Michelle Alexopoulos and Jon Cohen. The power of print: Uncertainty shocks, markets, and the
+economy. International Review of Economics and Finance, 40, 2015.
+Dave Altig, Scott Baker, Jose Maria Barrero, Nicholas Bloom, Philip Bunn, Scarlet Chen, Steven J.
+Davis, Julia Leather, Brent Meyer, Emil Mihaylov, Paul Mizen, Nicholas Parker, Thomas Re-
+nault, Pawel Smietanka, and Gregory Thwaites. Economic uncertainty before and during the
+covid-19 pandemic. Journal of Public Economics, 2020.
+Elif C. Arbatli, Steven J. Davis, Arata Ito, and Naoko Miake. Policy uncertainty in japan. Journal
+of the Japanese and International Economies, 2022.
+Cristina Arellano, Yan Bai, and Patrick J. Kehoe. Financial frictions and ﬂuctuations in volatility.
+Journal of Political Economy, 2019.
+Alexander Arnon, John Ricco, and Kent Smetters. Epidemiological and economic effects of lock-
+down. Brookings Papers on Economic Activity, Fall:61–108, 2020.
+Elliott Ash, Massimo Morelli, and Matia Vannoni. More laws, more growth? evidence from u.s.
+states. Working Paper, 2020.
+Scott R. Baker, Nicholas Bloom, Brandice Canes-Wrone, Steven J. Davis, and Jonathan Rodden.
+Why has us policy uncertainty risen since 1960? American Economic Review, 104(5):56–60,
+May 2014.
+Scott R Baker, Nick Bloom, and Steven J Davis. Measuring economic policy uncertainty. Quar-
+terly Journal of Economics, 2016.
+Scott R Baker, Aniket Baksy, Nick Bloom, Steven J Davis, and Jonathan A Rodden. Elections,
+political polarization, and economic uncertainty. NBER Working Paper 27961, 2020.
+Marc F. Bellemare and Casey J. Wichman. Elasticities and the inverse hyperbolic sine transforma-
+tion. Oxford Bulletin of Economic Statistics, 82(1):50–61, 2020.
+Ben S Bernanke. Irreversibility, uncertainty, and cyclical investment. Quarterly Journal of Eco-
+nomics, 1983.
+Saroj Bhattarai, Arpita Chatterjee, and Park Woong Young. Global spillover effects of us uncer-
+tainty. Journal of Monetary Economics, 114, 2020.
+Nick Bloom. Fluctuations in uncertainty. Journal of Economic Perspectives, 28, 2014.
+James Bushnell. California electricity crisis: A market apart? Energy Policy, 32(9), 2004.
+29
+
+
+--- Page 32 ---
+Dario Caldara, Matteo Iacoviello, Patrick Molligo, Adrea Prestipino, and Andrea Raffo.
+The
+economic effects of trade policy uncertainty. Journal of Monetary Policy, 109:38–59, 2020.
+Brandice Canes-Wrone and Jee-Kwang Park. Electoral business cycles in oecd countries. Ameri-
+can Political Science Review, 2012.
+Ambrogio Cesa-Bianchi. A primer on vector autoregressions. slides, undated.
+Lawrence J. Christiano, Roberto Motto, and Massimo Rostagno. Risk shocks. American Economic
+Review, 2014.
+Olivier Coibion, Yuriy Gorodnichenko, and Michael Weber. The cost of the covid-19 crisis: Lock-
+downs, macroeconomic expectations, and consumer spending. NBER W.P. 27141, 2020.
+Valentina Colombo. Economic policy uncertainty in the u.s.: Does it matter for the euro area?
+Economics Letters, 121, 2013.
+Steven J. Davis. An index of global economic policy uncertainty. Macroeconomic Review, 2016.
+Steven J. Davis and John Haltiwanger. On the driving forces behind cyclical movements in em-
+ployment and job reallocation. American Economic Review, 89(5):1234–1257, 1999.
+Steven J. Davis, Prakash Loungani, and Ramamohan Mahidhara. Regional labor ﬂuctuations: Oil
+shocks, military spending, and other driving forces. Board of Governors of the Federal Reserve
+System, International Finance Discussion Papers Number 578, 1997.
+Steven J. Davis, Dingqian Liu, and Xuguang Simon Sheng. Stock prices and economic activity in
+the time of coronavirus. IMF Economic Review, 2021.
+Janice C. Eberly. Adjustment of consumers’ durables stocks: Evidence from automobile purchases.
+Journal of Political Economy, 1994.
+Redouane Elkamhi, Chanik Jo, and Marco Salerno. Measuring state-level economic policy uncer-
+tainty. Working Paper, 2021.
+Marcel Fafchamps and Flore Gubert. The formation of risk-sharing groups. Journal of Develop-
+ment Economics, 83, 2006.
+Jesús Fernández-Villaverde, Pablo Guerrón-Quintana, Keith Kuester, and Juan Rubio-Ramírez.
+Fiscal volatility shocks and economic activity. American Economic Review, 2015.
+Francesco Giavazzi and Michael McMahon. Policy Uncertainty and Household Savings. The
+Review of Economics and Statistics, 94(2):517–531, May 2012.
+Simon Gilchrist, Jae W. Sim, and Egon Zakrajsek. Uncertainty, ﬁnancial frictions, and investment
+dynamics. Working paper 2014-69, Finance and Economics Discussion Series, Divisions of
+Research and Statistics and Monetary Affairs, Federal Reserve Board, 2014.
+Austan Goolsbee, Nicole Bei Luo, Roxanne Nesbitt, and Chad Syverson. Covid-10 lockdown
+policies at the state and local level. Becker-Friedman Institute Working Paper, 2020.
+30
+
+
+--- Page 33 ---
+Huseyin Gulen and Mihai Ion. Policy Uncertainty and Corporate Investment. The Review of
+Financial Studies, 29(3):523–564, September 2016.
+James D Hamilton. Why you should never use the hodrick-prescott ﬁlter. Review of Economics
+and Statistics, 100(5):831–843, 2018.
+Tarek Hassan, Stephan Hollander, Laurence van Lent, and Ahmed Tahoun. Firm-level political
+risk: Measurement and effects. Quarterly Journal of Economics, 2019.
+Lucas Husted, John Rogers, and Bo Sun. Monetary policy uncertainty. Journal of Monetary Policy,
+115(1):20–36, 2020.
+Candace A. Jens. Political uncertainty and investment: Causal evidence from u.s. gubernatorial
+elections. Journal of Financial Economics, 124(3):563–579, 2017.
+Paul Joskow. The california electricity crisis. Oxford Review of Economic Policy, 17(3), 2001.
+Brandon Julio and Youngsuk Yook. Political uncertainty and corporate investment cycles. Journal
+of Finance, 2012.
+Brandon Julio and Youngsuk Yook. Policy uncertainty, irreversibility, and cross-border ﬂows of
+capital. Journal of International Economics, 2016.
+Bryan Kelly, L’ubos Pastor, and Pietro Veronesi. The price of political uncertainty: Theory and
+evidence from the option market. The Journal of Finance, 71(5):2417–2480, 2016.
+Stefan Klössner and Rodrigo Sekkel. International spillovers of policy uncertainty. Economics
+Letters, 124, 2014.
+Robert McDonald and David Siegel. The value of waiting to invest. Quarterly Journal of Eco-
+nomics, 1986.
+Haroon Mumtaz, Laura Sunder-Plassman, and Angeliki Theophilopoulou. The state-level impact
+of uncertainty shocks. Journal of Money, Credit and Banking, 2018.
+Emi Nakamura and Jon Steinsson. Fiscal stimulus in a monetary union: Evidence from us regions.
+American Economic Review, 2014.
+Ryan Nunn, Jana Parsons, and Jay Shambaugh. Nine facts about state and local policy. The
+Hamilton Project, The Brookings Institution, 2019.
+Ezgi Ozturk and Xuguang Sheng. Measuring global and country-speciﬁc uncertainty. Working
+Paper, 2018.
+L’uboš Pástor and Pietro Veronesi. Political uncertainty and risk premia. Journal of Financial
+Economics, 2013.
+Christopher Rauh. Measuring uncertainty at the regional level using newspaper text. University of
+Montreal Working Paper, 2019.
+31
+
+
+--- Page 34 ---
+Daniel Shoag and Stan Veuger. Uncertainty and the geography of the great recession. Journal of
+Monetary Economics, 84, 2016.
+Frank A. Wolak. Diagnosing the california electricity crisis. The Electricity Journal, 16(7), 2003.
+32
+
+
+--- Page 35 ---
+Figure 1: The Level and Composition of State-Level EPU Index Values, Cross-State Averages, Quarterly Data
+Notes: The height of each bar is the equal-weighted mean over states of the state-level EPU-C values (composite index) in the indicated
+quarter. The breakdown within each bar reﬂects the contribution of articles that contain only national policy terms, those that contain
+only state and local policy terms, and those that contain both.
+33
+
+
+--- Page 36 ---
+Figure 2: Average Values of EPU-S (Solid Blue) and EPU-N (Dashed Orange) by Month
+Notes: The ﬁgure plots equal-weighted cross-state average values of EPU-S and EPU-N by month. We cover all states from January
+2006 onward, 38 states from 1996 onward, and 12 states throughout the period from January 1985 to June 2021.
+34
+
+
+--- Page 37 ---
+Figure 3: Ratio of EPU-S to EPU-N around Elections
+Notes: This chart plots the coefﬁcients from two regressions of state-month values of (EPU-S /
+EPU-N) on a collection of indicator variables for -10, -9, ... 9, 10 months to or from an election
+of the indicated type. Both regressions include controls for the contemporaneous values of state-
+level unemployment rates and state-level Coincident Economic Indicators produced by the Federal
+Reserve Bank of St. Louis. The regression for "Presidential Elections" also includes controls
+for common year effects. The regression for "Gubernatorial Elections" include controls for both
+common year effects and common month effects. Observations are weighted by state population.
+Sample runs from January 1985 to June 2021 (unbalanced across states). Dashed lines show 95%
+conﬁdence intervals with heteroskedasticity-robust standard errors.
+35
+
+
+--- Page 38 ---
+Figure 4: Histograms of State-Level EPU-N Responses to National and International Events
+9-11 Attacks (September 2001)
+Debt Ceiling Crisis (July 2011)
+Brexit Referendum (June 2016)
+Trump Election Win (November 2016)
+2013 Government Shutdown (October 2013)
+2018 Government Shutdown (December 2018)
+Notes: Each panel shows the fraction of states with ln(EPU-Ns,t
+
+EPU-Ns,t−1) values in the
+indicated bins (width = 25 log points), where t is the year and month stated in the panel heading.
+36
+
+
+--- Page 39 ---
+Figure 5: EPU-S and EPU-N in California, 1997 to 2006
+Notes: The ﬁgure plots quarterly averages of monthly EPU-S and EPU-N values for California in a ten-year period around its 2000-01
+electricity crisis and its 2003 gubernatorial recall.
+37
+
+
+--- Page 40 ---
+Figure 6: EPU-S and EPU-N in Kansas, Louisiana, and Michigan
+Kansas
+Louisiana
+Michigan
+Notes: This ﬁgure plots quarterly averages of monthly EPU-S and EPU-N values for Kansas, Louisiana, and Michigan in selected
+time periods.
+38
+
+
+--- Page 41 ---
+Figure 7: Average Ratio of EPU-S to EPU-N by State and Period
+Notes: Red dots show average monthly ratios of EPU-S to EPU-N by state in the post-COVID
+period from March 2020 to June 2021. Blue dots show average (EPU-S/EPU-N) values in the
+pre-COVID period before March 2020. Sample start dates in the pre-COVID period vary across
+states from 1985-2006, as listed in Appendix Table A.2. We order states by the average pre-COVID
+values of (EPU-S/EPU-N).
+39
+
+
+--- Page 42 ---
+Figure 8: Employment and Unemployment Rate Responses to Unit Standard Deviation ln(EPU-C) Shocks
+100*ln(Employment)
+Unemployment Rate
+Notes: Each panel shows estimated dynamic responses of the activity measure to a unit standard EPU-C shock (with 95% conﬁdence
+intervals), the peak response, and standard deviation of the identiﬁed shocks. To obtain these results, we ﬁlter the data as indicated, ﬁt a
+two-equation panel VAR model by least squares to monthly state-level data for 44 states, and place EPU-C ﬁrst in a Cholesky ordering.
+The VAR system has six lags of each variable and state-speciﬁc intercepts. The estimation sample runs from July 2001 to December
+2019 when using raw and HP-ﬁltered data, and from June 2004 to December 2019 when using Hamilton-ﬁltered data.
+40
+
+
+--- Page 43 ---
+Figure 9: Historical Decomposition of California’s Unemployment Rate Movements from June
+1988 to December 2019
+Notes: This ﬁgure shows the historical decomposition of unemployment rate movements implied
+by a structural VAR system with six lags ﬁt to Hamilton-ﬁltered monthly data on the unemploy-
+ment rate and ln(EPU-C) for California from June 1988 to December 2019. In ﬁltering the raw data
+(available from January 1985), we adopt Hamilton’s recommendation to look back over a two-year
+business cycle (h=24) with one year of lags (p=12), which uses 35 observations. Since we lose six
+additional observations due to lags in the VAR speciﬁcation, our estimation sample runs from June
+1988 to December 2019. We recover structural shocks from the reduced-from VAR by placing
+ln(EPU-C) last in a recursive causal ordering of the reduced-form VAR innovations. Reversing the
+causal ordering yields a very similar decomposition.
+41
+
+
+--- Page 44 ---
+Figure 10: Unemployment Rate Responses to Unit Standard Deviation ln(EPU-C) and ln(BEPU-C) Shocks
+Impulse: Border EPU-C
+Impulse: Own EPU-C
+Notes: Each panel shows estimated responses (with 95% conﬁdence intervals) of the state-level unemployment rate to a unit standard
+deviation shock to EPU-C or BEPU, the peak response, and the standard deviation of the identiﬁed shock. To obtain these results,
+we ﬁlter the data as indicated, ﬁt a three-equation panel VAR model by least squares, place EPU-C ﬁrst in the Cholesky ordering, and
+place BEPU second. The VAR system has six lags of each variable and state-speciﬁc intercepts. We use the same samples as in Figure
+8 except for dropping Alaska.
+42
+
+
+--- Page 45 ---
+Table 1: Election Effects on State-Level Policy Uncertainty Measures
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+VARIABLES
+ln(EPU-N)
+ln(EPU-N)
+ln(EPU-N)
+ln(EPU-S)
+ln(EPU-S)
+ln(EPU-S)
+Presidential Election
+0.32***
+0.33***
+0.15***
+0.15***
+0.15***
+0.18***
+(0.025)
+(0.029)
+(0.037)
+(0.024)
+(0.028)
+(0.041)
+Gubernatorial Election
+0.049
+0.033
+0.022
+0.061**
+0.15***
+0.11***
+(0.033)
+(0.030)
+(0.034)
+(0.030)
+(0.030)
+(0.036)
+Close Presidential Election
+0.31***
+-0.053
+(0.049)
+(0.049)
+Close Gubernatorial Election
+0.032
+0.11**
+(0.056)
+(0.052)
+Observations
+17,000
+17,000
+17,000
+17,000
+17,000
+17,000
+R2
+0.133
+0.329
+0.331
+0.225
+0.375
+0.375
+Economic Controls
+YES
+YES
+YES
+YES
+YES
+YES
+State FE
+YES
+YES
+YES
+YES
+YES
+YES
+Year and Month FE
+NO
+YES
+YES
+NO
+YES
+YES
+Notes: Presidential (gubernatorial) election variables equal one in the month of and the month before a presidential (own-state guberna-
+torial) election, zero otherwise. Economic controls are the monthly state-level unemployment rate and the monthly state-level Coincident
+Economic Indicator from the St. Louis Federal Reserve (not available for the District of Columbia). Observations are weighted by state
+population. The sample runs from January 1985 to June 2021 (unbalanced across states). In practice, we use the inverse hyperbolic
+sine transformation for the dependent variable, which closely approximates the natural log transformation. Heteroskedasticity-robust
+standard errors in parentheses.
+43
+
+
+--- Page 46 ---
+Table 2: Policy Uncertainty Rose More in States with More Extensive Government Restrictions
+Dependent Variable: log change in state-level EPU-C value from 2019 to the indicated quarter
+(1)
+(2)
+(3)
+(4)
+(5)
+Quarter
+2020Q2
+2020Q3
+2020Q4
+2021Q1
+2021Q2
+Lockdown Stringency Index
+0.59***
+0.76***
+0.45***
+0.56***
+0.34*
+(0.13)
+(0.14)
+(0.11)
+(0.16)
+(0.19)
+COVID Deaths
+-202.0
+-132.0
+-1,185**
+477.2
+-274.8
+(331.8)
+(800.1)
+(474.8)
+(951.8)
+(2,208)
+Observations
+51
+51
+51
+51
+51
+R2
+0.164
+0.323
+0.275
+0.173
+0.055
+Notes: Each column pertains to a separate regression, where the dependent variable is ln(EPU-
+Cs,q/EPU- Cs,2019) for the indicated quarter. Explanatory variables are state-level values of the
+COVID Death Rate per 100,000 persons and the Lockdown Stringency Index value in the indi-
+cated quarter. The stringency index aggregate information about shelter-in-place orders, business
+closure orders, restaurant closure orders and school closure orders, as explained in Section 5.1. See
+Appendix Table A.3 for summary statistics of the variables. Huber-White robust standard errors
+are in parentheses.
+44
+
+
+--- Page 47 ---
+Table 3: How State-Level Unemployment Rates Relate to Lockdown Stringency, Death Rates, and
+Policy Uncertainty During the Pandemic
+Dependent Variable: log change in state-level unemployment rate from 2019 to indicated quarter
+(1)
+(2)
+(3)
+(4)
+(5)
+Quarter
+2020Q2
+2020Q3
+2020Q4
+2021Q1
+2021Q2
+Lockdown Stringency Index
+4.11**
+2.03***
+1.94***
+2.39***
+1.95***
+(1.97)
+(0.66)
+(0.54)
+(0.44)
+(0.62)
+COVID Death Rate
+4,051
+-4,647
+-716.3
+954.0
+-54.63
+(3,289)
+(4,778)
+(2,031)
+(3,353)
+(10,961)
+∆ln(EPU-C) 2020Q2
+2.86
+(1.91)
+∆ln(EPU-C) 2020Q3
+1.51**
+(0.70)
+∆ln(EPU-C) 2020Q4
+0.84
+(0.68)
+∆ln(EPU-C) 2021Q1
+0.33
+(0.43)
+∆ln(EPU-C) 2021Q2
+0.58*
+(0.33)
+Observations
+51
+51
+51
+51
+51
+R2
+0.324
+0.286
+0.324
+0.383
+0.251
+Notes: Each column pertains to a separate regression, where the dependent variable is the change
+in the state-level unemployment rate from 2019 to the indicated calendar quarter. Explanatory
+variables are state-level values of (a) the COVID Death Rate per 100,000 persons in the indicated
+quarter, (b) the Lockdown Stringency Index value in the indicated quarter, and (c) the log change in
+the state-level composite EPU index value from 2019 to the indicated quarter. See Appendix Table
+A.3 for summary statistics of the variables. Huber-White robust standard errors are in parentheses.
+45
+
+
+--- Page 48 ---
+A
+Online Appendix Materials
+A.1
+Flagging Newspaper Articles about State-Level EPU
+Table A.1 reports the terms in our Economy, Uncertainty, and National Policy term sets and
+in the State Policy set for Michigan. State Policy term sets differ across states in line with how
+they refer to legislative and judicial bodies, regulatory agencies, and state and local government
+ofﬁcials. State Policy sets include “initiative" and “referendum" in states that have provisions for
+putting votes about policy matters before the citizenry. The full collection of State Policy sets is
+available at https://policyuncertainty.com/state_epu_terms.htm. To facilitate comparison to earlier
+work, Table A.1 also reports the term sets devised by Baker et al. (2016).
+Media markets can extend across state borders. Thus, one might worry that a newspaper asso-
+ciated with State A contains many articles about policy uncertainty in a bordering State B, simply
+because the paper has signiﬁcant readership in B. We exclude newspapers with national reach, pre-
+cisely because it’s unclear how to situate them geographically. For example, Investor’s Business
+Daily, the New York Times, USA Today, Wall Street Journal, and Washington Post are not in our
+sample. Of course, there are other newspapers with readerships in more than one state. We have no
+effective way to precisely measure the geography of each paper’s readership. Instead, as a simple
+check, we identiﬁed the newspapers in our sample that publish in Metropolitan Statistical Areas
+that span more than one state. These multi-state MSA papers publish in places like New York, DC,
+Chicago, and Philadelphia. There are fewer than 60 such papers in our entire sample. Especially
+because we do not weight by circulation when aggregating over newspapers, there are too few of
+these papers to seriously distort our state-level EPU measures. Moreover, if multi-state readership
+were to cause newspaper coverage of policy uncertainty to bleed over to bordering states in a large
+way, we would expect to see stronger EPU co-movements for neighboring states. However, we
+ﬁnd no such pattern in the dyadic regression analysis reported in Section 2.6.
+A.2
+State-Level EPU Coverage and Additional Descriptive Statistics
+For each state, Table A.2 reports the sample start year for our EPU-S, EPU-N, EPU-C,
+and EPU-BBD indexes, the minimum and maximum number of newspapers that feed into the
+index construction, and the average circulation of the newspapers used to construct the indexes in
+2016. Figure A.1 plots the average between-state EPU correlations in rolling samples of the last
+46
+
+
+--- Page 49 ---
+60 observations. The top and bottom panels show, respectively, the average of the pairwise level
+and change correlations. The 9-11 attacks, the ﬁnancial crisis in September 2008, the onset of the
+COVID pandemic, and (to a lesser extent) the November 2016 election victory of Donald Trump
+brought abrupt increases in the average pairwise correlations. Figure A.2 shows how each state’s
+EPU measures correlate with their national-average counterparts.
+A.3
+VAR Models, Identiﬁcation, and Additional Results
+This section of the appendix describes our structural VAR models, articulates the assumptions
+we adopt to identify them, and presents additional results referenced in the main text.
+Recall that we ﬁt panel VAR models by OLS to monthly data on Yst = (ln(EPU-Cst), UNst)′,
+where UNst is the unemployment rate for state s in month t, and ln(EPU-Cst) is the natural log of
+the state’s composite EPU index value in month t.26 We treat ln(EPU-Cst) and UNst as covariance
+stationary processes. Our baseline structural VAR model is
+Yst = ˜αs +
+6
+X
+i=1
+AiYs,t−i + Bϵst,
+(A.1)
+where ϵst = (ϵEPU
+st
+, ϵUN
+st )′ is a 2x1 vector of serially and mutually uncorrelated structural inno-
+vations, Ai and B are 2x2 coefﬁcient matrices common across states, and ˜αs is a 2x1 vector of
+state-speciﬁc constants.
+This structural VAR embeds two assumptions that warrant brief remarks. First, it neglects spa-
+tial interactions, e.g., own-state shocks with spillover effects on other states. We relax this assump-
+tion in Section 4.4. Second, following standard practice, we assume for each s that corr(ϵEPU
+st
+, ϵUN
+st ) =
+0 in the time-series dimension. Although it often passes without mention in the structural VAR
+literature, the assumption of contemporaneously uncorrelated structural innovations (for a given
+geographic unit) is a substantive restriction. See Davis and Haltiwanger (1999) for discussion and
+an analysis of identiﬁcation when relaxing this assumption.
+Given (A.1), we consider various assumptions to identify the structural innovations – “shocks,”
+as we call them in the main text. For example, to obtain the impulse response functions in Figure
+8, we posit a recursive structure that lets us decompose the reduced-form VAR errors (i.e., the OLS
+26The main text also considers VARs with ln(EMPst) in place of UNst, where EMPst denotes employment in
+state s and month t. We couch the discussion here in terms of the unemployment rate for the sake of concreteness.
+47
+
+
+--- Page 50 ---
+regression residuals) according to est = Bϵst:
+et ≡
+
+eEPU
+st
+eUN
+st
+
+=
+
+1
+0
+b21
+1
+
+
+
+ϵEPU
+st
+ϵUN
+st
+
+
+(A.2)
+That is, we identify shocks by placing ln(EPU-C) ﬁrst in a recursive causal ordering. Assumption
+(A.2) also sufﬁces to identify the elements of the A matrices in (A.1).
+Inverting the identiﬁed structural VAR yields its moving-average representation for state s,
+Yst = αs +
+∞
+X
+i=0
+Ciϵs,t−i
+(A.3)
+The elements in the ﬁrst column and second row of the Ci matrices give the dynamic responses of
+UNs,t+i to a unit-size ϵEPU
+st
+shock for i = 0, 1, 2, ..., as plotted in Figure 8.
+Figures A.3, A.4 and A.5 report additional VAR-based results referenced in Section 4.1. To
+obtain the response functions displayed in Figure A.3, we ﬁt the reduced-form VAR separately for
+each state and rely on recursive ordering (A.2) to recover structural VARs with distinct Ai and B
+matrices for each state, which yields the state-speciﬁc dynamic response functions plotted in the
+ﬁgure. For Figure A.4, we alter the lag lengths in the baseline VAR model (A.1), as indicated in
+the ﬁgure, and again rely on the recursive ordering (A.2) for identiﬁcation. For Figure A.5, we
+place ln(EPU-C) last in the recursive causal ordering to identify (A.1).
+Figure 9 in Section 4.3 reports a VAR-based historical decomposition of ﬂuctuations in Cali-
+fornia’s unemployment rate. To obtain this decomposition, we ﬁt a VAR to the monthly data for
+California and place ln(EPU-C) last in the recursive causal ordering to identify structural shocks
+and obtain the structural VAR. We then use the Wold moving-average representation of the struc-
+tural VAR to obtain the model-implied contributions of the shocks (i.e., past and current values
+of ϵEPU
+t
+and ϵUN
+t
+) to the deviation of California’s unemployment rate from its equilibrium value
+at each t. See slides 76 and 77 in Cesa-Bianchi (undated) for an explicit statement of the decom-
+position. Figure A.6 displays the dynamic response of California’s unemployment rate to a unit
+standard deviation shock in its own ln(EPU-C) value.
+Figures A.7 and A.8 display dynamic response functions to own-state ln(EPU-C) shocks for
+the expanded VAR speciﬁcations discussed in Section 4.5.
+48
+
+
+--- Page 51 ---
+A.4
+Measuring the Stringency of Government Lockdown Orders
+We obtain daily state-level data on shelter-in-place orders (SIPOs), non-essential business clo-
+sure orders (BCOs), restaurant closure orders (RCOs), and school closure orders (SCOs) from the
+Kaiser Family Foundation (KFF) at https://www.kff.org/report-section/state-covid-19-data-and-
+policy-actions-policy-actions/ (accessed November 2021). We average the daily state-level values
+to calendar months. If a given order type was in place during only part of the month, we discount
+the corresponding indicator value accordingly. For example, if a state had a shelter-in-place order
+in effect for half the month, we set its SIPO value for that month to one-half.
+For April and May 2020, we use data with more geographic granularity. In particular, we
+obtain weekly, county-level data on SCOs from Keystone Strategy at
+https://www.keystonestrategy.com/coronavirus-covid19-intervention-dataset-model/ (accessed 28
+October 2020). We obtain county-level data for SIPOs, BCOs, and RCOs from Goolsbee et al.
+(2020), who provide the dates on which these orders went into effect and were lifted. We use their
+dates to determine whether a given order type was in effect for each county by week, regardless of
+whether the order originated at the state or county level.27 We then aggregate county-level indicator
+values for April and May 2020 to the state level using county-level population shares.28
+Armed with our monthly state-level values for SIPO, BCO, RCO and SCO, we plug them
+into equation (5) in the main text to obtain monthly, state-level values for our Lockdown Stringency
+Index. As a ﬁnal step, we average over months in the calendar quarter for each state to obtain the
+quarterly, state-level index values.
+A.5
+Additional Material for Section 5
+Table A.3 reports summary statistics for the variables used in the regression analyses reported
+in Tables 2 and 3 in the main text. Figure A.9 displays scatter plots that supplement the regression
+results reported in Table 2.
+27In some instances, their observations reﬂect city-level government orders. We omit city-level orders that do not
+extend to the entire county. The Goolsbee et al. (2020) data end in May 2020, which precludes us from extending the
+granular geographic approach beyond that month.
+28When aggregating over counties to obtain a state-level SCO value, we restrict attention to counties with SCO
+data. In effect, we treat missing SCO data as missing at random. In practice, this assumption is unlikely to matter
+much, because counties with SCO data account for most of the population.
+49
+
+
+--- Page 52 ---
+Figure A.1: Average Between-State Correlations of the EPU Measures, Levels and Changes
+Notes: The top panel reports the average pairwise between-state correlation of the EPU-S values
+(red) and the EPU-N values (blue) by month. The bottom panel reports the average pairwise
+between-state correlations of monthly changes in the EPU-S and EPU-N values. We compute
+the pairwise correlations using backward 60-month rolling windows.
+50
+
+
+--- Page 53 ---
+Figure A.2: Correlations of State-Level EPU-S and EPU-N Values with National Averages
+Notes: The top chart shows a heat map for the correlation of each state’s EPU-S measure with
+the national EPU-S value, computed as the equal-weighted average of the EPU-S values across
+states. The bottom chart shows the analogous heat map for EPU-N. We calculate the correlations
+using all available months for each state from January 1990 to December 2019. EPU-S and
+EPU-N correlations are 0.54 and 0.59 for Hawaii and 0.25 and 0.23 for Alaska.
+51
+
+
+--- Page 54 ---
+Figure A.3: Unemployment Rate Responses to Unit Standard Deviation Own-State ln(EPU-C)
+Shocks, Using a Separate VAR Model for Each State
+Notes: We ﬁt a separate six-lag VAR for each state using the same data as in Figure 8. We identify
+the structural VARs by placing ln(EPU-C) ﬁrst in a recursive ordering. Each line in one of the
+charts shows a single state’s dynamic unemployment rate response to a unit standard deviation
+innovation in the state’s identiﬁed policy uncertainty shock.
+52
+
+
+--- Page 55 ---
+Figure A.4: Unemployment Rate Responses with Alternative Lag-Length Speciﬁcations
+Notes: The middle chart is identical to the upper right chart in Figure 8, which uses Hamilton-
+ﬁltered data. The other two charts report unemployment rate response functions for otherwise
+identical models that consider shorter or longer lag-length speciﬁcations, as indicated. See the
+notes to Figure 8 for additional information.
+53
+
+
+--- Page 56 ---
+Figure A.5: Unemployment Rate Responses with Alternative Recursive Ordering
+Notes: We place ln(EPU-C) last in the recursive ordering. Otherwise, the VAR models behind
+the response functions in this ﬁgure are identical to the ones used in the right column of Figure 8.
+54
+
+
+--- Page 57 ---
+Figure A.6: Dynamic Response of California’s Unemployment Rate to a Unit Standard Deviation
+Policy Uncertainty Shock
+Notes: This ﬁgure shows the dynamic response of the unemployment rate to a unit standard devia-
+tion (0.28) policy uncertainty shock obtained from a structural VAR system ﬁt to Hamilton-ﬁltered
+monthly data on the unemployment rate and ln(EPU-C) for California from June 1988 to Decem-
+ber 2019. Our unﬁltered data are available from January 1985. In ﬁltering the data, we adopt
+Hamilton’s recommendation to look back over a two-year business cycle (h=24) with one year
+of lags (p=12), which uses 35 observations. Since we use an additional six lags in the VAR, our
+estimation sample starts in June 1988 and runs through December 2019. We recover structural
+shocks from the reduced-from VAR by placing ln(EPU-C) last in a recursive causal ordering of
+the reduced-form VAR innovations. Reversing the causal ordering yields a very similar response
+function.
+55
+
+
+--- Page 58 ---
+Figure A.7: Housing Price Index and Unemployment Rate Responses to Unit Standard Deviation ln(EPU-C) Shocks
+ln(Housing Price Index)
+Unemployment Rate
+Notes: Each panel shows estimated dynamic responses of the activity measure to a unit standard EPU-C shock (with 95% conﬁdence
+intervals), the peak response, and standard deviations of the identiﬁed shocks. To obtain these results, we ﬁlter the data as indicated, ﬁt a
+three-equation panel VAR model by least squares to monthly state-level data for the 12 largest states by population, and place EPU-C
+ﬁrst and the Housing Price Index last in a Cholesky ordering. The VAR system has six lags of each variable and state-speciﬁc intercepts.
+The estimation sample for all models runs from December 2000 to December 2019.
+56
+
+
+--- Page 59 ---
+Figure A.8: New Housing Permits and Business Applications Responses to Unit Standard Deviation ln(EPU-C) Shocks
+ln(New Housing Permits)
+ln(Business Applications)
+Notes: Each panel shows estimated dynamic responses of the activity measure to a unit standard EPU-C shock (with 95% (red) and
+85% (blue) conﬁdence intervals), the peak response, and standard deviations of the identiﬁed shocks. To obtain these results, we ﬁlter the
+data as indicated, ﬁt two separate three-equation panel VAR models by least squares to monthly state-level data for the 12 largest states
+by population, and place EPU-C ﬁrst, with New Housing Permits last in the left panel, and High-Propensity Business Applications last
+in the right panel, in a Cholesky ordering. The VAR system has six lags of each variable and state-speciﬁc intercepts. The estimation
+sample for new housing permits runs from December 2002 to December 2019, and business applications from June 2007 to December
+2019.
+57
+
+
+--- Page 60 ---
+Figure A.9: How Log Changes in EPU-C from 2019 to the Indicated Quarter Vary with Lockdown
+Stringency Index Values in the Quarter, Bin Scatters of State-Level Observations
+Q2 2020
+Q3 2020
+Q4 2020
+Q1 2021
+Notes: There are 51 underlying state-level observations for each panel. See main text for explana-
+tions of how we measure EPU-C and the Lockdown Stringency Index.
+58
+
+
+--- Page 61 ---
+Table A.1: Term Sets
+Terms
+Economy
+economic, economy
+Uncertainty
+uncertainty, uncertainties, uncertain
+Policy Sets:
+EPU-N
+White House, Congress, Congressional, Federal Reserve, The Fed, Monetary Policy, Veterans Affairs, Veterans Health
+Administration, NIH, FTC, Patent and Trademark Ofﬁce, USDA, IRS, Department of Defense, National Security, Depart-
+ment of Homeland Security, FDA, Federal Housing Administration, SEC, CFPB, Department of Labor, Small Business
+Administration, NLRB, Immigration and Customs Enforcement, Immigration and Naturalization service, EPA, FERC,
+HUD, Bureau of Land Management, Department of Interior, Department of Education, FCC, Fish and Wildlife Service,
+Department of Transportation, US Treasury, Department of Treasury, DoJ, Department of Commerce, Department of
+Energy, Presidential election, Congressional election
+EPU-S
+Legislature, State House of Representatives, Michigan House of Representatives, State Senate, Michigan Senate,
+(Michigan)
+Governor, State Attorney General, Michigan Attorney General, zoning, mayor, city council, town council, initiative,
+referendum, Department of Labor and Economic Growth, Michigan Department of Environmental Quality, Michigan
+Department of Public Health, Michigan Charitable Gaming, Michigan Lottery, Michigan Gaming Control Board, Min-
+nesota DPS Gambling Enforcement, Michigan Public Service Commission, Michigan Insurance Division, Michigan
+Ofﬁce of Financial and Insurance Regulation, Corporations, Securities and Commercial Licensing Bureau, Michigan
+Department of Transportation
+EPU-BBD
+regulation, deﬁcit, white house, legislation, congress, federal reserve, the fed, regulations, regulatory, deﬁcits, congres-
+sional, legislative, legislature
+Notes: In practice, we include the full names of listed agencies as well as common abbreviations (e.g., both IRS and Internal Revenue
+Service). We display the EPU-S policy term set for Michigan as an example. In practice, we tailor each EPU-S policy term set to the
+state in question. The full collection of EPU-S policy term sets is available at https://policyuncertainty.com/state_epu_terms.html.
+.
+59
+
+
+--- Page 62 ---
+Table A.2: Newspaper Counts, Circulation, and Start Dates by State
+State
+Circulation
+Paper Count
+Sample
+State
+Circulation
+Paper Count
+Sample
+Min
+Max
+Start
+Min
+Max
+Start
+AK
+257,723
+4
+14
+2000
+MT
+344,620
+5
+6
+2000
+AL
+698,084
+4
+42
+1993
+NC
+1,966,247
+2
+97
+1989
+AR
+681,028
+18
+43
+2003
+ND
+110,357
+2
+19
+1996
+AZ
+839,596
+7
+15
+2001
+NE
+491,303
+1
+15
+1985
+CA
+10,455,620
+6
+128
+1985
+NH
+402,893
+1
+8
+1997
+CO
+1,506,538
+3
+30
+1990
+NJ
+2,633,831
+1
+35
+1985
+CT
+1,370,828
+2
+32
+1995
+NM
+316,147
+2
+19
+1996
+DC
+221,255
+1
+1
+1990
+NV
+1,316,367
+4
+15
+2001
+DE
+221,762
+1
+8
+2006
+NY
+6,025,416
+5
+65
+1986
+FL
+4,632,859
+2
+67
+1985
+OH
+3,047,598
+2
+61
+1985
+GA
+1,733,399
+1
+47
+1985
+OK
+646,373
+3
+33
+1990
+HI
+704,357
+5
+8
+2004
+OR
+979,874
+1
+30
+1991
+IA
+535,134
+3
+29
+1995
+PA
+4,852,690
+3
+75
+1985
+ID
+303,349
+8
+11
+2000
+RI
+375,397
+1
+9
+1985
+IL
+4,243,258
+1
+94
+1985
+SC
+811,249
+1
+36
+1987
+IN
+1,159,771
+5
+54
+1991
+SD
+113,493
+3
+9
+2006
+KS
+399,954
+2
+28
+1990
+TN
+943,871
+2
+30
+1990
+KY
+568,867
+2
+35
+1990
+TX
+7,660,621
+2
+92
+1985
+LA
+818,192
+2
+28
+1990
+UT
+492,209
+1
+11
+1988
+MA
+2,356,844
+1
+49
+1988
+VA
+1,681,519
+1
+41
+1985
+MD
+1,312,260
+2
+18
+1993
+VT
+161,276
+3
+10
+2001
+ME
+294,064
+1
+6
+1992
+WA
+1,746,418
+1
+26
+1985
+MI
+2,381,031
+6
+58
+1998
+WI
+1,002,215
+3
+26
+1989
+MN
+2,084,738
+2
+23
+1990
+WV
+315,008
+2
+22
+1996
+MO
+1,639,738
+1
+36
+1988
+WY
+61,303
+3
+5
+2006
+MS
+379,829
+8
+27
+2001
+Notes: The reported statistics pertain to the daily and weekly newspapers that we tap in the Access
+World News Newsbank database. Circulation ﬁgures refer to all covered papers in the state as
+of 2016. Average Start refers to the average date that coverage begins across the papers that we
+use, rounded to the nearest year. Min and Max Paper Count refer to the minimum and maximum
+number of papers across all sample months for the indicated state.
+60
+
+
+--- Page 63 ---
+Table A.3: Summary Statistics for the State-Level Variables in Tables 2 and 3
+Variable
+Quarter = q
+N
+Mean
+Standard Deviation
+EPUCq - EPUC2019
+Q2 2020
+51
+1.58
+0.33
+EPUCq - EPUC2019
+Q3 2020
+51
+1.08
+0.44
+EPUCq - EPUC2019
+Q4 2020
+51
+0.82
+0.43
+EPUCq - EPUC2019
+Q1 2021
+51
+0.59
+0.50
+EPUCq - EPUC2019
+Q2 2021
+51
+0.13
+0.43
+COVID Deaths Per 100,000
+Q2 2020
+51
+10.6
+12.1
+COVID Deaths Per 100,000
+Q3 2020
+51
+6.75
+5.20
+COVID Deaths Per 100,000
+Q4 2020
+51
+17.82
+9.47
+COVID Deaths Per 100,000
+Q1 2021
+51
+16.40
+6.89
+COVID Deaths Per 100,000
+Q2 2021
+51
+3.92
+1.91
+Lockdown Stringency Index
+Q2 2020
+51
+0.77
+0.24
+Lockdown Stringency Index
+Q3 2020
+51
+0.62
+0.32
+Lockdown Stringency Index
+Q4 2020
+51
+0.55
+0.34
+Lockdown Stringency Index
+Q1 2021
+51
+0.48
+0.35
+Lockdown Stringency Index
+Q2 2021
+51
+0.26
+0.29
+Unemployment Rate
+Q2 2020
+51
+11.73
+3.29
+Unemployment Rate
+Q3 2020
+51
+7.98
+2.35
+Unemployment Rate
+Q4 2020
+51
+6.25
+1.82
+Unemployment Rate
+Q1 2021
+51
+5.65
+1.76
+Unemployment Rate
+Q2 2021
+51
+5.27
+1.61
+Notes: See main text for data sources and explanations of how we construct the variable values.
+61

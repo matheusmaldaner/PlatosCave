@@ -1,0 +1,185 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Successful practical machine learning requires the right combination of representation, evaluation, optimization, domain knowledge, feature engineering, sufficient data, and appropriate methodologies rather than relying solely on algorithm choice",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Learning decomposes into three core components: representation (hypothesis space), evaluation (objective/scoring function), and optimization (search method), and choices among them determine what can be learned and how efficiently",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Generalization to unseen data is the fundamental goal of learning and must be prioritized over training performance to avoid misleading conclusions",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data alone is insufficient for generalization; learners require prior knowledge or assumptions (bias) such as smoothness, limited dependencies, or similarity notions to generalize beyond observed examples",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Overfitting arises when models fit idiosyncrasies of the training data and manifests via high variance or inappropriate model complexity; combating it requires techniques like cross-validation, regularization, significance testing, and controlling multiple testing",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The curse of dimensionality makes generalization and similarity-based reasoning exponentially harder as feature dimensionality increases, though real data often lie on lower-dimensional manifolds which mitigates this issue",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Feature engineering is the most important practical factor in successful ML projects; good features make learning easier and often consume most project effort",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "More data often outperforms more sophisticated algorithms: a simple algorithm with much data can beat a clever one with limited data, though scalability and computation time can limit using very complex learners",
+      "role": "Claim",
+      "parents": [
+        0,
+        6
+      ],
+      "children": [
+        9,
+        14
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Choice of representation determines which classifiers are expressible (hypothesis space) and therefore which functions are learnable given finite data and resources",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12,
+        15
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Optimization method affects bias and variance: more exhaustive search reduces bias but can increase variance and computational cost; greedy or local search may yield better practical generalization than global optima",
+      "role": "Claim",
+      "parents": [
+        1,
+        7
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical practice: hold out test data and use cross-validation to estimate generalization and to select hyperparameters, while avoiding using test data for tuning to prevent contamination",
+      "role": "Method",
+      "parents": [
+        2,
+        4,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Regularization, model selection, and controlling false discovery rate are practical techniques to reduce overfitting while acknowledging trade-offs between bias and variance",
+      "role": "Method",
+      "parents": [
+        4,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "No free lunch: without assumptions no learner can outperform random guessing over all possible target functions, so encoding domain knowledge in representation or learner is essential",
+      "role": "Claim",
+      "parents": [
+        3,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Multiple testing and extensive model selection inflate false positives; correcting for multiple hypotheses or controlling false discovery rate mitigates this but may increase underfitting",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "High-dimensional intuitions break down: nearest neighbor and similarity measures can fail as dimensionality rises, but manifold structure or dimensionality reduction can restore learnability",
+      "role": "Claim",
+      "parents": [
+        5,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Representable does not imply learnable: some representations can express functions compactly but still require infeasible data, time, or search to learn them; deeper representations can be exponentially more efficient for some functions",
+      "role": "Claim",
+      "parents": [
+        8
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based system that uses hand-ranked, part-of-speech aware dictionaries plus linguistic context handling (intensification, negation, irrealis) can robustly and portably extract semantic orientation (polarity and strength) from text across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL is a lexicon-based sentiment extractor that aggregates semantic orientation of words and applies contextual valence shifters",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Hand-built, fine-grained dictionaries covering adjectives, nouns, verbs, adverbs, and multiword expressions provide better, less noisy inputs than large automatically generated lexicons",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Incorporating linguistic phenomena—intensifiers with percentage multipliers, negation as polarity shift, irrealis blocking, repetition and negative weighting, and XML/position-based text weighting—improves classification performance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "SO-CAL aims for domain robustness (cross-domain portability) and practical applicability without full deep linguistic analysis",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: Create hand-ranked SO dictionaries by part of speech (adjectives, nouns, verbs, adverbs) with scores −5 to +5, review by committee, allow multiword entries and lemmatization",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Method: Implement contextual valence shifters—intensifiers as percentage modifiers applied recursively, negation implemented primarily as shifted polarity toward opposite by fixed amount, irrealis markers block sentiment within scope, backward search rules for negation scope",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence: Adding more words from unseen texts (rare vocabulary) decreased performance; manual selection excluded ambiguous or tangential words to reduce noise",
+      "role": "Evidence",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evidence: Ablation and feature tests show negation, intensification, irrealis blocking, negative weighting, and repetition weighting each contribute to increased polarity classification accuracy",
+      "role": "Evidence",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: Full SO-CAL (all features) achieves substantially higher accuracy across multiple corpora (Epinions 1 & 2, Movie Polarity dataset, Camera reviews) than simplified dictionaries or basic aggregation",
+      "role": "Result",
+      "parents": [
+        3,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Method/Evidence: Evaluation performed on multiple datasets including Epinions 1 (development), Epinions 2, Polarity Movie dataset, Camera reviews, MPQA, blogs, MySpace comments, and news headlines to test cross-domain performance",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence and Result: Manual SO-CAL dictionaries show higher correspondence with human judgments collected via Mechanical Turk than several automatic or coarser lexicons (Google PMI, SentiWordNet variants, Maryland, General Inquirer, Subjectivity lexicon)",
+      "role": "Evidence",
+      "parents": [
+        2,
+        7,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result: SO-CAL maintains strong performance on shorter texts and other genres (sentences, headlines, blog and MySpace comments) when non-empty of lexicon items, and shows better cross-domain robustness than many supervised classifiers",
+      "role": "Result",
+      "parents": [
+        10,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation: Negation is complex; neither simple polarity flip nor fixed shift fully models all pragmatic negation cases and negative polarity items and long-distance scope remain challenges; larger automatic lexicons introduce noise and POS/sense mismatch",
+      "role": "Limitation",
+      "parents": [
+        6,
+        7,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: A carefully engineered lexicon-based approach with fine-grained manual lexica plus linguistically motivated context handling yields robust, portable sentiment polarity and strength detection and outperforms or complements alternative lexicons and exhibits useful cross-domain behavior",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

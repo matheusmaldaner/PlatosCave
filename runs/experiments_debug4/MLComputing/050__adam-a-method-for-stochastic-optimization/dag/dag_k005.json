@@ -1,0 +1,169 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Adam is an efficient, low-memory, first-order stochastic optimization algorithm that adaptively computes per-parameter learning rates from biased first and second moment estimates and is well suited for large-scale, noisy, sparse, and non-stationary objective functions",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Algorithm: Adam maintains exponential moving averages of gradients mt (first moment) and squared gradients vt (second raw moment) with decay rates beta1 and beta2, bias-corrects these to bmt and bvt, and updates parameters by theta <- theta - alpha * bmt / (sqrt(bvt) + epsilon)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Initialization bias correction: because mt and vt are initialized at zero, their moving averages are biased toward zero early on; Adam divides mt and vt by (1 - beta1^t) and (1 - beta2^t) respectively to obtain unbiased estimates bmt and bvt",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Update rule properties: the effective step Delta_t = alpha * bmt / sqrt(bvt) is approximately bounded by alpha, is invariant to diagonal rescaling of gradients, exhibits automatic annealing as signal-to-noise ratio decreases, and handles sparse gradients via per-parameter scaling",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Theoretical convergence: under convex online learning assumptions with bounded gradients and bounded parameter distances, and with alpha_t = alpha / sqrt(t) and decaying beta1,t, Adam achieves O(sqrt(T)) regret and average regret R(T)/T -> 0 as T -> infinity",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Empirical claim: Adam consistently performs well in practice across models and datasets, often matching or outperforming other stochastic optimizers such as SGD with momentum, AdaGrad, RMSProp and SFO in experiments on logistic regression, multilayer neural networks and convolutional neural networks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Logistic regression experiments: on MNIST Adam converged similarly to SGD with Nesterov momentum and faster than AdaGrad; on sparse IMDB bag-of-words features Adam matched AdaGrad and outperformed SGD",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Neural network experiments: for multilayer nets with dropout and deterministic objectives Adam converged faster than RMSProp, AdaDelta, AdaGrad, and SFO in wall-clock time and iterations; for CNNs Adam and SGD outperformed AdaGrad, with Adam adapting per-layer learning scales",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Convergence theorem details: Theorem 4.1 provides a regret bound depending on D, G, G_infty, beta1, beta2, lambda and sums over per-dimension gradient norms and corrected second moment terms, with requirement beta1^2 / sqrt(beta2) < 1 and decaying beta1,t",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Assumptions for convergence proof: sequence of convex cost functions, bounded gradients (L2 and L-infty norms), bounded pairwise parameter distances, and exponentially decaying beta1,t; these assumptions are used to derive the O(sqrt(T)) regret bound",
+      "role": "Assumption",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Empirical importance of bias correction: experiments training a variational auto-encoder show that omitting bias-correction causes instability and divergence when beta2 is close to 1, while bias correction stabilizes training and enables use of slow second-moment decay needed for sparse gradients",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Comparison to related methods: Adam unifies advantages of AdaGrad (sparse gradients) and RMSProp (non-stationary objectives), differs from RMSProp by including bias correction and explicit first-moment estimates, and approximates a diagonal Fisher preconditioner similar to natural gradient but more conservative",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "AdaMax extension: replacing the L2-based second moment norm with the infinity norm leads to AdaMax, which uses u_t = max(beta2 * u_{t-1}, |g_t|) and updates theta with alpha/(1 - beta1^t) * m_t / u_t; AdaMax is simpler, numerically stable and does not require bias correction for u_t",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitations and scope: theoretical guarantees are derived under convex online assumptions and require specific decay schedules; convergence proof does not directly apply to non-convex objectives though empirical results are favorable for non-convex deep learning problems",
+      "role": "Limitation",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Adam is a simple, efficient, low-memory adaptive optimizer combining benefits of AdaGrad and RMSProp, with practical robustness across many models and datasets and theoretical guarantees in the convex online setting",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        5,
+        4
+      ],
+      "children": null
+    }
+  ]
+}

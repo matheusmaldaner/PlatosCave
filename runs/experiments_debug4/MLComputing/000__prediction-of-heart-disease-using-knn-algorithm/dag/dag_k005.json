@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "K-nearest neighbors (KNN) can be used to accurately predict heart disease from clinical and demographic patient data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset comprises clinical and demographic features including age, sex, chest pain type, resting blood pressure, serum cholesterol, fasting blood sugar, resting ECG, maximum heart rate achieved, exercise-induced angina, oldpeak, slope, ca, thal, and a binary target for heart disease",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "KNN is applied as a nonparametric, instance based supervised classifier using distance metrics (Euclidean) and majority voting among K neighbors",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data preprocessing steps include feature selection to detect most relevant features and weighting strategies to address class imbalance",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model evaluation uses cross validation and metrics including sensitivity, specificity, accuracy, and AUC-ROC; experiments repeated three times with K set to 10 and average reported",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Assumption that labeled historical patient records reliably indicate presence or absence of heart disease and that features chosen capture risk factors",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Visualization via histograms performed for each numerical column to inspect distributions",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Observed class counts show 303 individuals identified as prone to heart disease and males have higher diagnosed counts than females in the dataset",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "K choice and distance metric selection affect classifier performance; odd K values preferred to avoid ties and K tradeoff exists between overfitting and noise",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "KNN requires careful preprocessing such as feature scaling and missing data handling and is computationally expensive at classification time",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Confusion matrix counts used: True Positive 38, False Positive 10, False Negative 7, True Negative 45",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Using the confusion matrix counts, overall accuracy computed as (38+45)/(38+10+7+45) = 83 percent",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Authors report KNN exhibits promising predictive performance for heart disease with high accuracy and high AUC-ROC values and provide feature importance analysis to interpret contributing factors",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        6,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion claim that KNN can aid risk assessment and early detection, potentially improving diagnostic accuracy and patient outcomes when integrated with medical datasets",
+      "role": "Conclusion",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

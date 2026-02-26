@@ -1,0 +1,196 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network trained with appropriate architecture and training techniques can substantially improve image classification accuracy on the ImageNet large-scale visual recognition challenge",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We designed an 8-layer CNN (five convolutional layers followed by three fully-connected layers) with a 1000-way softmax output and about 60 million parameters",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We applied architectural components and training techniques (ReLU nonlinearity, local response normalization, overlapping pooling, data augmentation, dropout, GPU-optimized convolution, multi-GPU parallelism) to accelerate training and reduce overfitting",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We trained the network on ImageNet subsets (ILSVRC-2010 and ILSVRC-2012) using stochastic gradient descent with batch size 128, momentum 0.9, weight decay 0.0005, initial learning rate 0.01 reduced three times and about 90 epochs over 1.2M images; training took 5-6 days on two GTX 580 GPUs",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Training procedure and computational resources enabled fitting the large model to 1.2M training images without prohibitive time by using an efficient GPU implementation and two-GPU parallelization",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "First conv layer: 96 kernels 11x11x3 stride 4; second: 256 kernels 5x5x48; third: 384 kernels 3x3x256; fourth: 384 kernels 3x3x192; fifth: 256 kernels 3x3x192; fully-connected layers: 4096 units each",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Some convolutional layers were split across two GPUs with selective cross-GPU connections to reduce memory use and communication overhead",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Input preprocessing: rescale shorter side to 256, take centered 256x256 crop, subtract per-pixel training-set mean, and train on raw centered RGB 224x224 patches sampled during augmentation",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Using Rectified Linear Units (ReLUs) instead of saturating nonlinearities speeds up training several-fold and enabled practical training of very large networks",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Local response normalization (LRN) implemented lateral inhibition across adjacent kernel maps and reduced top-1/top-5 error rates by about 1.4% and 1.2% respectively; hyperparameters used: k=2, n=5, alpha=0.0001, beta=0.75",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Overlapping pooling (pool size 3, stride 2) reduced top-1/top-5 error rates by about 0.4% and 0.3% compared to non-overlapping pooling",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Data augmentation: random 224x224 translations and horizontal reflections (increasing effective training set) plus PCA-based RGB intensity perturbation reduced overfitting and lowered top-1 error by over 1%",
+      "role": "Method",
+      "parents": [
+        2,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Dropout (50% in the first two fully-connected layers) prevented co-adaptation of features, substantially reducing overfitting though roughly doubling iterations to converge",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Splitting the net across two GPUs and the chosen cross-GPU connectivity reduced top-1 and top-5 error rates by 1.7% and 1.2% relative to a single-GPU net with half kernels",
+      "role": "Result",
+      "parents": [
+        2,
+        4,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "On ILSVRC-2010 test set the single trained network achieved top-1 error 37.5% and top-5 error 17.0%, substantially better than prior state of the art (top-1 ~45-47%)",
+      "role": "Evidence",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "On ILSVRC-2012 our final ensemble and pretraining scheme achieved a winning top-5 test error of 15.3% (ensemble of seven CNNs including pretraining on full ImageNet), compared to 26.2% by the second-best entry",
+      "role": "Evidence",
+      "parents": [
+        14,
+        1,
+        2,
+        3
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Ablations and qualitative analyses: removing any convolutional layer worsened top-1 performance by about 2%, learned first-layer kernels show diverse edge and color detectors with GPU-specific specialization, and last-layer feature vectors retrieve semantically similar images",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests, ensembles of randomized decision trees, produce accurate, robust classification and regression predictors by combining many trees grown with randomization in training or feature selection",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Definition: a random forest is a collection of tree classifiers h(x, theta_k) where theta_k are iid random vectors and each tree casts one vote for the predicted class at input x",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Theorem (convergence): as the number of trees increases, the generalization error converges almost surely to a limiting value given by the probability that the average vote margin is negative",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Strength-correlation framework: generalization error is bounded by mean correlation between raw margins divided by square of forest strength (PE* <= rho_bar (1 - s^2)/s^2), so low correlation and high strength reduce error",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        6,
+        7,
+        9,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: use bagging plus random feature selection at each node (Forest-RI: randomly choose F input variables per split; Forest-RC: randomly generate F linear combinations of L inputs per split), grow trees unpruned",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: out-of-bag (OOB) estimation—use bootstrap samples and, for each training instance, aggregate votes only over trees that did not include that instance to estimate generalization error, strength, correlation, and variable importance without a separate test set",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: empirical comparison on multiple UCI and synthetic data sets shows random forests (Forest-RI and Forest-RC) achieve test errors comparable to or better than Adaboost on many data sets and are much faster for high-dimensional inputs",
+      "role": "Evidence",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: empirical study of strength and correlation shows that increasing F initially increases strength until a plateau while correlation increases monotonically; best test error generally achieved with small F (often F=1 or small integer), especially in smaller data sets",
+      "role": "Evidence",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result: random forests are more robust to label noise than Adaboost; in experiments with 5% output label noise, Adaboost's error increased substantially while Forest-RI and Forest-RC showed small changes",
+      "role": "Evidence",
+      "parents": [
+        4,
+        5,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: on data with many weak inputs (1000 binary inputs, 10 classes), Forest-RI with larger F achieved test error near Bayes rate (e.g., 2.8% vs Bayes 1.0%) while individual trees remained weak, demonstrating ensemble gains from low correlation",
+      "role": "Evidence",
+      "parents": [
+        4,
+        3,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Method/Claim: variable importance via OOB permutation—permute values of one input in OOB examples, measure increase in misclassification rate relative to intact OOB rate to rank variables and guide interpretation",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Regression theory and bound: for regression forests, ensemble MSE converges and satisfies PE*(forest) <= rho_bar * PE*(tree) where rho_bar is weighted correlation of residuals, highlighting same dual role of residual correlation and individual tree error",
+      "role": "Claim",
+      "parents": [
+        3,
+        2
+      ],
+      "children": [
+        6,
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: randomization aimed at reducing correlation while maintaining individual-tree strength, combined with OOB monitoring, yields accurate, fast, and robust ensembles; random forests do not overfit as trees increase and provide tools for variable importance and regression",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

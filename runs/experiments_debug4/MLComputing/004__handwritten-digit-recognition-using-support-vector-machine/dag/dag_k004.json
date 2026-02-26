@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Replacing neural network segment classifiers with support vector machines at the segment classification level will improve handwritten numeral recognition accuracy, especially when integrated into a hybrid SVM/HMM word recognizer",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Support Vector Machines provide better discrimination and generalization (structural risk minimization, large margin) than neural networks for classification tasks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Develop an SVM-based character recognizer with probabilistic outputs and integrate it into an HMM-based word recognition module to form a hybrid SVM/HMM recognizer",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Extract 18 global features per character using seven moment invariants, seven thinned moment invariants, and four affine moment invariants for SVM input",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Use datasets including the UCI Optical Recognition of Handwritten Digits (optdigits) and a collected Assamese character dataset (45 writers, 8235 samples) for training and evaluation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Train SVMs with RBF kernel using grid search for parameters (selected C = 8 and gamma empirically) on preprocessed/resampled online signal features, producing 350 input feature values per example in some experiments",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "An implemented test application using the trained SVM correctly identified 98% of the testing data in the described experimental setup",
+      "role": "Result",
+      "parents": [
+        0,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Experimental comparison across three isolated-character databases shows SVM recognition rates higher than Hidden Markov Model recognition rates",
+      "role": "Evidence",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "SVM models require substantially more storage than HMMs because memory grows with number of support vectors times number of features (e.g., 350), whereas HMMs use weight-sharing and need less space",
+      "role": "Limitation",
+      "parents": [
+        0,
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Storage and runtime expansion for SVMs can be mitigated by finer grid search for C and gamma, reduced set selection, and storing compact original online signals with pen-up/pen-down status for dynamic expansion",
+      "role": "Claim",
+      "parents": [
+        2,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Integrating the SVM character recognition framework into an HMM-based word recognizer is expected to improve word recognition rates due to SVM's superior discrimination at the character hypothesis level",
+      "role": "Conclusion",
+      "parents": [
+        2,
+        1,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Theoretical foundation: Statistical Learning Theory and structural risk minimization explain why large-margin SVMs aim to minimize true risk and reduce overfitting compared to empirical risk minimization used by typical neural networks",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Feature and input dimensionality evidence: experiments used either 18 global moment features or 350 feature values per example after spatial resampling of online signals for SVM inputs",
+      "role": "Evidence",
+      "parents": [
+        3,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

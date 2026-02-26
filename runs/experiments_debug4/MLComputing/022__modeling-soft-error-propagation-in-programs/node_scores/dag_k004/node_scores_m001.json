@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, TRIDENT uses three sub-models to estimate SDC probabilities without fault injection; no external evidence assessed.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts TRIDENT is an LLVM module that uses a single program input run for profiling and static analysis to compute per-instruction and overall SDC probabilities; no external evidence is provided.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text; no external data consulted.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment is based solely on the claim text without external sources; actual validity cannot be confirmed.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim proposes a static instruction level sub-model that uses instruction semantics and operand profiles to compute propagation masking and crash probabilities and aggregates along static data dependent sequences.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.55,
+    "relevance": 0.72,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a method that uses a control-flow sub-model to estimate probabilities of stores being corrupted when a branch outcome is flipped, with closed-form formulas that differentiate non-loop terminating and loop terminating comparisons; without details or empirical validation this is plausible but not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a technical mechanism in a memory analysis sub modell; without the paper context, plausibility is moderate but unverified, and many aspects are not standard knowledge.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.4,
+    "relevance": 0.5,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a two phase TRIDENT workflow with a profiling stage collecting dynamic counts and probabilities and an inference stage computing SDc probabilities via static analysis using fs, fc, fm, plus sampling controlling cost, but there is no external evidence provided to verify these specifics.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a procedural algorithm where propagation probability is computed by function fs, and depending on sequence endings being a branch or a store, uses fc and fm accordingly to contribute to SDC, which seems a plausible description of a method but lacks specific empirical or theoretical grounding in the provided text.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Evaluation setup implemented in LLVM and compared against LLFI fault injection across eleven benchmarks, sampling up to three thousand dynamic instructions for aggregate SDC probability and hundred samples per instruction for per instruction experiments.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim states a TRIDENT mean absolute error versus fault injection of 4.75 percentage points for overall SDC, with TRIDENT at 14.83 percent versus FI 13.59 percent across 11 programs, and a paired t test p value of 0.764 indicating failure to reject equality.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that per instruction SDC predictions for TRIDENT are statistically indistinguishable from FI in eight of eleven benchmarks, with simpler models lacking fc or fm performing significantly worse.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.45,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, there is no independent verification or context provided.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.45,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts fixed profiling cost and large speedups over fault injection with increasing samples but provides no independent evidence or methodology details in this context.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.2,
+    "reproducibility": 0.25,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim lists specific limitations and sources of inaccuracy in the described analysis approach, including ignoring masking in various instruction types, not modeling bulk memory intrinsics such as memcpy, difficulty analyzing corrupted store addresses, conservative assumptions after divergence, and single input profiling",
+    "confidence_level": "medium"
+  }
+}

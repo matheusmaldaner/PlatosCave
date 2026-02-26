@@ -1,0 +1,191 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Probability weighting observed as an inverse-S mapping between DO-declared probabilities and DM-inferred decision weights can be explained mechanistically by DMs having greater uncertainty about outcome distributions than DOs",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Empirical phenomenon: cumulative decision weights Fw plotted against cumulative probabilities Fp typically produce an inverse-S curve that lies above the diagonal for low cumulative probabilities and below for high cumulative probabilities",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Modeling claim: the inverse-S arises when the DM assumes a larger scale (greater uncertainty, e.g. larger standard deviation) or different location for the distribution of outcomes than the DO",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Interpretative claim: probability weighting need not imply cognitive bias; it can reflect principled, cautious responses by DMs to estimation uncertainty unaccounted for in the DO model",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Assumption: DO and DM each have internal models (PDFs/CDFs) for an observable X; DO-declared probabilities are p(x) and DM-used decision weights are w(x); both may be expressed as PDFs and CDFs",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        5,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: represent distributions via PDFs p(x), w(x) and CDFs Fp(x), Fw(x) and analyze mapping Fw versus Fp to visualise probability weighting",
+      "role": "Method",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Analytic result (Gaussian): if DO models X as N(mu, sigma^2) and DM models X as N(mu, (alpha sigma)^2) with alpha>1, elimination of (x-mu)^2 yields w as a power-law function of p producing an inverse-S in the CDF mapping",
+      "role": "Result",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Generality claim: the inverse-S emerges more broadly whenever the DM assumes a greater scale for a unimodal distribution, not only for Gaussians (illustrated also with t-distributions)",
+      "role": "Claim",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Method and procedure: construct lists of Fp(x) and Fw(x) from DO and DM assumed distributions (Gaussian, t, or other), then plot Fw versus Fp to obtain the mapping curve",
+      "role": "Method",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence (simulation and analytic): applying a DM correction that adds standard error to estimated bin probabilities and normalizes (w(x) proportional to p_hat(x)+epsilon[p_hat(x)]) yields inverse-S curves for Gaussian and fat-tailed reference distributions; simulations of finite time series corroborate this",
+      "role": "Evidence",
+      "parents": [
+        6,
+        7,
+        8,
+        5
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Analytic derivation of uncertainty scaling: for counts n(x) in T observations n(x) ~ p(x) delta x T and uncertainty scales like sqrt(n(x)), so estimated p_hat(x)=n/(T delta x) has absolute error proportional to sqrt(p_hat/(T delta x)) and relative error proportional to 1/sqrt(p_hat T delta x), which grows as p_hat decreases",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Model fitting result: Gaussian and t-distribution models with differing location and scale parameters fit experimentally observed weighting data (Tversky and Kahneman 1992; Tversky and Fox 1995) about as well as phenomenological parametric functions",
+      "role": "Result",
+      "parents": [
+        6,
+        7,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Implication and conclusion: observed probability weighting can be interpreted as DMs conservatively correcting for estimation uncertainty and for time-perspective (ergodicity) differences relative to DOs, so the term 'weighting' should be reframed as model disagreement rather than necessarily a bias",
+      "role": "Conclusion",
+      "parents": [
+        3,
+        9,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Contextual claim about ergodicity: DOs often consider ensemble averages while DMs face time evolution and non-ergodic processes (e.g., multiplicative growth), which give DMs evolutionary or practical incentives to hedge against rare adverse events and thus assume greater effective uncertainty",
+      "role": "Context",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: the mechanistic model assumes DMs estimate probabilities from finite time series and adopt a particular conservative correction (adding standard error); other cognitive processes or alternative correction rules could also produce similar mappings",
+      "role": "Limitation",
+      "parents": [
+        9,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.25,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Without external sources, the claim cannot be independently verified; based on typical GPU kernels one may implement compression in a single kernel, but the specific cuSZp claim cannot be confirmed.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines four steps per block in a cuSZp pipeline including pre-quantization with Lorenzo prediction, fixed-length encoding with per-block detection, hierarchical global synchronization via exclusive prefix sum, and block bit shuffle to align bits into bytes",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.6,
+    "evidence_strength": 0.0,
+    "method_rigor": 0.0,
+    "reproducibility": 0.0,
+    "citation_support": 0.0,
+    "sources_checked": [],
+    "verification_summary": "The claim enumerates design choices such as lightweight intra block Lorenzo prediction to reduce entropy, fixed length block encoding instead of Huffman for throughput, and a hierarchical prefix sum for computing block offsets on GPU, referenced only in the claim text.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.7,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes an evaluation setup using an Nvidia Ampere A100 GPU and six SDRBench real world HPC datasets with listed metrics, which is plausible given common HPC benchmarking practices.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that there exist comprehensive experiments on Nvidia A100 hardware across six datasets with several relative error bounds comparing cuSZp to other methods, but no external validation is provided here.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Claim suggests that consolidating computation into a single GPU kernel removes CPU overhead and CPU-GPU data transfers that dominate end-to-end runtime in prior GPU compressors.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that fixed-length per-block encoding with bit-shuffle improves GPU friendliness and compression for scientific data due to spatial smoothness within blocks and empirical distributions showing small relative value ranges, which is plausible but not strongly evidenced within the provided text alone.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts pre quantization guarantees max absolute error within a user specified bound and Lorenzo prediction uses per block differences li equals ri minus r i minus one to reduce effective bits; without external sources, the overall certainty remains uncertain.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible per block fixed width encoding scheme, computing F_k as max abs of quantized values in the block, storing a sign map, and computing compressed size as (F_k plus one) times block length divided by eight; without context it's a reasonable encoding design but not a known standard in isolation.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.72,
+    "relevance": 0.65,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.45,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible GPU based hierarchical scan to compute prefix sums of per block sizes and generate start offsets for concatenation using thread warp global synchronization and chained scans.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim describes a data organization technique to align variable width bits into bytes enabling regular parallel writes",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts end to end throughput measured entirely within GPU memory and that a single kernel equates kernel and end to end throughput, which is plausible if no host device transfers occur, but the statement lacks universally established justification.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.65,
+    "relevance": 0.95,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "No external verification performed; claims rely solely on provided text.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.5,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim cites specific benchmark outcomes and a block encoding analysis, which could be plausible but cannot be independently verified from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts cuSZp yields higher PSNR and SSIM than cuZFP at similar bitrates and reduces artifacts on various datasets.",
+    "confidence_level": "medium"
+  },
+  "16": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the statement asserts cuSZp is a single kernel, block wise GPU error bounded compressor delivering ultra fast end to end throughput with competitive or superior compression ratios and reconstructed data quality, suitable for inline GPU HPC simulations; without external evidence it is plausible but not independently verifiable from the claim alone.",
+    "confidence_level": "medium"
+  }
+}

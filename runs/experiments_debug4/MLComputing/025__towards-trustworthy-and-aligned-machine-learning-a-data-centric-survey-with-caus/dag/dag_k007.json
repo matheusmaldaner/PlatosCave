@@ -1,0 +1,210 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Trustworthiness failures in machine learning stem primarily from dataset structures (spurious features, confounders, bias) that cause models trained by ERM to learn undesired signals; incorporating data-centric and causality-aware methods can improve robustness, adversarial robustness, interpretability, and fairness",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Survey scope: focus on robustness, adversarial robustness (security), interpretability, and fairness from a data-centric perspective and connect methods to Pearl's causality hierarchy",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data-centric perspective: the core problem is that collected datasets contain spurious features and confounders correlated with labels so vanilla ERM learns those instead of desired (causal) features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Pearl's causal hierarchy (L1 association, L2 intervention, L3 counterfactual) provides a unifying framework to categorize and reason about trustworthy ML methods",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Many independently developed trustworthy-ML methods converge mathematically to two master formulations: (A) domain-invariance objectives like DANN and (B) worst-case or data-augmentation objectives like adversarial training; plus sample-weighting as a plug-in",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Domain-adversarial / invariant learning formulation (DANN-style): jointly train model to predict labels while minimizing domain or spurious-feature information in representations (minimize classification loss minus domain discriminator loss)",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Worst-case data augmentation / adversarial training formulation: augment or optimize worst-case perturbations of inputs under constraints and minimize maximum loss, optionally with embedding-consistency regularizers (TRADES style)",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        8,
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical example (sea turtle vs tortoise): background color correlates with class so ERM models learn background spurious feature while experts use causal body features; demonstrates correlation vs causation and real-world performance gaps",
+      "role": "Evidence",
+      "parents": [
+        2,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Adversarial examples and adversarial training show that augmenting data with worst-case perturbations or enforcing representation consistency improves robustness and links to distributional robustness theory",
+      "role": "Evidence",
+      "parents": [
+        2,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Intervention-level (L2) causal tools applicable to ML: randomized controlled trial via counterfactual data augmentation, backdoor adjustment, front-door adjustment, instrument variables, feature-level interventions and inverse-propensity weighting",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        10,
+        11,
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Backdoor adjustment implementations for high-dimensional data: approximate confounder strata via learned group representations or attention, then marginalize or fuse confounder representations to estimate deconfounded predictions",
+      "role": "Method",
+      "parents": [
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Front-door, IV and feature-level interventions: use mediators (internal features) or instrumental variables/perturbations when confounders are unobserved to recover causal signals or remove bias",
+      "role": "Method",
+      "parents": [
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Interpretability methods center on perturbation/removal and gradient-attribution; these are conceptually linked to interventions and can be fooled, implying interpretability depends on model robustness and assumptions about desired features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Common practical pipeline across topics: identify spurious/confounding patterns, then apply regularization (invariance, consistency), worst-case augmentation, weighting, or causal adjustment to reduce reliance on non-causal features",
+      "role": "Claim",
+      "parents": [
+        5,
+        6,
+        10,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Large pretrained models (fine-tuning, prompting, PEFT, RLHF) map to ERM variants; the same master equations and causal/data-centric interventions apply but must respect parameterization and efficiency constraints",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitations and assumptions: causal solutions require explicit assumptions, often unobserved confounders limit identifiability, stakeholder specifications (what shifts matter, fairness definitions) are necessary, and methods may be complementary (e.g., RLHF + causal regularizers)",
+      "role": "Limitation",
+      "parents": [
+        13,
+        14
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: unifying data-centric and causality perspectives clarifies principles behind diverse trustworthy-ML methods and guides future work to integrate causal inference, principled ERM variants, and large-model techniques to build more aligned systems",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        3,
+        13,
+        14,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

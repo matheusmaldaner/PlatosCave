@@ -1,0 +1,199 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The Almost Ideal Demand System (AIDS) provides a flexible, theoretically consistent, and practically estimable demand system superior to existing flexible forms for testing and extending conventional demand analysis",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "AIDS is derived from a PIGLOG class cost function log c(u,p) = (1-u) log a(p) + u log b(p) with specific flexible forms for log a(p) and log b(p) producing a cost function that is linearly homogeneous in prices",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The AIDS budget-share demand equations are wi = ai + sum_j yij log pj + beta_i log(x/P) where P is a price index defined from the cost function, and parameters satisfy linear adding-up, homogeneity, and symmetry restrictions when derived from utility maximization",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "AIDS is a flexible functional form providing a first-order (local) approximation to any demand system: its parameters can match derivatives of arbitrary true demand functions at a point even without assuming utility maximization",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "AIDS permits exact aggregation over heterogeneous households under PIGLOG/PIGL assumptions by introducing household scale parameters kh and an aggregate index k, so aggregate budget shares correspond to a representative consumer with budget x/k",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Estimation can be simplified in practice by approximating the theoretical price index P with Stone's price index P* = exp(sum w_k log p_k), allowing single-equation OLS estimation equation-by-equation and iterative reweighting",
+      "role": "Method",
+      "parents": [
+        0,
+        1,
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Restrictions for theory-consistency: adding-up (sum ai =1), homogeneity (sum_j yij =0 for each i), and Slutsky symmetry (yij = yji); negativity (concavity) cannot be ensured by linear parameter restrictions and must be checked via eigenvalues of the Slutsky matrix",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Derivation property: price derivatives of the AIDS cost function yield quantities (Shephard's lemma) and logarithmic differentiation of log c(u,p) gives the budget-share form used for estimation",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Specific parameterization of log a(p) and log b(p) includes linear homogeneity and enough parameters to be a flexible form, with normalization choices to handle ordinal utility",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 9,
+      "text": "AIDS parameters have economic interpretation: yij approximate compensated cross-price effects, beta_i indicate expenditure responses (positive for luxuries, negative for necessities), and ai, bi represent poverty and affluence expenditure patterns",
+      "role": "Claim",
+      "parents": [
+        2,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "AIDS relates to other models: in first-difference form its right-hand side resembles the Rotterdam model, and under special restrictions the translog indirect utility can be represented within the PIGLOG/AIDS framework",
+      "role": "Context",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Because the AIDS is flexible, many parameters may be poorly identified in typical data; empirical practice requires imposing plausible restrictions (e.g., zeroing some yij) or using approximations to reduce estimation uncertainty",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Interpretation of aggregation index k: k summarizes distributional and demographic structure (reduces to Theil entropy/H when tastes identical); omitting k is acceptable if k is constant or uncorrelated with prices and mean expenditure, otherwise omitted variable bias may arise",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Empirical application: estimating AIDS on UK annual data 1954-1974 for eight nondurable categories using P* approximation, OLS single-equation estimation followed by system reestimation and likelihood-based tests",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Empirical results (levels): homogeneity and especially symmetry are decisively rejected in levels; many yij are significant; food and housing classified as necessities; overall price inelasticity except transport and communication",
+      "role": "Result",
+      "parents": [
+        13
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Imposing homogeneity often generates positive serial correlation in residuals of the equations that most strongly reject homogeneity, suggesting omitted dynamics, stock effects, time trends, or price expectation issues",
+      "role": "Evidence",
+      "parents": [
+        13
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "First-difference estimation reduces rejections of homogeneity and makes symmetry less decisively rejected, indicating that allowing for time trends or dynamics brings data closer to the representative-consumer static model; however concavity violations persist in estimates",
+      "role": "Result",
+      "parents": [
+        13,
+        14,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

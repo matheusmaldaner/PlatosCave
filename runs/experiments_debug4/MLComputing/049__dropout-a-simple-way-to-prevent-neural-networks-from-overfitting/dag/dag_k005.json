@@ -1,0 +1,180 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Dropout reduces overfitting in large neural networks by randomly dropping units during training and efficiently approximates averaging over exponentially many thinned models, yielding improved generalization across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dropout trains by sampling a binary mask per layer (independent Bernoulli with retention probability p) to create a thinned subnetwork for each training presentation and backpropagating only through that subnetwork",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "At test time, predictions of exponentially many thinned networks are approximated by using the full network with outgoing weights scaled by p (or equivalently training-time scaling), which matches the expected unit outputs",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Dropout prevents co-adaptation of feature detectors so individual hidden units learn more robust, useful features and produce sparser activations",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Combining dropout with optimization practices (stochastic gradient descent with momentum, decaying learning rate) and max-norm constraint on incoming weight vectors improves training stability and generalization",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Dropout can be applied beyond feed-forward nets to graphical models such as Restricted Boltzmann Machines (Dropout RBM) and to convolutional networks and it generalizes to multiplicative Gaussian noise",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Dropout increases training time and gradient noise (typically 2-3x longer) because each case effectively trains a different random submodel, creating a trade-off between training time and regularization benefit",
+      "role": "Limitation",
+      "parents": [
+        1,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Monte Carlo averaging of k sampled thinned networks at test time matches the weight-scaling approximation quickly (around k = 50), showing the scaling is an effective approximation to true model averaging",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Visual experiments: autoencoders and RBMs trained with dropout learn visually more interpretable, localized features and have fewer co-adapted or dead units compared to models without dropout",
+      "role": "Evidence",
+      "parents": [
+        3,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Activation statistics: dropout-trained units exhibit lower mean activations and sparser activation histograms compared to non-dropout nets, indicating induced sparsity without explicit sparsity regularizers",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Theoretical/analytical view: for linear regression marginalizing Bernoulli multiplicative dropout yields an expected objective equivalent to ridge regression with input-dependent scaling; for logistic/deeper models approximate marginalization methods exist but are harder to apply",
+      "role": "Claim",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Empirical results: dropout yields large, consistent generalization improvements and state-of-the-art or near state-of-the-art performance on multiple benchmarks (MNIST, SVHN, CIFAR-10/100, ImageNet, TIMIT, Reuters subset, alternative splicing), often beating other regularizers",
+      "role": "Evidence",
+      "parents": [
+        0,
+        1,
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Specific empirical numbers: MNIST error reduced from ~1.6% to as low as 0.79% with dropout and pretraining; SVHN test error improved from 3.95% to 2.55% when dropout used in all layers; CIFAR-10/CIFAR-100 and ImageNet results similarly improved; TIMIT phone error reduced (e.g., 23.4% -> 21.8%); alternative splicing improved substantially though Bayesian nets still best on that small dataset",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Dropout RBM: augmenting RBMs with a binary mask over hidden units yields a mixture over exponentially many RBMs with shared weights; training via standard RBM procedures with per-case masks produces sparser and coarser features",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Gaussian multiplicative noise (multiplying activations by N(1, sigma^2) with sigma^2=(1-p)/p) is an effective continuous alternative to Bernoulli dropout and can perform as well or slightly better in experiments",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Practical guidance: typical hidden-unit retention p ~ 0.5, input retention higher (e.g., 0.8), increase layer sizes approximately by factor 1/p to compensate expected retained units, use larger learning rates and high momentum with max-norm constraints to stabilize noisy updates",
+      "role": "Method",
+      "parents": [
+        4,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

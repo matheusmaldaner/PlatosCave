@@ -1,0 +1,151 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods that explain internal components of deep neural networks can improve mechanistic understanding, guide manual modifications, aid debugging, and make deployed AI systems safer and more trustworthy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We classify inner interpretability methods by the part of the computational graph they target: weights, individual neurons, subnetworks, or latent representations, and by whether they are intrinsic (during training) or post hoc (after training)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Inner interpretability techniques provide unique capabilities beyond test-set evaluation: open-ended evaluation to discover flaws, showcasing failure modes, enabling fixes or redesigns, and establishing accountability",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Interpretability research exhibits empirical connections with adversarial robustness, continual learning, modularity, network compression, and modeling the human visual system which can mutually benefit methods and outcomes",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Existing inner interpretability methods face major hazards and limits: frivolous or prunable weights and neurons, polysemantic neurons and entangled representations, scalability challenges to large models, and methods producing hypotheses rather than validated conclusions",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Practical usefulness of interpretability requires rigorous evaluation, uncertainty quantification, benchmarks, automation to scale human oversight, and an engineering focus on diagnostics, debugging, adversaries, and benchmarking",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "This survey reviewed over 300 works focused on inner interpretability to systematize methods, highlight connections to other subfields, and identify open problems and future directions",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Weights-focused methods include intrinsic continual-learning techniques that specialize weights for tasks, post hoc weight-masking to identify task-relevant weights or subnetworks, and pruning that reveals many weights are frivolous",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Neuron-focused methods comprise intrinsic neuron-specialization via continual learning, post hoc dataset-based analyses (e.g., network dissection), feature synthesis, perturbation/ablation and gradient-based attribution to characterize neuron roles",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Subnetwork and representation methods include intrinsic sparsity and modularity, post hoc modular partitionings and circuits analyses, disentanglement, concept vectors, probing, token/attention analysis in transformers, and self-explaining models",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Interpretability outputs should be treated as testable hypotheses; many current methods produce plausible explanations that can be unfaithful, fragile to adversaries, or limited to particular datasets and examples",
+      "role": "Claim",
+      "parents": [
+        2,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirical findings: adversarially robust models often yield more interpretable internal features and better transfer representations, and interpretability tools can both design adversaries and be used to improve robustness",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Empirical findings: compression and pruning reveal frivolous neurons/weights; compression can increase interpretability of remaining units, and modular or continual-learning methods can induce more intrinsically interpretable components",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Because many interpretability methods fail on substantial fractions of examples, rely on human-intensive analysis, or do not scale, the field should prioritize benchmarks that measure utility for engineers, automation for scaling, and combining methods to improve reliability",
+      "role": "Conclusion",
+      "parents": [
+        4,
+        6,
+        9
+      ],
+      "children": [
+        5
+      ]
+    }
+  ]
+}

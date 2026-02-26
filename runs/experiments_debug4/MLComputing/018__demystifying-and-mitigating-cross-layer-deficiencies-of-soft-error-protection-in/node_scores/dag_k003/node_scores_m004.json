@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim states that soft errors causing single bit flips in datapaths lead to silent data corruption and that compiler IR level instruction duplication is commonly used to detect SDC by duplicating computations and verifying results.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.92,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a methodology using LLFI for IR and PIN for assembly to inject single bit flips into destination registers across sixteen benchmarks to assess instruction duplication effects.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes Flowery as a set of LLVM level passes named eager-store, postponed-branch check, and anti-comparison duplication optimization applied after IR duplication to mitigate cross-layer deficiencies.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a specific experimental setup with 16 HPC benchmarks from Rodinia, NPB, and MiBench, four protection levels, 3000 random injection campaigns per benchmark per level, and an X86 Intel platform.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that SDC coverage and trade-offs between coverage and overhead are highly application-specific across benchmarks and protection levels, which is plausible but unverified from the provided text.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim, there is a reported gap between LLVM IR level SDC coverage and assembly level coverage, with averages and maximum values provided, but no independent verification or additional context is supplied.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that duplicating instructions at LLVM IR does not achieve full SDC coverage at the assembly level even with full IR protection, implying remaining unprotected assembly after backend compilation.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts five specific penetration categories as root causes for cross-layer protection deficiency; assessment based on claim text and general security design concepts.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.56,
+    "relevance": 0.65,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a specific distribution of deficiency cases across benchmarks and notes that store, branch, and comparison cover about ninety four point five percent of penetrations; without original data or methodological detail, its plausibility is uncertain and depends on how penetrations were defined and counted.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.45,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.2,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Assessing plausibility of reordering store operations before a checker to force in-register use and reduce register spilling as described.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a patching technique to monitor branch decisions by recording them globally and checking after branch to detect flips affecting FLAGS and conditional jumps; without further context this remains a plausible but unverified approach needing empirical validation.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible compiler patch technique to hinder optimization by isolating comparison blocks and adding reachability checks, but its prevalence and effectiveness may vary by compiler and context.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the provided claim, Flowery at assembly level is reported to increase average SDC coverage from sixty seven to ninety three point seven two percent compared with original IR duplication at assembly level.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the provided claim text, the reported overheads are small and variable with average around 2.71 percent and per level 1.6 to 3.7 percent, while compile time cost about 0.12 seconds; no external sources were used.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a conclusion about cross layer evaluation and IR level patches mitigating assembly level protections with residual penetrations; without data, this aligns with general ideas about abstraction gaps and patch effectiveness, but no specific evidence is provided here.",
+    "confidence_level": "medium"
+  }
+}

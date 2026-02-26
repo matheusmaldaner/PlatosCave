@@ -1,0 +1,205 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network trained on ImageNet can achieve substantially better object classification accuracy than previous methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset D: ILSVRC subset of ImageNet with roughly 1.2 million training, 50,000 validation, and 150,000 test images across 1000 classes; evaluation uses top-1 and top-5 error rates",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Network architecture: eight learned layers (five convolutional, three fully connected), about 60 million parameters, final 1000-way softmax",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We implemented a highly optimized GPU 2D convolution implementation and trained the network on two GTX 580 GPUs using cross-GPU parallelization to fit model and speed training",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Training procedure: stochastic gradient descent with batch size 128, momentum 0.9, weight decay 0.0005, learning rate schedule initialized at 0.01 and reduced three times, roughly 90 epochs (~5-6 days on two GPUs)",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Regularization and overfitting reduction methods used: data augmentation (random crops, reflections, PCA color jittering) and dropout in first two fully-connected layers",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Use of ReLU nonlinearity (f(x)=max(0,x)) accelerates training several times compared to saturating nonlinearities like tanh",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence: On CIFAR-10 a four-layer CNN with ReLUs reached 25% training error six times faster than an equivalent tanh network; ReLUs enable practical training of very large CNNs",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Architectural refinements: local response normalization after some ReLU layers implements lateral inhibition and reduced top-1/top-5 error by about 1.4% and 1.2% respectively; overlapping pooling (z=3, s=2) reduced error by ~0.4%/~0.3%",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence: four-layer CNN on CIFAR-10 had test error 13% without normalization and 11% with normalization; response normalization and overlapping pooling produced measurable decreases in ImageNet error",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Multi-GPU model-parallel training: splitting kernels across two GPUs with selective cross-GPU communication allowed training a model larger than single-GPU memory and reduced top-1/top-5 error by 1.7% and 1.2% compared to a one-GPU net with half as many kernels",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence: the two-GPU network trains slightly faster than the one-GPU variant and enables networks that would not fit on a single 3GB GPU",
+      "role": "Evidence",
+      "parents": [
+        3,
+        4,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Data augmentation methods: random 224x224 crops and horizontal reflections (effectively 2048-fold increase in examples) and PCA-based RGB intensity perturbation reduced top-1 error by over 1% and mitigated overfitting",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Dropout in fully-connected layers reduces overfitting and approximates model averaging; without dropout the network overfits substantially and dropout doubles iterations to converge",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Primary quantitative results: on ILSVRC-2010 the CNN achieved 37.5% top-1 and 17.0% top-5 test error, substantially better than prior bests (47.1%/28.2% and 45.7%/25.7%)",
+      "role": "Result",
+      "parents": [
+        0,
+        2,
+        3,
+        5
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "ILSVRC-2012 results and ensembles: single CNN gave 18.2% top-5 validation error; averaging five similar CNNs gave 16.4%; using pretraining on larger ImageNet and ensembling produced winning 15.3% top-5 test error versus second-best 26.2%",
+      "role": "Result",
+      "parents": [
+        14,
+        3,
+        5
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Conclusions: depth and large model capacity are important for state-of-the-art performance; practical training requires ReLUs, GPU optimization, and regularization; further gains expected with larger networks, more data, and faster GPUs",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        6,
+        8,
+        10,
+        12,
+        13,
+        14,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

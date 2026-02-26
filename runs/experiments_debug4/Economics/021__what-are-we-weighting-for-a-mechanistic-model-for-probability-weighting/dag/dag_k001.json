@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The inverse-S probability weighting observed in experiments can be explained mechanistically as a difference between the decision maker's and the disinterested observer's probabilistic models, specifically when the decision maker assumes greater uncertainty (larger scale and/or different location/shape) or accounts for estimation uncertainty from finite time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Probability weighting is the empirical observation that decision weights w(x) inferred from observed choices exceed stated probabilities p(x) for rare events and are lower for common events, producing an inverse-S curve when plotting cumulative decision weights Fw against cumulative probabilities Fp",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "If a decision maker (DM) models an observable with the same location but larger scale than the disinterested observer (DO), then the DM's PDF w(x) relative to the DO's p(x) follows a power-law relation that places w above p for low densities and below p for high densities, producing an inverse-S in CDF space",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "When DM and DO differ in both location and scale (or shape), Gaussian and t-distribution examples show that the inverse-S mapping between Fw and Fp persists and can closely reproduce empirically fitted phenomenological functions",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "If the DM estimates probabilities from finite time series, sampling uncertainty yields relative errors that are larger for rarer events; a DM who conservatively adds standard error to estimated densities and normalises will produce decision weights w(x) that overweight rare events and underweight common events",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Tversky and Kahneman's empirical inverse-S curve (decision weights vs stated probabilities) is the canonical observed phenomenon motivating mechanistic explanations",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Analytic derivation for Gaussian case: with DO variance sigma^2 and DM variance (alpha sigma)^2, eliminating (x-mu)^2 gives w(p)=p^{1/alpha^2} times a normalization factor, so for alpha>1 exponent<1 and w>p at low p",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "CDF plots for Gaussian examples show DM CDF Fw above DO CDF Fp at low x and below at high x, yielding the inverse-S when Fw is plotted vs Fp",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Fitted two-parameter Gaussian and t-distribution models (fitting location and scale/shape) match experimental data from Tversky and Kahneman (1992) and Tversky and Fox (1995) as well as standard phenomenological functions, indicating mechanistic plausibility",
+      "role": "Evidence",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Scaling argument for finite-sample estimation: observed count n(x) ~ p(x) delta x T with standard error sqrt(n(x)), so estimated density p_hat has absolute error ~ sqrt(p_hat/(T delta x)) and relative error ~ 1/sqrt(p_hat T delta x), which increases as p_hat decreases",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Simulation and analytic application of the conservative correction p_hat + standard error, followed by normalization, produces inverse-S curves for both Gaussian and fat-tailed t-distributions, with stronger effects for fat tails",
+      "role": "Result",
+      "parents": [
+        4,
+        9
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Phenomenological fit used in prospect theory (Tversky and Kahneman function with parameter gamma) lacks mechanistic motivation and can introduce artefacts like shifting intersection; mechanistic Gaussian/t models provide physically interpretable alternative fits",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: the inverse-S should be interpreted as a neutral indicator of differing models or uncertainties between DO and DM rather than necessarily as a cognitive bias of the decision maker; DMs' additional uncertainty and time-perspective (ergodicity considerations) provide principled reasons for cautious overweighting of rare events",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Contextual argument: DO and DM have different objectives and information — DO often considers ensemble averages while DM faces time evolution and non-ergodic processes (e.g., multiplicative wealth growth), which rationalizes hedging against rare adverse events",
+      "role": "Context",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: model assumes DM's conservative correction is adding one standard error and normalising; real DMs may use different conservative rules and other cognitive factors may also play a role",
+      "role": "Limitation",
+      "parents": [
+        10
+      ],
+      "children": null
+    }
+  ]
+}

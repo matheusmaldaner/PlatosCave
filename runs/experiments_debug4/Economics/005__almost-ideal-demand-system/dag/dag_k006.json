@@ -1,0 +1,187 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The Almost Ideal Demand System (AIDS) provides a practical, flexible demand system that satisfies choice axioms, aggregates exactly over consumers, is consistent with household budget data, is simple to estimate, and is recommended as a vehicle for testing and improving conventional demand analysis",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Specification: AIDS is derived from a PIGLOG class cost function log c(u,p) = (1-u) log a(p) + u log b(p) with log a(p) and log b(p) chosen as flexible log-linear forms leading to cost function (4)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Claim: The AIDS budget-share demand functions are wi = ai + sum_j yij log pj + beta_i log(x/P) with price index log P defined in (9), and follow from Shephard duality (price derivatives of cost give quantities)",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Claim: AIDS is a flexible functional form giving an arbitrary first-order approximation to any demand system (derived or not from utility maximization) because parameters can match local derivatives of true demand functions",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: AIDS satisfies key theoretical restrictions by linear parameter constraints: adding-up (sum ai =1, sum beta_i =0, sum_j yij =0), homogeneity (sum_j yij =0 across j), and Slutsky symmetry (yij = yji)",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: Estimation strategy includes (a) approximating P by Stone price index P* to linearize and estimate equation-by-equation by OLS, (b) concentrated nonlinear maximum likelihood or iteration to estimate full system, and (c) testing restrictions by likelihood-ratio or F tests",
+      "role": "Method",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Application method: Aggregation over households achieved via PIGLOG/PIGL structure with household equivalence scale kh and representative budget x/k, allowing exact aggregation under stated assumptions and limited taste variation",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical method: Authors estimate AIDS on annual UK 1954-1974 data for eight nondurables using P* first, test homogeneity equation-by-equation, then impose symmetry and reestimate using full price index P with a parsimonious variance structure for residuals",
+      "role": "Method",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result: Unconstrained OLS estimates using P* show many significant yij price effects, classification of food and housing as necessities (beta positive/low), general price inelasticity except transport, and notable row-sum deviations indicating rejection of homogeneity in some equations",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: System tests show homogeneity is decisively rejected in several equations and full symmetry restriction is rejected by likelihood-ratio tests; imposing homogeneity often introduces positive serial correlation in residuals",
+      "role": "Result",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Claim: Imposing homogeneity can induce serial correlation because omitted dynamic or distributional variables (stocks, time trends, price expectations, or a nonconstant k index) may be correlated with expenditure and prices, so rejection of homogeneity may reflect omitted dynamics",
+      "role": "Claim",
+      "parents": [
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Result: Symmetric parameter estimates violate concavity (Slutsky negativity) for parts of the sample (positive eigenvalues), producing implausible compensated own-price elasticities (e.g., fuel), indicating the need for further parameter restrictions to ensure concave homogeneous cost functions for welfare applications",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result: First-difference (time-differenced) estimation reduces some homogeneity rejections (only a few goods reject) and yields expenditure elasticities and parameter values similar to levels estimates for many goods; allowing intercept trends can alleviate some conflicts with representative consumer hypothesis",
+      "role": "Result",
+      "parents": [
+        7,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: AIDS fits budget-share data well and offers desirable theoretical properties and practical estimability, and thus provides a useful platform for extending demand analysis to include dynamics, household distribution effects, price expectations, or intertemporal structure",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        3,
+        8,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: The simple static AIDS should not be regarded as a fully satisfactory explanation of consumer behavior because it omits dynamics, possible nonseparabilities, household distribution variation (k), and may require additional restrictions to ensure negativity and identification of some parameters (a0)",
+      "role": "Limitation",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

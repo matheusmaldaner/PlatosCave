@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based sentiment system (SO-CAL) using hand-ranked multi-part-of-speech dictionaries plus linguistic contextual handling can accurately and robustly classify text polarity across domains without retraining",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL architecture: combine dictionaries of adjectives, nouns, verbs, adverbs (hand-ranked −5 to +5), multi-word entries, intensifier dictionary, intensification as percentage modifiers, negation handling, irrealis blocking, repetition weighting, negative weighting, and XML/text span weighting",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "SO-CAL evaluation on review corpora (Epinions1, Epinions2, Polarity movies, Camera) yields consistent high polarity accuracy (overall SO-CAL full system ~78.7% accuracy) and outperforms many dictionary-only or basic variants",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "SO-CAL maintains performance on short texts and other genres: news sentences, blogs, headlines, and MySpace comments achieve comparable accuracies when non-empty texts are evaluated (e.g., 77–82% excluding SO-empty texts)",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Manual hand-ranked, fine-grained multi-POS dictionaries give better performance and better correspondence to human judgments than several automatic or coarser dictionaries (Google PMI, SentiWordNet variants, Maryland, General Inquirer, Subjectivity lexicon)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Mechanical Turk validation: human annotations on single words and word-pairs corroborate dictionary relative rankings; higher agreement for extreme SO values and lower agreement near neutral supports granularity and reveals ambiguous items",
+      "role": "Evidence",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "SO-CAL improvements arise from explicit linguistic handling: percent-based intensifiers model scale and interaction with target SO; shifted-polarity negation (shift toward opposite by fixed amount) better matches human judgments than naive polarity flip in many cases; irrealis blocking prevents counting non-factual contexts",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Dictionary construction method: manual tagging of development corpus words, committee review to reduce subjectivity; separate lexicons for adjectives (2252), nouns (1142), verbs (903), adverbs (745), plus multi-word entries and intensifiers",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Intensiﬁcation modeled as multiplicative percentage modifiers applied recursively from nearest modifier to target, producing context-sensitive amplification or downtoning (e.g., most = +100%, slightly = −50%)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Negation modeling: two strategies tested—switch (polarity flip) and shift (move SO toward opposite by fixed amount); SO-CAL uses conservative backward-scope search and prefers shift negation because it better matches pragmatic judgments and avoids implausible flips",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Contextual controls: irrealis markers (modals, conditionals, questions, NPIs) nullify SO in scope except when local definiteness signals commitment; repetition weighting reduces nth-occurrence contribution (nth contributes 1/n) and negative expressions are given extra weight (+50%) to counter positive bias",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Ablation and alternative-dictionary tests show SO-CAL features increase accuracy: full system significantly outperforms basic word-sum baselines and systems using automatically generated lexicons; negative weighting and negation/intensiﬁcation handling contribute substantial gains",
+      "role": "Evidence",
+      "parents": [
+        2,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Dictionary comparisons with Mechanical Turk: manual SO-CAL dictionaries achieve higher MT correspondence (e.g., ~73.7% single-word) than Google PMI (~48.5%), SentiWordNet variants (~57.8%), and Subjectivity lexicon (coarser but competitive)",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Automatic or overly large coverage lexicons can reduce performance or introduce noise (example: Maryland thesaurus-based dictionary mislabels many neutral/common words), showing coverage is a trade-off with precision",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Empirical negation finding: shifted negation model explains more human judgments than switched flip overall (shift correspondence ~45.2% vs switch ~33.4% on MT negation tasks), though negation remains complex and neither model is perfect",
+      "role": "Result",
+      "parents": [
+        6,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Intensifier finding: percentage-based intensifier modeling captures variability of modifiers and interaction with target SO (e.g., multiplicative scaling and recursive application) and contributes to improved polarity classification",
+      "role": "Result",
+      "parents": [
+        6,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

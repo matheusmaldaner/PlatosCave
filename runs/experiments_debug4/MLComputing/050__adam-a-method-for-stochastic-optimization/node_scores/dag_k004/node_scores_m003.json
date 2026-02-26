@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.85,
+    "relevance": 0.95,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.8,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the core mechanics of the Adam optimizer: exponential moving averages for first and second moments with bias correction.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.9,
+    "relevance": 0.8,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.7,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim corresponds to the standard Adam update theta_t equals theta_{t-1} minus alpha times m_hat_t divided by sqrt(v_hat_t) plus epsilon, which is known to produce per-parameter adaptive stepsizes and is consistent with the idea of invariance to diagonal rescaling of gradients.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.2,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Adam uses two moving-average vectors for first and second moments and performs elementwise operations, leading to memory use that scales with parameter count and is generally efficient, though exact memory footprint depends on implementation details",
+    "confidence_level": "high"
+  },
+  "4": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.2,
+    "reproducibility": 0.6,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Adam is widely described as combining AdaGrad like sparsity with RMSProp like adaptability to non stationary objectives, a commonly cited characterization though not a formal guarantee.",
+    "confidence_level": "high"
+  },
+  "5": {
+    "credibility": 0.75,
+    "relevance": 0.8,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.6,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Bias in exponential moving averages at initialization leads to underestimation early in training, and applying bias correction by dividing by one minus beta to the t power (and similarly for beta2) is a standard approach to stabilize updates.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.7,
+    "relevance": 0.8,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.6,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with the known description of Adamax as a variant of Adam using the infinity norm with u_t as the maximum of beta2 times u_{t-1} and the absolute gradient, and updating parameters using m_t divided by u_t.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with common knowledge that parameter averaging can reduce noise and improve generalization, and it is plausible to apply EMA to Adam.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.72,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claimed derivation v_t = (1 - beta2) sum i=1 to t of beta2^(t-i) g_i^2 corresponds to the standard exponential moving average update with initialization v0 = 0; expanding the recurrence yields the stated expression; if E[g_i^2] is constant, E[v_t] = E[g^2] (1 - beta2^t), and a small bias term accounts for nonstationarity or initialization effects, which motivates bias correction by dividing by (1 - beta2^t).",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the Adam optimizer update rules with first and second moment estimates and bias correction, which aligns with standard method definitions.",
+    "confidence_level": "high"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.95,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given the Adam-like update Delta_t equals alpha times m_hat_t divided by sqrt(v_hat_t), implying a per-parameter step roughly bounded by alpha under certain conditions, with the ratio m_hat_t over sqrt(v_hat_t) reflecting a signal-to-noise ratio that decreases as noise dominates, yielding automatic annealing and partial invariance to positive gradient scaling.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general background knowledge, Adam is commonly competitive with SGD variants on a range of neural network tasks, but the statement spans multiple datasets and model classes and relies on unspecified empirical results.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that omitting bias correction when beta2 is near one causes instability and worse loss in VAE training, and that applying bias correction improves convergence.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the results are plausible for optimizer comparisons but without details or external validation.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.35,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based on known discussions about Adam's convergence under convex settings, standard Adam may not guarantee sqrt(T) regret without modifications; the claim asserts a guaranteed bound which is not universally established.",
+    "confidence_level": "low"
+  },
+  "15": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states a standard limitation: convergence proofs under convexity with decaying learning rates; non-convex lack guarantees though empirical results may be observed.",
+    "confidence_level": "medium"
+  }
+}

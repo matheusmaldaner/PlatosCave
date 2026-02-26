@@ -1,0 +1,167 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A comprehensive, systematic survey of bias mitigation methods for machine learning classifiers can categorize existing methods, summarize evaluation practices (datasets, metrics, benchmarking), identify challenges and opportunities, and provide actionable guidance to practitioners",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        5,
+        13,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Bias mitigation methods can be usefully categorized by intervention stage (pre-processing, in-processing, post-processing) and by technique (13 approach categories)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        12
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We performed a systematic literature search (preliminary surveys, repository search across six repositories with domain and bias keywords, manual screening of title/abstract/body, backward snowballing, author feedback) resulting in a curated collection",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We organized methods into a taxonomy of 13 categories grouped under pre-, in-, and post-processing to structure analysis and comparisons",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Empirical evaluation practices (datasets, fairness metrics, benchmarking, models, code sharing, experimental design) were analyzed across collected publications to derive insights and recommendations",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        14
+      ]
+    },
+    {
+      "id": 5,
+      "text": "We collected 341 publications on bias mitigation for ML classifiers after all search stages (100 prelim, two repository search waves, snowballing, author feedback)",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Datasets evidence: 83 unique datasets used; Adult is most used (77% of empirical papers), COMPAS second (51%); average number of datasets per empirical publication is 2.7 and 90% use four or fewer datasets",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Fairness metrics evidence: 109 unique fairness metrics were used, organized into six categories (labels in dataset, predicted outcome, predicted and actual outcomes, predicted probabilities and actual outcome, similarity, causal reasoning); average 2 metrics per paper and 45% use one metric",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Benchmarking evidence: most studies benchmark against the original (unmitigated) model (254/308 benchmarked experiments), many benchmark against existing mitigation methods (137 methods used as benchmarks), and some use naive baselines (suppressing sensitive attribute, random)",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Model and evaluation design evidence: Logistic Regression (140 papers) and Neural Networks (102) are the most used classifiers; 70% of studies evaluate on a single classifier; common data-splits are 80/20 or 70/30 and cross-validation is used variably; 54 papers used synthetic data",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Source code and reproducibility evidence: 192 of 341 publications (56%) publicly shared code; adoption of toolkits/frameworks (AIF360, Fairlearn, Themis-ML) is noted",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Visibility evidence: publication volume on bias mitigation increased sharply from 2018 onward, with AI venues (NeurIPS, ICML, AAAI) prominent; citations concentrated among a small set of foundational works",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Combined approaches are used in practice: 70 publications applied multiple mitigation methods (pre+in, in+post, or all three), indicating methods can be composed",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Challenges identified include proliferation and selection of fairness metrics, need for formal fairness guarantees, dataset limitations (availability of protected attributes, benchmark suitability), real-world transferability, and limited experimental breadth",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Recommendations and best practices for practitioners: evaluate on at least three diverse datasets, state protected attributes, use at least two fairness metrics plus a performance metric, benchmark versus original model and relevant prior methods, evaluate on multiple classifiers (esp. for pre/post methods), repeat experiments (e.g., 10 runs), and share code and numerical results",
+      "role": "Conclusion",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Survey limitation: scope restricted to algorithmic fairness for classification on tabular data; multimodal, vision and NLP-only mitigation methods excluded unless they addressed tabular classification",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

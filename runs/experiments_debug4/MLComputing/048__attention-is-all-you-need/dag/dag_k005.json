@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An attention-only neural network architecture (the Transformer) can replace recurrent and convolutional layers to achieve superior translation quality while enabling greater parallelization and faster training",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The Transformer architecture consists of encoder and decoder stacks built from multi-head self-attention, position-wise feed-forward networks, residual connections, and layer normalization, with positional encodings added to token embeddings",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Self-attention with multi-head attention and scaled dot-product attention reduces maximum path length between positions to constant, allowing more parallelization than recurrent or convolutional layers",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Compared to prior recurrent and convolutional models, the Transformer achieves better or state-of-the-art BLEU scores on WMT 2014 English-to-German and English-to-French while using less training time and FLOPs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The Transformer is more parallelizable and trains significantly faster in practice, e.g., base model trained 12 hours on eight P100 GPUs and big model trained 3.5 days on eight P100 GPUs",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Encoder and decoder each use N = 6 identical layers; encoder layers contain multi-head self-attention and position-wise feed-forward sub-layers; decoder adds encoder-decoder attention and masks future positions to preserve auto-regression",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Multi-head attention projects queries, keys, values into h parallel subspaces (h=8 for base, h=16 for big) with dk = dv = dmodel/h and concatenates head outputs, and scaled dot-product attention divides dot products by sqrt(dk)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Analysis of computational complexity shows self-attention per-layer complexity O(n^2*d) with O(1) sequential operations and maximum path length O(1), versus recurrent O(n*d^2) with O(n) sequential operations and path length O(n), implying easier learning of long-range dependencies",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "On WMT 2014 English-to-German the Transformer big model achieves BLEU 28.4, outperforming previous best reported models including ensembles by over 2 BLEU",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "On WMT 2014 English-to-French the Transformer big model achieves BLEU 41.0 as a single model after 3.5 days of training on eight GPUs, establishing a new single-model state of the art at a fraction of previous training cost",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Restricting self-attention to a neighborhood of size r increases maximum path length to O(n/r), suggesting trade-offs for very long sequences and motivating future investigation of local restricted attention",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Training regimen: byte-pair encoding vocabularies, batching by approximate sequence length (~25000 source tokens and 25000 target tokens per batch), Adam optimizer with warmup learning rate schedule (warmup_steps=4000), and regularization via dropout (Pdrop base 0.1) and label smoothing (epsilon 0.1)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Ablation and variation experiments show single-head attention reduces BLEU by about 0.9, reducing dk hurts quality, larger models improve performance, dropout mitigates overfitting, and sinusoidal positional encodings perform similarly to learned positional embeddings",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "These architectural ablations support that multi-head attention, sufficient key dimension, model size, and regularization meaningfully contribute to the Transformer's performance",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "The Transformer codebase has been released as tensor2tensor to facilitate replication and extension",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Attention-only architectures can replace recurrence and convolution for sequence transduction, enabling faster training, easier modeling of long-range dependencies, and state-of-the-art translation results; future work includes extensions to other modalities and local attention for large inputs",
+      "role": "Conclusion",
+      "parents": [
+        2,
+        3,
+        4,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

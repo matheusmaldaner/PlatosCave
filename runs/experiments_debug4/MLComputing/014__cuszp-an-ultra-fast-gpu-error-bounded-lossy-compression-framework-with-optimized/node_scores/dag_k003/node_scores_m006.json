@@ -1,0 +1,189 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.35,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.2,
+    "reproducibility": 0.25,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a single kernel handles both compression and decompression with a block-wise pipeline to minimize CPU involvement, which is a technically plausible but specialized optimization; without the paper or external validation, the claim remains plausible but not assured and would require method details to assess rigor and reproducibility.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a four step per block pipeline with specific techniques; without external sources these steps are plausible but unverified, and their exact implementation details cannot be confirmed.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.5,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text and general knowledge; no external sources consulted.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim alone, the use of an Nvidia Ampere A100 GPU and six SDRBench datasets with the specified metrics is plausible but not evidenced here.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states there is experimental evidence on A100 using 6 datasets and various relative error bounds comparing cuSZp to cuSZ, cuSZx, and cuZFP, but no detailed results or methodological descriptions are provided for independent verification.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that consolidating all computations into a single GPU kernel removes CPU work and CPU to GPU data transfer overheads that previously dominated runtimes in GPU-based compressors like cuSZ and cuSZx, which is plausible but not substantiated by provided text alone and would require experimental benchmarking to confirm.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general ideas that blockwise encoding and data locality aid compression and GPU efficiency, but without specific experimental data or references the strength of verification is limited.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.58,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible approach combining pre quantization with an error bound guarantee and a Lorenzo based predictor using per block differences to reduce bits, which aligns with known concepts but lacks explicit validation within the provided text.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a per block fixed width encoding approach that uses the maximum absolute quantized value to set F_k, stores sign map, and computes size as (F_k+1) times block length divided by eight bytes; this is a straightforward arithmetic encoding size calculation and plausible in blockwise quantization schemes.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible GPU based hierarchical exclusive prefix-sum approach using thread, warp, and global synchronization with chained scans to obtain start offsets for concatenation, which is a standard concept in GPU parallel prefix sums and data layout preparation.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a technique to rearrange bits across block elements by bit offset to align into bytes for regular parallel storage of variable width data.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim states that evaluation measures end to end throughput from data in GPU memory to compressed bytes in GPU memory and that single kernel throughput equals end to end throughput; without broader context this is plausible but not clearly established or universally accepted.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.0,
+    "method_rigor": 0.0,
+    "reproducibility": 0.0,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, no external sources were checked; verification relies on general knowledge and is inconclusive.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Claim states that cuSZp achieves the highest average compression ratio in sixteen of twenty four benchmarks and that block smoothness analysis with cdfs supports fixed length block encoding; without independent data this assessment remains uncertain.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, there is moderate plausibility but no independent verification available here.",
+    "confidence_level": "medium"
+  },
+  "16": {
+    "credibility": 0.58,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that a single kernel, block wise GPU compressor named cuSZp achieves ultra fast end to end throughput with competitive or superior compression and data quality across diverse scientific datasets for inline GPU HPC simulations.",
+    "confidence_level": "medium"
+  }
+}

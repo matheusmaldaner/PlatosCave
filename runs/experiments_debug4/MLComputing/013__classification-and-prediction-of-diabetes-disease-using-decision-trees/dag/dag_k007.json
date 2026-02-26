@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree based machine learning model can classify and predict diabetes in patients using the Pima Indians dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Decision tree classification is an appropriate method for medical diagnosis tasks because it produces interpretable if-then rules and handles classification problems",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We used the Pima Indians Diabetes Database containing 768 instances and 9 attributes to train and test the model",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data preprocessing removed rows with zero values in BloodPressure, BMI, or Glucose because zeros were treated as measurement errors and 35 samples had zero values",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The model was implemented in Python using Pandas for data handling and scikit-learn DecisionTreeClassifier, with visualization of the trained tree",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Decision trees can partition datasets by maximizing information gain and can use entropy, Gini, or classification error as heterogeneity measures",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The dataset was split into training and testing subsets in three experiments: 70/30, 50/50, and 30/70",
+      "role": "Method",
+      "parents": [
+        2,
+        3,
+        4
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Exploratory data analysis revealed outliers and impossible zero values for physiologic measures indicating data quality issues",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experiment 1: training 70% and testing 30% produced a set of accuracy and classification report metrics (visualized in figures)",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Experiment 2: training 50% and testing 50% achieved the best reported accuracy of 0.71 for this study",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Experiment 3: training 30% and testing 70% produced lower accuracy estimates compared to larger training splits",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Increasing the proportion of data used for training improves the accuracy estimate of the decision tree model in this dataset",
+      "role": "Claim",
+      "parents": [
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: Decision tree analysis is a useful predictive modeling tool for diabetes classification offering fast training, intuitive rules, nonparametric modeling, and competitive accuracy",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        1,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation: The model requires further clinical consultation and more accurate diagnosis since some dataset features may be unavailable to users and data quality issues remain",
+      "role": "Limitation",
+      "parents": [
+        12,
+        7,
+        3
+      ],
+      "children": null
+    }
+  ]
+}

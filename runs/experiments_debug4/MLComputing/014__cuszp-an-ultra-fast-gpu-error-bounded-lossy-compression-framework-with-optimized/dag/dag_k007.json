@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An error-bounded GPU lossy compressor (cuSZp) can be implemented as a single GPU kernel to deliver ultra-fast end-to-end throughput while maintaining high compression ratios and high reconstructed data quality for scientific HPC datasets",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "cuSZp implements a block-wise pipeline inside one GPU kernel composed of four main steps: (S1) quantization and lightweight Lorenzo prediction, (S2) fixed-length encoding per block, (S3) hierarchical global prefix-sum synchronization, and (S4) block bit-shuffle to store encoded bytes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "cuSZp uses pre-quantization to convert floating-point values to integers with guaranteed error bounded by the user-defined eb, then applies a 1D 1-layer Lorenzo prediction within each block to reduce integer bit entropy",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "cuSZp adopts fixed-length per-block encoding (determined by the maximum absolute quantized integer in a block), stores sign map bytes, and computes block compressed sizes by (fixed_length + 1) * L / 8",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "cuSZp implements hierarchical global synchronization (thread-level, warp-level, global-level) inside the kernel to compute exclusive prefix-sum of per-block compressed sizes, enabling concatenation of variable-length block outputs without CPU involvement",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Block bit-shuffle rearranges per-block fixed-length encoded bits by bit offsets into aligned bytes, avoiding irregular bit-shifts and enabling highly parallel writes to final compressed memory",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Putting all compression and decompression steps into one GPU kernel eliminates CPU preprocessing/postprocessing and CPU-GPU data movement overheads, making end-to-end throughput effectively equal to kernel throughput",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Fixed-length encoding per block is appropriate because scientific datasets exhibit high local smoothness: most blocks have small relative value ranges for typical block lengths (e.g., L=8,32), so fixed-length yields good compression without Huffman overhead",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Hierarchical prefix-sum (thread/warp/global) significantly reduces global memory traffic and attains high synchronization throughput on NVIDIA A100",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Quantization+Lorenzo, fixed-length encoding, hierarchical sync, and bit-shuffle collectively enable cuSZp to achieve high kernel parallelism and reduce register/global-memory control overheads",
+      "role": "Claim",
+      "parents": [
+        2,
+        3,
+        5,
+        4
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Measured global synchronization throughput on A100 averaged 208.06 GB/s across datasets (120.52 GB/s to 260.77 GB/s depending on data characteristics), demonstrating the efficiency of the in-kernel prefix-sum implementation",
+      "role": "Evidence",
+      "parents": [
+        4,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "cuSZp achieves average end-to-end throughput of 93.63 GB/s for compression and 120.04 GB/s for decompression on NVIDIA A100 (end-to-end period from raw data in GPU global memory to compressed data in GPU memory), which is 95.53x and 55.18x faster than cuSZ and cuSZx respectively",
+      "role": "Result",
+      "parents": [
+        6,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "cuSZp attains comparable or higher kernel throughput relative to state-of-the-art GPU compressors (around 100+ GB/s in many cases) while achieving the highest compression ratios on 16 of 24 benchmark cases across REL error bounds",
+      "role": "Result",
+      "parents": [
+        9,
+        7
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Under the same bit rates, cuSZp preserves higher statistical fidelity (PSNR and SSIM) than cuZFP and avoids the visual artifacts produced by some block-constant designs (e.g., cuSZx), yielding better visualization and iso-surface quality on multiple datasets",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Some competing methods (e.g., cuSZx) can achieve higher compression ratios on certain datasets (e.g., HACC, CESM-ATM) for large relative error bounds, but they introduce visual artifacts such as horizontal stripes and degraded reconstructed data quality",
+      "role": "Counterevidence",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "cuSZp performance depends on dataset characteristics (smoothness, sparsity, block value ranges) and GPU memory bandwidth; throughput and compression gains vary across datasets and over time in time-varying simulations",
+      "role": "Limitation",
+      "parents": [
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

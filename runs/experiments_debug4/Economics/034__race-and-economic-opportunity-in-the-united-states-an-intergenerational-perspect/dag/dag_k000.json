@@ -1,0 +1,186 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Counties causally affect children's adult incomes; estimating county-level causal exposure effects identifies which places produce better intergenerational mobility and can guide policy and family moves",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Identify county causal exposure effects using a movers fixed-effects regression that exploits families who move across counties/CZs at different child ages and regress child outcome on county-by-exposure-year indicators with origin-by-destination fixed effects",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data: Deidentified federal tax records for all children born 1980–1986, locations from ZIPs on returns/W-2s; outcomes measured as household income rank at age 26 (primary) and other outcomes",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Assumption: Conditional on origin-by-destination fixed effects, a child's exposure time to each place is orthogonal to other determinants of outcomes (no age-dependent selection into timing of moves to a given county)",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        4,
+        5,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Validation evidence: placebo tests and controls (controls for pre/post-move parental income and marital status; placebo using movers after exposure is irrelevant and teenage labor force participation) show movers-based estimates are uncorrelated with these placebo estimates, supporting identification",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result (magnitude): For children from low-income families (parents at 25th percentile), each additional year of childhood exposure to a one standard deviation better county increases adult household income ~0.5% (≈0.17 percentile points per year); 20 years from birth ≈10% income gain",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result (heterogeneity): Substantial variation in causal effects across counties (signal SD ≈0.17 percentile-years) including large within-metro differences; counties within same CZ can differ meaningfully (e.g., Manhattan vs Hudson County)",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result (subgroups): Neighborhood causal effects matter more for boys than girls (signal SD ≈60% larger for boys in low-income families); boys have a thicker lower tail with especially negative outcomes in high-poverty segregated areas",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Method (forecasting): Construct MSE-minimizing forecasts of county causal effects by optimally shrinking movers' unbiased but noisy fixed-effect estimates toward predictions from outcomes of permanent residents (nonmovers) using estimated signal and noise variances",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result (forecasts & examples): Shrinkage forecasts produce precise guidance for families; among large counties DuPage County, IL ranks highest for low-income children (≈0.80% per year; ≈16% from birth), while Cook County ranks among worst (≈−13% from birth)",
+      "role": "Result",
+      "parents": [
+        6,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Claim (predictors): Areas that causally produce better outcomes for low-income children tend to have less concentrated poverty and segregation, lower income inequality (including top 1% share), better school outcomes, higher share of two-parent families, and lower crime; many of these correlations are driven primarily by causal place effects rather than selection",
+      "role": "Claim",
+      "parents": [
+        6,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Claim (housing/rents and opportunity bargains): Areas that generate better outcomes tend to have higher house prices on average, but within CZs rents explain little of variance in causal effects (<5% in many cases) so many 'opportunity bargains' exist—places that yield good child outcomes without substantially higher rents; this may reflect information frictions and other factors",
+      "role": "Claim",
+      "parents": [
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation and caveat: Identification relies on a stronger orthogonality condition (one per county) than prior average exposure work; estimates assume additive, age-constant place effects and equal effects across movers and permanent residents conditional on parent income—heterogeneous or age-varying effects could alter interpretation",
+      "role": "Limitation",
+      "parents": [
+        3,
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion and policy implication: Results support place-focused interventions (helping families move to high-opportunity places and place-based investments) and use of movers-based causal estimates to guide policy; further work needed to estimate effects at finer geographies and to identify mechanisms for causal factors (e.g., segregation, school quality)",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        5,
+        10,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

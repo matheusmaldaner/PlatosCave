@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Assessment aligns with general understanding that large scale HPC data presents storage and communication challenges motivating lossy error bounded compression",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.58,
+    "relevance": 0.92,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.25,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible in principle but depends on implementation details; without evidence it remains uncertain and not broadly established.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim specifies a four step, block wise cuSZp processing pipeline with pre quantization and lightweight Lorenzo prediction, fixed length encoding per block, hierarchical global prefix sum synchronization, and block bit shuffle for packing bits into bytes, but no external evidence is provided to confirm these steps beyond the claim text.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that fixed-length per block encoding with bit-shuffle bypasses variable-length codes like Huffman and yields parallelism and throughput by exploiting intra-block smoothness; plausibility exists but specifics and empirical support are not provided.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the evaluation setup includes an NVIDIA A100 GPU, six representative datasets, and measures listed; no external sources cited.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.72,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with widely observed benefits of error bounded lossy compression in HPC contexts, suggesting substantial compression gains with controlled error, though exact quantitative generality and proofs depend on data characteristics and specific algorithms.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a hierarchical within a single kernel approach to global prefix-sum for per block compressed offsets, which is plausible given GPU practices, but the statement lacks empirical data or explicit methodology in the claim text.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given common lossy compression practices that use bound based pre quantization to integers and delta coding with a Lorenzo like predictor, but cannot be confirmed from the claim text alone.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a fixed length encoding per non zero block that includes a sign map and uses a bit width equal to the maximum bit needed among block integers, which would enable straightforward computation of the block compressed size; this aligns with general concepts of fixed length encoding but there is no specific evidence provided in the claim text.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given general knowledge that reducing CPU-GPU handoffs and avoiding separate preprocessing steps like Huffman tree construction can reduce end-to-end overhead, though the exact impact depends on implementation details and workload characteristics.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a specific throughput value of 208.06 GB per second achieved by hierarchical global synchronization to enable in kernel concatenation of variable length blocks; without external data, this is plausible but unverified and would require detailed benchmarking and methodology to substantiate.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment limited to claim text and general knowledge; specifics of block bit shuffle and its memory write implications are not known from provided information.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.45,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim posits that scientific datasets exhibit high intra-block smoothness as evidenced by empirical CDFs of block value ranges, which would support fixed length per block encoding with minimal loss in compression, a notion plausible but not guaranteed across domains and without specific empirical results cited here",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim provides specific end-to-end throughput numbers and speedups against two baselines, but there is no external verification or methodological detail available here.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.5,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the role, and general background knowledge, the statement asserts cuSZp achieves highest compression in 16 of 24 benchmarks and maintains or improves data fidelity versus cuZFP, with comparable or better visualization.",
+    "confidence_level": "medium"
+  }
+}

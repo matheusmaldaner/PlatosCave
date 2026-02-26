@@ -1,0 +1,161 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Dropout reduces overfitting and provides an efficient approximate model averaging technique that improves generalization of large neural networks across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Mechanism: During training, units and their connections are randomly dropped (retained with probability p) producing exponentially many thinned networks and preventing units from co-adapting",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Test-time approximation: use a single full network with outgoing weights scaled by p to approximate averaging over thinned networks",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Training procedure: for each training case sample a thinned network, do forward and backpropagation on that subnetwork; use SGD with momentum, learning rate scheduling and optionally max-norm constraints",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Dropout can be applied beyond feed-forward nets, e.g., to Restricted Boltzmann Machines (Dropout RBM) by sampling hidden-unit masks during CD training",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Empirical result: Dropout plus weight scaling at test time yields significantly lower generalization error than standard regularizers and provides a good approximation to Monte-Carlo averaging (about 50 samples approaches the averaged result)",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Empirical result: Combining dropout with max-norm regularization, high momentum and decaying learning rates further improves performance and stabilizes training",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Observed effects on representations: dropout breaks co-adaptations, yields sparser hidden activations and produces more localized/robust features in autoencoders and RBMs",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Empirical evidence across datasets: dropout improved performance on vision (MNIST, SVHN, CIFAR-10/100, ImageNet), speech (TIMIT), text (Reuters-RCV1) and biology (Alternative Splicing), achieving state-of-the-art on several benchmarks",
+      "role": "Evidence",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Specific results: MNIST error reduced from ~1.60% to 0.95% (with large nets and max-norm), SVHN down to 2.55% (with dropout in conv layers), CIFAR-10 to 12.61% without augmentation, ImageNet top-5 error reduced substantially and won ILSVRC-2012, TIMIT phone error reduced, and dropout outperformed standard nets on Alternative Splicing though Bayesian nets were better on that small-data task",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Dropout RBM properties: Dropout RBMs are mixtures of RBMs with shared weights and learn sparser, coarser features with fewer dead units compared to standard RBMs",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Marginalization claim: marginalizing dropout noise yields deterministic regularizers; in linear regression marginalizing Bernoulli dropout is equivalent in expectation to a specific form of L2 ridge regularization scaled by input variances",
+      "role": "Claim",
+      "parents": [
+        4,
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Practical variant: multiplicative Gaussian noise with matched mean and variance to Bernoulli dropout performs comparably or slightly better and does not require test-time weight scaling",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation: Dropout increases training time and noise in parameter updates, typically taking about 2-3 times longer to train than equivalent standard networks",
+      "role": "Limitation",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    }
+  ]
+}

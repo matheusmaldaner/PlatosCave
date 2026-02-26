@@ -1,0 +1,199 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Counties causally affect children's adult incomes; estimating county-level causal effects identifies which places increase upward intergenerational mobility and why",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: identify causal county effects using a mover fixed-effects exposure-time design that exploits variation in children's ages when families move across counties and includes origin-by-destination fixed effects and parent-income interactions",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data: de-identified US federal tax records (1996–2012) for children born 1980–1986; location from ZIP each year; outcomes measured as income percentile ranks at age 26 (household and individual) and other outcomes (college, marriage)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Estimation implementation: hierarchical two-step procedure — estimate origin-destination pairwise exposure effects from movers, then recover commuting-zone (CZ) fixed effects; estimate county-within-CZ effects using within-CZ movers and add to CZ effects; normalize to population-weighted mean zero",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        5,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Key identification assumption: conditional on origin-by-destination fixed effects and parents' income, childhood exposure time to each place is orthogonal to other determinants of children's outcomes (no age-dependent selection into timing of moves)",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Validation evidence: controlling for parental income and marital status around moves does not change estimates; placebo tests (children moving after age 23 and teenage labor force participation at 16) produce estimates uncorrelated with baseline, supporting orthogonality",
+      "role": "Evidence",
+      "parents": [
+        1,
+        2,
+        4
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result (main magnitude): for low-income families (parents at 25th percentile), one additional year of childhood exposure to a one standard deviation better county increases adult household income by ~0.5% (≈0.17 percentile per year); 20 years from birth implies ≈10% increase",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "children": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result (variation): substantial heterogeneity exists across places — county-level annual exposure signal standard deviation for p=25 is 0.17 percentile (larger than CZ-level), implying notable within-metro differences; many counties differ meaningfully from their CZ averages",
+      "role": "Result",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Forecasting method: construct MSE-minimizing forecasts for each area using shrinkage (weighted average of movers-based fixed effect and prediction based on permanent residents), weighting by precision and estimated signal variance to reduce MSE of predicted causal effect",
+      "role": "Method",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        9,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result (forecasts and examples): forecasts identify high-opportunity CZs/counties (e.g., DuPage County and Salt Lake City among top areas for low-income families) and large local disparities (e.g., Cook County vs DuPage County ~30% difference if moved at birth)",
+      "role": "Result",
+      "parents": [
+        6,
+        7,
+        8
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result (gender heterogeneity): places matter more for boys than girls — signal standard deviation of county effects is ~60% larger for boys in low-income families; boys have thicker lower tail (very negative areas) and worse outcomes in highly segregated areas",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Correlational evidence on mechanisms: areas that causally improve outcomes for low-income children are characterized by less residential segregation, lower concentrated poverty, lower income inequality (Gini and top-1% share), better school performance (test scores adjusted for parental income), more two-parent families, and lower crime; many of these correlations are driven mainly by causal place effects rather than sorting",
+      "role": "Evidence",
+      "parents": [
+        6,
+        7,
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Decomposition result: for many group-level area attributes (segregation, inequality, school quality, social capital), 60–80% of observational correlations with upward mobility are explained by causal effects of place rather than selection; for some demographic aggregates (single mother share, black share), selection explains a larger fraction, but causal correlations remain substantial",
+      "role": "Claim",
+      "parents": [
+        11,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Housing prices and opportunity bargains: within CZs rents are weakly correlated with causal effects (rents explain <5% of variance in counties' causal effects for p=25 in large CZs); many counties are 'opportunity bargains' (good child outcomes without higher rents); observable components of causal effects (schools, segregation, poverty, family structure, social capital) are priced in rents but the residual 'unobservable' component is not, suggesting information or behavioral frictions",
+      "role": "Result",
+      "parents": [
+        9,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: place-based variation causally matters for intergenerational mobility; identifying high-opportunity areas and their observable correlates can guide relocation and policy, but further work is needed on smaller geographies, subgroup heterogeneity, mechanisms, and translating findings into interventions",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        9,
+        11,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

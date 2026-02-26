@@ -1,0 +1,187 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A versatile GPU lossy compression framework (VGC) can address key limitations of existing GPU lossy compressors in HPC by providing dimension-aware algorithms, memory-efficient compression, selective decompression, and ultra-fast throughput while maintaining error bounds",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        7,
+        8,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing GPU lossy compressors have three critical limitations for HPC: poor generalization across diverse data features, inability to reduce real-time GPU memory footprint (pre-allocating max compressed size), and lack of effective random access preserving spatial locality",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "VGC design: supports three algorithms (No-delta, Delta, Outlier), 1D/2D/3D dimension-aware processing, a kernel-fission memory-efficient compression mode, an early-stopping selective decompression mode, and a fused single-kernel standard mode to maximize throughput",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Dimension-aware Delta Encoding: perform row-wise (and slice-wise/depth-wise) delta using a single adjacent point per step to preserve spatial locality, maintain memory coalescing, minimize register and branch divergence, and enable 1D/2D/3D processing with high throughput",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Memory-efficient Compression method: split into two GPU kernels where kernel1 profiles per-block compressed sizes and computes prefix-sum to obtain exact total compressed size for cudaMalloc, and kernel2 reuses offsets to write compressed blocks directly, reducing GPU memory footprint",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        9,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Selective Decompression method: store per-block metadata and use an early-stopping global prefix-sum to compute offsets up to target ROI, locate and decompress only ROI blocks, and optionally write back to compressed array to support homomorphic operations",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Implementation choices and optimizations: fused single-kernel for standard mode (except memory-efficient), block sizes (1D:32, 2D:8x8, 3D:4x4x4), integer quantization plus fixed-length encoding and optional outlier preservation, register-only delta fusion, and vectorized/coalesced memory accesses",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Throughput results on NVIDIA A100 across 13 HPC datasets: average VGC compression throughput ~320 GB/s (single-precision) and ~600 GB/s (double-precision), decompression ~470 GB/s (single) and ~1000 GB/s (double); memory-efficient mode achieves about 70% of standard throughput",
+      "role": "Result",
+      "parents": [
+        0,
+        3,
+        4,
+        6
+      ],
+      "children": [
+        8,
+        9,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Compression ratio and reconstructed quality: VGC Outlier mode achieves top or near-top compression ratios on 12 of 13 datasets under REL 1e-4 (up to 86% higher than cuSZp2 on some datasets) while producing reconstruction quality comparable to other error-bounded compressors (quantization-determined PSNR/SSIM)",
+      "role": "Result",
+      "parents": [
+        0,
+        2,
+        3,
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Memory footprint reduction evidence: Memory-efficient Compression allocates exact compressed size at runtime and reduces GPU resident memory substantially (example: SCALE fields reduced from hundreds of MB to single-digit MB), unlike other compressors that pre-allocate maximum size",
+      "role": "Evidence",
+      "parents": [
+        4,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Selective Decompression performance: selective ROI decompression achieves ultra-high throughput (average ~1.11 TB/s single-precision and ~2.08 TB/s double-precision) and supports decompressing small or multiple ROIs with negligible overhead via early stopping",
+      "role": "Result",
+      "parents": [
+        5,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Use case — LLM KV-cache compression: using VGC No-delta 1D memory-efficient mode on floating-point KV caches for four open models reduced GPU KV-cache memory by ~46% on average while achieving ~211 GB/s compression and ~296 GB/s decompression throughput with negligible impact on downstream inference BLEU and human-checked semantics",
+      "role": "Evidence",
+      "parents": [
+        2,
+        4,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Use case — in-situ compression for inter-node transfer: for a 256 GB turbulence field split into 2 GB chunks, VGC Outlier 3D in a pipelined GPUDirect RDMA scenario reduced end-to-end transfer time by up to 12.5x versus uncompressed transfer and outperformed other GPU compressors in combined compression+transfer+decompression latency",
+      "role": "Evidence",
+      "parents": [
+        2,
+        7,
+        8
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: VGC demonstrates that a dimension-aware, multi-algorithm GPU lossy compressor with memory-efficient allocation and selective decompression can be both versatile and ultra-fast for HPC, delivering high throughput, improved compression ratios, reduced GPU memory footprint, and efficient random access",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

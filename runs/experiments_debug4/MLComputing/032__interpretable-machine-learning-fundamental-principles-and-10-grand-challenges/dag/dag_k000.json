@@ -1,0 +1,167 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "For high-stakes decisions and robust data science, inherently interpretable machine learning models constrained by domain-specific interpretability requirements should be preferred over explaining black box models; advancing this requires fundamental principles and research on key technical challenges.",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Principle 1: An interpretable ML model obeys a domain-specific set of constraints so its predictions or reasoning are more easily understood by humans.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Principle 2: Interpretable models do not automatically create trust; they enable informed decisions about trust by revealing reasoning and allowing users to accept or reject the model.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Principle 3: There is no general tradeoff between interpretability and accuracy in real data science pipelines; interpretability often aids troubleshooting and can improve accuracy.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Principle 4: The data science process should iteratively refine both performance metrics and interpretability metrics through feedback with domain experts.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Principle 5: For high-stakes decisions, use interpretable models if possible rather than posthoc explanations of black boxes, because explanations can be misleading and hide real problems.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Posthoc explanations for black boxes (local surrogates, saliency maps, SHAP, LIME) are often misleading or unreliable and can provide false authority, harming safety in high-stakes settings.",
+      "role": "Evidence",
+      "parents": [
+        0,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Empirical observations: on tabular data many simple models perform comparably to complex models, and for raw data there exist interpretable neural approaches achieving competitive accuracy.",
+      "role": "Evidence",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Method formulation: Interpretable ML can be framed as constrained optimization: minimize loss plus an interpretability penalty subject to interpretability constraints, with C trading off accuracy and interpretability.",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Claim about Rashomon sets: Many problems admit a large Rashomon set of approximately-equally-accurate models, and a large Rashomon set increases the likelihood that an interpretable model with similar accuracy exists.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Challenge 1 (sparse logical models): Optimizing sparse decision trees, decision lists, and decision sets is computationally hard (NP-complete), current methods (greedy, MIP, dynamic programming) have scalability and continuous-variable thresholding challenges and struggle to enforce global domain constraints.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Challenge 2 (scoring systems): Building sparse integer-coef scoring systems requires discrete optimization; naive rounding and l1 proxies can fail, while exact MIP methods (e.g., RiskSLIM) scale poorly and need better ways to handle continuous features and interactive constraint elicitation.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Challenge 3 (generalized additive models): GAMs provide interpretable additive component functions but need methods to control sparsity, smoothness, monotonicity, and to use GAMs effectively for troubleshooting messy real-world datasets.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Challenge 4 (modern case-based reasoning): Case-based methods and prototype or part-based prototype networks can give interpretable, example-based explanations across raw and tabular data, but they need extensions for complex data (video), human-in-the-loop prototype supervision, and efficient prototype troubleshooting or replacement.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Challenge 5 (supervised disentanglement): Aligning neurons or latent axes with human concepts via supervised constraints (concept datasets, concept whitening) can make layers interpretable, but open problems include disentangling whole networks, selecting concept hierarchies and making the mapping from concepts to outputs interpretable.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Challenge 6 (unsupervised disentanglement and generative constraints): Discovering concepts without labels via generative models, capsule or slot architectures, or compositional inductive biases is promising but current methods work mainly on simple or synthetic datasets and lack quantitative evaluation, generalizability to realistic scenes and domain transfer such as materials science.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

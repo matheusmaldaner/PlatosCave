@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "K-nearest neighbors (KNN) algorithm can be used to accurately predict the presence of heart disease from clinical and demographic patient data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Heart disease is a leading cause of death and early detection through predictive models can enable prevention and timely intervention",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The proposed methodology applies KNN as a non-parametric, instance-based classifier using distance metrics to assign class labels based on majority vote of K neighbors",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data preprocessing steps include feature selection, handling imbalanced data via weighting strategies, and scaling prior to applying KNN",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Related work shows multiple ML methods (KNN, SVM, decision trees, neural nets, ensembles) have been applied to heart disease prediction with reported high accuracies (example: SVM 92.3%, decision tree 93.19%)",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Predictive models using clinical features (age, sex, cholesterol, blood pressure, ECG readings, thalassemia status, etc.) provide the input variables for heart disease classification",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Implementation details: modelling repeated three times (repeats = 3), K set to 10 for experiments, and Euclidean distance used as distance metric",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Model evaluation used cross-validation and metrics including sensitivity, specificity, accuracy, and AUC-ROC to assess classifier performance",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "K preference affects performance: odd K to avoid ties, small K risks overfitting, large K can introduce noise",
+      "role": "Assumption",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Feature selection and class-weighting for imbalance are applied to improve predictive accuracy and address dataset noise",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Dataset attribute definitions include age, sex, chest pain type, resting blood pressure, cholesterol, fasting blood sugar, rest ECG, max heart rate, exercise-induced angina, oldpeak, slope, ca, thal, and target label",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Euclidean distance formula applied to compute neighbor distances and derive KNN classifier scores across different K values",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical results: histogram visualizations performed, male patients showed higher counts of diagnosed heart disease, and KNN produced performance results summarized by confusion matrix and other metrics",
+      "role": "Result",
+      "parents": [
+        7,
+        9,
+        11
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Confusion matrix based accuracy computed as ((38+45)/(38+10+7+45))*100 = 83%, indicating the KNN model achieved 83% accuracy on the reported test",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Authors report that KNN yields promising high accuracy and AUC-ROC values and that feature importance analysis improves interpretability by identifying key risk factors",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: KNN is a simple, adaptable, and effective tool for heart disease prediction that can aid risk assessment and early detection, though it has limitations like computational cost and sensitivity to K and preprocessing",
+      "role": "Conclusion",
+      "parents": [
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

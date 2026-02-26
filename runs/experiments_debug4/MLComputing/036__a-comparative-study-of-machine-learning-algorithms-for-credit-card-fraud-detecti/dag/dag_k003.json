@@ -1,0 +1,197 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning algorithms can be used to detect fraudulent credit card transactions and a comparative evaluation of Random Forest, Decision Tree, AdaBoost, and Gradient Boosting will identify the most effective approach for imbalanced European credit card transaction data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Methods: The study evaluates four algorithms—Random Forest, Decision Tree, AdaBoost, and Gradient Boosting—on a European credit card dataset",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Methods: Data preprocessing used the Kaggle European credit card dataset (284,807 records, 0.172% fraud) and applied SMOTE to balance classes; performance was measured by accuracy, precision, recall, F1, ROC AUC, and precision-recall AUC",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Assumption and challenge: The dataset is highly imbalanced, creating a trade-off between false positives (operational cost) and false negatives (undetected fraud) that must be managed",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Result: Random Forest produced the best overall balance with highest accuracy (0.999415), precision (0.857143), recall (0.825), F1 (0.840764), and low FP/FN (FP=18, FN=28)",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: AdaBoost and Gradient Boosting achieved high recall (AdaBoost 0.90, Gradient Boosting 0.90625) but low precision (AdaBoost 0.096192, Gradient Boosting 0.117409) and high false positives (AdaBoost FP=1386, Gradient Boosting FP=1044), indicating many false alarms",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: Decision Tree showed strong recall (0.8125) but poor precision (0.350404) and higher false positives (FP=241), suggesting a tendency to misclassify legitimate transactions as fraud",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Claim: Minimizing false positives is operationally important for banks and Random Forest reduces false alarms compared with other evaluated algorithms",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evidence: Confusion matrix and metric tables from experiments support performance claims (Random Forest TP=132 TN=85,265 FP=18 FN=28; Decision Tree TP=130 TN=85,042 FP=241 FN=30; AdaBoost TP=144 TN=83,897 FP=1,386 FN=16; Gradient Boosting TP=143 TN=84,239 FP=1,044 FN=17)",
+      "role": "Evidence",
+      "parents": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Limitation: Models were evaluated on a single public European dataset from 2013 and results may not generalize to other regions, time periods, or evolving fraud tactics",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Limitation: Ensemble methods like AdaBoost are sensitive to noise and outliers, which can worsen precision on imbalanced real-world transaction data",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Random Forest is the most reliable and balanced model among those tested for fraud detection on the studied imbalanced dataset, showing the best trade-off between precision and recall",
+      "role": "Conclusion",
+      "parents": [
+        8
+      ],
+      "children": [
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Future work: Investigate additional feature engineering to improve predictive power and capture transaction behavior patterns",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Future work: Explore real-time detection approaches such as online learning and optimization for low latency, high throughput deployment",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Future work: Evaluate transfer learning and pre-trained models to improve generalization and reduce training time on larger datasets",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Future work: Improve explainability and interpretability (for example LIME or SHAP) to increase trust and adoption by financial institutions",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": null
+    }
+  ]
+}

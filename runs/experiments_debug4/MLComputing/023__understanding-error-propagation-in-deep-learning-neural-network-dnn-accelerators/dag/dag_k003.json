@@ -1,0 +1,192 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The error resilience of DNN systems (software on specialized accelerators) depends on data types, numeric value ranges, data reuse, and layer types/positions, and can be effectively improved with targeted, low-overhead protection techniques informed by these dependencies",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Modified Tiny-CNN simulator to inject transient single-event bit-flip faults mapped to accelerator components and execute fault injections on four convolutional networks (AlexNet, CaffeNet, NiN, ConvNet) using published pre-trained weights and datasets",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Modeled canonical datapath latches (multiplier, adder, registers) and studied buffer faults using the Eyeriss accelerator microarchitecture projected to 16nm; injected 3,000 random single-bit faults per latch/component and measured Silent Data Corruption (SDC) outcomes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Claim: Defined DNN-specific SDC types (SDC-1, SDC-5, SDC-10%, SDC-20%) to capture misclassification and confidence deviations appropriate for ranked DNN outputs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        1
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Result: Different networks and data types show large variation in SDC probability; high-order bits (exponent/integer bits) are most likely to cause SDCs while mantissa/low-order bits are less impactful",
+      "role": "Result",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Normalization layers (e.g., Local Response Normalization) and operations like pooling/ReLU mask many faults by averaging or zeroing values, reducing propagation and SDCs; fully-connected layers and later layers can be more sensitive",
+      "role": "Result",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Claim: Buffers added for data reuse (global buffer, filter SRAM, img/psum registers) can dramatically increase accelerator FIT rates because of larger storage sizes and reuse that amplifies single faults",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence: Large-scale fault injection across networks and data types (3,000 faults per latch) shows ConvNet (shallow) has highest SDC propagation, deeper networks like NiN are less sensitive, and FP vs FxP types differ by orders of magnitude in SDC rates",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evidence: Per-bit analysis shows for floating-point types exponent high-order bit flips (0->1) cause large magnitude deviations and more SDCs; for fixed-point, integer bits nearer the sign/integer boundary are most vulnerable; shifting binary point reduces vulnerability",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence (Eyeriss): Case study injecting faults in Eyeriss buffers using 16b fixed-point shows global buffer and filter SRAM FIT rates can exceed safety targets (e.g., global buffer FIT up to 87.47 in ConvNet), while small registers have lower FIT due to limited reuse",
+      "role": "Evidence",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Evidence: Datapath FIT rate calculations based on latch sensitivity show datapath alone can produce non-negligible FIT (e.g., up to 2.45) depending on network and data type, potentially exceeding allowable budget for accelerator area fraction",
+      "role": "Evidence",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Claim: Two targeted mitigation techniques reduce SDCs and FIT: (1) Symptom-based Error Detectors (SED) that monitor layer activation ranges in global buffer, and (2) Selective Latch Hardening (SLH) that hardens the most sensitive data bits/latches",
+      "role": "Claim",
+      "parents": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result/Evidence (SED): SED trained on per-layer activation ranges with 10% cushion achieves high detection (average precision 90.21%, recall 92.5%) across selected networks and data types and reduces Eyeriss FIT (FLOAT) from 8.55 to 0.35 (96% reduction) in evaluated cases",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Result/Evidence (SLH): Using asymmetric bit sensitivity, selectively hardening the most sensitive latches with mixed hardened latch types yields large FIT reductions; combined techniques can achieve 100x latch FIT reduction for ~20-25% latch area overhead in evaluated AlexNet cases",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Characterization-driven, DNN-aware protection (choosing appropriate data types, leveraging normalization layers, applying SED for buffers and SLH for datapath) substantially lowers SDC probability and FIT rates, restoring accelerator reliability toward safety standards with acceptable overhead",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

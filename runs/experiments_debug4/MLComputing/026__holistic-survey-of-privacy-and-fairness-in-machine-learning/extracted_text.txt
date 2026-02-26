@@ -1,0 +1,2767 @@
+--- Page 1 ---
+arXiv:2307.15838v1  [cs.LG]  28 Jul 2023
+Holistic Survey of Privacy and Fairness in Machine Learning
+SINA SHAHAM, University of Southern California, USA
+ARASH HAJISAFI*, University of Southern California, USA
+MINH K. QUAN*, Deakin University, Australia
+DINH C. NGUYEN, University of Alabama in Huntsville, USA
+BHASKAR KRISHNAMACHARI, University of Southern California, USA
+CHARITH PERIS, Amazon, USA
+GABRIEL GHINITA, Hamad Bin Khalifa University, Qatar
+CYRUS SHAHABI, University of Southern California, USA
+PUBUDU N. PATHIRANA, Deakin University, Australia
+Privacy and fairness are two crucial pillars of responsible Artiﬁcial Intelligence (AI) and trustworthy Machine Learning (ML). Each ob-
+jective has been independently studied in the literature with the aim of reducing utility loss in achieving them. Despite the signiﬁcant
+interest attracted from both academia and industry, there remains an immediate demand for more in-depth research to unravel how
+these two objectives can be simultaneously integrated into ML models. As opposed to well-accepted trade-oﬀs, i.e., privacy-utility
+and fairness-utility, the interrelation between privacy and fairness is not well-understood. While some works suggest a trade-oﬀ
+between the two objective functions, there are others that demonstrate the alignment of these functions in certain scenarios. To ﬁll
+this research gap, we provide a thorough review of privacy and fairness in ML, including supervised, unsupervised, semi-supervised,
+and reinforcement learning. After examining and consolidating the literature on both objectives, we present a holistic survey on
+the impact of privacy on fairness, the impact of fairness on privacy, existing architectures, their interaction in application domains,
+and algorithms that aim to achieve both objectives while minimizing the utility sacriﬁced. Finally, we identify research challenges in
+achieving privacy and fairness concurrently in ML, particularly focusing on large language models.
+CCS Concepts: • Computing methodologies →Machine learning algorithms.
+1
+Introduction
+The rapid expansion of big data, along with the rise in computational resources, have allowed for remarkable gains
+in the capabilities of ML algorithms, igniting a competitive landscape in this ﬁeld. These algorithms, initially devised
+by humans, now actively participate in decision-making and policy formation for the same people who created them.
+*These authors contributed equally to this work.
+Authors’ addresses: Sina Shaham, University of Southern California, Los Angeles, California, USA, sshaham@usc.edu; Arash Hajisaﬁ*, University of
+Southern California, Los Angeles, California, USA, hajisaﬁ@usc.edu; Minh K. Quan*, Deakin University, VIC, Australia, m.quan@deakin.edu.au; Dinh
+C. Nguyen, University of Alabama in Huntsville, Huntsville, Alabama, USA, Dinh.Nguyen@uah.edu; Bhaskar Krishnamachari, University of Southern
+California, Los Angeles, California, USA, bkrishna@usc.edu; Charith Peris, Amazon, Cambridge,MA, USA, perisc@amazon.com;GabrielGhinita, Hamad
+Bin Khalifa University, Doha, Qatar, gghinita@hbku.edu.qa; Cyrus Shahabi, University of Southern California, Los Angeles, California, USA, shahabi@
+usc.edu; Pubudu N. Pathirana, Deakin University, VIC, Australia, pubudu.pathirana@deakin.edu.au.
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not
+made or distributed for proﬁt or commercial advantage and that copies bear this notice and the full citation on the ﬁrst page. Copyrights for components
+of this work owned by others than ACM must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or
+to redistribute to lists, requires prior speciﬁc permission and/or a fee. Request permissions from permissions@acm.org.
+© 2023 Association for Computing Machinery.
+Manuscript submitted to ACM
+Manuscript submitted to ACM
+1
+
+
+--- Page 2 ---
+2
+Sina Shaham, et al.
+The advantages of these algorithms are vast, as they enhance eﬃciency, accuracy, and speed in various domains. They
+contribute to improved legal outcomes [206], streamlined lending and hiring processes [38], and optimized allocation
+of resources and beneﬁts [96]. Harnessing the power of ML to develop equitable and eﬃcient systems can catalyze
+both social and economic progress.
+Trustworthy ML. The initial belief that more data would result in better decision-making in the world of ML was
+quickly shattered as it became clear that accurate algorithms alone are not enough to make responsible decisions [40,
+63, 143]. The signiﬁcance of trustworthiness in ML can be explored by making an analogy with the stages of human
+development. Consider a child who inherits characteristics from their parents – this is akin to the initial model selection
+in ML, taking into account the mathematical limitations inherent in the chosen structure. As the child matures, they
+absorb crucial knowledge during their formative years - comparable to an ML model being trained with carefully
+selected datasets. The child’s interaction with their socio-economic environment shapes their behavior and choices,
+just as an ML model’s responses are inﬂuenced by the dataset it interacts with and the feedback it receives. The
+child experiences both opportunities and limitations in society, just as an ML model’s functionality is aﬀected by the
+boundaries of its mathematical design and the quality of its datasets. Ultimately, the child matures into an individual
+whose ethical decisions impact those around them, much like an ML model that must make responsible decisions
+aﬀecting real-world outcomes. To develop a trustworthy ML pipeline, each element in the learning cycle, like each
+stage in a child’s life, carries shared responsibility. In this research, we focus on understanding and integrating the two
+main pillars of trustworthy ML: Privacy and Fairness.
+Privacy. Information privacy refers to an individual’s right to maintain a certain level of control over how their per-
+sonal data is gathered and utilized [199]. Take, for instance, a photo shared by an individual on social media platforms,
+intended solely for communication and social interaction. Even basic data mining techniques can extract sensitive
+information from this image, which could be exploited by malicious attackers. Aspects like ornaments, background,
+and facial features may inadvertently disclose the individual’s religion, geographical location, gender, race, or other
+sensitive details. This raises the question of how much control users have over their own data. Expanding this concept
+to the vast quantities of data utilized in modern ML models highlights the importance of privacy for ensuring trust-
+worthy ML. Incidents like the 2020 Facebook scandal [213] and the Edward Snowden revelations [55] underscore the
+critical nature of user data privacy in the context of ML.
+Fairness. From a diﬀerent perspective, while privacy deals with the extent of control over data, fairness aims to
+ensure that the revealed user information is handled fairly and equitably. The philosophical notions of fairness have
+existed for centuries [12]; however, with the rapid growth of ML, algorithmic fairness and its application to ML have
+emerged as some of the most critical challenges of the decade. Unfortunately, models intended to intelligently avoid er-
+rors and biases in decision-making have themselves become sources of bias and discrimination within society. Various
+forms of unfairness in ML have raised concerns, including racial biases in criminal justice systems [14] and dispar-
+ities in employment [178] and loan approval processes [115]. The entire life-cycle of an ML model – encompassing
+input data, modeling, evaluation, and feedback – is vulnerable to both external and inherent biases, leading to unjust
+outcomes. Compounding the issue is the tendency of the pipeline’s life-cycle to amplify biases due to oversimpliﬁ-
+cation and assumptions made throughout the process. Moreover, unlike the concept of privacy, for which there are
+well-deﬁned and accepted metrics, the large number of varied and often conﬂicting deﬁnitions of fairness presents a
+signiﬁcant challenge in establishing trustworthy ML systems.
+Privacy vs Fairness. Investigations into privacy and fairness have often been carried out separately, without a
+holistic comprehension of how these two goals intertwine. Although the trade-oﬀs between privacy and utility, as
+Manuscript submitted to ACM
+
+
+--- Page 3 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+3
+well as fairness and utility, are well-established, the complex relationship between these objectives remains less clear.
+Several studies such as [16] and [40], indicate the presence of trade-oﬀs, while others, like [107] and [161], consider
+them to be in harmony. Given the lack of studies elucidating their interconnection, there is an urgent need for more
+research to uncover the link between these two goals, ultimately paving the way for truly responsible ML models.
+Motivation. Pursuing privacy and fairness as separate objectives may appear intuitive, yet this approach is fraught
+with signiﬁcant issues. First, engineers and researchers often ﬁnd that the attainment of even one of these goals can
+signiﬁcantly impact a model’s performance, necessitating careful alignment of both objectives. Second, research explor-
+ing how the achievement of one goal inﬂuences the other remains limited. This knowledge gap introduces uncertainty
+concerning the model’s reliability. As a result, our goal is to bridge this divide between privacy and fairness, tradition-
+ally pursued as independent objectives. We aim to establish a foundation for more advanced techniques facilitating
+their concurrent implementation, honoring these elements as the two primary pillars of trustworthy ML models.
+Contribution. In this comprehensive survey, we present an in-depth examination of the main concepts in privacy
+and fairness by analyzing nearly 200 recent studies in the ﬁeld. We explore these approaches across four primary
+aspects of ML, namely, Supervised Learning (SL), Unsupervised Learning (UL), Semi-Supervised Learning (SSL), and
+Reinforcement Learning (RL), with the aim of consolidating terminology and ideas. For instance, we collate and explain
+15 distinct fairness notions to facilitate a better understanding of the principles. By establishing a solid comprehension
+of privacy and fairness across various ML techniques, we oﬀer an extensive review of existing research on architectures
+designed to meet these goals, the interplay between the objectives, their concurrent implementation, and ultimately,
+their manifestation in several applications. Moreover, we identify several key unresolved questions and challenges
+in understanding two objective functions, from large language models to the disparate impact of privacy-preserving
+methods in ML.
+The rest of this survey is organized as follows. A detailed examination of privacy within the realm of ML is presented
+in Section 2. Concepts of fairness and algorithms to ensure it are then discussed in Section 3. The intersection of privacy
+and fairness is the central focus of Section 4. Open issues and potential directions are explored in Section 5. Conclusions
+are drawn in Section 6. A comprehensive map, illustrating the sections and subsections, can be found in Appendix A.
+To the best of our knowledge, this is the ﬁrst survey that attempts to provide a critical review of privacy and fairness
+in ML. Some of the most relevant and recent surveys are reviewed in Table 1.
+2
+Privacy
+2.1
+Preliminaries
+ML has transformed various industries, including healthcare [151], transportation [214], and ﬁnance [59]. The capacity
+of these algorithms to process vast quantities of data, identify patterns, generate predictions, and deliver precise and
+eﬃcient recommendations is remarkable. However, the use of personal data in ML models has given rise to signiﬁcant
+privacy concerns. A primary concern is the potential misuse of sensitive personal information [152], such as names,
+addresses, social security numbers, and medical records. If not adequately safeguarded, such data could lead to identity
+theft, ﬁnancial fraud, and other adverse consequences. The issue of data privacy was starkly highlighted in 2018 when
+Cambridge Analytica illicitly harvested data from millions of Facebook users [91]. This data was subsequently used
+to craft eﬀective political advertisements during the 2016 US presidential election [22], sparking widespread concern
+over the use of personal information in political campaigns.
+To address these privacy concerns, researchers are developing privacy-preserving algorithms that secure sensitive
+data while allowing accurate and eﬃcient model creation. Diﬀerential privacy (DP) is one such technique, which adds
+Manuscript submitted to ACM
+
+
+--- Page 4 ---
+4
+Sina Shaham, et al.
+Table 1. Comparison of recent related works and our paper’s key contributions on privacy and fairness in ML.
+Paper
+Key topic
+ML categories
+Key contributions
+Highlights
+SL
+UL
+SSL
+RL
+Privacy
+Fairness
+[201]
+Privacy-preserv-
+ing collaboration
+in ML
+✓
+✓
+×
+×
+✓
+×
+Pioneering study concentrat-
+ing on collaborative ML pri-
+vacy needs and limitations
+[27]
+Limitations of DP
+in ML applications
+✓
+×
+×
+×
+✓
+×
+DP assessment: ﬂaws, trade-
+oﬀs, ML implementation
+[120]
+Fairness-aware ML
+in diﬀerent datasets
+✓
+✓
+×
+×
+×
+✓
+Fairness in ML through in-de-
+pth real data analysis
+[169]
+Algorithmic fairness
+in ML
+✓
+×
+×
+✓
+×
+✓
+Overview of identifying, mea-
+suring, and improving algorit-
+hmic fairness
+[50]
+Fairness in
+graph mining
+✓
+✓
+✓
+×
+×
+✓
+Fairness in graph algorithms:
+measures, benchmarks, and
+research directions
+[125]
+Privacy-preserving
+ML
+✓
+✓
+✓
+×
+✓
+×
+Identifying gaps and challen-
+ges in privacy preservation
+for ML
+[58]
+Privacy defense
+trade-oﬀs
+in ML evaluation
+✓
+×
+×
+×
+✓
+×
+Balancing privacy and utility
+in ML defense evaluation
+[231]
+Privacy-preserving
+ML
+✓
+×
+✓
+×
+✓
+×
+Integration of privacy techniq-
+ues in ML for data-driven app-
+lications
+[218]
+In-processing
+fairness mitigation
+✓
+✓
+✓
+×
+×
+✓
+Categorization of explicit and
+implicit methods in achieving
+fairness
+[143]
+Fairness and bias
+in AI systems
+×
+×
+✓
+×
+×
+✓
+Taxonomy of fairness deﬁni-
+tions for mitigating biases in
+AI
+[45]
+Fair clustering
+×
+✓
+×
+×
+×
+✓
+Organized overview with new
+insights and classiﬁcations in
+fair clustering
+[210]
+Privacy-Preserving
+DL in MLaaS
+×
+✓
+✓
+×
+✓
+×
+Adversarial models, attacks,
+and solutions in privacy-pre-
+serving DL
+Our paper
+Privacy-Fairness
+Interrelation in ML
+✓
+✓
+✓
+✓
+✓
+✓
+Thorough review of privacy,
+fairness in ML, examining im-
+pact, architectures, and re-
+search gaps
+Manuscript submitted to ACM
+
+
+--- Page 5 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+5
+noise to the data to prevent individual records from being identiﬁed [62]. Another technology that allows data to
+be processed without being decrypted is homomorphic encryption [3], which ensures that sensitive information is
+never divulged. While some research have focused on speciﬁc privacy concerns connected to certain types of ML
+learning methodologies, such as supervised, unsupervised, semi-supervised, and RL, a comprehensive evaluation of
+all potential privacy hazards and remedies is still lacking. Furthermore, there may be privacy issues that are speciﬁc to
+speciﬁc domains or applications that necessitate a more concentrated analysis. Consequently, it is necessary to continue
+exploring privacy concerns in these ML techniques to guarantee that all potential dangers are properly detected and
+addressed. This will ensure that ML technologies are developed and deployed in a way that respects individuals’ privacy
+rights while also minimizing the possible damages associated with these technologies.
+2.2
+Privacy Techniques
+2.2.1
+Diﬀerential Privacy (DP)
+DP is a privacy protection method commonly used in diﬀerent stages of the ML pipeline to enhance privacy of
+individuals. In this section, we will examine the concepts and deﬁnitions, common DP mechanisms, and applications
+of DP in various ML techniques.
+2.2.1.1 Notions and Deﬁnitions
+Deﬁnition 2.1 (휖-Diﬀerential Privacy[62]). A randomized algorithm M is said to be (휖,훿)-diﬀerentially private if, for
+any two datasets 퐷1 and 퐷2 that diﬀer in only one data point, and any subset of the range of M, the following holds:
+푃푟[푀(퐷1) ∈푆] ≤푒휖푃푟[푀(퐷2) ∈푆] + 훿,
+(1)
+where 휖and훿are privacy parameters, and 푆is any subset of the range of M. This inequality ensures that the probability
+of observing a certain output of M on a dataset 퐷1 is almost the same as the probability of observing the same output
+on a dataset 퐷2 that diﬀers in only one data point, with the exception of a small amount of random noise controlled by
+휖and 훿. The parameter 휖controls the strength of the privacy guarantee, with lower values providing stronger privacy
+protection, while 훿is a parameter that accounts for the probability that the privacy guarantee is violated due to the
+randomness introduced by the algorithm.
+Deﬁnition 2.2 (퐿1-Sensitivity[64]). L1-sensitivity is a measure of how much the output of a function changes when
+a single data point is added or removed from a dataset. It is deﬁned as the maximum absolute diﬀerence between
+the output of the function on two adjacent datasets that diﬀer in only one data point. Formally, given a function
+푓: D →R푛that maps datasets in domain D to vectors in R푛, the L1-sensitivity of 푓is deﬁned as:
+Δ푓=
+max
+푑∈퐷,푑′∼푑
+|푓(푑) −푓(푑′)
+ |1,
+(2)
+where 푑′ is the neighboring dataset that diﬀers from푑by a single data point, and ||·||1 denotes the L1-norm. Intuitively,
+L1-sensitivity captures the largest change that can occur in the output of 푓due to the presence or absence of a single
+data point. It is a fundamental parameter in DP, as it determines the amount of noise that needs to be added to the
+output of 푓to achieve a desired level of privacy protection.
+Manuscript submitted to ACM
+
+
+--- Page 6 ---
+6
+Sina Shaham, et al.
+Table 2. Comparison of Laplace and Exponential Mechanisms in DP.
+Mechanism
+Description
+Pros
+Cons
+Laplace
+Adds independent noise drawn from
+a Laplace distribution to the true out-
+put, proportional to the sensitivity of
+the query and inversely proportional
+to the privacy budget.
+Simple implementation,
+provides strong privacy
+guarantees, and works
+eﬃciently for simple qu-
+eries.
+Produces noisy results, calib-
+ration of noise parameter can
+be diﬃcult, may not perform
+well for high-dimensional da-
+ta or complex queries.
+Exponential
+Adds independent noise drawn from
+an exponential distribution to the tr-
+ue output, proportional to the sensiti-
+vity of the query and inversely prop-
+ortional to the privacy budget.
+More precise results th-
+an Laplace, can perform
+well for high-dimensio-
+nal data or complex que-
+ries.
+Requires more sophisticated
+implementation, may be vul-
+nerable to adaptive attacks,
+calibration of noise parame-
+ter can be challenging.
+2.2.1.2 Common Mechanisms in DP
+DP approaches involve the addition of controlled noise to data to safeguard the privacy of people while preserving
+the accuracy of analytic results. The Laplace mechanism and Exponential mechanism are two often used diﬀerentially
+private mechanisms, which are detailed as follows.
+2.2.1.2.1 Laplace Mechanism
+The Laplace mechanism [92] is a method for achieving DP by adding random noise to the output of a query in a way
+that satisﬁes DP guarantees. Speciﬁcally, given a function 푓: 퐷→푅that we want to compute on a dataset 퐷, the
+Laplace mechanism adds random noise to 푓(퐷) according to the following formula:
+푓(퐷) + 퐿푎푝
+ 
+Δ푓
+휖
+!
+,
+(3)
+where 퐿푎푝(Δ푓/휖) is a random variable drawn from the Laplace distribution with mean 0 and scale parameter Δ푓/휖,
+where Δ푓is the sensitivity of the function 푓and 휖is the privacy parameter that controls the amount of noise added.
+More formally, the Laplace distribution is deﬁned as:
+퐿푎푝(푥| 휇,푏) = 1
+2푏exp
+
+−|푥−휇|
+푏
+
+,
+(4)
+where 휇is the mean and 푏is the scale parameter. In the case of the Laplace mechanism, the mean is 0 and the scale
+parameter is Δ푓/휖, so the Laplace distribution becomes:
+퐿푎푝(푥| 0, Δ푓/휖) =
+1
+2(Δ푓/휖) exp
+ 
+−
+|푥|
+Δ푓/휖
+!
+.
+(5)
+Adding Laplace noise to the output of 푓(퐷) in this way ensures that the output is diﬀerentially private with parameter
+휖. The amount of noise added is proportional to the sensitivity of the function 푓, with higher sensitivities resulting in
+more noise being added to the output.
+Although the Laplace mechanism is commonly used to achieve DP in ML, it has several limitations [114] [74]. The
+amount of noise added to the data depends on the sensitivity of the function being computed, which can be signiﬁcant
+for some functions. This can lead to a considerable loss of output accuracy, making it diﬃcult to obtain meaningful
+results. Moreover, the Laplace mechanism assumes that the data is continuous and unbounded, which may not always
+Manuscript submitted to ACM
+
+
+--- Page 7 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+7
+hold for all datasets. Furthermore, the Laplace distribution employed in the mechanism may not be optimal, as it
+assumes that the noise added to the data is symmetric, which may not be the case in reality. However, this technique
+is also commonly employed in terms of DP. For example, methods have been devised in [181] and [194] for releasing
+counts on speciﬁc types of data, such as time series. The authors from [230], [193] and [192] concentrate on releasing
+histograms, while other authors in [228], [54] present ways for reducing the worst-case error of a speciﬁed set of count
+queries.
+2.2.1.2.2 Exponential Mechanism
+The exponential mechanism is proposed in [142], which is a privacy-preserving approach that selects an item from
+a dataset based on a speciﬁc objective function. It ensures the conﬁdentiality of individuals in the dataset while max-
+imizing the objective function. Formally, let 푓: 퐷→푅be a function that maps a dataset 퐷to a real number. The
+exponential mechanism selects an output 푑∈퐷with probability proportional to the exponential of the privacy loss
+incurred by releasing 푓(푑), scaled by a parameter 휖> 0, which controls the amount of privacy protection:
+푃(푀(퐷) = 푑) ∝exp
+휖푓(푑)
+2Δ푓
+
+,
+(6)
+where 휖is the privacy budget and ∝denotes proportionality. The denominator 2Δ푓is used to scale the noise so that it
+is proportional to the sensitivity of the objective function.
+In practice, the exponential mechanism is used when we want to select an element from a dataset that satisﬁes a
+certain property while minimizing the disclosure of information about the other elements in the dataset. For example,
+we might want to select a movie from a database that satisﬁes certain genre preferences while minimizing the disclosure
+of information about the users who rated the other movies in the database.
+Popular way for creating DP in ML, the exponential mechanism has certain limitations[60]. When the dataset is huge,
+the exponential process can be computationally costly. In addition, as the privacy parameter falls, the precision of the
+result degrades. In addition, the exponential technique is only appropriate for functions with a low sensitivity value. If
+the function has a high sensitivity value, the mechanism will add an excessive amount of noise to the output, reducing
+its precision. In certain instances, such as when the output space is discrete or the objective function is non-convex, the
+exponential mechanism might be biased. Despite these limitations, this permits DP solutions for a variety of intriguing
+issues with non-real outputs. As an illustration, the exponential mechanism has been used in the publication of audition
+results [142], coresets [72], support vector machines [183], and frequent patterns [25].
+2.2.1.3 Spectrum of DP Variations
+2.2.1.3.1 Diﬀerential Privacy Stochastic Gradient Descent (DP-SGD)
+DP-SGD emerged from the convergence of two important concepts in the ﬁeld of ML: Stochastic Gradient Descent
+(SGD) and DP. SGD is an iterative method for optimizing an objective function and has been extensively used in ML,
+especially in the training of large-scale deep neural networks. The idea was to provide formal privacy guarantees
+when disclosing statistical information about a dataset. In 2016, Abadi et al. [2] successfully combined these concepts
+to develop DP-SGD, a variant of SGD that oﬀers strong privacy guarantees by incorporating diﬀerential privacy into
+the optimization process.
+The DP-SGD algorithm begins by sampling a minibatch from the dataset. For each instance in the minibatch, the
+gradient ∇퐿(휃; 푥) of the loss function 퐿with respect to the model parameters 휃is computed. This results in a vector of
+gradients for the minibatch. The next crucial step in DP-SGD is gradient clipping. This process involves limiting the
+Manuscript submitted to ACM
+
+
+--- Page 8 ---
+8
+Sina Shaham, et al.
+퐿2 norm of each individual gradient vector to a predeﬁned threshold 퐶. In mathematical terms, this operation can be
+expressed as:
+∇퐿clipped(휃; 푥) = min
+
+1,
+퐶
+∥∇퐿(휃;푥)∥
+
+∇퐿(휃;푥).
+(7)
+This gradient clipping operation ensures that the contribution of each individual instance to the gradient computation
+is limited, thereby mitigating the impact of outliers and reducing the sensitivity of the output to changes in the input
+data, a key requirement for DP. After gradient clipping, the algorithm computes the average of the clipped gradients
+and adds calibrated Gaussian noise to this average. If 퐺represents the average of the clipped gradients, the noisy
+gradient 퐺noisy is given by:
+퐺noisy = 퐺+ N (0, (휎퐶)2I),
+(8)
+where N (0, (휎퐶)2I) represents multivariate Gaussian noise with mean 0 and covariance matrix (휎퐶)2I, and I is the
+identity matrix. The model parameters 휃are then updated using this noisy gradient.
+DP-SGD is primarily used in scenarios where models need to be trained on sensitive data while preserving privacy.
+For instance, in healthcare, DP-SGD could be used to build predictive models using patient data without compromising
+individual privacy [208]. DP-SGD has also been used in federated learning [80], a paradigm where the model is trained
+across multiple decentralized edge devices, maintaining data on the original device. Several libraries and frameworks
+have been developed for implementing DP-SGD. Google’s TensorFlow Privacy library provides a version of DP-SGD
+that can be used with TensorFlow models [141]. Another library is PyTorch-DP (now Opacus) [233], which provides an
+implementation for PyTorch models. These libraries provide convenient tools to add privacy-preserving capabilities
+to ML models with minimal code changes.
+2.2.1.3.2 Diﬀerential Privacy for Support Vector Data Description (DP-SVDD)
+Support Vector Data Description (SVDD) [211] is a one-class classiﬁcation method that is often used for anomaly
+detection. The main idea behind SVDD is to ﬁnd a hypersphere in the feature space that encapsulates the majority
+of the data points. This hypersphere is described by its center and radius, and it is found by solving an optimization
+problem that aims to minimize the radius while penalizing data points that lie outside the hypersphere. Mathematically,
+the SVDD problem can be formulated as follows:
+Minimize:
+푅2 + 퐶
+Õ
+휉푖,
+(9)
+Subject to:
+||휙(푥푖) −푎||2 ≤푅2 + 휉푖
+and
+휉푖≥0.
+(10)
+In this formulation, 푅is the radius of the hypersphere, 푎is the center, 휙(푥푖) is the mapping of data point 푥푖in the
+feature space, 휉푖is the slack variable that allows data points to lie outside the hypersphere, and 퐶is a regularization
+parameter that controls the trade-oﬀbetween the volume of the hypersphere and the errors. DP-SVDD, ﬁrst introduced
+in [162], is a method that combines the principles of SVDD with those of DP to create a privacy-preserving one-class
+classiﬁcation model. The method involves two main phases. In the ﬁrst phase, the goal is to train a SVDD model while
+ensuring diﬀerential privacy. The center of the hypersphere in the SVDD model is represented as a weighted sum of
+the mapped data points. To ensure DP, the center of the hypersphere is perturbed by adding noise. This noise is drawn
+from a Laplace distribution. The perturbed center, ˆ푎, is then given by:
+ˆ푎= 푎+ 푙=
+푛
+Õ
+푖=1
+푏푖휙(푥푖) + 푙.
+(11)
+Manuscript submitted to ACM
+
+
+--- Page 9 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+9
+In this formulation, 푎is the center of the hypersphere, 푏푖are the dual variables, 휙(푥푖) is the mapping of data point 푥푖in
+the feature space, 푙is the Laplace noise. The sensitivity is a measure of how much the output of a function can change
+when a single data point is added or removed from the dataset. In the second phase, the input space is partitioned into
+separate regions using a dynamical system based on the diﬀerentially private support function from the ﬁrst phase.
+This dynamical system is deﬁned by the gradient of the support function:
+푑푥
+푑푡= ∇ˆ푓(푥),
+(12)
+where ˆ푓(푥) is the diﬀerentially private support function. Regions, associated with Equilibrium Points (EPs) of the
+dynamical system, are labeled using a noisy count of class labels of converging data points. The privacy-preserving
+predictions are released by publishing private EPs and labels. A new data point’s label is predicted based on its region,
+determined by the EP it converges to. The privacy of predictions is ensured by the diﬀerential privacy of the support
+function and the noisy count.
+The preceding discussion regarding the DP has improved our understanding of the deﬁnitions and mechanisms of
+the DP, as well as the limitations of each mechanism, which are summarized in Table 2. Additionally, a comprehensive
+examination of the real-world applications of DP in supervised, unsupervised, semi-supervised, and reinforcement
+learning is presented in Appendix B.
+2.2.2
+Homomorphic Encryption (HE)
+Homomorphic Encryption (HE) represents a cryptographic technique that confers the capacity to perform compu-
+tations on encrypted data without the need for decryption. Such an approach stands out as a promising means for
+preserving data privacy while enabling useful computations to be conducted on it. The following section reviews and
+categorizes the concepts, prevalent HE mechanisms, and a range of applications of HE in the context of ML techniques.
+2.2.2.1 Notions and Deﬁnitions
+Deﬁnition 2.3 (Homomorphic Encryption[232]). Homomorphic encryption enables computations to be performed
+on ciphertexts without the need to decrypt them ﬁrst. Mathematically, let 푓be an algebraic function and 퐸푛푐and 퐷푒푐
+be encryption and decryption functions respectively. Homomorphic encryption allows for the following equation to
+hold:
+푓(Dec푘(Enc푘(푚1)) ◦Dec푘(Enc푘(푚2))) = Enc푘(푓(푚1 ◦푚2)),
+(13)
+In this equation,푚1 and푚2 are plaintext messages that are encrypted under the same key 푘using HE. The function 푓is
+a homomorphic function that operates on the plaintext messages, and the operator ◦represents the algebraic operation
+that 푓preserves. The equation shows that applying 푓to the plaintext messages 푚1 and 푚2 and then encrypting the
+result under the key 푘is equivalent to ﬁrst encrypting the plaintext messages separately, applying the decryption
+function Dec푘to each ciphertext, performing the algebraic operation ◦on the resulting plaintexts, and then encrypting
+the result again under the key 푘. This property allows computations to be performed on encrypted data without ever
+revealing the plaintext to the party performing the computation.
+2.2.2.2 Typical Schemes in HE
+There exist various schemes of homomorphic encryption, each possessing its unique merits and demerits. The Fully
+Homomorphic Encryption, Partially Homomorphic Encryption, and Somewhat Homomorphic Encryption are three fre-
+quently utilized HE schemes, explicated as follows.
+Manuscript submitted to ACM
+
+
+--- Page 10 ---
+10
+Sina Shaham, et al.
+Table 3. Comparison of Homomorphic Encryption Schemes.
+Property
+FHE
+PHE
+SHE
+Supports addition
+✓
+✓
+✓
+Supports multiplication
+✓
+×
+✓
+Supports arbitrary
+circuits
+✓
+×
+×
+Computational
+complexity
+High
+Moderate
+Low
+Encryption/decryption
+speed
+Slow
+Moderate
+Fast
+Application examples
+Cloud computing, privacy-
+preserving machine learning
+Secure multi-party compu-
+tation, secure function eva-
+luation
+Privacy-preserving data
+analysis, secure computa-
+tion protocols
+2.2.2.2.1 Fully Homomorphic Encryption (FHE)
+FHE allows computations on encrypted data without decryption, leading to direct computation on ciphertexts and
+yielding an encrypted plaintext. It employs lattice-based cryptography [146] with ideal lattices to eﬃciently compute
+homomorphic operations. This type of cryptography is based on mathematical lattices, regular patterns of points. FHE
+carries out encryption and decryption on ideal lattices, which are sets of linear combinations of 푛independent vectors
+with integer coeﬃcients in 푛-dimensional space. Mathematically, this can be expressed as:
+퐿= 푎1.푣1 + 푎2.푣2 + ... + 푎푛.푣푛|푎푖∈푍,
+(14)
+where 퐿is the lattice, 푣1, 푣2, ..., 푣푛are linearly independent vectors in 푛-dimensional space, and 푎1, 푎2, ..., 푎푛are integers.
+The security of FHE is based on the hardness of certain problems related to lattices, such as the Shortest Vector Problem
+(SVP) and the Closest Vector Problem (CVP) [87]. These problems are known to be diﬃcult to solve in high dimensions,
+which provides the basis for the security of FHE.
+To perform homomorphic operations on ciphertexts in FHE, a technique called "bootstrapping" or "gating" is used.
+This technique involves decrypting the ciphertext using the secret key, performing a homomorphic operation on the
+resulting plaintext, and then encrypting the result using the public key. Mathematically, this can be represented as:
+퐶′ = 퐸푛푐푝푘(퐹(퐷푒푐푠푘(퐶))),
+(15)
+where 퐶is the original ciphertext, 푠푘is the secret key, 푝푘is the public key, 퐹is the homomorphic operation, 퐷푒푐푠푘(퐶)
+is the decrypted ciphertext, and 퐸푛푐푝푘is the encryption function using the public key.
+FHE presents a spectrum of advantages and disadvantages [234]. On the one hand, FHE confers a paramount level
+of security as it allows for arbitrary computations on encrypted data without necessitating decryption. This charac-
+teristic proves exceptionally advantageous in domains such as ML and cloud computing, where privacy and security
+concerns are of utmost importance. Conversely, FHE exhibits a high level of computational complexity that can ren-
+der it infeasible for certain applications [154]. Moreover, with each homomorphic operation, the size of the ciphertext
+augments, requiring extensive memory, which can become a signiﬁcant impediment [113]. Despite these challenges,
+FHE remains an active area of research and development, with researchers continuously seeking ways to enhance its
+eﬃciency and transcend its limitations.
+Manuscript submitted to ACM
+
+
+--- Page 11 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+11
+2.2.2.2.2 Partially Homomorphic Encryption (PHE)
+Partially Homomorphic Encryption (PHE) is a type of encryption scheme that enables computation on encrypted
+data without the need to decrypt it [150]. Mathematically, PHE is deﬁned using algebraic structures such as groups,
+rings, or ﬁelds to enable certain types of computation, such as addition or multiplication, on ciphertexts while still
+maintaining the conﬁdentiality of the underlying plaintext [190]. PHE schemes can be partially homomorphic, meaning
+that they support computations of only one type, such as addition or multiplication. For example, a PHE scheme that
+is homomorphic with respect to addition is deﬁned by the following property:
+퐸푛푐(푚1) + 퐸푛푐(푚2) = 퐸푛푐(푚1 + 푚2),
+(16)
+where 푚1 and 푚2 are plaintext messages, 퐸푛푐is the encryption function, and + denotes addition in the plaintext space
+푀. This property allows ciphertexts to be added together and then decrypted to obtain the sum of the corresponding
+plaintexts. Similarly, a PHE scheme that is partially homomorphic with respect to multiplication is deﬁned by the
+following property:
+퐸푛푐(푘· 푚) = 퐸푛푐(푚)푘,
+(17)
+where 푘is a scalar value and 푚is a plaintext message. This property allows a ciphertext to be raised to a scalar power
+푘without revealing the plaintext, but it does not allow multiplication of two ciphertexts to obtain a ciphertext that
+represents the multiplication of the corresponding plaintexts.
+In reality, PHE is a powerful cryptographic technique that oﬀers many beneﬁts [235]. PHE allows for computations
+on encrypted data, enabling secure processing of sensitive data without its disclosure to unauthorized parties. Unlike
+FHE, PHE does not require heavy computational resources and is, therefore, much easier to implement in real-world
+applications. PHE can be implemented with relatively straightforward mathematical operations, making it both ba-
+sic and eﬀective. In addition, PHE can be used to build secure protocols for a range of applications, such as secure
+auctions, electronic voting, and secure multi-party computation. By keeping the data encrypted, PHE can ensure that
+sensitive information remains private while allowing authorized parties to perform meaningful computations on it.
+While there are some limitations to PHE [90], such as its limited computational capacity and susceptibility to attack if
+not implemented correctly, the beneﬁts of this technique make it a valuable tool in a variety of situations.
+2.2.2.2.3 Somewhat Homomorphic Encryption (SHE)
+Somewhat Homomorphic Encryption (SHE) is a form of encryption that permits certain calculations on encrypted
+data without revealing the original data [70]. Using a polynomial representation of the plaintext and encrypting it
+with a public key is a central concept of SHE [30]. By manipulating the coeﬃcients of the polynomial, it is possible to
+perform computations on the ciphertext. A commonly used example of a SHE scheme is the BGV (Bajard, Gentry and
+Vaikuntanathan) scheme [6]. Consider the BGV scheme, which operates over the polynomial ring 푅푞= Z[푥]/(푥푛+ 1),
+where 푞is a prime number that determines the security level and 푛is the degree of the polynomial. 푅2 denotes the set
+of polynomials with coeﬃcients in {0, 1}, which is the plaintext space.
+To encrypt a plaintext polynomial 푚(푥), the BGV scheme ﬁrst generates a random polynomial 푟(푥) with coeﬃcients
+in {0, 1}. It then computes the ciphertext polynomial 푐(푥) as:
+푐(푥) = 푟(푥) ∗푝푘+ 푚(푥) ∗2푘(mod 푞),
+(18)
+where 푝푘is the public key, 푘is a positive integer, and * denotes polynomial multiplication. The random polynomial
+푟(푥) serves as a noise term that hides the underlying plaintext, while the term 푚(푥) ∗2푘ensures that the ciphertext
+Manuscript submitted to ACM
+
+
+--- Page 12 ---
+12
+Sina Shaham, et al.
+coeﬃcients are suﬃciently large to prevent decryption attacks. Conversely, to decrypt a ciphertext 푐(푥), one needs to
+compute:
+푚(푥) = 푐(푥) ∗푠푘(mod 푞) mod 2,
+(19)
+where푠푘is the secret key. The term푐(푥)∗푠푘cancels out the noise term푟(푥), and yields the original plaintext polynomial
+푚(푥). Finally, to perform a computation on two ciphertexts 푐1(푥) and 푐2(푥), one can simply add or multiply them as
+polynomials, and obtain the resulting ciphertext 푐3(푥) as:
+푐3(푥) = 푐1(푥) + 푐2(푥) or 푐3(푥) = 푐1(푥) ∗푐2(푥).
+(20)
+Though SHE can enable computations to be performed on encrypted data without requiring the data to be decrypted,
+this scheme suﬀers from certain limitations that aﬀect its practicality in certain scenarios [86]. These limitations stem
+from its lack of full homomorphic capabilities, which constrain the range of computations that can be performed. Fur-
+thermore, SHE is typically associated with higher computational overheads and requires more computational resources,
+which can aﬀect its overall eﬃciency and practicality. Nevertheless, SHE oﬀers several beneﬁts [147], such as preserv-
+ing the privacy of sensitive data, while allowing computations to be performed in a secure and conﬁdential manner.
+This makes SHE a useful technique in scenarios where privacy and security are paramount, such as in the healthcare
+and ﬁnancial sectors. Additionally, SHE can be used in conjunction with other cryptographic techniques, such as fully
+homomorphic encryption, to provide a more comprehensive security framework. Hence, despite its limitations, SHE
+remains a valuable and promising technique in the ﬁeld of cryptography.
+The preceding discourse on HE has enhanced our knowledge of its deﬁnitions, mechanisms, and the limitations
+of each scheme, as detailed in Table 3. Additionally, a thorough examination of the practical applications of HE in
+supervised, unsupervised, semi-supervised, and reinforcement learning is provided in Appendix C.
+3
+Fairness
+3.1
+Preliminaries
+The concept of fairness in society has been a recurring study subject throughout history [12]. Although early discus-
+sions were mainly philosophical, the rise of data and ML in the past decade has attracted tremendous attention to
+fairness in algorithms. As opposed to the initial perception of models and algorithms being trustworthy, soon it was
+realized that they could lead to severe unjust decisions, aﬀecting especially individuals from disadvantaged groups.
+Perhaps, the most signiﬁcant of such discoveries was revealed in an article published by ProPublica in 2016, high-
+lighting the signiﬁcance of algorithmic fairness. The article focuses on a software named COMPAS [224] designed
+to determine the risk of a person committing another crime and assist US judges in making release decisions. The
+investigation found that COMPAS was biased against African Americans as it had a higher rate of false positives for
+this group compared to Caucasians. This and numerous other examples indicate the necessity to quantify and mitigate
+unfairness-related issues in ML. In the remaining of this subsection, we discuss bias in ML, what the law says about
+the issue, and online tools available to address the problem.
+3.1.1
+Bias
+The term "bias" in ML has a distinct meaning that is diﬀerent from the typical understanding of the term in social and
+news contexts [35]. Bias is seen as the root cause of unfairness and is often tied to a speciﬁc term that indicates where
+in the process, the data is being distorted. Over time, many diﬀerent types of bias have been introduced in the literature,
+Manuscript submitted to ACM
+
+
+--- Page 13 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+13
+some of which are subcategories of others, leading to confusion in properly deﬁning each one. For interested readers,
+we have provided a thorough classiﬁcation and visualization of bias in ML in Appendix D. In this categorization, we
+have grouped potential types of bias into four general categories: A Biased World, Data Collection and Preparation,
+Model Training, and ﬁnally, Evaluation and Deployment.
+3.1.2
+Philosophies of Fairness in Context
+In the domain of work and employment, principles of fairness and non-discrimination guide the relationships among
+employees, employers, and labor unions. Two core fairness principles, often identiﬁed as ‘Disparate Impact’ and ‘Dis-
+parate Treatment’, are observed in this context. Disparate Treatment [250] acknowledges that unjust behaviors to-
+wards individuals due to their protected attributes, such as race, are unacceptable. An instance reﬂecting this principle
+in action could be prohibiting the exclusive skill examination of job applicants based on their ethnic group aﬃliation.
+Disparate impact [184] pertains to practices that inadvertently disadvantage a protected group, even though the poli-
+cies implemented by organizations appear neutral on the surface. This principle recognizes that discrimination is not
+always direct, and it can aﬀect individuals and groups in indirect ways. A classic example includes policies that, while
+appearing neutral, disproportionally impact members of a protected group in a negative manner [189].
+In ML, fairness principles are implemented in various ways to uphold the aforementioned principles for sensitive
+attributes. Notably, diﬀerent organizations provide guidelines on what constitutes sensitive attributes. The most com-
+monly protected features include race, gender, religion, and national origin. For more detailed information, please refer
+to Appendix E, which provides a table of sensitive attributes identiﬁed by several organizations.
+3.1.3
+Available Online Tools
+The signiﬁcance of algorithmic fairness has led to the development of several online tools to assist the incorpora-
+tion of fair practices in ML models. Fairlearn [26] is an open-source tool developed at Microsoft Research that helps
+data scientists and developers assess and improve the fairness of their AI models. AI Fairness 360 (AIF360) [20] is an
+open-source toolkit created by IBM that helps developers analyze, document, and eliminate unfairness in ML models
+throughout their lifecycles. It provides various metrics and mitigation algorithms to assess and address bias in models.
+Aequitas [185] is another open-source tool that helps identify and eliminate bias in ML models. It oﬀers metrics, vi-
+sualizations, and techniques for auditing models, allowing researchers, analysts, and policymakers to make informed
+decisions during model development and deployment. Google’s What-If Tool [225] and LinkedIn Fairness Toolkit (LiFT)
+[217] are also some of the latest developments to further enhance algorithmic fairness.
+Structure In the following subsections, we thoroughly review fairness in supervised, unsupervised, semi-supervised,
+and RL. In each subsection, we start by deﬁning fairness notions and deﬁnitions dedicated to the type of ML learner,
+followed by explaining the existing unfairness mitigation techniques for fair treatment of individuals and groups. The
+mitigation algorithms are divided into pre-processing, in-processing, and post-processing strategies. SSL lies at the
+intersection of supervised and unsupervised learning. To the best of our knowledge, there is no speciﬁc fairness no-
+tion proposed particularly for SSL, despite the existence of dedicated unfairness mitigation algorithms. Due to limited
+space, we have moved the discussions related to SSL to Appendix F.
+Manuscript submitted to ACM
+
+
+--- Page 14 ---
+14
+Sina Shaham, et al.
+Fig. 1. Computation of discrimination based on diﬀerent metrics.
+3.2
+Fairness in Supervised Learning
+3.2.1
+Notions and Deﬁnitions
+As opposedto privacy, where at least for statistical databases, there is a consensus on DP, there does not exist such an
+agreement on a common notion for fairness. One suggested guideline is to select the notion based on the underlying
+application. This section reviews some of the most widely adopted fairness notions for supervised learning. In this
+context, we use terms notion and deﬁnition interchangeably. Also, deviation from a fairness notion is referred to as
+discrimination level. Discrimination is usually manifested as the absolute value of the diﬀerence in metrics for diﬀerent
+groups. Moreover, we denote the set of sensitive attributes by 퐴, all observed attributes by 푋, latent attributes not
+observed by 푈, true label to be predicted by 푌, and ﬁnally, predictor by ˆ푌.
+We debut our discussions on notions with statistical parity, one of the primary group-level fairness notions.
+Deﬁnition 3.1. (Demographic or Statistical Parity [34, 63]). A predictor ˆ푌satisﬁes demographic parity if:
+푃( ˆ푌= 1|퐴= 0) = 푃( ˆ푌= 1|퐴= 1).
+(21)
+Statistical parity dictates that regardless of an individual’s group, they should have an equal chance of being assigned
+to a positive class. Figure 1 exempliﬁes statistical parity. Consider two groups of male and female job applicants and
+an ML model that decides whether a person should proceed for further evaluation in their application. Here, the
+likelihood of moving ahead with male and female applicants is 5/10 and 7/10, respectively. Hence, discrimination
+based on statistical parity is 20%. The notion of equalized odds, presented next, takes a step further and requires an
+equal true positive rate across groups.
+Deﬁnition 3.2. (Equalized Opportunity [63]). A predictor ˆ푌satisﬁes equal opportunity with respect to protected
+attribute 퐴and outcome 푌, if ˆ푌and 퐴are independent conditional on 푌,
+푃( ˆ푌= 1|퐴= 0,푌= 1) = 푃( ˆ푌= 1|퐴= 1,푌= 1).
+(22)
+That means the true positive rate should be the same for both groups. Going back to the example in Figure 1, the true
+positive rate for males and females is 3/6 and 5/7, leading to discrimination of 21.4% based on equalized opportunity.
+The next notion, equalized odds, dictates an even stricter fairness notion requiring equal true and false positive rates
+across groups.
+Deﬁnition 3.3. (Equalized Odds [63]). A predictor ˆ푌satisﬁes equalized odds with respect to protected attribute 퐴and
+outcome 푌if:
+푃( ˆ푌= 1|퐴= 0,푌= 푦) = 푃( ˆ푌= 1|퐴= 1,푌= 푦), 푦∈{0, 1}.
+(23)
+Manuscript submitted to ACM
+
+
+--- Page 15 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+15
+In the example, discrimination based on equalized odds is 38.1%. As can be seen, imposing higher fairness guarantees
+intuitively results in a higher percentage of discrimination.
+Deﬁnition 3.4 introduces the concept of calibration, which is a crucial idea borrowed from ML. This notion ensures
+that the conﬁdence scores produced by the model can be interpreted as probabilities and is considered a group-level
+fairness notion.
+Deﬁnition 3.4. (Calibration [78, 174]). An ML model is said to be calibrated if it produces calibrated conﬁdence scores.
+Formally, the outcome score 푅is said to be calibrated if for all the scores 푟in the support of 푅following stands,
+푃(푦= 1|푅= 푟) = 푟.
+(24)
+Calibration ensures that the set of all instances assigned a score value 푟has an 푟fraction of positive instances among
+them. Note that the metric is deﬁned on a group level, and it does not mean that an individual who has a score of 푟
+corresponds to 푟probability of a positive outcome. For example, given 10 people who are assigned a conﬁdence score
+of 0.7, in a well-calibrated model, we expect to have 7 individuals with positive labels among them.
+So far, the fairness deﬁnitions discussed were all focused on group-level fairness. In the following, two of the com-
+mon notions to achieve fairness at an individual level are presented.
+Deﬁnition 3.5. (Counterfactual Fairness [117]). Given a causal model (푈,푉, 퐹), where 푈,푉, and 퐹represent the set of
+latent (unobserved) background variables, the set of observable variables, and a set of functions deﬁning the mapping
+푈∪푉→푉, respectively, a predictor ˆ푌is considered counterfactually fair if, under any context 푋= 푥and 퐴= 푎, the
+following equation holds:
+푃( ˆ푌퐴←푎(푈) = 푦|푋= 푥, 퐴= 푎) = 푃( ˆ푌퐴←푎′ (푈) = 푦|푋= 푥, 퐴= 푎).
+(25)
+This holds for all 푦and for any value 푎′ attainable by 퐴. Here, 퐴, 푋, and ˆ푌represent the set of sensitive attributes,
+remaining attributes, and decision output, respectively. In other words, the model’s predictions for a person should
+not change in a counterfactual world in which the person’s sensitive features are diﬀerent.
+Deﬁnition 3.6. (Individual Fairness by Dwork et al. [63]). For a mechanism M mapping 풖in the input space X to
+value 푦in the output space Y, individual fairness is satisﬁed when for any 풖, 풗∈X:
+푑X(풖,풗) ≥푑Y(M(풖), M(풗)),
+(26)
+where 푑X : X × X →R+ and 푑Y : Y × Y →R+.
+To illustrate, let’s consider the scenario of classiﬁcation, where the classiﬁer’s predictor ˆ푌serves as the mapping
+mechanism. In the context of individual fairness, the fundamental idea is that two individuals who are alike in relevant
+ways should receive comparable outcomes. To operationalize this concept, we rely on two crucial distance metrics: (1)
+a similarity distance metric 푑X that gauges how similar two individuals are to each other, and (2) a distance metric 푑Y
+that quantiﬁes the disparity between the distributions of outcomes.
+3.2.2
+Unfairness Mitigation Algorithms
+3.2.2.1 Pre-processing Strategies
+Reweighting. This approach focuses on modifying the signiﬁcance of data points manifested as weights during the
+training to mitigate bias. The method employed in [102] estimates the probability of an individual from a group re-
+ceiving a speciﬁc result and employs the ratios of these probabilities as reweighting factors during optimization. Nev-
+ertheless, in some instances, access to sensitive information may be restricted. To tackle this issue, Lahoti et al. [118]
+Manuscript submitted to ACM
+
+
+--- Page 16 ---
+16
+Sina Shaham, et al.
+learn the reweighting factor using adversarial learning. Furthermore, Roh et al. [182] suggest a two-tier optimization
+method that chooses speciﬁc mini-batch sizes to attain group fairness.
+Representation learning. More recently, a thread of research has focused on changing data representation to
+improve fairness in classiﬁers. Several techniques have been proposed predicated on either philosophy of fairness
+through unawareness or fairness through awareness. In the former, the logic is to learn a new representation for
+individuals independent of their protected attribute while preserving other information, and the latter focuses on
+achieving fairness while considering protected group information. In [73], the authors modiﬁed dataset features to
+have similar distributions for both protected and unprotected groups, making it hard to distinguish between them.
+Zemel et al. [240] proposed mapping individuals to a new distribution that protects the protected group information
+while retaining other information. The authors in [133] follow up this idea by using a variational auto-encoder to make
+the sensitive attributes independent of the latent representation and applying further learning to that representation.
+Label alteration. Label alteration aims to make classiﬁers fairer by adjusting the labels of training samples. Some
+works modify the labels to achieve an equal proportion of positive examples across protected groups [102], while
+others ﬂip the labels of instances that have been determined to be discriminatory based on diﬀerences in treatment
+among similar samples [136].
+3.2.2.2 In-processing Strategies
+Regularizers and constraints. This strategy aims to add penalty terms to the classiﬁer’s objective function to either
+minimize the impact of sensitive features on prediction [105], or achieve similar False Positive and False Negative
+rates across populations [19, 23]. In a similar approach, Kamiran et al. [103] propose modifying the splitting criterion
+in decision trees to minimize the impact of sensitive features and maximize the information gain between the split
+feature and class label. The authors in several studies aim to enforce fairness notions constraints in optimization. This
+approach for statistical parity is discussed in [239], equalized odds and opportunity in [226, 238]. Quadrianto et al. [177]
+suggest using privileged learning to ensure fairness where sensitive features are only available during training.
+Adversarial learning. The main concept within this group involves utilizing Generative Adversarial Networks
+(GANs) to optimize the eﬀectiveness of a predictor while reducing its capability to forecast sensitive characteris-
+tics [241]. This approach can be implemented across various gradient-based learning models, such as classiﬁcation
+and regression assignments.
+Reweighting. The reweighting approach proposed part of pre-processing strategies has also been employed during
+the training. The proposed approach by Krasanakis et al. [116] trains an unweighted classiﬁer, then learns weights for
+each sample and retrains the classiﬁer to improve the fairness-accuracy trade-oﬀ. The iterative approach of improving
+reweighting factors helps to derive more accurate reweighting factors.
+3.2.2.3 Post-processing Strategies
+Transformation. This technique aims to modify the output scores to achieve higher fairness levels. One of the primary
+techniques in this category is Platt Scaling focused on improving miscalibration in ML models [173]. Calibration is
+improved by ﬁtting the output scores to a logistic regression model. Histogram Binning and Isotonic Regression [237]
+also enhance calibration by ﬁtting output scores to a monotonic function. To achieve individual fairness, the authors
+in [195] propose using 푐-fair polynomials, which map classiﬁer scores to a polynomial and restrict scores of each
+individual by their sensitive feature distance. Petersen et al. [170] improve individual fairness by smoothing output
+scores using a similarity graph and Laplacian regularization. Kim et al. [110] present a Multi-accuracy Boost framework
+Manuscript submitted to ACM
+
+
+--- Page 17 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+17
+that improves accuracy across all subgroups, using iterations and weights to enhance predictions conducted by the
+auditor.
+Thresholding. The proposed techniques in this category aim to adjust the label generation threshold of classiﬁers
+to make non-discriminatory decisions [104]. For instance, diﬀerent threshold values are selected for protected groups
+in [144] to maximize accuracy while achieving statistical parity. Hardt et al. [89] optimizes threshold selection for each
+sensitive group for high utility and improved fairness. Similarly, the authors in [53] infer group-speciﬁc thresholds for
+a trade-oﬀbetween accuracy and fairness. Lohia et al. [131] develop a bias-mitigation technique by targeting samples
+that inhibit individual bias from improving individual and group-level fairness notions.
+3.3
+Fairness in Unsupervised Learning
+When data labels are unavailable, unsupervised ML algorithms are commonly used as opposed to supervised algo-
+rithms. However, evaluating fairness is more challenging in the absence of labels because there is no ground truth
+available for assessment. To address this issue, we will begin our discussion by examining individual and group-level
+fairness notions that have been suggested for unsupervised learning, followed by an exploration of mitigation algo-
+rithms.
+3.3.1
+Notions and Deﬁnitions
+The majority of fairness concepts for unsupervised learning are based on the disparate impact doctrine, which seeks
+to achieve a comparable proportion of protected groups across all clusters. To begin our conversations on fairness
+concepts, we will start by examining the Balance metric, regarded as one of the fundamental deﬁnitions of group-level
+fairness in unsupervised learning.
+Deﬁnition 3.7. (Balance[21, 48]). Deﬁne the ratio of the protected group 푏∈[푚] in the entire dataset as 푟푏, and let
+푟푎,푏represent this proportion in the generated cluster 푎∈[푘]. The balance metric evaluates the disparity between
+these two ratios by deﬁning 푅푎,푏= 푟푏/푟푎,푏and introducing the balance fairness concept as follows:
+min
+푎∈[푘],푏∈[푚] min 푅푎,푏, 1/푅푎,푏.
+(27)
+The Balance metric produces values within the range of 0 to 1, where higher scores indicate a higher level of
+fairness. This measure takes into account both the percentage of protected group members in the entire dataset and
+within individual clusters, with fairness achieved when the ratio remains consistent across all clusters.
+Deﬁnition 3.8. (Bounded Representation[8]). Let 푟푎,푏denote the ratio of protected group 푏∈[푚] in cluster 푎∈[푘].
+The (훼, 훽)-bounded representations dictates that:
+훽≤푟푎,푏≤훼.
+(28)
+Bounded representation allows some degree of deviation in the proportion of protected groups within clusters.
+When the bounds are equal, it suggests that the proportion of protected groups in each cluster should be consistent
+with the overall ratio in the dataset.
+Deﬁnition 3.9. (Max Fairness Cost (MFC) [47]). Let 퐼푏denote the ideal proportion of protected group 푏∈[푚] in
+clusters. Once the ideal ratio parameter is passed as input, the MFC notion is deﬁned as
+Manuscript submitted to ACM
+
+
+--- Page 18 ---
+18
+Sina Shaham, et al.
+max
+푎∈[푘]
+Õ
+푏∈[푚]
+|푟푎,푏−퐼푏|,
+(29)
+where 푟푎,푏denotes the ratio of protected group 푏in cluster 푎∈[푘].
+Intuitively, MFC calculates the summation of all deviations from the ideal ratios for each protected group, and
+returns the maximum value. A lower MFC value indicates a higher degree of fairness. Setting the value of 퐼푏equal to
+the ratio of the protected group in the original dataset (푟푏) ensures that this ratio remains consistent across all clusters.
+Deﬁnition 3.10. (Social Fairness [81]). Let 퐶denote the cluster centers in 푘-means algorithm and 퐿(퐶,퐷푏) denote
+the 푘-means clustering cost, where 퐷푏is the input error on the samples of the protected group 푏∈[푚]. The social
+fairness notion is then deﬁned as:
+max
+푏∈[푚]
+퐿(퐶,퐷푏)
+|퐷푏|
+,
+(30)
+Social fairness focuses on the maximum imposed loss on protected groups. Next, we focus on fairness notions
+proposed on the individual-level.
+Deﬁnition 3.11. (Fuzzy Individual Fairness [63]). For every two points 푥and 푦, and their respective distributions 푋
+and 푌over clusters in a given fuzzy clustering algorithm, let 퐹(푥,푦) measure the similarity between the two datapoints,
+and let 퐷푓(푋||푌) denote the statistical distance between their distributions. Fuzzy individual fairness requires the
+satisfaction of the following constraint:
+퐷푓(푋||푌) ≤퐹(푥,푦).
+(31)
+This notion aims to apply the individual fairness notion in [63] for fuzzy clustering. Common choices for measuring
+the statistical distance include the variations of 푓-divergence metric, such as KL-divergence, reverse KL-divergence,
+and the total variation distance.
+Deﬁnition 3.12. (Individual Fairness [111]). This notion requires the average distance of every sample point to mem-
+bers in its own cluster to be smaller than its average distance to members of any other cluster. Formally, for a disjoint
+clustering of data denoted by C = 퐶1, ,퐶2,, . . . ,퐶푘, and a distance metric푑, for every sample point 푥∈퐶푖, the following
+inequality should hold:
+1
+|퐶푖| −1
+Õ
+푦∈퐶푖
+푑(푥,푦) ≤
+1
+|퐶푗|
+Õ
+푦∈퐶푗
+푑(푥,푦), ,,,푖≠푗.
+(32)
+The intuition behind the above notion is to ensure every sample point is associated with a cluster that has the
+highest average similarity.
+3.3.2
+Unfairness Mitigation Algorithms
+3.3.2.1 Pre-processing Strategies
+Fairlet Decomposition. The concept of fairlets, which was introduced in [49], aims to improve the fairness of various
+clustering algorithms based on the Balance metric. The strategy involves dividing the data points into small groups,
+or so-called fairlets, before performing clustering in such a way that the disparate impact doctrine is maintained. Each
+fairlet is then represented by a single point, and a vanilla clustering algorithm is applied to these representative points.
+Manuscript submitted to ACM
+
+
+--- Page 19 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+19
+Because the representative points are reasonably fair, the ﬁnal clustering also tends to be fair. In [48], near-linear
+algorithms are proposed for fairlet decomposition. Ahmadian et al. [7] employ the idea of fairlets for hierarchical
+clustering considering several objective functions such as revenue, value and cost.
+Data Augmentation. Inspired by the approach in [180], Chhabra et al. [46] propose data augmentation as an
+eﬃcient method for fair clustering. The method involves augmenting the dataset using a small subset of data to achieve
+a fairer clustering output after applying the algorithm. The authors propose a general bi-level formulation to address
+two problem settings: 1) using convex group-level fairness notions and convex center-based clustering objectives, and
+2) using general group-level fairness notions and general center-based clustering objectives.
+3.3.2.2 In-processing Strategies
+Regularizers and Constraints. Built on the Balance metric, the authors in [112] incorporate fairness constraints
+in spectral clustering as well as providing empirical evidence that it is possible to achieve higher demographic pro-
+portionality at minimal additional cost in the clustering objective. Li et al. [123] introduce a fairness-adversarial term
+encouraging soft assignments that remain constant across various protected subgroups, resulting in a model that is
+not inﬂuenced by sensitive attributes. Zhang et al. [243] propose an approach for fairness in deep clustering. A regu-
+larization term based on the Balance notion is proposed and is combined with the clustering objective. Chai et al [37]
+propose to use Sinkhorn divergence to reduce diﬀerences in predicted soft labels among various demographic groups
+and to develop representations that are conducive to clustering. The requirement of equalized conﬁdence is modeled
+as a regularization term during training using Sinkhorn divergence, with several additional regularizers for ensuring
+accuracy.
+Alternating Objective. This approach focuses on entirely alternating between fairness and clustering objectives
+during unsupervised learning. Liu et al. [126] formulate the cost of clustering and fairness as a bi-objective optimization
+problem to achieve balance. Their approach is based on mini-batch 푘-means clustering, where the algorithm performs
+clustering based on the 푘-means during mini-batch updates. However, the algorithm also includes a series of swap-
+based steps to enhance the balance in clusters. The routine involves exchanging data points between the least balanced
+and well-balanced clusters after the mini-batch update. The method described in [249] combines the Kuulback-Leibler
+fairness term with the objective of center-based and graph-based algorithms. The approach involves conducting a
+separate update for the assignment of datapoints based on the fairness objective and clustering objective. The heuristic
+algorithm proposed in [42] focuses on achieving the proportionality fairness notion by alternating between fairness
+and clustering objective. The proposed algorithm achieves a (1 +
+√
+2)-proportional solution.
+3.3.2.3 Post-processing Strategies
+The majority of the methods proposed for the post-processing stage involve using linear programming to reassign data
+points according to fairness metrics. This approach is referred to as the LP formulation. Additionally, Simoes et al. [198]
+have recently explored an alternative approach based on Data Perturbation for fair clustering. The core concept of this
+approach is to perturb the assignment of data points to clusters in several iterations based on the "Rawls’ diﬀerence
+principle" [11].
+LP formulation. Considering disparate impact doctrine, the authors in [21] show that for a given clustering with
+푙푝-norm objective including center-based approaches such as 푘-means and 푘-medoids, it is possible to have fair algo-
+rithms with a slight sacriﬁce in fairness constraint. In more detail, given any 휌-approximation algorithm for a given
+clustering objective, a (휌+ 2)-approximation solution exist for the best clustering, which satisﬁes fairness constraints.
+Manuscript submitted to ACM
+
+
+--- Page 20 ---
+20
+Sina Shaham, et al.
+The objective is achieved by formulating and solving an LP optimization problem for fair assignment after clustering.
+Approaches in [8] and [88] also use alternative LP formulations for fair assignment of datapoints to centers. Esmaeili et
+al. [68] extend the approach to a scenario where data points are probabilistically assigned to groups instead of having a
+priori information on the group assignment. In [67], ﬁrst the center-based clustering algorithm is applied to maximize
+the clustering objective. Then, using an LP formulation, clustering is improved considering the fairness objective. This
+is done by searching for the cluster with maximum violation of the fairness objective considering the upper bound
+required for the clustering objective and rounding the possibly fractional solution to a feasible integer solution using
+a network ﬂow algorithm.
+3.4
+Fairness in Reinforcement Learning
+RL is concerned with learning how to make decisions in an environment by maximizing some cumulative reward (or
+equivalently, minimizing some regret) through interacting with the environment and receiving feedback. The decisions
+made by RL agents can have a signiﬁcant impact on individuals and society, making it essential to ensure that these
+decisions are unbiased and fair. Compared to other methods in which only the immediate impact of the decision-making
+algorithm is studied to mitigate unfairness, algorithms for fair RL aim to account for the long-term consequences of
+the agent’s actions to ensure that they are unbiased [221].
+In the context of fairness in RL, a signiﬁcant focus is dedicated to addressing unfairness across various variants of
+the bandit problem. Bandit problems involve an agent repeatedly selecting from a set of arms, each associated with
+unknown reward distributions. The agent’s objective is to determine an optimal policy that maximizes cumulative
+reward while receiving limited feedback on unchosen arms [119]. Bandit scenarios provide a tractable framework for
+exploring and developing fair decision-making algorithms in RL.
+3.4.1
+Notions and Deﬁnitions
+In recent years, several perspectives have emerged for evaluating and improving the fairness of RL algorithms.
+Speciﬁcally, researchers have proposed and evaluated notions of fairness in RL from three distinct perspectives: Meri-
+tocratic Fairness, Individual Fairness, and Proportional Fairness. These perspectives can be quantiﬁed in diﬀerent ways,
+depending on the speciﬁc goals and objectives of the RL algorithm.
+Meritocratic Fairness. This perspective requires avoiding favoring less qualiﬁed individuals over more qualiﬁed
+ones. For example, in the context of bandits, this fairness notion indicates that it is unfair to preferentially select an
+arm with a lower expected reward over other available arms with higher expected rewards [101]. This ensures that
+the rewards are allocated fairly based on the arms’ abilities. The following deﬁnitions are some examples of evaluating
+fairness from this aspect in literature.
+Deﬁnition 3.13. (훿-Fairness in Classic Bandits [101]). An algorithm A is deemed 훿-fair if, with a probability of at
+least 1 −훿over history ℎ, for all distributions D1, ..., D푘, every 푡∈[푇], and all 푗, 푗′ ∈[푘]:
+휋푡
+푗|ℎ> 휋푡
+푗′ |ℎonly if 휇푗> 휇′
+푗
+(33)
+Here, 푇represents a known horizon, [푘] = 1, ..., 푘denotes the set of arms, and D1, ..., D푘are the unknown reward
+distributions of arms. 휇푖is the unknown average reward of the 푖-th arm, and 휋푡
+푖|ℎis the probability that A selects arm
+푖given history ℎ.
+Manuscript submitted to ACM
+
+
+--- Page 21 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+21
+In essence, this deﬁnition suggests that selecting one arm over another is considered unfair if there is suﬃcient
+conﬁdence to indicate that the chosen arm has a lower expected reward compared to the unselected one.
+Deﬁnition 3.14. (훿-Fairness in Contextual Bandits [101]). An algorithm A is considered 훿-fair if, with a probability
+of at least 1 −훿over history ℎ, for all sequences of contexts 푥1, ..., 푥푡, all payoﬀdistributions D푡
+1, ..., D푡
+푘, every round
+푡∈[푇], and all pairs of arms 푗, 푗′ ∈[푘]:
+휋푡
+푗|ℎ> 휋푡
+푗′ |ℎonly if 푓푗(푥푡
+푗) > 푓푗′ (푥푡
+푗′),
+(34)
+where 푓푖: 푥푖→[0, 1] denotes an unknown mapping from the context to the reward for each arm.
+Individual Fairness. Individual fairness mandates that similar individuals should be treated similarly [63]. In the
+context of bandits, it means that arms with similar qualities should be selected by the algorithm with similar probabil-
+ity [130]. This ensures that no particular arm is consistently preferred over others that have similar expected rewards.
+The following deﬁnition provides a notion of individual fairness in the context of bandits.
+Deﬁnition 3.15. "(Smooth Fairness [130]). For a divergence function 퐷, let 퐷(휋푡(푖) ∥휋푡(푗)) denote the divergence
+between Bernoulli distributions with parameters 휋푡(푖) and 휋푡(푗), and let 퐷(푟푖∥푟푗) denote the divergence between the
+reward distributions of the 푖-th and 푗-th arms. An algorithm A is (휖1,휖2,훿)-fair with respect to the divergence function
+퐷if 휖1,휖2 ≥0, and 0 ≤훿≤1. With a probability of at least 1 −훿in every round 푡, for every pair of arms 푖and 푗, the
+following inequality should hold:
+퐷(휋푡(푖) ∥휋푡(푗)) ≤휖1퐷(푟푖∥푟푗) + 휖2.
+(35)
+In other words, if two arms have comparable reward distributions, a fair decision rule should treat them similarly
+by assigning them similar selection probabilities.
+Proportional Fairness. Proportional Fairness in RL aims to ensure that each user, or in the case of bandits, each
+arm, is allocated a minimum guaranteed share of resources or pulls over time [51, 121]. By doing so, it guarantees that
+each arm is played at least a certain proportion of the time, thus ensuring a minimum level of exploration for all arms
+and preventing any particular arm from being unfairly favored over others. We present the following fairness notion
+as a way to quantify Proportional Fairness:
+Deﬁnition 3.16. (Asymptotic Fairness [121]). Let 푑(푡) = (푑1(푡), . . . ,푑푁(푡)) be a vector indicating whether each of the
+푁arms is pulled at round 푡, where 푑푖(푡) = 1 if arm 푖is played and 푑푖(푡) = 0 otherwise. Moreover, let 푟푖∈(0, 1) denote
+the required minimum fraction of rounds in which arm 푖is played. Algorithm A is called asymptotically fair if:
+lim inf
+푇→∞
+1
+푇
+푇−1
+Õ
+푡=0
+E[푑푖(푡)] ≥푟푖, ∀푖∈[푁].
+(36)
+This means that as the number of rounds 푇approaches inﬁnity, the expected fraction of rounds in which each arm
+is played should be equal to or greater than a prespeciﬁed fraction that is considered fair.
+3.4.2
+Unfairness Mitigation Algorithms
+Owing to the inherent characteristics of RL methods, most techniques in the ML category are in-processs. We
+have classiﬁed the mitigation algorithms into three groups: Reward modiﬁcation, action constraint, and algorithmic
+adjustments.
+Manuscript submitted to ACM
+
+
+--- Page 22 ---
+22
+Sina Shaham, et al.
+Reward modiﬁcation. Methods in this category involve modifying the notion of regret or rewards that the agent
+receives during training to encourage fairness. For instance, in [165], researchers propose an extension to the conven-
+tional notion of regret, called 푟-regret, which incorporates fairness constraints to ensure that each arm is selected at
+least a pre-speciﬁed fraction of the time at each time step in stochastic multi-armed bandit problems. In a separate
+study on Interactive Recommender Systems, a novel RL-based framework named FairRec is introduced to combine
+accuracy and fairness in the rewards function for making recommendations [127]. FairRec dynamically balances ac-
+curacy and fairness by incorporating user preferences and system fairness status into its state representations, which
+helps to improve fairness while preserving recommendation quality over time.
+Action constraint. This category encompasses techniques that either constrain an agent’s actions or adjust the
+action selection strategy during training to promote fairness. Joseph et al. [101] introduce FAIRBANDITS for achieving
+훿-fairness in stochastic bandits by modifying the UCB algorithm. When conﬁdence intervals overlap, they recommend
+playing corresponding arms with equal probability. They also present a method for fairness in contextual bandit prob-
+lems by converting the KWIK algorithm to a 훿-fair contextual bandit algorithm and vice versa. Jabbari et al. [98] extend
+훿-fairness to MDPs, ensuring no action is favored if it results in lower long-term discounted rewards. Their Fair-E3
+algorithm achieves fairness based on an approximate deﬁnition. Liu et al. [130] propose the notion of smooth fairness, a
+constraint based on the reward distributions as described earlier, and fairness regret, to measure calibration deviations.
+They show how to address these constraints in Bernoulli and Dueling bandit settings.
+Algorithmic Modiﬁcations. This category involves modifying RL algorithms themselves to promote fairness.
+Some research in this area aims to guarantee a minimum number of times each arm is chosen in multi-armed ban-
+dit problems. For example, Chen et al. [43] incorporate constraints to ensure a minimum selection rate for each
+arm in contextual multi-armed bandit problems, suggesting an algorithm that minimizes regret for multiple contexts
+while maintaining fairness. Other studies target group-level fairness in RL-based decision-making. Huang et al. [95]
+frame personalized recommendations as a modiﬁed contextual bandit problem, introducing a fair algorithm called
+Fair-LinUCB to maintain parity in the expected mean reward of both the protected and unprotected groups. Wen et al.
+[223] propose fair sequential decision-making algorithms in MDPs that enforce fairness constraints based on average
+outcome quality for diﬀerent subpopulations, aiming for demographic parity and equalized opportunity.
+A key challenge in individual fairness is quantifying individual similarity. While many studies assume such a metric,
+Gillen et al. [82] propose learning a similarity metric during decision-making in contextual bandits setting, relying on
+an oracle that can identify fairness violations without explicitly providing a quantitative metric. Ge et al. [79] introduce
+MoFIR, a framework that balances fairness and utility in recommendation systems. The authors use Multi-Objective
+Reinforcement Learning to learn an optimal recommendation policy. MoFIR extends the Deep Deterministic Policy
+Gradient algorithm by incorporating a conditioned network that considers decision-maker preferences and outputs
+Q-value vectors. This approach aims to address fairness concerns while maximizing the eﬀectiveness of recommenda-
+tions.
+4
+Privacy & Fairness
+Privacy-focused methods such as DP aim to make individuals unidentiﬁable to outside observers, while fairness
+mechanisms aim to ensure balanced outputs across diﬀerent groups. There are two diﬀerent perspectives on the re-
+lationship between these two goals. One perspective sees them as compatible, while the other highlights a potential
+trade-oﬀbetween them. In this section, we aim to explore this relationship in order to facilitate further research on
+more advanced algorithms that can achieve both goals simultaneously. The section is structured as follows:
+Manuscript submitted to ACM
+
+
+--- Page 23 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+23
+• Architectures. This subsection provides some common architectures that can be used to implement both pri-
+vacy and fairness objectives together.
+• Impact of Privacy on Fairness. This section examines the empirical evidence on how achieving privacy can
+aﬀect fairness.
+• Impact of Fairness on Privacy. This section focuses on the consequences and beneﬁts of achieving fairness
+on privacy and presents existing evidence.
+• Concurrent Implementation of Privacy and Fairness. Here, we discuss algorithms that aim to achieve both
+privacy and fairness at the same time.
+• Applications. This subsection provides examples of the interrelation between privacy and fairness in various
+application domains.
+4.1
+Architectures
+In this section, we introduce ﬁve prominent architectures speciﬁcally developed to tackle the dual challenges of privacy
+and fairness in ML. The visual representations of these architectures are presented in Figure 2.
+Architecture A. In the ﬁrst approach, a single entity seeks to ensure both privacy and fairness for their models.
+Initially, privacy-preserving algorithms are applied to the data, resulting in a privacy-protected dataset. This sanitized
+data is then used for fair training, with fairness pre-processing, in-processing, and post-processing techniques being
+applicable. For instance, the model-agnostic privacy-preserving k-means algorithm [203] follows this approach by
+applying DP to data points before implementing the k-means algorithm. Techniques like fairlet decomposition [49]
+can be employed after sanitization to enhance fair learning.
+Architecture B. The second approach aims to achieve privacy and fairness simultaneously during model training.
+In this case, the ML model receives the data directly and attempts to perform fair and private learning, often using an
+augmented objective function, adversarial learning, or incentivizing methods in RL. An example of such an approach
+is seen in [40] and [128], where the authors focus on attaining objectives during training.
+Architecture C. The third approach involves separating sensitive and non-sensitive user attributes in the dataset.
+Sensitive user attributes undergo privacy-preserving methods for sanitization, after which both protected and unpro-
+tected attributes are passed through the ML pipeline. Fairness techniques can be applied at various stages, such as pre-,
+in-, or post-processing. This approach assumes the presence of a trusted entity with access to sensitive data, sharing
+them only in a private manner. An example of this method can be found in [134].
+Architecture D. In the fourth scenario, an FL framework is highlighted, which leverages distributed learning. FL
+allows for the decentralized training of large-scale models without requiring direct access to clients’ data, eﬀectively
+maintaining their privacy. In a standard FL setting [140], client nodes work together with a server to ﬁnd a parameter
+vector that minimizes the weighted average of the loss across all clients. Techniques like Secure Aggregation [29] are
+used to guarantee that the server does not gain any information about the values of the individual updates sent by
+the clients, other than the aggregated value it aims to compute. Fairness is typically addressed through local debiasing
+methods and global unfairness mitigation strategies. A notable example of this structure is presented in [69].
+Architecture E. In the ﬁnal common scenario, privacy-preserving fairness auditing is considered. We describe
+the framework in relation to Secure Multiparty Computation (MPC), a cryptographic technique that enables multiple
+parties to collaboratively compute a speciﬁc output from their conﬁdential information in a distributed manner without
+actually exposing this private data. In this setup, a company (Alice) with a proprietary model must undergo an audit
+by an authority (Bob) with access to sensitive audit information. Alice wishes to keep her trained model parameters
+Manuscript submitted to ACM
+
+
+--- Page 24 ---
+24
+Sina Shaham, et al.
+Data 
+ML Model
+Output
+(a)
+ML Model
+Data 
+Output
+(b)
+Sensitive
+Sensitive
+Attributes
+ML Model
+Output
+Other  
+Other  
+Attributes
+(c)
+Data 
+Data 
+Servers
+Client
+Client
+(d)
+ML Owner (Alice)
+Servers
+Audit Data 
+Investigator (Bob)
+(e)
+Fig. 2. Architectures Enabling Simultaneous Implementation of Privacy and Fairness in ML.
+private, while Bob seeks to protect the sensitive audit data because it contains critical attributes necessary for fairness
+auditing but may also be subject to anti-discrimination and data protection regulations. A representative example of
+this privacy-fairness architecture is discussed in [168].
+4.2
+Impact of Privacy on Fairness
+The aim of this subsection is to comprehend the ways in which privacy-preserving methods aﬀect the fair treatment of
+individuals and groups. The subsequent discussion reviews two perspectives on perspectives on the potential positive
+and negative impacts of privacy on fairness: one focused on ways in which they are aligned, and another focusing on
+ways in they contrast with each other.
+4.2.1
+Aligned
+To begin our discussion, we examine publications that argue for the compatibility of privacy and fairness objectives.
+Pannekoek et al. [161] build their experiments based on a simple neural network consisting of three fully connected
+layers. For fairness, they used the "reject option classiﬁcation" approach as a postprocessing technique to adjust output
+labels. Meanwhile, for privacy protection, they implemented the DP version of the Adam optimizer [141]. By incorpo-
+rating both fairness and privacy constraints, their model displayed superior fairness compared to the model that only
+utilized fairness constraints, while maintaining high accuracy. Furthermore, the model’s performance did not exhibit
+a declining trend as privacy protection measures increased. The authors in [107] demonstrate that the exponential
+mechanism developed to achieve DP can also help in attaining fairness once used as a post-processing approach at the
+output of classiﬁers in selection problems.
+Sarhan et al. [187] examine the eﬀect of DP on fairness in FL. The predominant scenarios in FL is explored including
+local DP and global DP. In the local DP scenario, clients use DP-SGD on their local nodes and transmit the model
+hyperparameters to the server for evaluation of fairness metrics such as equalized odds, equalized opportunity, and
+demographic parity. In contrast, in the global DP scenario, client hyperparameters are aggregated at the server and
+Manuscript submitted to ACM
+
+
+--- Page 25 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+25
+sanitized to achieve DP. The authors discover that DP reduces discrimination in both scenarios, but strict privacy
+budgets can result in a trade-oﬀbetween privacy and fairness. As a result, the need for parameter tuning is emphasized.
+The utilization of learned language models’ hidden representations has been proven to be capable of extracting
+conﬁdential information about users. In [137], the authors suggest a technique for safeguarding user privacy and
+demonstrate that incorporating privacy into the process can generally decrease bias. The proposed approach involves
+adding a noise layer to the extracted features from text, which achieves DP before sharing the representation for
+classiﬁcation. Maheshwari et al. [139] explore the integration of DP and adversarial learning, focusing on the Equalized
+Fairness metric in NLP. Their proposed framework perturbs the output of a text encoder to achieve DP, and employs
+a classiﬁer branch in conjunction with an adversarial branch to actively foster fairness. The authors provide empirical
+evidence demonstrating that privacy and fairness are not only compatible in this context, but also mutually supportive.
+4.2.2
+Contrasting
+On the contrary, some works argue that there exists a trade-oﬀbetween privacy and fairness. Sanyal et al. [186]
+investigated the use of DP for classiﬁers, with a focus on accuracy discrepancy as a metric for fairness. Through
+their theoretical analysis, they established that it is not feasible to maintain high accuracy for minority groups and
+safeguard privacy simultaneously when data follows a long-tailed structure. Nevertheless, they demonstrated that
+relaxing accuracy requirements can lead to achieving a high degree of strict privacy and fairness. The authors in [16]
+focus on neural networks trained using Diﬀerentially Private Stochastic Gradient Descent (DP-SGD) and demonstrate
+that the accuracy of the private model drops more for the underrepresented classes. In other words, the DP-SGD
+ampliﬁes the model’s bias towards popular elements in the distribution being learned. The results are empirically
+shown in gender classiﬁcation, sentiment analysis of tweets, species classiﬁcation, and FL of language models.
+Du et al. [61] study the role of DP on outlier detection. To detect outliers, an ML model is trained to learn the
+distribution from which the training data samples were drawn. Using this information, the model can detect samples
+that signiﬁcantly diﬀer from the learned distribution. The authors demonstrate that the random noise added during
+the model training for DP purposes hides the impact of an individual record on the learned model. Essentially, rare
+training examples are hidden by the added noise, resulting in a model that is less capable of detecting outliers. In other
+words, the accuracy of the model decreases for minority instances when DP is applied to the training process. In [40],
+the author validates the presence of a trade-oﬀbetween privacy and fairness in semi-private settings, where a small
+fraction of sensitive data is clean, while the remaining data is safeguarded by privacy measures.
+4.3
+Impact of Fairness on Privacy
+Despite the considerable impact that fairness may have on privacy, there’s been relatively scant attention devoted to
+understanding how algorithmic fairness might aﬀect the privacy of individuals and groups. Many strategies developed
+to tackle unfairness depend on sensitive user information, which can result in unintended or intentional overexploita-
+tion of such data, thereby violating user privacy. More discussion and dialog is needed within the ML community to
+comprehend the privacy hazards linked to algorithmic fairness. This need has been emphasized in numerous studies,
+such as [13] and [202]. In the following, we delve into the few studies that have been undertaken on this subject
+matter.
+Manuscript submitted to ACM
+
+
+--- Page 26 ---
+26
+Sina Shaham, et al.
+4.3.1
+Aligned
+In this subsection, we discuss methods where the pursuit of fairness in ML models has led to a positive inﬂuence
+on user privacy. Starting with one of the most signiﬁcant results in this regard, the authors in [63] demonstrate that
+the concept of individual fairness is indeed a generalization of the DP notion under speciﬁc distance metric deﬁnitions.
+This ﬁnding is crucial because it enables the use of algorithms developed for individual fairness to positively impact
+privacy. More speciﬁcally, inspired by [75], consider the individual fairness notion [63] described in Deﬁnition 3.6. In
+[63], the authors reveal that the mapping function M : 푋→푌satisﬁes 휖-DP given that the similarity distance metrics
+for the input and output are deﬁned as follows for any two users 푢and 푣:
+푑X(푢,푣) = 휖|풖Δ풗|,
+푑Y(M(푢),M(푣)) = sup
+푦∈Y
+푃(M(풖= 푦))
+푃(M(풗= 푦))
+
+.
+(37)
+Here, 풖Δ풗denotes the set diﬀerence between two inputs 풖and 풗of X.
+In a diﬀerent perspective, Aalmoes et al. [1] concentrate on attribute inference attacks as a measure of privacy
+risk, where the objective is to deduce sensitive characteristics such as race and gender from the training data of an
+ML model. In this scenario, the model is perceived as a black box, with the adversary having access to the model’s
+output predictions for any input query. The authors explore how fairness constraints applied during model training
+inﬂuence the attribute inference attack. They ﬁnd that fairness algorithms, which enforce equalized odds, serve as an
+eﬀective safeguard against attribute inference attacks without aﬀecting the model’s utility. Consequently, the goals of
+algorithmic fairness and sensitive attribute privacy are found to be in harmony.
+4.3.2
+Contrasting
+Chang et al. [39] deﬁne the risk of privacy as the success of membership inference attack on a trained model. In such
+attacks an adversary observes the model predictions attempting to distinguish between members and non-members of
+the training set. The proposed attack is used to compare the information leakage of models trained with and without
+fairness constraints on diﬀerent groups in their training data. The authors provide empirical evidence showing that
+fairness-aware learning has a disproportionate impact on the privacy risks of subgroups, creating a trade-oﬀ. This
+phenomenon is explained by the fact that fair models have a greater tendency to memorize data from unprivileged
+subgroups, which makes them more vulnerable to membership inference attacks.
+In another work, Zhang et al. [244] examine the interplay between privacy and fairness within the node classiﬁca-
+tion of GNNs. They provide empirical evidence of the negative inﬂuence of individual node fairness on edge privacy.
+In this study, the individual fairness notion is applied as treating nodes comparably in classiﬁcation, ensuring they
+receive identical service quality irrespective of their backgrounds. Privacy, on the other hand, is assessed through link
+prediction attacks between nodes, which reveal the connections between two nodes in a speciﬁc pair. The authors
+provide empirical evidence highlighting the adverse eﬀect of individual fairness on privacy in this setting.
+4.4
+Concurrent Implementation of Privacy and Fairness
+This section will examine algorithms that have been proposed in existing literature with the aim of achieving both
+privacy and fairness objectives while minimizing the overall loss of utility. Unfortunately, there is a limited number
+of research works that have theoretically investigated the interaction between these two objectives, such as those pre-
+sented in references [56] and [107]. Cummings et al. [56] prove that it is not possible to simultaneously achieve DP
+Manuscript submitted to ACM
+
+
+--- Page 27 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+27
+and perfect fairness in terms of equalized odds while maintaining higher accuracy than a constant classiﬁer. On the
+contrary, the authors in [107] demonstrate that this assertion is not applicable in selection problems. In non-selection
+problems, the goal is to minimize the expected loss across the entire population while ensuring fairness constraints.
+For instance, in a hiring scenario, all applicants who meet the classiﬁer’s criteria should be accepted. However, in selec-
+tion problems, only a limited number of candidates can be chosen. The authors in [107] suggest that the exponential
+mechanism developed for DP can be an eﬀective tool for improving fairness under speciﬁc circumstances.
+Liu et al. [128] develop an algorithm called FairDP, which aims to address disparate impact introduced by DP on
+underrepresented groups in the private training of classiﬁcation models. The authors frame the learning process as
+a bilevel programming problem, which incorporates fairness and DP. FairDP utilizes an adaptive clipping threshold
+to regulate the impact of instances in each class, enabling the model accuracy to be adjusted for classes based on its
+privacy cost and fairness considerations. Chen et al. [40] investigated fair classiﬁcation in semi-private settings where
+sensitive attributes, such as gender, are secured by speciﬁc privacy mechanisms, and only a few clean attributes are
+available. Their proposed framework aims to utilize the limited clean attributes to correct the noisy sensitive attributes
+while ensuring privacy.
+Xu et al. [229] propose a method to combine privacy and fairness in logistic regression while maintaining high
+model accuracy. Their approach involves adding a decision boundary fairness constraint to the objective function and
+applying the functional mechanism for DP. The decision boundary fairness constraint is deﬁned as the correlation
+between users’ protected attributes and the distance from their unprotected attribute vectors to the decision boundary.
+The functional mechanism adds randomness to the polynomial coeﬃcients of the constrained objective function by
+introducing Laplace noise. The experiments demonstrate a trade-oﬀbetween the amount of privacy budget in DP
+and discrimination based on statistical parity. The authors in [84] argue for the beneﬁts of addressing discrimination
+risk and privacy concerns in data mining, with a focus on the privacy metric 푘-anonymity. The authors consider a
+scenario where a set of patterns needs to be published in a way that preserves privacy and avoids discrimination,
+while minimizing pattern distortion. To achieve this goal, the proposed approach ﬁrst identiﬁes patterns that are more
+susceptible to vulnerability during the sanitization process, and then applies special measures to sanitize them based
+on the 푘-anonymity principle.
+Jin et al. [100] examine an inference as service (IAS) scenario to make decisions in the cloud. In this setting, data is
+transmitted from devices to the cloud, and the cloud provider’s server trains the ML model. To enhance user privacy and
+decrease bias, the author suggests a random mapping of data generated based on a non-convex optimization problem
+and an iterative algorithm to solve it. Inference accuracy, the mutual information between the transformed variable
+and the label, and the degree of leaked information are used to evaluate the utility, privacy, and impartiality of the
+mapping.
+There are multiple works that focus on achieving privacy and fairness objectives simultaneously for ML models in
+the FL setting. Padala et al. [159] propose a framework for incorporating both privacy and fairness into FL. The authors
+use statistical parity as fairness metric and local DP as a means of ensuring privacy. The proposed framework is based
+on separating the training dataset and following a two-step process. In the ﬁrst phase, each client trains a model on
+their own private dataset for unbiased prediction. In the second phase, clients train a DP model to mimic the unbiased
+prediction achieved in the ﬁrst phase. Once training is complete, client data is transmitted to the server. Zhang et
+al. [242] propose a framework called FairFL to address the challenges of restricted information and constrained coor-
+dination in FL. The authors use statistical parity as a fairness metric and ensure privacy by not sharing raw training
+Manuscript submitted to ACM
+
+
+--- Page 28 ---
+28
+Sina Shaham, et al.
+and ground truth labels, as well as sensitive demographic information. The FairFL framework consists of two compo-
+nents: a Team Markov Game for Client Selection (TMGCS) and a Secure Aggregation Protocol (SAP). The TMGCS is a
+Multi-Agent Reinforcement Learning approach that allows clients to collaboratively decide whether to participate in
+the local update process, while the SAP addresses the issue of each client’s myopic view by allowing them to gather
+information about all clients’ statuses without violating their privacy constraints.
+4.5
+Applications
+In this section, we will examine domain-speciﬁc approaches that researchers have taken to incorporate privacy and
+fairness as key components of trustworthy ML in their respective applications.
+Healthcare. Patient electronic health records (EHRs) are regarded as some of the most sensitive information avail-
+able, subject to stringent legal protection. However, such data is highly valuable to researchers and decision-makers,
+providing guidance for policy creation and medical advancements, as demonstrated during the recent unfortunate
+Covid-19 pandemic. This data often includes highly personal and sensitive patient information, such as gender, race,
+and age, which must be considered to ensure equitable treatment of individuals and groups. A prevalent solution for
+balancing privacy with the incorporation of fairness is utilizing synthetic datasets that mimic patient records to en-
+hance privacy and train equitable models for future predictions [188]. Determining the degree of resemblance (privacy),
+fairness notions in healthcare, and their interplay remains an ongoing challenge and an active research area. For in-
+stance, in [24], multiple fairness notions have been suggested for covariate-level insights in synthetically generated
+healthcare data, underscoring the need for additional research to comprehend the interaction between privacy and
+fairness.
+Natural Language Processing. Modern natural language processing (NLP) models heavily rely on the encoded
+representation of text, which often captures sensitive attributes about individuals (e.g., race or gender). This raises
+privacy concerns and can cause downstream models to be unfair to certain groups. Sensitive information can be im-
+plicitly or explicitly present in the input text. Maheshwari et al. [139] propose a framework to address this problem.
+The framework aims to perturb the output of a text encoder to achieve DP and then uses a classiﬁer branch along with
+an adversarial branch to actively promote fairness. The authors show that not only are these two objectives not in
+conﬂict with each other, but they also help each other in improving both objectives. The proposed approach in [137]
+adds a noise layer to the feature extraction process, achieving DP before using the representation for classiﬁcation
+tasks, also showing the alignment of two objectives.
+Computer Vision. Comprehending privacy in Computer Vision involves various facets; however, present ap-
+proaches for addressing privacy and fairness interplay mainly focus on deﬁning privacy as instances where the model
+might memorize the training data in some way or use features as proxies for the original data to deduce private at-
+tributes about individuals, a concept known as attribute privacy. In this case, the model inadvertently or intentionally
+transfers information about the private attribute into the features, bearing resemblance to fairness-related concerns.
+The authors in [166] examine the privacy-fairness trade-oﬀ, concentrating on the method where a feature extractor
+transforms images into features using weights. They employ an adversarial technique to integrate privacy and fairness
+by adding penalty terms for both objectives to the feature extractor’s loss function during training. Findings reveal
+that privacy and fairness are conﬂicting in this context. In [212], facial attribute classiﬁcation is explored. The authors
+leverage GANs to maintain privacy through the generation of synthetic images and use contrastive learning-based
+loss designs to concurrently enforce fairness protections.
+Manuscript submitted to ACM
+
+
+--- Page 29 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+29
+Spatial Data Processing. User location data contains essential information about individuals, such as socio-economic
+aspects and indicators for sensitive attributes like race. With the US 2020 census data being published using DP across
+neighborhoods, comprehending the relationship between privacy and fairness has grown increasingly crucial. In [176],
+the authors explore the impact of DP on supervised decision-making in three applications: (I) assigning voting rights
+beneﬁts to minority languages, where privacy noise leads to signiﬁcant disparities in accurately identifying deserv-
+ing beneﬁciaries; (II) parliamentary apportionment, where certain privacy budget settings result in a more equitable
+distribution of seats to Indian states using noisy data compared to deterministic methods; and (III) federal funds allo-
+cation, where under strict privacy settings, some districts receive an uneven share of funds. The study underscores DP
+applied to location data can lead to disparities in the outcome, emphasizing the need for more in-depth research on
+privacy’s inﬂuence on fairness. Furthermore, fairness in spatial data is a relatively new concept, with studies like [195]
+and [196] addressing issues such as discrepancies in fairness metrics across neighborhoods, abrupt changes in classiﬁer
+outputs due to neighborhood shifts, and the use of spatial continuity to enhance fairness. The impact of privacy on
+these aspects has not yet been considered and calls for further investigation.
+5
+Vision and Challenges
+5.1
+Privacy and Fairness in the Current Era of Large Language Models
+As we step into the era of large language models, the interplay between privacy and fairness becomes an ever more
+critical component. As models tend towards being more conversational, they will exhibit higher risks of running into
+privacy and fairness violations. There are several avenues of active research that might dictate the future of this area.
+The Use of APIs. A signiﬁcant number LLMs have restricted access [32, 156, 200] and some of these models can
+be accessed via APIs. These APIs can host models along with an arsenal of ex-ante and post hoc qualitative checks
+that enable API owners to control privacy as well as fairness of the model output. These qualitative checks are im-
+plemented via a variety of techniques ranging from simple ﬁlters to secondary models that are trained to detect and
+process model output in accordance with some chosen policies. As LLMs and related APIs become more ubiquitous,
+the qualitative checks implemented by these APIs are likely going to be key in terms of mitigating bias and privacy
+issues and improving the overall responsibility of model output.
+Logic-aware Models. When it comes to building models that are fair, the de-biasing process can have an eﬀect on
+privacy preservation [5]. One way to approach this problem is explore bias mitigation methods that skip this step. Logic-
+aware language models [135] can be trained to reduce harmful stereotypes. Instead of typical sentence encoding they
+use a textual entailment which learns if parts of the second sentence text entails, contradicts or is neutral with respect to
+parts of the ﬁrst one. Models trained in this way were signiﬁcantly less biased than other baselines, without any extra
+data or additional training paradigms used. Logic-aware training methods might be paired with privacy preservation
+techniques in order to build models that are both private and fair. In order to address privacy-preservation, smaller (i.e.
+500X smaller than the state-of-the-art models; [135]) logical language models that are qualitatively measured as fair,
+can be deployed locally with no human-annotated training samples for downstream tasks.
+Privacy and Fairness in the Context of Learning from Human Feedback. Fine-tuning with human feedback
+[157], has provided a promising way to make large language models align more with human intent. This technique
+can also be utilized to train models that are privacy-preserving and unbiased. Here, modes are expected to learn to
+return content that is preferred by humans, based on a training loop where feedback is provided via a reward model
+trained to rank model output based on what humans might prefer. The collection of human preferences that are used
+to train the reward model can be made in a fair and private way so that the reward model will learn these traits. This
+Manuscript submitted to ACM
+
+
+--- Page 30 ---
+30
+Sina Shaham, et al.
+will in turn enable the foundational model to learn to generalize its behavior based on the feedback provided by the
+fair and privacy preserving reward model. It has already shown some promise in reducing harmful content [157], but
+more research in this area is needed.
+5.2
+Fairness Through Privacy
+The majority of previous approaches aimed at mitigating bias require access to sensitive attributes. However, obtaining
+a signiﬁcant amount of data with sensitive attributes is often impractical due to people’s growing privacy concerns and
+legal compliance. Consequently, a crucial area of research inquiry that merits attention is how to ensure fair predictions
+while preserving privacy. This is a persistent challenge faced by technology companies that seek to balance the goal of
+ensuring fair ML processing of user data, including sensitive attributes such as Race and Gender, while simultaneously
+protecting user privacy and restricting the use of sensitive user data.
+5.3
+Fair Privacy Protection
+The authors in [65] pose a crucial question that sparked this subsection: Does a system provide equivalent privacy
+protections to diﬀerent groups of individuals? The main idea behind fair privacy protection is to ensure that privacy
+mechanisms oﬀer equal levels of privacy to all users, meaning that users are being treated fairly in terms of the amount
+of privacy protection they receive. Although there is a lower limit on the level of privacy achieved, such as in DP, some
+groups of the population may receive more attention than others in a broader context.
+The signiﬁcance of fair privacy protection is explained in the following example predicated on an observation made
+in DP publication of the US 2020 census. In an observation made by the US Census Bureau Researchers, the Laplace
+mechanism in DP appeared to be disadvantaging low-populated areas like villages compared to highly populated
+cities such as metropolitan areas [158]. To demonstrate this, let us consider two cities, 퐴and 퐵, with populations 푎
+and 푏, respectively, where 푎<< 푏. The populations are sanitized using Laplace noise, with two noise values drawn
+from a Laplace distribution (퐿푎푝(1/휖)) added to each population, and the private values are published. At ﬁrst glance,
+both cities appear to be sanitized using the same Laplace distribution, and both achieve 휖-DP. However, upon closer
+inspection, the amount of noise added per individual in each city is examined. With knowledge that the variance
+of Laplace noise is 2/휖2, the amount of noise variance per individual is derived as 2/(푎휖2) and 2/(푏휖2). If 푎<< 푏,
+then it can be seen that 2/(푏휖2) is much less than 2/(푎휖2). In other words, the amount of noise per individual in the
+low-populated city is much higher than in the highly populated city, which raises questions about the fairness of the
+privacy guarantees imposed.
+5.4
+Incorporating Privacy and Fairness based on Cryptographic Approaches
+No existing approach addresses both privacy and fairness in the cryptographic setting. Such an approach presents
+great promise, because it may be able to provide privacy and fairness under more relaxed system architecture assump-
+tions. For instance, in the diﬀerential privacy case, one assumes the presence of a trusted curator, or that an extensive
+distributed infrastructure for federated learning exists. With cryptography, no trusted party is required to perform the
+computation.
+The main challenge becomes how can one express fairness constraints so that they become implementable using
+the rather restrictive set of operations provided by various searchable encryption approaches. Can one achieve fairness
+directly under the encrypted ciphertext using primitives like PHE? Or are there more expensive primitives required,
+like FHE? And even with FHE, only polynomial evaluation is supported in the best case, whereas other operations (e.g.,
+Manuscript submitted to ACM
+
+
+--- Page 31 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+35
+logarithm, sigmoid) must be simulated using polynomial approximations. Achieving fairness by using such primitives
+is an important and challenging research problem.
+6
+Conclusion
+In conclusion, this comprehensive survey oﬀers a thorough investigation of the fundamental concepts in privacy
+and fairness by examining nearly 200 works in the ﬁeld. Our aim is to guide researchers in both academia and industry
+towards the simultaneous realization of privacy and fairness for individuals and groups in society across all four pri-
+mary facets of ML, including supervised, unsupervised, semi-supervised, and reinforcement learning. By establishing
+a solid understanding of privacy and fairness within various ML techniques, we present an exhaustive analysis of how
+objectives impact one another and identify open questions for the ﬁrst time. This work emphasizes the focus areas nec-
+essary to address the dual objectives in ML, ultimately promoting more responsible and trustworthy decision-making.
+Manuscript submitted to ACM
+
+
+--- Page 32 ---
+36
+Sina Shaham, et al.
+A
+Mind Map of Survey
+
+	
+	
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+ 	
+!
+
+"!#
+$!
+!
+
+%
+!"%#
+	
+
+
+&	
+
+
+'	
+
+
+
+
+
+(
+
+"(#
+$!
+(
+	(
+
+"(#
+
+(
+
+"(#
+)(
+
+"(#
+("%#
+	
+
+
+&	
+
+
+'	
+
+
+
+
+
+
+
+
+'	
+
+"%#
+&
+
+
+*
+
+%
++,
+
+	
+
+
+$!
+&
+
+
+
+'
+
+
+'
+
+
+'
+
+
+
+&	
+
+
+$!
+&
+
+
+'
+
+
+'
+
+
+
+'
+
+
+'
+
+
+'
+
+
+
+'
+
+
+
+
+
+
+$!
+&
+
+
+
+	
+
+
+
+
+	
+
+
+
+
+
+
+&
+')
+
+
+
+%
+
+
+(	+-
+
+
+	
+
+
+
+
+
+
+
+
+
++
+
+
+
+
+
+	)
+
+
+
+
+
+
+
+
+
+
+
+
+
++	
+
+	!.
+
+!'/!
+!'.!!
+Manuscript submitted to ACM
+
+
+--- Page 33 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+37
+B
+Applications of DP
+This section explores the practical use cases of DP in supervised, unsupervised, semi-supervised, and RL.
+B.1
+Supervised Learning
+Various studies have demonstrated the crucial role of DP in enhancing the privacy of ML tasks such as regression and
+decision tree classiﬁcation. For instance, Sheﬀet et al. [197] proposedDP algorithms for approximating the 2nd-moment
+matrix, while Milionis et al. [148] presented eﬃcient DP algorithms for classical regression settings. Furthermore, Kim
+et al. [108] proposed a hybrid approach using DP and homomorphic encryption for privacy-preserving distributed
+logistic regression. In the context of decision tree classiﬁcation, Liu et al. [129] and Fletcher et al. [76] [77] introduced
+decision tree and forest algorithms that ensure privacy while achieving high accuracy. Their proposed algorithms
+showcase the importance of DP in the development of ML systems that maintain high levels of privacy without com-
+promising performance.
+Random Forest classiﬁcation algorithms have also been shown to beneﬁt signiﬁcantly from DP techniques. Speciﬁcally,
+Patil et al. [164] and Hou et al. [94] proposed algorithms that integrate DP with the Gini index and demonstrate the
+eﬀectiveness of DP in preserving classiﬁcation accuracy and privacy in Random Forest classiﬁcation. Moreover, the
+signiﬁcance of DP in SVM for safeguarding privacy in ML is exempliﬁed by Senekane et al. [191] and Park et al. [162].
+Senekane et al. proposed privacy-preserving image classiﬁcation using SVM and DP with 휖-DP, while Park et al. pro-
+posed an algorithm for multi-class classiﬁcation utilizing SVDD with DP-SVDD for training and EPs for classiﬁcation,
+respectively. Their approaches showcase the eﬃcacy of DP in enhancing the privacy of ML systems while maintaining
+high levels of accuracy.
+B.2
+Unsupervised Learning
+Numerous investigations have explored the implementation of DP in unsupervised learning. For example, Tantipongpi-
+pat et al. [209] propound a conceptual framework that amalgamates autoencoder and GANs to create top-tier synthetic
+data in unsupervised settings. They also introduce novel metrics to appraise the excellence of synthetic data and show-
+case the eﬃcacy of their approach on medical and census datasets. Similarly, Torﬁet al. [215] confront the challenges of
+synthetic data generation in medical domains, such as safeguarding privacy, handling discrete data, and incorporating
+temporal and correlated features. They put forth a privacy-preserving framework that utilizes RDP-CGAN and sur-
+passes current methodologies in terms of privacy guarantee and quality of synthetic data. Their approach is designed
+to provide both privacy and quality in synthetic data generation.
+Other studies have focused on employing DP to particular unsupervised learning tasks. Speciﬁcally, Wang et al. [222]
+scrutinize diﬀerentially private subspace clustering algorithms and present a pragmatic Gibbs sampling subspace clus-
+tering algorithm using the exponential mechanism. This algorithm is designed to preserve the privacy of individuals’
+data. In another study, Bun et al. [33] introduce an algorithm for diﬀerentially private correlation clustering that accom-
+plishes subquadratic additive error compared to the optimal cost. Their approach improves upon previous methods,
+which have typically incurred quadratic costs. Similarly, Blocki et al. [28] devise private sublinear-time clustering al-
+gorithms for k-median and k-means clustering in metric spaces, and initiate a sampling algorithm with group privacy
+analysis. Their approach focuses on reducing computation time while ensuring privacy. In yet another application, the
+authors in [153] address privacy preservation in human genomic datasets and propose diﬀerentially private ML using
+representation learning, evincing enhanced accuracy in drug sensitivity prediction.
+Manuscript submitted to ACM
+
+
+--- Page 34 ---
+38
+Sina Shaham, et al.
+B.3
+Semi-supervised Learning
+Both [171] and [132] oﬀer novel frameworks for diﬀerentially private semi-supervised classiﬁcation, utilizing both
+labeled and unlabeled data to train a classiﬁer. Whereas the former prioritizes known class priors and provides proofs
+on privacy and utility, the latter introduces two distinctively diﬀerentially private methods, output perturbation and
+objective perturbation, and assesses their performance against regular diﬀerentially private empirical risk minimiza-
+tion (ERM). In addition, [132] conducts a thorough analysis of the global sensitivity of the objective function in SSL,
+demonstrating that their proposed methods attain superior accuracy while ensuring DP.
+In contrast, [99] tackles the issue of enhancing the accuracy of a diﬀerentially private classiﬁer using non-private data
+when only a small amount of private data is accessible. Their approach fabricates a diﬀerentially private classiﬁer from
+private data and subsequently employs non-private data to boost accuracy, extending the random decision tree idea
+to leverage the availability of unlabeled data for denser partitioning of the instance space and label propagation. This
+method also boosts classiﬁer accuracy without compromising privacy, as demonstrated on small and moderate-sized
+datasets. This diverges from the diﬀerentially private boosting algorithm that ampliﬁes the accuracy of a class of real-
+valued queries. All in all, these studies underscore the signiﬁcance of DP in ML and propose compelling solutions to
+address privacy concerns while enhancing classiﬁcation accuracy.
+B.4
+Reinforcement Learning
+The studies [138] and [246] make contributions to the ﬁeld of privacy-preserving RL. Whereas [138] proﬀers solutions
+to attain DP in RL contexts through the utilization of exponential and Laplace mechanisms, [246] posits a novel ap-
+proach for devising privacy-preserving RL algorithms with rigorous statistical guarantees. The latter expounds both
+value-based and policy-based optimistic private RL algorithms under linear mixture MDPs, which revel in sublinear
+regret in the total number of steps while ensuring joint DP. These results open up new avenues for safeguarding data
+privacy while ensuring the scalability and eﬃciency of RL algorithms in large-scale MDPs.
+Similarly, the studies [44] and [122] advance approaches for integrating DP in meta-learning and multi-agent RL, cor-
+respondingly. [44] ushers in a new technique for translocating knowledge with DP, christened Diﬀerential knowledge
+Transfer with relevance Weight, which boosts the model’s resilience to negative transfer and augments the knowledge
+set. Meanwhile, [122] proﬀers a new framework for incorporating DP into meta-learning, with encouraging results
+in both theory and practice. Their proposed privacy setting accords better performance than previously studied no-
+tions of privacy. These studies make signiﬁcant contributions to broadening the horizons of privacy-preserving ML
+algorithms in diverse learning scenarios.
+C
+Applications of HE
+This section explores the practical use cases of HE in supervised, unsupervised, semi-supervised, and reinforcement
+learning.
+C.1
+Supervised Learning
+HE has been applied to several supervised learning models to ensure privacy and protect sensitive data. One study
+proposed a secure method for linear regression on split data using Paillier’s PHE scheme, which allows for the ho-
+momorphic addition of encrypted values [85]. Another study introduced novel techniques using FHE to train logistic
+regression models on encrypted data, with potential applications to other models such as neural networks [41]. In
+addition, a homomorphically encrypted logistic regression outsourcing model was presented, allowing ML models to
+Manuscript submitted to ACM
+
+
+--- Page 35 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+39
+be learned without accessing raw data [109]. However, there are still limitations to the application of these models,
+including overheads in computation and storage due to HE, and the need for polynomial approximation to reduce
+computation cost.
+HE has also been applied to decision tree and random forest models. One study proposed SortingHat, an eﬃcient non-
+interactive design for private decision tree evaluation using FHE techniques [52]. SortingHat addresses cryptographic
+problems related to FHE and presents a version without transciphering that signiﬁcantly improves computation cost.
+Another study proposed a privacy-preserving protocol for multiple model owners to delegate the evaluation of random
+forests to an untrusted party, incorporating a SHE scheme and optimization techniques [10]. Both studies present new
+secure protocols and optimization techniques to enable practical use of heavy-weight HE schemes. Finally, a study
+presented a secure multi-label tumor classiﬁcation method using HE, based on a neural network model with the soft-
+max activation function [93]. The model achieved high accuracy and successfully computed the tumor classiﬁcation
+inference steps on encrypted test data.
+C.2
+Unsupervised Learning
+HE has gained attention as a promising tool for privacy-preserving ML, especially in unsupervised learning tasks such
+as clustering and principal component analysis. Several studies have proposed diﬀerent techniques to utilize HE for
+these tasks. For instance, Catak et al. [36] proposed a privacy-preserving clustering system that utilized Paillier Cryp-
+tography and HE to preserve privacy and minimize computational time. Alabdulatif et al. [9] introduced a distributed
+data clustering approach using fully homomorphic encryption, resulting in signiﬁcant improvements in computational
+performance eﬃciency for clustering tasks. Wu et al. [227] proposed a secure and eﬃcient outsourced k-means clus-
+tering scheme using YASHE homomorphic encryption, achieving privacy preservation in database security, clustering
+results, and data access pattern hiding.
+In addition, HE has also been applied to principal component analysis. Panda et al. [160] proposed a non-interactive
+technique to perform principal component analysis using the CKKS HE scheme, achieving goodperformance on higher-
+dimensional datasets with a sub-ciphertext packing technique that reduces computations. Moreover, HE has also been
+used for privacy-preserving recurrent neural networks. Bakshi et al. [17] proposed privacy-preserving recurrent neu-
+ral networks using HE, evaluating ﬁve diﬀerent methods to deal with increasing noise and linearity of activation
+functions on various datasets and network architectures, and proposing three original methods to retain non-linear
+function beneﬁts.
+C.3
+Semi-supervised Learning
+HE has shown great potential in supporting SSL tasks by enabling secure computation on encrypted data. The study
+by Arai et al. [15] proposes a novel privacy-preserving label prediction solution with HE, while the study by Erkin et
+al. [66] uses secure multiplication and decryption protocols, as well as data packing, to provide a privacy-preserving
+recommender system. On the other hand, the study by Pejic et al. [167] compares the performance loss of diﬀerent HE
+techniques and Multi-Party Computations (MPC) in Federated Learning (FL) to train a Generative Adversarial Network
+(GAN) on sensitive data.
+Despite their diﬀerences in applications and techniques, all three studies highlight the potential of HE in protecting
+sensitive data while still allowing for useful computations to be performed. Arai et al. [15] and Erkin et al. [66] demon-
+strate the feasibility and eﬃciency of privacy-preserving solutions with HE in their respective ﬁelds, while Pejic et al.
+Manuscript submitted to ACM
+
+
+--- Page 36 ---
+40
+Sina Shaham, et al.
+[167] show the trade-oﬀbetween the complexity of encryption methods and the time taken for computations. These
+studies suggest that HE can enable SSL tasks with privacy concerns in various contexts.
+C.4
+Reinforcement Learning
+HE has become an increasingly popular tool for addressing privacy and security concerns in RL in cloud computing
+and IoT environments. Park et al. [163] proposed the Secure Q-Learning algorithm using FHE, which processes data
+in a single cloud server and restricts error growth without the bootstrapping algorithm. In addition, Suh et al. [204]
+developed the encrypted SARSA(0) algorithm, which oﬀers privacy guarantees and induces minimal precision loss in
+control synthesis over FHE. Both studies demonstrate the potential of HE in addressing security and privacy challenges
+in RL tasks.
+Moreover, Miao et al. [145] proposed a FL based Secure data Sharing mechanism (FL2S) for IoT with privacy preserva-
+tion, which uses an asynchronous multiple FL scheme with sub-task grading and deep RL, as well as HE for privacy
+protection. Meanwhile, Sun et al. [205] proposed secure computation protocols using FHE for the A3C RL algorithm in
+health data, and design the ﬁrst secure A3C RL algorithm for treatment decision-making. These studies demonstrate
+the eﬃciency of HE-based protocols and algorithms in secure RL and oﬀer promising solutions to privacy and security
+concerns in various domains.
+D
+Bias
+This section presents our classiﬁcation of the diﬀerent forms of bias illustrated in Figure 3. The types of bias have
+been divided into four major categories, namely, A Biased World, Data Collection and Preparation, Model Training, and
+ﬁnally, Evaluation and Deployment.
+A Biased World. Even if all fairness-related considerations are made for ML models, a signiﬁcant source of bias is
+introduced in the data cycle due to perceptions and beliefs in society. Historical bias [207] is the primary source in this
+category that highlights the adverse eﬀects of reﬂecting historically unfair facts in ML models. For example, in 2018,
+image search results for female CEOs showed a bias towards male CEOs, reﬂecting the underrepresentation of women
+as CEOs in Fortune 500 companies (5 only) [207]. The question of whether search algorithms should reﬂect this reality
+remains uncertain [143].
+Data Collection & Preparation. The role of data and how they are transformed is pivotal in ensuring fairness
+practices are in place. Well-known sources of bias in this category include Representation bias occurring when certain
+parts of input space are not reﬂected in the collected data, Measurement bias due to intentional or unintentional use
+of certain features as proxies for others, particularly for sensitive attribute, and Sampling bias in which non-random
+sampling of the dataset is used for the purpose of training [236].
+Model Training. The most subtle but equally detrimental sources of unfairness are introduced during training.
+Latent bias is one such factor for which the model will learn existing biases in society. For example, existing stereo-
+types in society are learned and reﬂected by the model. Another such bias is called Linking bias caused by learning
+fundamentally diﬀerent patterns from real-world counterparts raised mostly in models applied on social networks [18].
+Evaluation & Deployment. The most intuitive types of bias incur in the evaluation and somewhat less obvious
+ones in the deployment of ML models. For example, an unrepresentative test dataset is formulated under Test Dataset
+bias incurred during evaluation, and Behavioral bias formulates systematic distortions in user behavior across platforms
+or contexts, or across users represented in datasets [155]. Miller et al. [149] demonstrated behavior bias by considering
+types of emojis existing on diﬀerent platforms and how they can lead to diﬀerent user reactions.
+Manuscript submitted to ACM
+
+
+--- Page 37 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+41
+Fig. 3. Categorization of bias types in ML.
+Table 4. Sensitive atributes in diﬀerent organizations.
+Attribute
+US Fair Housing Act
+Employment
+Opportunity Act
+Equal Credit
+Opportunity Act
+Race or Color
+✓
+✓
+✓
+Sex
+✓
+✓
+✓
+Religion
+✓
+✓
+✓
+National Origin
+✓
+✓
+✓
+Marital Status
+×
+×
+✓
+Familial Status
+✓
+×
+×
+Disability
+✓
+✓
+×
+Age
+×
+✓
+✓
+Genetic Info
+×
+✓
+×
+Pregnancy
+×
+✓
+✓
+E
+Sensitive Atributes
+Protected attributes are characteristics like gender and race that are determined by either legal obligations or speciﬁc
+values of an organization. Laws like the US Fair Housing Act, the Federal Equal Employment Opportunity, and the equal
+credit opportunity act specify requirements for algorithmic fairness in areas such as housing, employment, and credit.
+The following table brieﬂy summarizes protected attributes based on the particular organization.
+F
+Fairness in Semi-Supervised Learning
+SSL is a type of ML that falls in between supervised and unsupervised algorithms. It allows the use of both labeled and
+unlabeled data, which is crucial due to the tremendous need for data in large models and the high cost of generating
+labeled data. Moreover, previous research has shown that more data leads to a better balance between fairness and
+accuracy. Despite the essential role of SSL and a handful of surveys on this topic, including [172, 175, 216, 247], there
+Manuscript submitted to ACM
+
+
+--- Page 38 ---
+42
+Sina Shaham, et al.
+exists limited work on understanding fairness in SSL. To our knowledge, no survey covers the implications of fairness
+in SSL. The existing SSL methods can be categorized into the following 4 groups:
+• Wrapper Methods. The objective of this group, with the most widely adopted algorithm being pseudo-labeling,
+is to train a classiﬁer using the labeled data available and then forecast labels for unlabeled data points.
+• Unsupervised Extraction Methods. This strategy aims to obtain beneﬁcial features from data that has not
+been labeled by clustering and to utilize the information gained to improve training on labeled data.
+• Intrinsic Methods. In this class, unlabelled data are directly incorporatedinto the objective function of learning
+methods commonly used in supervised objectives for labeled data.
+• Graph-based Approaches. In this method, a graph is constructed, where each data point serves as a node, and
+the similarity matrix reﬂects the connections and associations among them. This graph is then utilized to make
+predictions about nodes or labels.
+The amalgamation of fairness concepts from supervised and unsupervised learning is seen in SSL, due to its inter-
+disciplinary nature. Consequently, our primary focus is on the mitigation algorithms.
+F.1
+Unfairness Mitigation Algorithms
+F.1.1
+Pre-processing Strategies
+The approaches commonly employed as pre-processing techniques in SSL have been classiﬁed into two categories:
+fair embeddings and reweighting.
+Fair Embedding. Graph embedding aims to transform graph data into a low-dimensional vector space, where
+nodes are represented as vectors. This process helps to capture the underlying structure and relationships in data
+such that it can be used for SSL tasks such as node classiﬁcation and link prediction. Learning fair embeddings in the
+pre-processing phase allows for a signiﬁcant reduction of bias in subsequent SSL models.
+Based on the node2vec algorithm [83], the authors in [179] propose a method called Fairwalk for generating fair
+embeddings predicated on statistical parity. In Fairwalk, instead of randomly selecting a node to jump to from all of
+its neighbors, neighbors are divided into clusters based on their sensitive attribute values, with each cluster having
+an equal probability of being chosen, regardless of its size. Then, a node is randomly selected from the chosen cluster
+for the jump. Meanwhile, in another recent paper, Fan et al. [71] introduced FairGAE, a method that employs an
+auto-encoder model to generate unbiased graph embeddings. FairGAE achieves the objective by blocking the message-
+passing procedure from certain neighbors of nodes based on their sensitive attributes, so that each node has an equal
+chance of being inﬂuenced by other groups. By doing so, FairGAE ensures that the graph convolutional network
+mechanism depends only on the network structure, rather than on sensitive attributes.
+Reweighting. The reweighting technique tends to boost the associated weight of certain groups or individuals in
+order to improve fairness in SSL outcomes. Khajehnejad et al. [106] proposed a method to reweight graph edges in
+order to promote fairness in random walks. Speciﬁcally, edges that connect diﬀerent groups or are in close proximity
+to group boundaries are given greater weight. This approach leads to more transitions across group boundaries during
+the random walk process, which results in graph embeddings that better capture the structure of the entire network.
+The authors also demonstrate that this approach improves the performance of SSL algorithms in terms of statistical
+parity.
+Manuscript submitted to ACM
+
+
+--- Page 39 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+43
+F.1.2
+In-processing Strategies
+We have grouped in-processing techniques into two broad categories of adversarial regularizers and fairness regu-
+larizers.
+Adversarial Regularizers. In this group, a discriminator is trained to learn sensitive attributes during training.
+Such information is then commonly added as an extra regularizer in the loss function. The majority of adversarial reg-
+ularizers in SSL are explored for node classiﬁcation in GNNs. As proven in [124, 219], embedding nodes with connected
+components will be closer even after one aggregation of message-passing. Therefore, it is understandable nodes with
+similar sensitive attributes, once used together, tend to reach similar embedding. The authors in [57] demonstrate this
+susceptibility of GNNs on diﬀerent GNN architectures and propose a framework called FairGNN to address it. The
+framework utilizes an estimator to learn sensitive attributes of nodes and incorporates an adversarial learner in GNN
+that ensures that node predictions are independent of sensitive attributes. Additionally, fairness regularizers based
+on statistical parity and equalized odds are used in the objective to achieve group fairness. The authors in [31] focus
+on how node embedding can be learned such that they do not correlate with sensitive attributes. The mechanism to
+achieve fair embeddings is by introducing a set of adversarial ﬁlters applied to remove information about sensitive
+attributes. The ﬁlters are learned during the training and could also be used as a postprocessing approach to ensure
+embeddings are invariant with respect to protected features.
+Fairness Regularizers In this group, fairness constraints are implemented directly into the loss function without
+requiring a discriminator. The method in [220] assumes that a bias-free graph can be generated from pre-deﬁned non-
+sensitive attributes. The non-sensitive attributes are used to construct a graph that is assumed to be free of bias. The
+authors then propose a regularization term that encourages the learned embeddings to satisfy certain fairness proper-
+ties that are consistent with the bias-free graph. The regularization term is designed to penalize diﬀerences between
+the learned embeddings and the embeddings that would be obtained from the bias-free graph. The framework in [4]
+considers counterfactual fairness and aims to maximize the similarity between representations of the original nodes in
+the graph, and their counterparts in the augmented graph. This is done by the introduction of a new learning objective
+function. Each counterfactual example is generated by modifying sensitive attributes and random masking of sensitive
+attributes.
+F.1.3
+Post-processing Strategies
+Several techniques outlined for both supervised and unsupervised learning can be employed as post-processing
+tactics in SSL. However, we have recognized "Fair Boosting" as the principal approach primarily utilized in SSL.
+Fair Boosting. Iosiﬁdis et al. [97] propose an algorithm termed AdaFair that builds upon the AdaBoost algorithm to
+enhance fairness during Boost rounds. As opposed to the AdaBoost, where in each round weak classiﬁer only takes into
+account the hard classiﬁcation, AdaFair additionally considers the discriminated group as they are dynamically being
+identiﬁed. Then, follows a reweighting strategy based on the accumulative fairness notion to tackle the problem of class
+imbalance. Zhu et al. [248] focus on pseudo labeling and reveal the disparate impact in SSL. The authors demonstrate
+that subpopulations with higher baseline accuracy levels without SSL beneﬁt more from SSL. The opposite is also true,
+meaning subgroups who suﬀer low baseline accuracy tend to experience performance drop after SSL. An evaluation
+metric called Beneﬁt Ratio is proposed to capture the normalized accuracy improvement on subgroups. The authors
+in [245] propose a post-processing approach on top of pseudo labeling to lower discrimination-level explained in the
+Manuscript submitted to ACM
+
+
+--- Page 40 ---
+44
+Sina Shaham, et al.
+following three steps. First, pseudo labeling is conducted based on a relatively small portion of data that are labeled.
+Second, several training datasets are generated by sampling from the pseudo labeled dataset. The sampling is conducted
+such that groups are fairly represented in terms of statistical parity. Finally, separate models are trained over the fair
+datasets, and ensemble learning is used to select the labels with the highest vote.
+Manuscript submitted to ACM
+
+
+--- Page 41 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+45
+References
+[1] Jan Aalmoes, Vasisht Duddu, and Antoine Boutet. 2022. Leveraging Algorithmic Fairness to Mitigate Blackbox Attribute Inference Attacks. arXiv
+preprint arXiv:2211.10209 (2022).
+[2] Martin Abadi, Andy Chu, Ian Goodfellow, H Brendan McMahan, Ilya Mironov, Kunal Talwar, and Li Zhang. 2016. Deep learning with diﬀerential
+privacy. In Proceedings of the 2016 ACM SIGSAC conference on computer and communications security. 308–318.
+[3] Abbas Acar, Hidayet Aksu, A Selcuk Uluagac, and MauroConti. 2018. A survey on homomorphic encryption schemes: Theory and implementation.
+ACM Computing Surveys (Csur) 51, 4 (2018), 1–35.
+[4] Chirag Agarwal, Himabindu Lakkaraju, and Marinka Zitnik. 2021. Towards a uniﬁed framework for fair and stable graph representation learning.
+In Uncertainty in Artiﬁcial Intelligence. PMLR, 2114–2124.
+[5] Sushant Agarwal. 2020. Trade-Oﬀs between Fairness and Privacy in Machine Learning.
+[6] Carlos Aguilar-Melchor, Simon Fau, Caroline Fontaine, Guy Gogniat, and Renaud Sirdey. 2013. Recent advances in homomorphic encryption: A
+possible future for signal processing in the encrypted domain. IEEE Signal Processing Magazine 30, 2 (2013), 108–117.
+[7] Sara Ahmadian, Alessandro Epasto, Marina Knittel, Ravi Kumar, Mohammad Mahdian, Benjamin Moseley, Philip Pham, Sergei Vassilvitskii, and
+Yuyan Wang. 2020. Fair hierarchical clustering. arXiv preprint arXiv:2006.10221 (2020).
+[8] Sara Ahmadian, Alessandro Epasto, Ravi Kumar, and Mohammad Mahdian. 2019. Clustering without over-representation. In Proceedings of the
+25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. 267–275.
+[9] Abdulatif Alabdulatif, Ibrahim Khalil, Mark Reynolds, Heshan Kumarage, and Xun Yi. 2017. Privacy-preservingdata clustering in cloud computing
+based on fully homomorphic encryption. (2017).
+[10] Asma Alouﬁ, Peizhao Hu, Harry WH Wong, and Sherman SM Chow. 2019. Blindfolded evaluation of random forests with multi-key homomorphic
+encryption. IEEE Transactions on Dependable and Secure Computing 18, 4 (2019), 1821–1835.
+[11] JEJ Altham. 1973. Rawls’s Diﬀerence Principle. Philosophy 48, 183 (1973), 75–78.
+[12] Terry H Anderson. 2004. The pursuit of fairness: A history of aﬃrmative action. Oxford University Press.
+[13] McKane Andrus and Sarah Villeneuve. 2022. Demographic-reliant algorithmic fairness: characterizing the risks of demographic data collection
+in the pursuit of fairness. In 2022 ACM Conference on Fairness, Accountability, and Transparency. 1709–1721.
+[14] Julia Angwin, JeﬀLarson, LaurenKirchner,and Surya Mattu. 2016. Machine bias. https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing
+[15] Hiromi Arai and Jun Sakuma. 2011. Privacy preserving semi-supervised learning for labeled graphs. In Machine Learning and Knowledge Discovery
+in Databases: European Conference, ECML PKDD 2011, Athens, Greece, September 5-9, 2011. Proceedings, Part I 11. Springer, 124–139.
+[16] Eugene Bagdasaryan, Omid Poursaeed, and Vitaly Shmatikov. 2019. Diﬀerential privacy has disparate impact on model accuracy. Advances in
+Neural Information Processing Systems 32 (2019), 15479–15488.
+[17] Maya Bakshi and Mark Last. 2020. Cryptornn-privacy-preserving recurrent neural networks using homomorphic encryption. In Cyber Security
+Cryptography and Machine Learning: Fourth International Symposium, CSCML 2020, Be’er Sheva, Israel, July 2–3, 2020, Proceedings 4. Springer,
+245–253.
+[18] Eytan Bakshy, Itamar Rosenn, Cameron Marlow, and Lada Adamic. 2012. The role of social networks in information diﬀusion. In Proceedings of
+the 21st international conference on World Wide Web. 519–528.
+[19] Yahav Bechavod and Katrina Ligett. 2017. Penalizing unfairness in binary classiﬁcation. arXiv preprint arXiv:1707.00044 (2017).
+[20] Rachel KE Bellamy, Kuntal Dey, Michael Hind, Samuel C Hoﬀman, Stephanie Houde, Kalapriya Kannan, Pranay Lohia, Jacquelyn Martino, Sameep
+Mehta, Aleksandra Mojsilović, et al. 2019. AI Fairness 360: An extensible toolkit for detecting and mitigating algorithmic bias. IBM Journal of
+Research and Development 63, 4/5 (2019), 4–1.
+[21] Suman Bera, Deeparnab Chakrabarty,Nicolas Flores, and Maryam Negahbani. 2019. Fair algorithms for clustering. Advances in Neural Information
+Processing Systems 32 (2019).
+[22] Hal Berghel. 2018. Malice domestic: The Cambridge analytica dystopia. Computer 51, 05 (2018), 84–89.
+[23] Richard Berk, Hoda Heidari, Shahin Jabbari, Matthew Joseph, Michael Kearns, Jamie Morgenstern, Seth Neel, and Aaron Roth. 2017. A convex
+framework for fair regression. arXiv preprint arXiv:1706.02409 (2017).
+[24] Karan Bhanot, Miao Qi, John S Erickson, Isabelle Guyon, and Kristin P Bennett. 2021. The problem of fairness in synthetic healthcare data. Entropy
+23, 9 (2021), 1165.
+[25] Raghav Bhaskar, Srivatsan Laxman, Adam Smith, and Abhradeep Thakurta. 2010. Discovering frequent patterns in sensitive data. In Proceedings
+of the 16th ACM SIGKDD international conference on Knowledge discovery and data mining. 503–512.
+[26] Sarah Bird, Miro Dudík, Richard Edgar, Brandon Horn, Roman Lutz, Vanessa Milan, Mehrnoosh Sameki, Hanna Wallach, and Kathleen Walker.
+2020. Fairlearn: A toolkit for assessing and improving fairness in AI. Microsoft, Tech. Rep. MSR-TR-2020-32 (2020).
+[27] Alberto Blanco-Justicia, David Sanchez, Josep Domingo-Ferrer, and Krishnamurty Muralidhar. 2022. A Critical Review on the Use (and Misuse)
+of Diﬀerential Privacy in Machine Learning. arXiv preprint arXiv:2206.04621 (2022).
+[28] Jeremiah Blocki, Elena Grigorescu, and Tamalika Mukherjee. 2021. Diﬀerentially-Private Sublinear-Time Clustering. In 2021 IEEE International
+Symposium on Information Theory (ISIT). IEEE, 332–337.
+[29] Keith Bonawitz, Vladimir Ivanov, Ben Kreuter, Antonio Marcedone, H Brendan McMahan, Sarvar Patel, Daniel Ramage, Aaron Segal, and Karn
+Seth. 2017. Practical secure aggregation for privacy-preserving machine learning. In proceedings of the 2017 ACM SIGSAC Conference on Computer
+and Communications Security. 1175–1191.
+[30] Dan Boneh, Craig Gentry, Shai Halevi, Frank Wang, and David J Wu. 2013. Private database queries using somewhat homomorphic encryption. In
+Applied Cryptography and Network Security: 11th International Conference, ACNS 2013, Banﬀ, AB, Canada, June 25-28, 2013. Proceedings 11. Springer,
+102–118.
+[31] Avishek Bose and William Hamilton. 2019. Compositional fairness constraints for graph embeddings. In International Conference on Machine
+Learning. PMLR, 715–724.
+[32] Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry,
+Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel M. Ziegler, Jeﬀrey
+Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner,
+Sam McCandlish, Alec Radford, Ilya Sutskever, and Dario Amodei. 2020. Language Models are Few-Shot Learners. arXiv:2005.14165 [cs.CL]
+[33] MarkBun, MarekElias, and JanardhanKulkarni. 2021. Diﬀerentially private correlationclustering. In International Conference on Machine Learning.
+PMLR, 1136–1146.
+[34] Toon Calders and Sicco Verwer. 2010. Three naive Bayes approaches for discrimination-free classiﬁcation. Data mining and knowledge discovery
+21, 2 (2010), 277–292.
+[35] Alex Campolo, Madelyn Rose Sanﬁlippo, Meredith Whittaker, and Kate Crawford. 2017. AI now 2017 report. (2017).
+[36] Ferhat Ozgur Catak, Ismail Aydin, Ogerta Elezaj, and Sule Yildirim-Yayilgan. 2020. Practical implementation of privacy preserving clustering
+methods using a partially homomorphic encryption algorithm. Electronics 9, 2 (2020), 229.
+[37] Junyi Chai and Xiaoqian Wang. [n. d.]. Fair Clustering via Equalized Conﬁdence. ([n. d.]).
+Manuscript submitted to ACM
+
+
+--- Page 42 ---
+46
+Sina Shaham, et al.
+[38] Aaron Chalﬁn, Oren Danieli, Andrew Hillis, Zubin Jelveh, Michael Luca, Jens Ludwig, and Sendhil Mullainathan. 2016. Productivity and selection
+of human capital with machine learning. American Economic Review 106, 5 (2016), 124–127.
+[39] Hongyan Chang and Reza Shokri. 2021. On the privacy risks of algorithmic fairness. In 2021 IEEE European Symposium on Security and Privacy
+(EuroS&P). IEEE, 292–303.
+[40] Canyu Chen, Yueqing Liang, Xiongxiao Xu, Shangyu Xie, Yuan Hong, and Kai Shu. [n. d.]. When Fairness Meets Privacy: Fair Classiﬁcation with
+Semi-Private Sensitive Attributes. In Workshop on Trustworthy and Socially Responsible Machine Learning, NeurIPS 2022.
+[41] Hao Chen, Ran Gilad-Bachrach, Kyoohyung Han, Zhicong Huang, Amir Jalali, Kim Laine, and Kristin Lauter. 2018. Logistic regression over
+encrypted data from fully homomorphic encryption. BMC medical genomics 11 (2018), 3–12.
+[42] Xingyu Chen, Brandon Fain, Liang Lyu, and Kamesh Munagala. 2019. Proportionally fair clustering. In International Conference on Machine
+Learning. PMLR, 1032–1041.
+[43] Yifang Chen, Alex Cuellar, Haipeng Luo, Jignesh Modi, Heramb Nemlekar, and Stefanos Nikolaidis. 2020. Fair contextual multi-armed bandits:
+Theory and experiments. In Conference on Uncertainty in Artiﬁcial Intelligence. PMLR, 181–190.
+[44] Zishuo Cheng, Dayong Ye, Tianqing Zhu, Wanlei Zhou, Philip S Yu, and Congcong Zhu. 2022. Multi-agent reinforcement learning via knowledge
+transfer with diﬀerentially private noise. International Journal of Intelligent Systems 37, 1 (2022), 799–828.
+[45] Anshuman Chhabra, Karina Masalkovait˙e, and Prasant Mohapatra. 2021. An overview of fairness in clustering. IEEE Access (2021).
+[46] Anshuman Chhabra, Adish Singla, and Prasant Mohapatra. 2022. Fair clustering using antidote data. In Algorithmic Fairness through the Lens of
+Causality and Robustness workshop. PMLR, 19–39.
+[47] Anshuman Chhabra, Vidushi Vashishth, and Prasant Mohapatra. 2020. Fair algorithms for hierarchical agglomerative clustering. arXiv preprint
+arXiv:2005.03197 (2020).
+[48] Flavio Chierichetti, Ravi Kumar, Silvio Lattanzi, and Sergei Vassilvitskii. 2017. Fair clustering through fairlets. Advances in Neural Information
+Processing Systems 30 (2017).
+[49] Flavio Chierichetti, Ravi Kumar, Silvio Lattanzi, and Sergei Vassilvitskii. 2017. Fair clustering through fairlets. Advances in neural information
+processing systems 30 (2017).
+[50] Manvi Choudhary, Charlotte Laclau, and Christine Largeron. 2022. A Survey on Fairness for Machine Learning on Graphs. arXiv preprint
+arXiv:2205.05396 (2022).
+[51] Houston Claure, Yifang Chen, Jignesh Modi, Malte Jung, and Stefanos Nikolaidis. 2020. Multi-armed bandits with fairness constraints for dis-
+tributing resources to human teammates. In Proceedings of the 2020 ACM/IEEE International Conference on Human-Robot Interaction. 299–308.
+[52] Kelong Cong, Debajyoti Das, Jeongeun Park, and Hilder VL Pereira. 2022. SortingHat: Eﬃcient Private Decision Tree Evaluation via Homomorphic
+Encryption and Transciphering. In Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security. 563–577.
+[53] Sam Corbett-Davies, Emma Pierson, Avi Feller, Sharad Goel, and Aziz Huq. 2017. Algorithmic decision making and the cost of fairness. In
+Proceedings of the 23rd acm sigkdd international conference on knowledge discovery and data mining. 797–806.
+[54] Graham Cormode, Cecilia Procopiuc, Divesh Srivastava, Entong Shen, and Ting Yu. 2012. Diﬀerentially private spatial decompositions. In 2012
+IEEE 28th International Conference on Data Engineering. IEEE, 20–31.
+[55] ForbesTech Council. 2023. How Privacy Got on the Calendar. https://www.forbes.com/sites/forbestechcouncil/2023/01/24/how-privacy-got-on-the-calendar/?sh=517cc83959
+Accessed: 2023-05-01.
+[56] Rachel Cummings, Varun Gupta, Dhamma Kimpara, and Jamie Morgenstern. 2019. On the compatibility of privacy and fairness. In Adjunct
+Publication of the 27th Conference on User Modeling, Adaptation and Personalization. 309–315.
+[57] Enyan Dai and Suhang Wang. 2021. Say no to the discrimination: Learning fair graph neural networks with limited sensitive attribute information.
+In Proceedings of the 14th ACM International Conference on Web Search and Data Mining. 680–688.
+[58] Emiliano De Cristofaro. 2021. A critical overview of privacy in machine learning. IEEE Security & Privacy 19, 4 (2021), 19–27.
+[59] Matthew F Dixon, Igor Halperin, and Paul Bilokon. 2020. Machine learning in Finance. Vol. 1170. Springer.
+[60] Jinshuo Dong, David Durfee, and Ryan Rogers. 2020. Optimal diﬀerential privacy composition for exponential mechanisms. In International
+Conference on Machine Learning. PMLR, 2597–2606.
+[61] Min Du, Ruoxi Jia, and Dawn Song. 2019. Robust anomaly detection and backdoor attack detection via diﬀerential privacy. arXiv preprint
+arXiv:1911.07116 (2019).
+[62] Cynthia Dwork. 2008. Diﬀerential privacy: A survey of results. In International conference on theory and applications of models of computation.
+Springer, 1–19.
+[63] Cynthia Dwork, Moritz Hardt, Toniann Pitassi, Omer Reingold, and Richard Zemel. 2012. Fairness through awareness. In Proceedings of the 3rd
+innovations in theoretical computer science conference. 214–226.
+[64] Cynthia Dwork, Frank McSherry, Kobbi Nissim, and Adam Smith. 2006. Calibrating noise to sensitivity in private data analysis. In Theory of
+cryptography conference. Springer, 265–284.
+[65] Michael D Ekstrand, Rezvan Joshaghani, and Hoda Mehrpouyan. 2018. Privacy for all: Ensuring fair and equitable privacy protections. In Confer-
+ence on fairness, accountability and transparency. PMLR, 35–47.
+[66] Zekeriya Erkin, Thijs Veugen, Tomas Toft, and Reginald L Lagendijk. 2012. Generating private recommendations eﬃciently using homomorphic
+encryption and data packing. IEEE transactions on information forensics and security 7, 3 (2012), 1053–1066.
+[67] Seyed Esmaeili, Brian Brubach, Aravind Srinivasan, and John Dickerson. 2021. Fair clustering under a bounded cost. Advances in Neural Informa-
+tion Processing Systems 34 (2021), 14345–14357.
+[68] Seyed Esmaeili, Brian Brubach, Leonidas Tsepenekas, and John Dickerson. 2020. Probabilistic fair clustering. Advances in Neural Information
+Processing Systems 33 (2020), 12743–12755.
+[69] Yahya H Ezzeldin, Shen Yan, Chaoyang He, Emilio Ferrara, and Salman Avestimehr. 2021. Fairfed: Enabling group fairness in federated learning.
+arXiv preprint arXiv:2110.00857 (2021).
+[70] Junfeng Fan and Frederik Vercauteren. 2012. Somewhat practical fully homomorphic encryption. Cryptology ePrint Archive (2012).
+[71] Wei Fan, Kunpeng Liu, Rui Xie, Hao Liu, Hui Xiong, and Yanjie Fu. 2021. Fair graph auto-encoder for unbiased graph representations with
+wasserstein distance. In 2021 IEEE International Conference on Data Mining (ICDM). IEEE, 1054–1059.
+[72] Dan Feldman, Amos Fiat, Haim Kaplan, and Kobbi Nissim. 2009. Private coresets. In Proceedings of the forty-ﬁrst annual ACM symposium on
+Theory of computing. 361–370.
+[73] Michael Feldman, Sorelle A Friedler, John Moeller, Carlos Scheidegger, and Suresh Venkatasubramanian. 2015. Certifying and removing disparate
+impact. In proceedings of the 21th ACM SIGKDD international conference on knowledge discovery and data mining. 259–268.
+[74] Natasha Fernandes, Annabelle McIver, and Carroll Morgan. 2021. The Laplace Mechanism has optimal utility for diﬀerential privacy over contin-
+uous queries. In 2021 36th Annual ACM/IEEE Symposium on Logic in Computer Science (LICS). IEEE, 1–12.
+[75] Ferdinando Fioretto, Cuong Tran, Pascal Van Hentenryck, and Keyu Zhu. 2022. Diﬀerential privacy and fairness in decisions and learning tasks:
+A survey. arXiv preprint arXiv:2202.08187 (2022).
+[76] Sam Fletcher and Md Zahidul Islam. 2015. A Diﬀerentially Private Decision Forest. AusDM 15 (2015), 99–108.
+Manuscript submitted to ACM
+
+
+--- Page 43 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+47
+[77] Sam Fletcher and Md Zahidul Islam. 2017. Diﬀerentially private random decision forests using smooth sensitivity. Expert systems with applications
+78 (2017), 16–31.
+[78] Anthony W Flores, Kristin Bechtel, and Christopher T Lowenkamp. 2016. False positives, false negatives, and false analyses: A rejoinder to
+machine bias: There’s software used across the country to predict future criminals. and it’s biased against blacks. Fed. Probation 80 (2016), 38.
+[79] Yingqiang Ge, Xiaoting Zhao, Lucia Yu, Saurabh Paul, Diane Hu, Chu-Cheng Hsieh, and Yongfeng Zhang. 2022. Toward Pareto eﬃcient fairness-
+utility trade-oﬀin recommendation through reinforcement learning. In Proceedings of the ﬁfteenth ACM international conference on web search
+and data mining. 316–324.
+[80] Robin C Geyer, Tassilo Klein, and Moin Nabi. 2017.
+Diﬀerentially private federated learning: A client level perspective.
+arXiv preprint
+arXiv:1712.07557 (2017).
+[81] Mehrdad Ghadiri, Samira Samadi, and Santosh Vempala. 2021. Socially fair k-means clustering. In Proceedings of the 2021 ACM Conference on
+Fairness, Accountability, and Transparency. 438–448.
+[82] Stephen Gillen, Christopher Jung, Michael Kearns, and Aaron Roth. 2018. Online learning with an unknown fairness metric. Advances in neural
+information processing systems 31 (2018).
+[83] Aditya Grover and Jure Leskovec. 2016. node2vec: Scalable feature learning for networks. In Proceedings of the 22nd ACM SIGKDD international
+conference on Knowledge discovery and data mining. 855–864.
+[84] Sara Hajian, Josep Domingo-Ferrer, Anna Monreale, Dino Pedreschi, and Fosca Giannotti. 2015. Discrimination-and privacy-aware patterns. Data
+Mining and Knowledge Discovery 29, 6 (2015), 1733–1782.
+[85] Rob Hall, Stephen E Fienberg, and Yuval Nardi. 2011. Secure multiple linear regression based on homomorphic encryption. Journal of Oﬃcial
+Statistics 27, 4 (2011), 669.
+[86] Raﬁk Hamza, Alzubair Hassan, Awad Ali, Mohammed Bakri Bashir, Samar M Alqhtani, Tawfeeg Mohmmed Tawfeeg, and Adil Yousif. 2022.
+Towards secure big data analysis via fully homomorphic encryption algorithms. Entropy 24, 4 (2022), 519.
+[87] Guillaume Hanrot, Xavier Pujol, and Damien Stehlé. 2011. Algorithms for the Shortest and Closest Lattice Vector Problems. IWCC 6639 (2011),
+159–190.
+[88] Elfarouk Harb and Ho Shan Lam. 2020. KFC: A Scalable Approximation Algorithm for 푘- center Fair Clustering. Advances in neural information
+processing systems 33 (2020), 14509–14519.
+[89] Moritz Hardt, Eric Price, and Nati Srebro. 2016. Equality of opportunity in supervised learning. Advances in neural information processing systems
+29 (2016).
+[90] Daniel P Hellwig and Arnd Huchzermeier. 2022. Distributed ledger technology and fully homomorphic encryption: Next-generation information-
+sharing for supply chain eﬃciency. In Innovative Technology at the Interface of Finance and Operations: Volume II. Springer, 31–49.
+[91] Joanne Hinds, Emma J Williams, and Adam N Joinson. 2020. “It wouldn’t happen to me”: Privacy concerns and perspectives following the
+Cambridge Analytica scandal. International Journal of Human-Computer Studies 143 (2020), 102498.
+[92] Naoise Holohan, Spiros Antonatos, Stefano Braghin, and Pól Mac Aonghusa. 2018. The bounded Laplace mechanism in diﬀerential privacy. arXiv
+preprint arXiv:1808.10410 (2018).
+[93] Seungwan Hong, Jai Hyun Park, Wonhee Cho, Hyeongmin Choe, and Jung Hee Cheon. 2022. Secure tumor classiﬁcation by shallow neural
+network using homomorphic encryption. BMC genomics 23, 1 (2022), 1–19.
+[94] Jun Hou, Qianmu Li, Shunmei Meng, Zhen Ni, Yini Chen, and Yaozong Liu. 2019. DPRF: a diﬀerential privacy protection random forest. Ieee
+Access 7 (2019), 130707–130720.
+[95] Wen Huang, Kevin Labille, Xintao Wu, Dongwon Lee, and Neil Heﬀernan. 2022. Achieving user-side fairness in contextual bandits. Human-Centric
+Intelligent Systems (2022), 1–14.
+[96] Fatima Hussain, Syed Ali Hassan, Rasheed Hussain, and Ekram Hossain. 2020. Machine learning for resource management in cellular and IoT
+networks: Potentials, current solutions, and open challenges. IEEE communications surveys & tutorials 22, 2 (2020), 1251–1275.
+[97] Vasileios Iosiﬁdis and Eirini Ntoutsi. 2019. Adafair: Cumulative fairness adaptive boosting. In Proceedings of the 28th ACM International Conference
+on Information and Knowledge Management. 781–790.
+[98] Shahin Jabbari, Matthew Joseph, Michael Kearns, Jamie Morgenstern, and Aaron Roth. 2017. Fairness in reinforcement learning. In International
+conference on machine learning. PMLR, 1617–1626.
+[99] Geetha Jagannathan, Claire Monteleoni, and Krishnan Pillaipakkamnatt. 2013. A semi-supervised learning approach to diﬀerential privacy. In
+2013 IEEE 13th International Conference on Data Mining Workshops. IEEE, 841–848.
+[100] Yulu Jin and Lifeng Lai. 2022. Privacy Protection In Learning Fair Representations. In ICASSP 2022-2022 IEEE International Conference on Acoustics,
+Speech and Signal Processing (ICASSP). IEEE, 2964–2968.
+[101] Matthew Joseph, Michael Kearns, Jamie H Morgenstern, and Aaron Roth. 2016. Fairness in learning: Classic and contextual bandits. Advances in
+neural information processing systems 29 (2016).
+[102] Faisal Kamiran and Toon Calders. 2012. Data preprocessing techniques for classiﬁcation without discrimination. Knowledge and information
+systems 33, 1 (2012), 1–33.
+[103] Faisal Kamiran, Toon Calders, and Mykola Pechenizkiy. 2010. Discrimination aware decision tree learning. In 2010 IEEE international conference
+on data mining. IEEE, 869–874.
+[104] Faisal Kamiran, Asim Karim, and Xiangliang Zhang. 2012. Decision theory for discrimination-aware classiﬁcation. In 2012 IEEE 12th International
+Conference on Data Mining. IEEE, 924–929.
+[105] Toshihiro Kamishima, Shotaro Akaho, Hideki Asoh, and Jun Sakuma. 2012. Fairness-aware classiﬁer with prejudice remover regularizer. In Joint
+European conference on machine learning and knowledge discovery in databases. Springer, 35–50.
+[106] Ahmad Khajehnejad, Moein Khajehnejad, Mahmoudreza Babaei, Krishna P Gummadi, Adrian Weller, and Baharan Mirzasoleiman. 2022. Cross-
+walk: Fairness-enhanced node representation learning. In Proceedings of the AAAI Conference on Artiﬁcial Intelligence, Vol. 36. 11963–11970.
+[107] Mohammad Mahdi Khalili, Xueru Zhang, Mahed Abroshan, and Somayeh Sojoudi. 2021. Improving fairness and privacy in selection problems.
+In Proceedings of the AAAI Conference on Artiﬁcial Intelligence, Vol. 35. 8092–8100.
+[108] Miran Kim, Junghye Lee, Lucila Ohno-Machado, and Xiaoqian Jiang. 2019. Secure and diﬀerentially private logistic regression for horizontally
+distributed data. IEEE Transactions on Information Forensics and Security 15 (2019), 695–710.
+[109] Miran Kim, Yongsoo Song, Shuang Wang, Yuhou Xia, Xiaoqian Jiang, et al. 2018. Secure logistic regression based on homomorphic encryption:
+Design and evaluation. JMIR medical informatics 6, 2 (2018), e8805.
+[110] Michael P Kim, Amirata Ghorbani, and James Zou. 2019. Multiaccuracy: Black-box post-processing for fairness in classiﬁcation. In Proceedings of
+the 2019 AAAI/ACM Conference on AI, Ethics, and Society. 247–254.
+[111] Matthäus Kleindessner, Pranjal Awasthi, and Jamie Morgenstern. 2020.
+A notion of individual fairness for clustering.
+arXiv preprint
+arXiv:2006.04960 (2020).
+[112] Matthäus Kleindessner, Samira Samadi, Pranjal Awasthi, and Jamie Morgenstern. 2019. Guarantees for spectral clustering with fairness constraints.
+In International Conference on Machine Learning. PMLR, 3458–3467.
+Manuscript submitted to ACM
+
+
+--- Page 44 ---
+48
+Sina Shaham, et al.
+[113] Konstantin G Kogos, Kseniia S Filippova, and Anna V Epishkina. 2017. Fully homomorphic encryption schemes: The state of the art. In 2017 IEEE
+Conference of Russian Young Researchers in Electrical and Electronic Engineering (EIConRus). IEEE, 463–466.
+[114] Fragkiskos Koufogiannis, Shuo Han, and George J Pappas. 2015. Optimality of the laplace mechanism in diﬀerential privacy. arXiv preprint
+arXiv:1504.00065 (2015).
+[115] Nikita Kozodoi, Johannes Jacob, and Stefan Lessmann. 2022. Fairness in credit scoring: Assessment, implementation and proﬁt implications.
+European Journal of Operational Research 297, 3 (2022), 1083–1094.
+[116] Emmanouil Krasanakis, Eleftherios Spyromitros-Xiouﬁs, Symeon Papadopoulos, and Yiannis Kompatsiaris. 2018. Adaptive sensitive reweighting
+to mitigate bias in fairness-aware classiﬁcation. In Proceedings of the 2018 world wide web conference. 853–862.
+[117] Matt J Kusner, Joshua Loftus, Chris Russell, and Ricardo Silva. 2017. Counterfactual fairness. Advances in neural information processing systems
+30 (2017).
+[118] Preethi Lahoti, Alex Beutel, Jilin Chen, Kang Lee, Flavien Prost, Nithum Thain, Xuezhi Wang, and Ed Chi. 2020. Fairness without demographics
+through adversarially reweighted learning. Advances in neural information processing systems 33 (2020), 728–740.
+[119] Tor Lattimore and Csaba Szepesvári. 2020. Bandit algorithms. Cambridge University Press.
+[120] Tai Le Quy, Arjun Roy, Vasileios Iosiﬁdis, Wenbin Zhang, and Eirini Ntoutsi. 2022. A survey on datasets for fairness-aware machine learning.
+Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery (2022), e1452.
+[121] Fengjiao Li, Jia Liu, and Bo Ji. 2019. Combinatorial sleeping bandits with fairness constraints. IEEE Transactions on Network Science and Engineering
+7, 3 (2019), 1799–1813.
+[122] Jeﬀrey Li, Mikhail Khodak, Sebastian Caldas, and Ameet Talwalkar. 2019. Diﬀerentially private meta-learning. arXiv preprint arXiv:1909.05830
+(2019).
+[123] Peizhao Li, Han Zhao, and Hongfu Liu. 2020. Deep fair clustering for visual learning. In Proceedings of the IEEE/CVF Conference on Computer
+Vision and Pattern Recognition. 9070–9079.
+[124] Qimai Li, Zhichao Han, and Xiao-Ming Wu. 2018. Deeper insights into graph convolutional networks for semi-supervised learning. In Thirty-
+Second AAAI conference on artiﬁcial intelligence.
+[125] Bo Liu, Ming Ding, Sina Shaham, Wenny Rahayu, Farhad Farokhi, and Zihuai Lin. 2021. When machine learning meets privacy: A survey and
+outlook. ACM Computing Surveys (CSUR) 54, 2 (2021), 1–36.
+[126] Suyun Liu and Luis Nunes Vicente. 2023. A stochastic alternating balance k-means algorithm for fair clustering. In Learning and Intelligent
+Optimization: 16th International Conference, LION 16, Milos Island, Greece, June 5–10, 2022, Revised Selected Papers. Springer, 77–92.
+[127] Weiwen Liu, Feng Liu, Ruiming Tang, Ben Liao, Guangyong Chen, and Pheng Ann Heng. 2020. Balancing between accuracy and fairness for
+interactive recommendation with reinforcement learning. In Advances in Knowledge Discovery and Data Mining: 24th Paciﬁc-Asia Conference,
+PAKDD 2020, Singapore, May 11–14, 2020, Proceedings, Part I 24. Springer, 155–167.
+[128] Wenyan Liu, Xiangfeng Wang, Xingjian Lu, Junhong Cheng, Bo Jin, Xiaoling Wang, and Hongyuan Zha. 2020. Fair diﬀerential privacy can
+mitigate the disparate impact on model accuracy. (2020).
+[129] Xiaoqian Liu, Qianmu Li, Tao Li, and Dong Chen. 2018. Diﬀerentially private classiﬁcation with decision tree ensemble. Applied Soft Computing
+62 (2018), 807–816.
+[130] Yang Liu, Goran Radanovic, Christos Dimitrakakis, Debmalya Mandal, and David C Parkes. 2017. Calibrated fairness in bandits. arXiv preprint
+arXiv:1707.01875 (2017).
+[131] Pranay K Lohia, Karthikeyan Natesan Ramamurthy, Manish Bhide, Diptikalyan Saha, Kush R Varshney, and Ruchir Puri. 2019. Bias mitigation
+post-processing for individual and group fairness. In Icassp 2019-2019 ieee international conference on acoustics, speech and signal processing (icassp).
+IEEE, 2847–2851.
+[132] Xu Long and Jun Sakuma. 2017. Diﬀerentially private semi-supervised classiﬁcation. In 2017 IEEE International Conference on Smart Computing
+(SMARTCOMP). IEEE, 1–6.
+[133] Christos Louizos, Kevin Swersky, Yujia Li, Max Welling, and Richard Zemel. 2015. The variational fair autoencoder. arXiv preprint arXiv:1511.00830
+(2015).
+[134] Andrew Lowy, Devansh Gupta, and Meisam Razaviyayn. 2022. Stochastic Diﬀerentially Private and Fair Learning. arXiv preprint arXiv:2210.08781
+(2022).
+[135] Hongyin Luo and James Glass. 2023. Logic Against Bias: Textual Entailment Mitigates Stereotypical Sentence Reasoning. arXiv:2303.05670 [cs.CL]
+[136] Binh Thanh Luong, Salvatore Ruggieri, and Franco Turini. 2011. k-NN as an implementation of situation testing for discrimination discovery and
+prevention. In Proceedings of the 17th ACM SIGKDD international conference on Knowledge discovery and data mining. 502–510.
+[137] Lingjuan Lyu, Xuanli He, and Yitong Li. 2020. Diﬀerentially private representation for nlp: Formal guarantee and an empirical study on privacy
+and fairness. arXiv preprint arXiv:2010.01285 (2020).
+[138] Pingchuan Ma, Zhiqiang Wang, Le Zhang, Ruming Wang, Xiaoxiang Zou, and Tao Yang. 2020. Diﬀerentially private reinforcement learning. In
+Information and Communications Security: 21st International Conference, ICICS 2019, Beijing, China, December 15–17, 2019, Revised Selected Papers.
+Springer, 668–683.
+[139] Gaurav Maheshwari, Pascal Denis, Mikaela Keller, and Aurélien Bellet. 2022. Fair NLP Models with Diﬀerentially Private Text Encoders. arXiv
+preprint arXiv:2205.06135 (2022).
+[140] Brendan McMahan, Eider Moore, Daniel Ramage, Seth Hampson, and Blaise Aguera y Arcas. 2017. Communication-eﬃcient learning of deep
+networks from decentralized data. In Artiﬁcial intelligence and statistics. PMLR, 1273–1282.
+[141] H Brendan McMahan, Galen Andrew, Ulfar Erlingsson, Steve Chien, Ilya Mironov, Nicolas Papernot, and Peter Kairouz. 2018. A general approach
+to adding diﬀerential privacy to iterative training procedures. arXiv preprint arXiv:1812.06210 (2018).
+[142] Frank McSherry and Kunal Talwar. 2007. Mechanism design via diﬀerential privacy. In 48th Annual IEEE Symposium on Foundations of Computer
+Science (FOCS’07). IEEE, 94–103.
+[143] Ninareh Mehrabi, Fred Morstatter, Nripsuta Saxena, Kristina Lerman, and Aram Galstyan. 2021. A survey on bias and fairness in machine learning.
+ACM Computing Surveys (CSUR) 54, 6 (2021), 1–35.
+[144] Aditya Krishna Menon and Robert C Williamson. 2017. The cost of fairness in classiﬁcation. arXiv preprint arXiv:1705.09055 (2017).
+[145] Qinyang Miao, Hui Lin, Xiaoding Wang, and Mohammad Mehedi Hassan. 2021. Federated deep reinforcement learning based secure data sharing
+for Internet of Things. Computer Networks 197 (2021), 108327.
+[146] Daniele Micciancio and Oded Regev. 2009. Lattice-based cryptography. Post-quantum cryptography (2009), 147–191.
+[147] Vincent Migliore, Guillaume Bonnoron, and Caroline Fontaine. 2018. Practical Parameters for Somewhat Homomorphic Encryption Schemes on
+Binary Circuits. IEEE Trans. Comput. 67, 11 (2018), 1550–1560.
+[148] Jason Milionis, Alkis Kalavasis, Dimitris Fotakis, and Stratis Ioannidis. 2022. Diﬀerentially private regression with unbounded covariates. In
+International Conference on Artiﬁcial Intelligence and Statistics. PMLR, 3242–3273.
+[149] Hannah Jean Miller, Jacob Thebault-Spieker, Shuo Chang, Isaac Johnson, Loren Terveen, and Brent Hecht. 2016. “Blissfully happy” or “ready
+toﬁght”: Varying interpretations of emoji. In Tenth international AAAI conference on web and social media.
+Manuscript submitted to ACM
+
+
+--- Page 45 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+49
+[150] Ciara Moore, Máire O’Neill, Elizabeth O’Sullivan, Yarkın Doröz, and Berk Sunar. 2014. Practical homomorphic encryption: A survey. In 2014 IEEE
+International Symposium on Circuits and Systems (ISCAS). IEEE, 2792–2795.
+[151] Anand Nayyar, Lata Gadhavi, and Noor Zaman. 2021. Machine learning in healthcare: review, opportunities and challenges. Machine Learning
+and the Internet of Medical Things in Healthcare (2021), 23–45.
+[152] Kee Yuan Ngiam and Wei Khor. 2019. Big data and machine learning algorithms for health-care delivery. The Lancet Oncology 20, 5 (2019),
+e262–e273.
+[153] Teppo Niinimäki, Mikko A Heikkilä, Antti Honkela, and Samuel Kaski. 2019. Representation transfer for diﬀerentially private drug sensitivity
+prediction. Bioinformatics 35, 14 (2019), i218–i224.
+[154] Monique Ogburn, Claude Turner, and Pushkar Dahal. 2013. Homomorphic encryption. Procedia Computer Science 20 (2013), 502–509.
+[155] Alexandra Olteanu, Carlos Castillo, Fernando Diaz, and Emre Kıcıman. 2019. Social data: Biases, methodological pitfalls, and ethical boundaries.
+Frontiers in Big Data 2 (2019), 13.
+[156] OpenAI. 2023. GPT-4 Technical Report. arXiv:2303.08774 [cs.CL]
+[157] Long Ouyang, JeﬀWu, Xu Jiang, Diogo Almeida, Carroll L. Wainwright, Pamela Mishkin, Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex
+Ray, John Schulman, Jacob Hilton, Fraser Kelton, Luke Miller, Maddie Simens, Amanda Askell, Peter Welinder, Paul Christiano, Jan Leike, and
+Ryan Lowe. 2022. Training language models to follow instructions with human feedback. arXiv:2203.02155 [cs.CL]
+[158] William P O’Hare. 2019. Diﬀerential undercounts in the US census: who is missed? Springer Nature.
+[159] Manisha Padala, Sankarshan Damle, and Sujit Gujar. 2021. Federated learning meets fairness and diﬀerential privacy. In Neural Information
+Processing: 28th International Conference, ICONIP 2021, Sanur, Bali, Indonesia, December 8–12, 2021, Proceedings, Part VI 28. Springer, 692–699.
+[160] Samanvaya Panda. 2021. Principal component analysis using ckks homomorphic encryption scheme. Cryptology ePrint Archive (2021).
+[161] Marlotte Pannekoek and Giacomo Spigler. 2021. Investigating trade-oﬀs in utility, fairness and diﬀerential privacy in neural networks. arXiv
+preprint arXiv:2102.05975 (2021).
+[162] Jinseong Park, Yujin Choi, Junyoung Byun, Jaewook Lee, and Saerom Park. 2023. Eﬃcient diﬀerentially private kernel support vector classiﬁer
+for multi-class classiﬁcation. Information Sciences 619 (2023), 889–907.
+[163] Jaehyoung Park, Dong Seong Kim, and Hyuk Lim. 2020. Privacy-preserving reinforcement learning using homomorphic encryption in cloud
+computing infrastructures. IEEE Access 8 (2020), 203564–203579.
+[164] Abhijit Patil and Sanjay Singh. 2014. Diﬀerential private random forest. In 2014 International Conference on Advances in Computing, Communica-
+tions and Informatics (ICACCI). IEEE, 2623–2630.
+[165] Vishakha Patil, Ganesh Ghalme, Vineet Nair, and Yadati Narahari. 2021. Achieving fairness in the stochastic multi-armed bandit problem. The
+Journal of Machine Learning Research 22, 1 (2021), 7885–7915.
+[166] William Paul, Philip Mathew, Fady Alajaji, and Philippe Burlina. 2023. Evaluating Trade-oﬀs in Computer Vision Between Attribute Privacy,
+Fairness and Utility. arXiv preprint arXiv:2302.07917 (2023).
+[167] Ignjat Pejic, Rui Wang, and Kaitai Liang. 2022. Eﬀect of Homomorphic Encryption on the Performance of Training Federated Learning Generative
+Adversarial Networks. arXiv preprint arXiv:2207.00263 (2022).
+[168] Sikha Pentyala, David Melanson, Martine De Cock, and Golnoosh Farnadi. 2022. Privfair: a library for privacy-preserving fairness auditing. arXiv
+preprint arXiv:2202.04058 (2022).
+[169] Dana Pessach and Erez Shmueli. 2022. A Review on Fairness in Machine Learning. ACM Computing Surveys (CSUR) 55, 3 (2022), 1–44.
+[170] Felix Petersen, Debarghya Mukherjee, Yuekai Sun, and Mikhail Yurochkin. 2021. Post-processing for individual fairness. Advances in Neural
+Information Processing Systems 34 (2021), 25944–25955.
+[171] Anh T Pham and Jing Xi. 2018. Diﬀerentially private semi-supervised learning with known class priors. In 2018 IEEE International Conference on
+Big Data (Big Data). IEEE, 801–810.
+[172] Nitin Namdeo Pise and Parag Kulkarni. 2008. A survey of semi-supervised learning methods. In 2008 International conference on computational
+intelligence and security, Vol. 2. IEEE, 30–34.
+[173] John Platt et al. 1999. Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. Advances in large
+margin classiﬁers 10, 3 (1999), 61–74.
+[174] GeoﬀPleiss, Manish Raghavan, Felix Wu, Jon Kleinberg, and Kilian Q Weinberger.2017. On fairness and calibration. Advances in neural information
+processing systems 30 (2017).
+[175] V Jothi Prakash and Dr LM Nithya. 2014. A survey on semi-supervised learning techniques. arXiv preprint arXiv:1402.4645 (2014).
+[176] David Pujol, Ryan McKenna, Satya Kuppam, Michael Hay, Ashwin Machanavajjhala, and Gerome Miklau. 2020. Fair decision making using
+privacy-protected data. In Proceedings of the 2020 Conference on Fairness, Accountability, and Transparency. 189–199.
+[177] Novi Quadrianto and Viktoriia Sharmanska. 2017. Recycling privileged learning and distribution matching for fairness. Advances in Neural
+Information Processing Systems 30 (2017).
+[178] Manish Raghavan, Solon Barocas, Jon Kleinberg, and Karen Levy. 2020. Mitigating bias in algorithmic hiring: Evaluating claims and practices. In
+Proceedings of the 2020 conference on fairness, accountability, and transparency. 469–481.
+[179] Tahleen Rahman, Bartlomiej Surma, Michael Backes, and Yang Zhang. 2019. Fairwalk: Towards fair graph embedding. (2019).
+[180] Bashir Rastegarpanah, Krishna P Gummadi, and Mark Crovella. 2019. Fighting ﬁre with ﬁre: Using antidote data to improve polarization and
+fairness of recommender systems. In Proceedings of the twelfth ACM international conference on web search and data mining. 231–239.
+[181] Vibhor Rastogi and Suman Nath. 2010. Diﬀerentially private aggregation of distributed time-series with transformation and encryption. In
+Proceedings of the 2010 ACM SIGMOD International Conference on Management of data. 735–746.
+[182] Yuji Roh, Kangwook Lee, Steven Euijong Whang, and Changho Suh. 2020.
+Fairbatch: Batch selection for model fairness.
+arXiv preprint
+arXiv:2012.01696 (2020).
+[183] Benjamin IP Rubinstein, Peter L Bartlett, Ling Huang, and Nina Taft. 2009. Learning in a large function space: Privacy-preserving mechanisms
+for SVM learning. arXiv preprint arXiv:0911.5708 (2009).
+[184] George Rutherglen. 1987. Disparate impact under title VII: an objective theory of discrimination. Va. L. Rev. 73 (1987), 1297.
+[185] Pedro Saleiro, Benedict Kuester, Loren Hinkson, Jesse London, Abby Stevens, Ari Anisfeld, Kit T Rodolfa, and Rayid Ghani. 2018. Aequitas: A bias
+and fairness audit toolkit. arXiv preprint arXiv:1811.05577 (2018).
+[186] Amartya Sanyal, Yaxi Hu, and Fanny Yang. 2022. How unfair is private learning?. In Uncertainty in Artiﬁcial Intelligence. PMLR, 1738–1748.
+[187] Mhd Hasan Sarhan, Nassir Navab, Abouzar Eslami, and Shadi Albarqouni. 2020. On the fairness of privacy-preserving representations in medical
+applications. In Domain Adaptation and Representation Transfer, and Distributed and Collaborative Learning: Second MICCAI Workshop, DART 2020,
+and First MICCAI Workshop, DCL 2020, Held in Conjunction with MICCAI 2020, Lima, Peru, October 4–8, 2020, Proceedings 2. Springer, 140–149.
+[188] Kenneth P Seastedt, Patrick Schwab, Zach O’Brien, Edith Wakida, Karen Herrera, Portia Grace F Marcelo, Louis Agha-Mir-Salim, Xavier Borrat
+Frigola, Emily Boardman Ndulue, Alvin Marcelo, et al. 2022. Global healthcare fairness: We should be sharing more, not less, data. PLOS Digital
+Health 1, 10 (2022), e0000102.
+[189] Andrew D Selbst. 2017. Disparate impact in big data policing. Ga. L. Rev. 52 (2017), 109.
+Manuscript submitted to ACM
+
+
+--- Page 46 ---
+50
+Sina Shaham, et al.
+[190] Jaydip Sen. 2013. Homomorphic encryption-theory and application. Theory and practice of cryptography and network security protocols and
+technologies 31 (2013).
+[191] Makhamisa Senekane. 2019. Diﬀerentially private image classiﬁcation using support vector machine and diﬀerential privacy. Machine Learning
+and Knowledge Extraction 1, 1 (2019), 483–491.
+[192] Sina Shaham, GabrielGhinita, Ritesh Ahuja, John Krumm, and Cyrus Shahabi. 2021. HTF-Homogeneous TreeFramework for Diﬀerentially-Private
+Release of Location Data. ACM SIGSPATIAL (2021).
+[193] Sina Shaham, Gabriel Ghinita, Ritesh Ahuja, John Krumm, and Cyrus Shahabi. 2022. HTF: Homogeneous Tree Framework for Diﬀerentially-
+Private Release of Large Geospatial Datasets with Self-Tuning Structure Height. ACM Transactions on Spatial Algorithms and Systems (2022).
+[194] Sina Shaham, Gabriel Ghinita, and Cyrus Shahabi. 2022. Diﬀerentially-Private Publication of Origin-Destination Matrices with Intermediate Stops.
+arXiv preprint arXiv:2202.12342 (2022).
+[195] Sina Shaham, Gabriel Ghinita, and Cyrus Shahabi. 2022. Models and mechanisms for spatial data fairness. Proceedings of the VLDB Endowment
+16, 2 (2022), 167–179.
+[196] Sina Shaham, Gabriel Ghinita, and Cyrus Shahabi. 2023.
+Fair Spatial Indexing: A paradigm for Group Spatial Fairness.
+arXiv preprint
+arXiv:2302.02306 (2023).
+[197] Or Sheﬀet. 2019. Old techniques in diﬀerentially private linear regression. In Algorithmic Learning Theory. PMLR, 789–827.
+[198] Stanley Simoes, P Deepak, and Muiris MacCarthaigh. 2022. Exploring Rawlsian Fairness for K-Means Clustering. In Responsible Data Science:
+Select Proceedings of ICDSE 2021. Springer, 47–59.
+[199] Daniel J Solove. 2008. Understanding privacy. (2008).
+[200] Saleh Soltan, Shankar Ananthakrishnan, Jack G. M. FitzGerald, Rahul Gupta, Wael Hamza, Haidar Khan, Charith Peris, Stephen
+Rawls, Andy Rosenbaum, Anna Rumshisky, Chandana Satya Prakash, Mukund Sridhar, Fabian Triefenbach, Apurv Verma, Gokhan
+Tur, and Prem Natarajan. 2022.
+AlexaTM 20B: Few-shot learning using a large-scale multilingual seq2seq model.
+arXiv (2022).
+https://www.amazon.science/publications/alexatm-20b-few-shot-learning-using-a-large-scale-multilingual-seq2seq-model
+[201] Elif Ustundag Soykan, Leyli Karaçay, Ferhat Karakoç, and Emrah Tomur. 2022. A Survey and Guideline on Privacy Enhancing Technologies for
+Collaborative Machine Learning. IEEE Access 10 (2022), 97495–97519.
+[202] Martin Strobel and Reza Shokri. 2022. Data Privacy and Trustworthy Machine Learning. IEEE Security & Privacy 20, 5 (2022), 44–49.
+[203] Dong Su, Jianneng Cao, Ninghui Li, Elisa Bertino, and Hongxia Jin. 2016. Diﬀerentially private k-means clustering. In Proceedings of the sixth
+ACM conference on data and application security and privacy. 26–37.
+[204] Jihoon Suh and Takashi Tanaka. 2021. SARSA (0) reinforcement learning over fully homomorphic encryption. In 2021 SICE International Sympo-
+sium on Control Systems (SICE ISCS). IEEE, 1–7.
+[205] Xiaoqiang Sun, Zhiwei Sun, Ting Wang, Jie Feng, Jiakai Wei, and Guangwu Hu. 2021. A privacy-preserving reinforcement learning approach for
+dynamic treatment regimes on health data. Wireless Communications and Mobile Computing 2021 (2021), 1–16.
+[206] Harry Surden. 2014. Machine learning and law. Wash. L. Rev. 89 (2014), 87.
+[207] Harini Suresh and John V Guttag. 2019.
+A framework for understanding unintended consequences of machine learning.
+arXiv preprint
+arXiv:1901.10002 2, 8 (2019).
+[208] Vinith M Suriyakumar, Nicolas Papernot, Anna Goldenberg, and Marzyeh Ghassemi. 2021. Challenges of diﬀerentially private prediction in
+healthcare settings. In Proceedings of the IJCAI 2021 Workshop on AI for Social Good.
+[209] Uthaipon Tantipongpipat, Chris Waites, Digvijay Boob, Amaresh Ankit Siva, and Rachel Cummings. 2019. Diﬀerentially private mixed-type data
+generation for unsupervised learning. arXiv preprint arXiv:1912.03250 1 (2019), 13.
+[210] Harry Chandra Tanuwidjaja, Rakyong Choi, Seunggeun Baek, and Kwangjo Kim. 2020. Privacy-preserving deep learning on machine learning as
+a service—a comprehensive survey. IEEE Access 8 (2020), 167425–167447.
+[211] David MJ Tax and Robert PW Duin. 2004. Support vector data description. Machine learning 54 (2004), 45–66.
+[212] Huan Tian, Tianqing Zhu, and Wanlei Zhou. 2022. Fairness and privacy preservation for facial images: GAN-based methods. Computers & Security
+122 (2022), 102902.
+[213] FinancialTimes. 2020. Facebook privacybreach. Financial Times (2020), 11–12. https://www.ft.com/content/87184c402cfe-11e8-9b4b-bc4b9f08f381
+[214] Ali Tizghadam, Hamzeh Khazaei, Mohammad HY Moghaddam, and Yasser Hassan. 2019. Machine learning in transportation.
+[215] Amirsina Torﬁ, Edward A Fox, and Chandan K Reddy. 2022. Diﬀerentially private synthetic medical data generation using convolutional gans.
+Information Sciences 586 (2022), 485–500.
+[216] Jesper E Van Engelen and Holger H Hoos. 2020. A survey on semi-supervised learning. Machine learning 109, 2 (2020), 373–440.
+[217] Sriram Vasudevan and Krishnaram Kenthapadi. 2020. Lift: A scalable framework for measuring fairness in ml applications. In Proceedings of the
+29th ACM International Conference on Information & Knowledge Management. 2773–2780.
+[218] Mingyang Wan, Daochen Zha, Ninghao Liu, and Na Zou. 2021. Modeling Techniques for Machine Learning Fairness: A Survey. arXiv preprint
+arXiv:2111.03015 (2021).
+[219] Hongwei Wang and Jure Leskovec. 2020. Unifying graph convolutional neural networks and label propagation. arXiv preprint arXiv:2002.06755
+(2020).
+[220] Nan Wang, Lu Lin, Jundong Li, and Hongning Wang. 2022. Unbiased graph embedding with biased graph observations. In Proceedings of the ACM
+Web Conference 2022. 1423–1433.
+[221] Yifan Wang, Weizhi Ma, Min Zhang, Yiqun Liu, and Shaoping Ma. 2023. A survey on the fairness of recommender systems. ACM Transactions on
+Information Systems 41, 3 (2023), 1–43.
+[222] Yining Wang, Yu-Xiang Wang, and Aarti Singh. 2015. Diﬀerentially private subspace clustering. Advances in Neural Information Processing Systems
+28 (2015).
+[223] Min Wen, Osbert Bastani, and Ufuk Topcu. 2021. Algorithms for fairness in sequential decision making. In International Conference on Artiﬁcial
+Intelligence and Statistics. PMLR, 1144–1152.
+[224] Craig D Wenger, Douglas H Phanstiel, M Violet Lee, Derek J Bailey, and Joshua J Coon. 2011. COMPASS: A suite of pre-and post-search proteomics
+software tools for OMSSA. Proteomics 11, 6 (2011), 1064–1074.
+[225] James Wexler, Mahima Pushkarna, Tolga Bolukbasi, Martin Wattenberg, Fernanda Viégas, and Jimbo Wilson. 2019. The what-if tool: Interactive
+probing of machine learning models. IEEE transactions on visualization and computer graphics 26, 1 (2019), 56–65.
+[226] Blake Woodworth, Suriya Gunasekar, Mesrob I Ohannessian, and Nathan Srebro. 2017. Learning non-discriminatory predictors. In Conference on
+Learning Theory. PMLR, 1920–1953.
+[227] Wei Wu, Jian Liu, Huimei Wang, Jialu Hao, and Ming Xian. 2020. Secure and eﬃcient outsourced k-means clustering using fully homomorphic
+encryption with ciphertext packing technique. IEEE Transactions on Knowledge and Data Engineering 33, 10 (2020), 3424–3437.
+[228] Xiaokui Xiao, Guozhang Wang, and Johannes Gehrke. 2010. Diﬀerential privacy via wavelet transforms. IEEE Transactions on knowledge and data
+engineering 23, 8 (2010), 1200–1214.
+Manuscript submitted to ACM
+
+
+--- Page 47 ---
+Holistic Survey of Privacy and Fairness in Machine Learning
+51
+[229] Depeng Xu, Shuhan Yuan, and Xintao Wu. 2019. Achieving diﬀerential privacy and fairness in logistic regression. In Companion proceedings of
+The 2019 world wide web conference. 594–599.
+[230] Jia Xu, Zhenjie Zhang, Xiaokui Xiao, Yin Yang, Ge Yu, and Marianne Winslett. 2013. Diﬀerentially private histogram publication. The VLDB
+journal 22 (2013), 797–822.
+[231] Runhua Xu, Nathalie Baracaldo, and James Joshi. 2021. Privacy-preserving machine learning: Methods, challenges and directions. arXiv preprint
+arXiv:2108.04417 (2021).
+[232] Xun Yi, Russell Paulet, Elisa Bertino, Xun Yi, Russell Paulet, and Elisa Bertino. 2014. Homomorphic encryption. Springer.
+[233] Ashkan Yousefpour, Igor Shilov, Alexandre Sablayrolles, Davide Testuggine, Karthik Prasad, Mani Malek, John Nguyen, Sayan Ghosh, Akash
+Bharadwaj, Jessica Zhao, et al. 2021. Opacus: User-friendly diﬀerential privacy library in PyTorch. arXiv preprint arXiv:2109.12298 (2021).
+[234] Hana Yousuf, Michael Lahzi, Said A Salloum, and Khaled Shaalan. 2020. Systematic review on fully homomorphic encryption scheme and its
+application. Recent Advances in Intelligent Systems and Smart Applications (2020), 537–551.
+[235] Albert Yu, Arun V Sathanur, and Vikram Jandhyala. 2012. A partial homomorphic encryption scheme for secure design automation on public
+clouds. In 2012 IEEE 21st Conference on Electrical Performance of Electronic Packaging and Systems. IEEE, 177–180.
+[236] Bianca Zadrozny. 2004. Learning and evaluating classiﬁers under sample selection bias. In Proceedings of the twenty-ﬁrst international conference
+on Machine learning. 114.
+[237] Bianca Zadrozny and Charles Elkan. 2001. Obtaining calibrated probability estimates from decision trees and naive bayesian classiﬁers. In Icml,
+Vol. 1. Citeseer, 609–616.
+[238] Muhammad Bilal Zafar, Isabel Valera, Manuel Gomez Rodriguez, and Krishna P Gummadi. 2017. Fairness beyond disparate treatment & disparate
+impact: Learning classiﬁcation without disparate mistreatment. In Proceedings of the 26th international conference on world wide web. 1171–1180.
+[239] Muhammad Bilal Zafar, Isabel Valera, Manuel Gomez Rogriguez, and Krishna P Gummadi. 2017.
+Fairness constraints: Mechanisms for fair
+classiﬁcation. In Artiﬁcial intelligence and statistics. PMLR, 962–970.
+[240] Rich Zemel, Yu Wu, Kevin Swersky, Toni Pitassi, and Cynthia Dwork. 2013. Learning fair representations. In International conference on machine
+learning. PMLR, 325–333.
+[241] Brian Hu Zhang, Blake Lemoine, and Margaret Mitchell. 2018. Mitigating unwanted biases with adversarial learning. In Proceedings of the 2018
+AAAI/ACM Conference on AI, Ethics, and Society. 335–340.
+[242] Daniel Yue Zhang, Ziyi Kou, and Dong Wang. 2020. Fairﬂ: A fair federated learning approach to reducing demographic bias in privacy-sensitive
+classiﬁcation models. In 2020 IEEE International Conference on Big Data (Big Data). IEEE, 1051–1060.
+[243] Hongjing Zhang and Ian Davidson. 2021. Deep Fair Discriminative Clustering. arXiv preprint arXiv:2105.14146 (2021).
+[244] He Zhang, Xingliang Yuan, Quoc Viet Hung Nguyen, and Shirui Pan. 2023. On the Interaction between Node Fairness and Edge Privacy in Graph
+Neural Networks. arXiv preprint arXiv:2301.12951 (2023).
+[245] Tao Zhang, Jing Li, Mengde Han, Wanlei Zhou, Philip Yu, et al. 2020. Fairness in semi-supervised learning: Unlabeled data help to reduce
+discrimination. IEEE Transactions on Knowledge and Data Engineering (2020).
+[246] Xingyu Zhou. 2022. Diﬀerentially private reinforcement learning with linear function approximation. Proceedings of the ACM on Measurement
+and Analysis of Computing Systems 6, 1 (2022), 1–27.
+[247] Xiaojin Jerry Zhu. 2005. Semi-supervised learning literature survey. (2005).
+[248] Zhaowei Zhu, Tianyi Luo, and Yang Liu. 2021. The rich get richer: Disparate impact of semi-supervised learning. arXiv preprint arXiv:2110.06282
+(2021).
+[249] Imtiaz Masud Ziko, Jing Yuan, Eric Granger, and Ismail Ben Ayed. 2021. Variational fair clustering. In Proceedings of the AAAI Conference on
+Artiﬁcial Intelligence, Vol. 35. 11202–11209.
+[250] Michael J Zimmer. 1995. Emerging uniform structure of disparate treatment discrimination litigation. Ga. L. Rev. 30 (1995), 563.
+Manuscript submitted to ACM

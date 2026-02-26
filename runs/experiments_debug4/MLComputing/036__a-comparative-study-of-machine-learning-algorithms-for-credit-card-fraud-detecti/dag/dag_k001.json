@@ -1,0 +1,180 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning algorithms can be used to detect fraudulent credit card transactions and a comparative evaluation can identify the most effective method for imbalanced European cardholder data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset: European credit card transactions dataset from Kaggle with 284,807 records and extreme class imbalance (0.172% fraud)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Models evaluated: Random Forest, Decision Tree, AdaBoost, and Gradient Boosting",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Imbalance handling and evaluation: applied SMOTE to balance classes and evaluated models using accuracy, precision, recall, F1 score, ROC AUC and precision-recall AUC",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Operational objective: minimize false positives to reduce unnecessary bank alerts while maintaining high detection (precision-recall trade-off)",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Preprocessing: SMOTE generated synthetic minority samples to address skew before training and testing",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Performance metrics defined and calculated from confusion matrices including TP, TN, FP, FN, accuracy, precision, recall, F1, ROC AUC and precision-recall AUC",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Confusion matrix results: Random Forest TP 132 TN 85,265 FP 18 FN 28; Decision Tree TP 130 TN 85,042 FP 241 FN 30; AdaBoost TP 144 TN 83,897 FP 1,386 FN 16; Gradient Boosting TP 143 TN 84,239 FP 1,044 FN 17",
+      "role": "Evidence",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Algorithm descriptions: Random Forest is ensemble of random trees; Decision Tree uses explicit feature selection; AdaBoost combines weak learners with weighted updates; Gradient Boosting sequentially corrects residuals and emphasizes misclassified points",
+      "role": "Context",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Performance metrics results: Random Forest accuracy 0.999415 precision 0.857143 recall 0.825 F1 0.840764; Decision Tree accuracy 0.996828 precision 0.350404 recall 0.8125 F1 0.489642; AdaBoost accuracy 0.983978 precision 0.096192 recall 0.9 F1 0.173808; Gradient Boosting accuracy 0.987067 precision 0.117409 recall 0.90625 F1 0.207885",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Observed trade-offs: AdaBoost and Gradient Boosting achieve high recall but very low precision leading to many false positives; Decision Tree has moderate recall but low precision and high FP; Random Forest achieves high precision and balanced recall with low FP and FN",
+      "role": "Claim",
+      "parents": [
+        7,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Primary conclusion: Random Forest is the most reliable and balanced model for fraud detection on this imbalanced European dataset, minimizing false positives and false negatives while scoring highest across accuracy, precision, recall and F1",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        10
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Study used a single historical European dataset and SMOTE for balancing which may limit generalizability to other populations, datasets, or real-time streaming scenarios",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Recommendation: prioritize models that balance precision and recall (e.g., Random Forest) for deployment to reduce operational false alarms while maintaining fraud detection",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Future work directions: expand feature engineering, implement low-latency real-time detection and online learning, explore transfer learning / pre-trained models, and improve explainability with LIME or SHAP",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

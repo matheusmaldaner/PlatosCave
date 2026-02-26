@@ -1,0 +1,202 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Policymaking should report both ensemble-average (GDP per capita) and time-average (DDP per capita) growth rates because when incomes follow random multiplicative growth the ensemble-average exceeds the time-average, creating an ergodicity gap (MLD) that signals rising inequality and can cause political disconnect",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        7,
+        9,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics distinguishes ensemble averages and time averages: if a stochastic process is ergodic they coincide, otherwise they can differ with policy-relevant implications",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Under random multiplicative growth (Gibrat-type processes), the ensemble-average growth rate of income is greater than the time-average growth rate realized by individual trajectories",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Definitions and constructs: ensemble-average growth rate = growth of average income (GDP per capita); time-average growth rate = long-run individual growth (DDP per capita); DDP per capita equals the geometric mean exp(mean(log incomes)) and time-average growth can be estimated from initial and terminal distributions",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        2,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The difference between ensemble-average and time-average growth rates defines the ergodicity gap J(t) = ln(mean income) - mean(ln incomes), which equals the mean logarithmic deviation (MLD) and serves as a measure of income inequality",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        6,
+        10,
+        11,
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Analytical example (geometric Brownian motion): ensemble-average growth rate g_ensemble = mu, time-average growth rate g_time = mu - sigma^2/2, showing ensemble > time by sigma^2/2",
+      "role": "Result",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "In GBM the ergodicity gap grows linearly in time: dJ/dt = sigma^2/2 so J(t) = (sigma^2/2) t (up to constant), implying unbounded increase of MLD under pure multiplicative noise",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The ensemble-average (GDP per capita) growth rate is a plutocratic measure: approximately an income-weighted average of individual growth rates (weights proportional to income)",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        4,
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "The time-average (DDP per capita) growth rate is a democratic measure: the average of individual growth rates with equal weight, and it is independent of income mobility because it depends only on initial and terminal log-income distributions",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        9,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical method: estimate g_ensemble from national average income and g_time (DDP) from quantile data using mean(log incomes) approximated by quantile averages; truncation of low incomes can affect geometric mean estimates, so bottom decile was excluded in primary figures",
+      "role": "Method",
+      "parents": [
+        0,
+        3,
+        8
+      ],
+      "children": [
+        10,
+        11,
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Evidence from US data (1966-2014): between 1966 and 1980 ensemble and time-average growth were similar, but since 1980 ensemble-average (GDP per capita) grew ~+40% while time-average (DDP) grew ~+20%, indicating widening ergodicity gap",
+      "role": "Evidence",
+      "parents": [
+        0,
+        4,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence from France data (1970-2015): ensemble-average and time-average growth rates remained close and ergodicity gap roughly stable, so GDP per capita was more representative of typical experience than in the US",
+      "role": "Evidence",
+      "parents": [
+        0,
+        4,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Policy conclusion: reporting both GDP per capita (ensemble-average) and DDP per capita (time-average) together with the ergodicity gap (MLD) would better inform policymakers about total productive capacity and typical individual experience",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        8,
+        4,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Societal implication claim: persistent divergence (ensemble > time) can produce increasing inequality, create a political disconnect where official statistics show prosperity not felt by typical citizens, and may erode trust in institutions",
+      "role": "Claim",
+      "parents": [
+        0,
+        4,
+        6,
+        7,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitations and assumptions: main results rely on multiplicative random-growth null model without interactions or redistribution; real economies may include reallocation, correlations, and measurement issues (sensitivity of geometric mean to low incomes and need for truncation)",
+      "role": "Limitation",
+      "parents": [
+        9,
+        5,
+        6
+      ],
+      "children": null
+    }
+  ]
+}

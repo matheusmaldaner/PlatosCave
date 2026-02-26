@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "LLVM-level selective instruction duplication may overestimate soft error protection because faults occur at lower assembly level; evaluating protection at both LLVM IR and assembly levels reveals cross-layer deficiencies",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Assume datapath soft errors modeled as single-bit flips in destination registers; focus on SDCs (silent data corruptions) not DUEs",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: perform large-scale fault injection at both LLVM IR level and assembly level using LLFI and PIN-based injector on 16 HPC benchmarks and four protection levels (30,50,70,100%) with 3000 random campaigns per benchmark per level",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Claim: There exists a non-negligible, application-specific gap in SDC coverage between LLVM-level evaluation and assembly-level evaluation of instruction duplication",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: The protection shortfalls at assembly level arise from a small set of identifiable root-causes introduced during IR-to-assembly lowering and backend transformations",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Evidence: Measured average SDC coverage gap between LLVM and assembly evaluations is 31.21% across benchmarks, with max gap up to 82% (Stringsearch); SDC coverage at assembly level often much lower than LLVM-level claims",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Evidence: Instruction duplication at LLVM IR with full protection yields near 100% SDC detection at IR-level fault injection, but at assembly-level full protection often yields far less (examples: Quicksort 56.20%, BFS 53.33%), indicating intrinsic cross-layer gaps",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Claim: The SDC coverage and trade-off between protection and performance are highly application specific because error propagation and vulnerable-instruction distributions vary by program",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Result: Across analyzed deficiency cases, five root-cause categories were identified and quantified: store penetration 39.1%, branch penetration 35.7%, comparison penetration 19.7%, call penetration 3.1%, mapping penetration 2.5%",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Explanation (Claim): Store, branch, and comparison penetrations arise from IR-level atomic assumptions becoming multi-instruction sequences after register allocation, flag setting, or compiler optimizations, creating new unprotected assembly fault sites",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Claim: Call and mapping penetrations are caused by calling-convention parameter moves and ABI or prologue/epilogue sequences that have no direct IR counterparts and thus can introduce assembly-level unprotected sites",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Prior LLVM-IR-only evaluations of instruction duplication are over-optimistic; realistic assembly-level evaluation is required to measure true protection",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Method/Claim: Propose Flowery, a set of LLVM IR compiler passes applied after instruction duplication to mitigate cross-layer deficiencies by (1) eager-mode store (move stores before checkers), (2) postponed branch condition check using stored jump info and per-target checkers, and (3) anti-comparison duplication optimization to prevent compiler elimination of duplicate comparisons",
+      "role": "Method",
+      "parents": [
+        9,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Evidence / Result: Evaluation at assembly level shows Flowery raises average SDC coverage at full protection from ID-Assembly 76.74% to Flowery 93.72% and reduces the LLVM vs assembly coverage gap substantially; Flowery closes most gaps in benchmarks and aligns assembly coverage closer to LLVM-level claims",
+      "role": "Result",
+      "parents": [
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: Flowery is implemented at LLVM IR level and cannot fully mitigate call and mapping penetrations that require backend or assembly-level transformations; these categories remain as residual unprotected cases",
+      "role": "Limitation",
+      "parents": [
+        10,
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Result: Flowery incurs low compile-time and runtime cost: average additional runtime overhead about 2.71% (paper reports per-level values roughly 1.6-3.7%), and compile-time transformation time negligible (average 0.12s per benchmark); thus Flowery is practical",
+      "role": "Result",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

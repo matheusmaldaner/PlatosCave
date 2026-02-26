@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "MINPSID, an automated multi-input-hardened selective instruction duplication framework, can mitigate the loss of silent data corruption (SDC) coverage that arises when existing SID protections are evaluated across multiple program inputs",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        3,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing selective instruction duplication (SID) techniques commonly assess protections using a single reference input and assume error resilience is similar across inputs, which can lead to substantial loss of SDC coverage when programs run with different inputs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Fault injection experiments over 11 benchmarks show average expected SDC coverage from SID drops from 96.12% to 58.76% across multiple inputs, with up to 100% loss in extreme cases and on average 37.58% of inputs causing coverage loss per benchmark",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "A small subset of program instructions, named incubative instructions, exhibit drastically different error-propagation behaviors across inputs and are the primary root cause of the observed SDC coverage loss",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Measured across benchmarks, incubative instructions comprise on average 15.79% of instructions (range 6.20% to 32.09%) and are responsible for at least 97% of the SDC coverage loss",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Fault model and experimental foundation: focus on transient single-bit flips in processor computing components, use LLVM IR for program analysis and LLFI for fault injection, measure per-instruction SDC probabilities via injected faults and dynamic profiling",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "MINPSID method: identify incubative instructions via static CFG construction, dynamic weighted CFG profiling per input, genetic-algorithm-based input search to find informative inputs, per-instruction fault injection on discovered inputs, then re-prioritize instruction benefits and run knapsack-based SID selection and code transformation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The input search engine in MINPSID (GA with weighted CFG fitness) identifies incubative instructions more efficiently than a random searcher, finding on average 45.60% more incubative instructions within the same time budget",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Evaluation results: MINPSID mitigates on average 97% of the SDC coverage loss observed with existing SID; the fraction of inputs causing coverage loss drops from 37.58% (baseline) to 8.36% (MINPSID) averaged over benchmarks",
+      "role": "Result",
+      "parents": [
+        6,
+        7,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Cost and performance of MINPSID: one-time analysis overhead averages 63.71 minutes per benchmark on the reported machines (parallelized FIs), with per-instruction FI components and input search dominating runtime",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Incubative instructions tend to show near-zero measured benefit (SDC probability times cost) under the reference input used by SID but can have substantially higher SDC probabilities under other inputs, causing them to be deprioritized by standard SID",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Concrete example: in FFT benchmark an icmp instruction had SDC probability near 0% under the reference input but 17% under another input due to differing runtime values, illustrating input-dependent error propagation of incubative instructions",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "MINPSID produces more conservative expected SDC coverage estimates (by using upper-bound benefits for incubative instructions) and yields more predictable minimum coverage that increases with protection level compared to baseline SID",
+      "role": "Conclusion",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitations: MINPSID increases pre-deployment analysis time compared with standard SID and it does not eliminate observed variance in runtime performance overhead (duplicated dynamic instruction fraction varies across inputs); these are acknowledged constraints",
+      "role": "Limitation",
+      "parents": [
+        6,
+        9
+      ],
+      "children": null
+    }
+  ]
+}

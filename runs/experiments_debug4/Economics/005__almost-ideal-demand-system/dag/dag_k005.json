@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The Almost Ideal Demand System (AIDS) is a new demand system that is as general as existing flexible forms but has advantages: exact satisfaction of choice axioms, exact aggregation over consumers without parallel linear Engel curves, tractable functional form consistent with household-budget data, simplicity of estimation, and ability to test homogeneity and symmetry by linear restrictions",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "AIDS is derived from a PIGLOG class cost function log c(u,p) = (1-u) log a(p) + u log b(p) with specific flexible parameterizations for log a(p) and log b(p) that ensure linear homogeneity and local flexibility",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "From the AIDS cost function the budget share demand functions take the linear-in-parameters form w_i = a_i + sum_j y_ij log p_j + beta_i log(x/P), where P is a price index, and restrictions (adding-up, homogeneity, Slutsky symmetry) translate into linear parameter constraints",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "AIDS allows exact aggregation to a representative consumer under PIGLOG/PIGL assumptions by introducing household-specific scale factors k_h that correct expenditures for needs and by defining an aggregate representative budget x/k",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "AIDS is a locally flexible functional form: its parameters can be chosen so derivatives with respect to prices and expenditure match any true demand system at a point, making AIDS a first-order approximation whether or not utility maximization is assumed",
+      "role": "Claim",
+      "parents": [
+        1,
+        2,
+        3
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Estimation strategy: (a) approximate P by Stone index P* and estimate linear equation w_i = (a_i - beta_i log P*) + sum_j y_ij log p_j + beta_i log(x/P*) by OLS equation-by-equation; (b) reestimate full non-linear system using P and impose homogeneity and symmetry by linear or system estimation (ML or concentrated ML) with assumed residual covariance structure when needed",
+      "role": "Method",
+      "parents": [
+        1,
+        2,
+        4
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Practical estimation conveniences and caveats: when prices are collinear P* approximates P well so single-equation OLS with P* is accurate; a0 is weakly identified so may be set a priori; negativity/concavity cannot be imposed by linear constraints and must be checked via Slutsky matrix eigenvalues",
+      "role": "Assumption",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical data and setup: annual British aggregate expenditure data 1954-1974 on eight nondurables (food, clothing, housing services, fuel, drink and tobacco, transport and communication, other goods, other services); P* used initially and then P computed under symmetry",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result: OLS estimation using P* yields plausible parameter estimates and elasticities (necessities: food, housing; others often luxuries); many y_ij coefficients significantly nonzero, and P* and P series are numerically very close in the sample",
+      "role": "Result",
+      "parents": [
+        7,
+        5
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: Tests on British data - homogeneity (degree zero) is decisively rejected in levels for several equations; imposing homogeneity generates positive serial correlation in residuals for equations that reject homogeneity most strongly; symmetry is also rejected overall by likelihood-ratio tests",
+      "role": "Result",
+      "parents": [
+        7,
+        5,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Interpretation/evidence: the rejection of homogeneity and the introduction of serial correlation upon imposing homogeneity suggests omitted dynamic factors (stocks, time trends), price expectations, or dependence of the aggregation index k on budgets/prices may explain failures of the static representative consumer hypothesis",
+      "role": "Claim",
+      "parents": [
+        9,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Further results: first-difference specification (AIDS in changes with intercepts) reduces some rejections of homogeneity (e.g., clothing and housing) and yields expenditure elasticities closer to expected short-run responses; nevertheless several estimates violate concavity (positive compensated own-price elasticities) implying Slutsky matrix eigenvalue sign problems",
+      "role": "Result",
+      "parents": [
+        9,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: AIDS provides a simple, general, theoretically consistent platform superior in many respects to existing forms and useful for testing and extending demand analysis, but explaining demand fully requires modelling omitted dynamics, expectations, or intertemporal dependencies and ensuring concavity for welfare applications",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        4,
+        9,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

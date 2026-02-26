@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Adam is an effective first-order stochastic optimization algorithm for large-scale, high-dimensional machine learning problems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Adam computes individual adaptive learning rates per parameter from estimates of the first and second moments of the gradients",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Adam maintains exponential moving averages m_t (first moment) and v_t (second raw moment), applies bias correction, and updates parameters via theta_t <- theta_{t-1} - alpha * m_hat / (sqrt(v_hat) + epsilon) as in Algorithm 1",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Adam is designed to combine advantages of AdaGrad (works well with sparse gradients) and RMSProp (works well for non-stationary objectives), making it suitable for noisy, sparse, and non-stationary problems",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Adam has a theoretical regret bound R(T)=O(sqrt(T)) under online convex optimization assumptions (Theorem 4.1 and Corollary 4.2)",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The effective parameter step size delta_t = alpha * m_hat / sqrt(v_hat) is approximately bounded by alpha, invariant to rescaling of gradients, and automatically anneals as signal-to-noise ratio decreases",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Initialization bias of moving averages is corrected by dividing by (1 - beta^t) terms for m and v to avoid biased zero estimates early in training",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical experiments (e.g., VAE training) show that removing bias-correction causes instability or divergence for beta2 values near 1, so bias-correction prevents very large initial steps",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "On sparse feature problems (IMDB bag-of-words logistic regression) Adam matches or equals AdaGrad performance and outperforms SGD with momentum",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "On multilayer neural networks and convolutional networks, Adam converges faster or comparably to other optimizers (SGD with momentum, RMSProp, AdaGrad, SFO), and adapts layer-wise learning rates reducing manual tuning",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Recommended default hyper-parameters and implementation details: alpha = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8; vector operations are element-wise (per Algorithm 1)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Adam is computationally efficient, has low memory requirements (constant per-parameter state), and its updates are element-wise allowing scalability to large models and datasets",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "AdaMax is a stable variant derived from Adam using the infinity norm with update u_t = max(beta2 * u_{t-1}, |g_t|); AdaMax has a simpler bound and does not require bias correction for u",
+      "role": "Extension",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: Adam is a robust, practical optimizer that combines theoretical guarantees and empirical performance, making it well-suited for noisy, sparse, non-stationary, and high-dimensional ML tasks",
+      "role": "Conclusion",
+      "parents": [
+        4,
+        5,
+        7,
+        8,
+        9,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

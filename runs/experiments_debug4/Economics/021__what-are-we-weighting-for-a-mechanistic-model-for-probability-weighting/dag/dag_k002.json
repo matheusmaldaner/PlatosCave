@@ -1,0 +1,156 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Probability weighting (inverse-S between decision weights w(x) and declared probabilities p(x)) can be mechanistically explained as decision makers having greater uncertainty than disinterested observers because they estimate probabilities from finite time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        9,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Empirical observation: cumulative decision weights Fw plotted versus cumulative probabilities Fp produce a robust inverse-S curve (Fw > Fp for low cumulative probabilities, Fw < Fp for high cumulative probabilities)",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Definitions: p(x) denotes probabilities specified by a disinterested observer (DO); w(x) denotes decision weights inferred from a decision maker's (DM) behavior; CDFs Fp and Fw defined by integrating p and w",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Claim: If the DM's model uses a larger scale or different location than the DO's model (e.g., Gaussians with same mean but DM std dev = alpha * DO std dev, alpha>1), the mapping Fw versus Fp generically yields an inverse-S",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Estimating probabilities from finite time series produces uncertainties whose relative size grows as event probability decreases, so rare events have larger relative estimation error",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: General numerical procedure to produce mapping: compute DO CDF Fp(x), compute DM CDF Fw(x) (from assumed distribution), and plot Fw(x) against Fp(x) to visualise probability weighting",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result (analytic): For Gaussian DO with std sigma and DM with std alpha*sigma, eliminating x yields decision weight w as a power-law function of p with exponent 1/alpha^2, producing w(p)>p for small p when alpha>1",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence (simulation): Simulations where DM counts events in finite series and adds standard error produce inverse-S mappings for both Gaussian and fat-tailed t distributions; effect stronger for fat tails",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result (fit): Gaussian and t-models derived from the mechanistic explanation fit experimental inverse-S data (Tversky & Kahneman 1992; Tversky & Fox 1995) as well as established phenomenological parameterisations",
+      "role": "Result",
+      "parents": [
+        1,
+        6,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Assumption: DO and DM have different observational perspectives and objectives (DO often uses ensemble perspective; DM experiences single trajectory over time), leading to different optimal models when observables are non-ergodic",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Method/Claim: A conservative DM can form decision weights by adding the standard error of the estimated density to the estimate and normalising (w(x) proportional to p_hat(x)+epsilon[p_hat(x)]), producing systematic overweighting of rare events",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Probability weighting (inverse-S) need not imply DM cognitive bias; it can be a principled, rational response to greater uncertainty faced by a DM estimating probabilities from finite time series and to time vs ensemble perspective",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Mechanistic model relies on assumptions about how DMs estimate probabilities (finite sample counts, bin width T delta x, addition of standard error) and on specific distributional forms when fitting; results depend on these choices",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

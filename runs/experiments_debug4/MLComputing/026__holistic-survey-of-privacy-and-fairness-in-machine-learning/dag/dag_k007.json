@@ -1,0 +1,192 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Investigate how privacy and fairness objectives interact in machine learning and how they can be simultaneously integrated to build trustworthy ML",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We conducted a holistic survey analyzing nearly 200 recent studies across supervised, unsupervised, semi-supervised, and reinforcement learning to consolidate terminology, notions, mechanisms, architectures, and open problems for privacy and fairness",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "There is no single accepted notion of fairness across ML; many group- and individual-level fairness definitions exist (e.g., statistical parity, equalized odds, equal opportunity, calibration, individual and counterfactual fairness), and fairness definitions often conflict",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Privacy techniques commonly used in ML include differential privacy (DP) variants and mechanisms (Laplace, exponential, DP-SGD), homomorphic encryption (FHE, SHE, PHE), and cryptographic primitives, each with trade-offs in utility and computation",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "We categorize five common system architectures for pursuing privacy and fairness together: (A) sanitize then debias, (B) joint private-and-fair training, (C) separate sensitive attribute sanitization plus pipeline, (D) federated learning with local debiasing and secure aggregation, and (E) privacy-preserving fairness auditing via secure multiparty computation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Survey contribution: consolidated 15 fairness notions, review of privacy mechanisms and their applications across ML paradigms, taxonomy of mitigation methods (pre/in/post-processing), architectures for joint goals, empirical evidence on interactions, and open challenges including LLMs",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Methodology: reviewed and synthesized literature examples and empirical studies that report both alignment and trade-offs between privacy and fairness and examined domain-specific instances (healthcare, NLP, vision, spatial data)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Scope: covered supervised, unsupervised, semi-supervised, and reinforcement learning and appended detailed application- and technique-specific discussions (DP and HE usages per paradigm)",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Empirical and theoretical evidence is mixed: some works report alignment where privacy techniques (e.g., DP or noisy representations) reduce bias or protect sensitive attributes, while others report that privacy (especially DP-SGD or strong DP) amplifies errors for underrepresented groups causing disparate harms",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Mechanisms of interaction: DP noise can hide rare/minority examples (reducing detection or accuracy for minorities), DP training can amplify bias toward majority classes, while fairness constraints can expose or increase memorization of subgroup data increasing privacy risk (e.g., membership or attribute inference)",
+      "role": "Claim",
+      "parents": [
+        8
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Cryptographic approaches (HE, MPC, PHE) enable computations without exposing raw data but impose practical limitations (computation, supported operations); expressing and enforcing fairness constraints under encrypted computation is an open technical challenge",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Algorithms that attempt concurrent privacy and fairness include DP-aware fairness methods (e.g., bilevel formulations, adaptive clipping in DP-SGD), combined objective regularizers, private auditing with secure aggregation, and federated protocols that incorporate fairness incentives; results show possible joint gains but require careful tuning",
+      "role": "Claim",
+      "parents": [
+        4,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "There exist domain-specific observations: in healthcare and synthetic data, privacy and fairness trade-offs are sensitive to data generation and evaluation; in NLP and representation learning, private encodings can both reduce bias and induce utility loss; in spatial data DP can disproportionately affect low-population regions",
+      "role": "Evidence",
+      "parents": [
+        4,
+        9,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Open challenges identified: (1) principled theory for privacy-fairness compatibility, (2) fair privacy guarantees and group-equitable privacy protections, (3) cryptographic-friendly fairness enforcement, (4) fairness and privacy in large language models and human-feedback tuning, (5) measuring disparate impacts of privacy mechanisms across subgroups",
+      "role": "Claim",
+      "parents": [
+        5,
+        11,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: many surveyed works provide empirical findings under limited settings and architectures; formal impossibility results exist for simultaneous perfect DP and certain fairness notions (e.g., equalized odds) under accuracy constraints",
+      "role": "Limitation",
+      "parents": [
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Achieving both privacy and fairness in ML is feasible in some settings but nontrivial; the community needs unified definitions, architectures, cryptographic and algorithmic tools, and domain-aware evaluations to minimize utility loss while ensuring equitable and private outcomes",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

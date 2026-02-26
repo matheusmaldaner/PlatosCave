@@ -1,0 +1,191 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "cuSZp achieves ultra-fast end-to-end GPU error-bounded lossy compression while maintaining high compression ratio and high reconstructed data quality",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Design cuSZp to run the entire compression and decompression pipeline inside a single GPU kernel to eliminate CPU computation and CPU-GPU data movement overheads",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "cuSZp implements a block-wise pipeline of four steps: (S1) quantization and 1D Lorenzo prediction, (S2) block fixed-length encoding with sign map, (S3) hierarchical global synchronization as a prefix-sum to compute block offsets, and (S4) block bit-shuffle to write aligned bytes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "cuSZp trades off variable-length encoders (e.g., Huffman) for fixed-length per block plus sign map because scientific data blocks are spatially smooth, enabling high parallel throughput with competitive compression ratio",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Single-kernel design removes CPU and data movement fractions in end-to-end runtime, making kernel throughput equal to end-to-end throughput",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Hierarchical global synchronization (thread-level, warp-level, global-level) implemented on GPU computes exclusive prefix-sum of per-block compressed sizes to produce per-block start indices within the single kernel",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Quantization converts floating-point values to integers within the error bound and 1D 1-layer Lorenzo prediction records deltas within each block to reduce effective bits and improve encodability",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Fixed-length encoding records sign map and uses the position of the most-significant nonzero bit of the block maximum to set bits per value Fk, yielding compressed block size CmpLk = (Fk+1)*L/8 bytes",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Block bit-shuffle reorders bit offsets into aligned bytes for efficient parallel writes and avoids irregular bit shifts when Fk is not divisible by 8",
+      "role": "Method",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evaluation used six real-world HPC datasets (Hurricane, NYX, QMCPack, RTM, HACC, CESM-ATM) on NVIDIA A100 GPU measuring end-to-end throughput, kernel throughput, compression ratio, PSNR, SSIM, and visualization",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical analysis shows high intra-block smoothness: majority of blocks have small relative value range (e.g., >80% Hurricane blocks have relative range <0.02 for L=8), supporting fixed-length per block",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Fixed-length encoding is preferred because per-block frequency is low, Huffman tree construction and storage incur CPU/global memory overheads and reduce throughput",
+      "role": "Claim",
+      "parents": [
+        3,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "cuSZp achieves average end-to-end throughput 93.63 GB/s for compression and 120.04 GB/s for decompression on A100, which is 95.53x faster than cuSZ and 55.18x faster than cuSZx in end-to-end throughput",
+      "role": "Result",
+      "parents": [
+        4,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Kernel throughput of cuSZp is comparable to state-of-the-art single-kernel GPU compressors (around or above 100 GB/s) because cuSZp avoids multi-kernel launches and CPU-heavy steps",
+      "role": "Result",
+      "parents": [
+        4,
+        9,
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "cuSZp attains the highest or comparable compression ratios: best on 16 of 24 benchmark cases across tested error bounds, and preserves higher PSNR and SSIM and better visualization than cuZFP while avoiding artifacts introduced by cuSZx",
+      "role": "Result",
+      "parents": [
+        2,
+        9,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusions: cuSZp is the first error-bounded GPU compressor that places all computation in one kernel and achieves ultra-fast end-to-end throughput while delivering high compression ratios and high-quality reconstructions; future work includes exploiting newer GPU architectures and integration into real simulations",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general understanding that hardware transient faults can cause data corruption and safety violations in safety critical ML systems, though exact quantification in ML contexts is not specified.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that exhaustive bit flipping scales linearly with bit count and is prohibitively expensive, and that random fault injection cannot reliably uncover clustered critical bits; given no cited evidence here, assessment remains tentative.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim posits that error propagation functions are often monotonic across common ML operations; while many components show monotonic or approximately monotonic behavior in certain regimes, monotonicity of error propagation is not universally guaranteed and depends on details of the operations and error models.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assesses that approximate monotonicity of EP would imply larger input deviations from higher order bit flips produce larger output deviations and higher SDC likelihood, suggesting an SDC boundary by bit significance.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.35,
+    "relevance": 0.6,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a specific algorithmic approach named BinFI involving converting operator outputs to binary, separating bits, and bisecting bit significance to locate an SDC boundary, but there is no independent evidence or widely established precedent provided in the claim.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim proposes a single fault per execution model in a processor datapath, mapping faults to TensorFlow operator outputs and simulating single bit flips; without external evidence, its plausibility rests on standard fault injection ideas but its specifics are specialized.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that heavy weight protections are costly for real time safety critical ML and motivates selective protection by identifying critical bits; this aligns with general intuition about trade offs between robustness and latency in safety critical systems, though it is not asserted as established evidence here.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that random fault injection poorly covers clustered critical bits compared to exhaustive FI, which is a comprehensive baseline but slow and costly; this aligns with general sampling limitations and tradeoffs between exhaustive approaches and random sampling.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that TensorFI was extended to support DNN operators and BinFI modes with injections at operator output values in TensorFlow, indicating specific implementation and operational details.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.66,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim specifies the evaluation setup including methods, models, datasets, fixed point representation, and input count, but provides no external references or independent verification.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.66,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "BinFI reported very high safety critical bit detection rate and precision across benchmarks, claiming substantial improvement over random FI with the same number of trials; no external sources cited here to verify.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general design intuition that protecting critical bits allows targeted, lower cost defenses, but no specific evidence is provided in the claim text to confirm broader applicability or empirical validation.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, BinFI is stated to cut FI trials to about one fifth of exhaustive FI with similar SDC estimates and logarithmic overhead growth, indicating plausible performance gains but without external validation.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim notes that EP functions may be only approximately monotonic, leading to BinFI missing a small fraction of critical bits and thus not providing exhaustive guarantees, which is a plausible limitation but lacks universally established evidence in this context.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim states that BinFI is a practical first-step, low-cost tool for identifying safety-critical bits in ML inference with selective protection tradeoffs, and envisions expanding to more frameworks, safety domains, and schemes.",
+    "confidence_level": "medium"
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A holistic understanding of the interaction between privacy and fairness in machine learning (across supervised, unsupervised, semi-supervised, and reinforcement learning) is needed to enable concurrent implementation of both objectives with minimal utility loss",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Privacy and fairness are two central, distinct pillars of trustworthy ML: privacy concerns control of personal data; fairness concerns equitable handling of revealed user information",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Differential privacy (DP) and homomorphic encryption (HE) are primary privacy techniques used across ML pipelines, each with specific mechanisms, variants, strengths, and limitations",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "There exist many, often conflicting, fairness notions (group-level such as statistical parity, equalized odds/equal opportunity, calibration; individual-level such as individual and counterfactual fairness), and mitigation strategies categorized as pre-processing, in-processing, and post-processing",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Prior work often treats privacy and fairness separately; the relationship between them is unresolved with empirical and theoretical studies indicating both alignments and trade-offs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Empirical and theoretical evidence shows privacy mechanisms can both decrease and increase fairness depending on setting: examples include DP-SGD amplifying bias for underrepresented classes and other DP techniques reducing discrimination in some cases",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Fairness interventions can both help and harm privacy: some individual fairness formulations generalize differential privacy under certain metrics, while some fairness-aware training increases membership or attribute leakage for disadvantaged subgroups",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        16,
+        17
+      ]
+    },
+    {
+      "id": 7,
+      "text": "We synthesize nearly 200 studies and propose five practical architectures to implement privacy and fairness together: (A) sanitize then debias, (B) joint private-fair training, (C) selective sanitization of sensitive attributes, (D) federated learning with local debiasing and secure aggregation, (E) cryptographic auditing (MPC/Secure-Audit)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        18
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Concurrent-design algorithms and frameworks exist but are limited; examples include FairDP (bilevel DP+fairness training), FairFL and other federated approaches, DP+fair logistic regression, and methods using exponential mechanism for selection problems",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        19
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Domain-specific observations show complex privacy-fairness interactions in healthcare, NLP, computer vision, and spatial data, motivating domain-aware solutions and further research",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        20
+      ]
+    },
+    {
+      "id": 10,
+      "text": "DP techniques: formal definitions (epsilon, delta), mechanisms (Laplace, Exponential, DP-SGD) and variants (local vs global DP) provide quantifiable privacy but add noise that can reduce accuracy and affect underrepresented groups",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 11,
+      "text": "HE schemes (FHE, PHE, SHE) enable computation on encrypted data without decryption; they vary in supported operations, efficiency, and practicality for ML workloads",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Fairness notions defined and used in supervised learning include statistical parity, equalized opportunity, equalized odds, calibration, counterfactual fairness, and individual metric-based fairness",
+      "role": "Context",
+      "parents": [
+        3
+      ],
+      "children": [
+        13,
+        6
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Fairness mitigation methods: pre-processing (reweighting, representation learning, label alteration), in-processing (regularizers/constraints, adversarial learning, reweighting), post-processing (score transformation, thresholding) and analogous strategies for unsupervised, semi-supervised, and RL",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Evidence aligned: studies showing DP or privacy additions reducing measured discrimination (e.g., post-processing exponential mechanism, some DP in FL reducing discrimination) and DP on representations reducing bias in NLP",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Evidence contrasting: studies showing DP can amplify errors for underrepresented classes, hide rare training examples (hurting outlier detection), or induce accuracy disparities under long-tailed data",
+      "role": "Counterevidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Evidence aligned: theoretical links where individual fairness can imply a DP-like guarantee under particular distance definitions; fairness constraints can reduce attribute-inference risk in some settings",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 17,
+      "text": "Evidence contrasting: empirical results where fairness-aware learning increases membership or attribute inference risks for certain subgroups, and individual fairness objectives can degrade edge or link privacy in graphs",
+      "role": "Counterevidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 18,
+      "text": "Architecture claim evidence: examples and discussion of where each architecture is applicable, their trust assumptions (trusted curator, trusted clients, or cryptographic guarantees), and trade-offs in practice",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 19,
+      "text": "Concurrent implementation results: reported algorithms (e.g., FairDP, FairFL, DP-constrained logistic regression) achieve both objectives in limited settings but exhibit trade-offs requiring careful tuning of privacy budgets, clipping, and fairness constraints",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        20
+      ]
+    },
+    {
+      "id": 20,
+      "text": "Application evidence: in healthcare, NLP, computer vision, and spatial data the survey documents specific privacy-fairness challenges and applied solutions (synthetic data, private encoders, GANs, DP census examples) showing heterogeneous interactions",
+      "role": "Evidence",
+      "parents": [
+        9,
+        19
+      ],
+      "children": [
+        21
+      ]
+    },
+    {
+      "id": 21,
+      "text": "Open challenges and future directions include: privacy-fairness for large language models and learning from human feedback, achieving fair privacy protection across groups, cryptographic implementations of fairness (HE/MPC), and principled evaluation of joint utility-privacy-fairness trade-offs",
+      "role": "Limitation",
+      "parents": [
+        0,
+        18,
+        19,
+        20
+      ],
+      "children": [
+        22
+      ]
+    },
+    {
+      "id": 22,
+      "text": "Conclusion: current literature provides partial, sometimes conflicting evidence on privacy-fairness interactions; more unified theoretical analysis, architecture-aware methods, and domain-specific empirical studies are required to reliably achieve both goals in practice",
+      "role": "Conclusion",
+      "parents": [
+        21
+      ],
+      "children": null
+    }
+  ]
+}

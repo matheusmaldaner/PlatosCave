@@ -1,0 +1,178 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A systematic comparison of commonly used feature selection methods will identify which methods provide better text classification accuracy and efficiency and thus provide guidelines for selecting appropriate methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "High-dimensional text data contain many noisy terms that negatively affect text classification performance; feature selection reduces noisy terms and can improve classification accuracy",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We summarize 20 typical feature selection methods from prior work, including supervised methods (IG, ECE, MI variants, GI, IGI, CHI variants, OR variants, MOR, MC-OR) and unsupervised methods (DF, TF, MM, AMGM, TV, MAD, TVQ)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We conduct comparative experiments using a decision tree classifier with 10-fold cross validation on four benchmark datasets (CARR, COMD, IMDB, KDCN) to evaluate classification accuracy under varying numbers of selected terms",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The study aims to provide practical guidelines for researchers and practitioners to choose feature selection methods balancing classification accuracy and computational efficiency",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Feature selection increases the proportion of informative terms and decreases the proportion of noisy terms, thereby reducing negative effects on classifier training",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Document-term matrix representation and mathematical formulations of each feature selection method were used to score and rank terms prior to classification",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Experimental setup: decision tree classifier, accuracy as metric, 10-fold cross validation, varying numbers of selected terms to produce classification accuracy curves for each FS method on each dataset",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result: MOR and MC-OR achieve the highest classification accuracies across datasets and selection sizes, with no significant difference between them",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: IGI also performs well and is a strong candidate because it attains near-top accuracy while having a simpler formula and easier implementation than MOR and MC-OR",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: Unsupervised methods TV, TVQ, TF and DF achieve relatively good accuracies and are preferable when computational efficiency is a primary concern",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Result: IG, GI and mutual information average version yield the worst classification accuracies among the evaluated methods; MI max performs better than MI average",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: MOR and MC-OR are best for accuracy but computationally complex; IGI balances accuracy and simplicity; TV, TVQ, TF and DF are suitable for efficiency-oriented use cases; selection should consider both accuracy and computational cost",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        10,
+        11,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: Some methods show dataset-dependent instability: AMGM, MM and MAD have unstable performance across datasets and perform poorly on specific datasets like KDCN and CARR",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Assumption: The four benchmark datasets (CARR, COMD, IMDB, KDCN) are representative of various text domains and yield reliable comparisons because they have been used in prior published text mining work",
+      "role": "Assumption",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    }
+  ]
+}

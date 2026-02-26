@@ -1,0 +1,194 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An ultra-fast GPU error-bounded lossy compressor (cuSZp) that performs all compression and decompression inside a single GPU kernel can achieve substantially higher end-to-end throughput while maintaining high compression ratios and high reconstructed data quality for scientific HPC datasets.",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Design cuSZp as a single-kernel GPU compressor to eliminate CPU-GPU data movement and kernel-launch overheads, making end-to-end throughput equal to kernel throughput.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Use a block-wise pipeline composed of four steps: (S1) Quantization and Prediction, (S2) Fixed-length Encoding, (S3) Global Synchronization, and (S4) Block Bit-shuffle, applied per-block to enable parallelism and high compression ratio.",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Quantization and Prediction: pre-quantize floating-point to integers (bounded by error bound) then apply lightweight 1D 1-layer Lorenzo prediction inside each block to reduce bit entropy; this is the only lossy step.",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        7,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Fixed-length Encoding per block: record sign map, compute max absolute quantized integer to determine a fixed number of bits F_k for the block, and store (F_k+1)*L/8 bytes for that block instead of variable-length codes.",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        5,
+        7,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Hierarchical Global Synchronization implemented entirely on GPU as an exclusive prefix-sum (thread-level, warp-level, global-level) to compute per-block compressed offsets and final compressed size without CPU intervention.",
+      "role": "Method",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Block Bit-shuffle: rearrange bits of fixed-length encoded integers into aligned bytes by bit-offset across block elements to enable efficient parallel writing to global memory and avoid irregular bit shifting.",
+      "role": "Method",
+      "parents": [
+        2,
+        4,
+        5
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "End-to-end throughput result: cuSZp achieves average end-to-end compression/decompression of 93.63 GB/s and 120.04 GB/s and speeds up end-to-end performance by 95.53x over cuSZ and 55.18x over cuSZx on NVIDIA A100 across six representative datasets.",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Kernel throughput result: cuSZp kernel throughput is inline/comparable (~100 GB/s or higher) with state-of-the-art GPU lossy compressors including cuZFP and cuSZx; single-kernel design makes kernel and end-to-end throughputs equal.",
+      "role": "Result",
+      "parents": [
+        1,
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Compression ratio result: cuSZp attains the highest compression ratio in 16 of 24 evaluated cases (various datasets and error bounds), often exceeding cuSZ and cuSZx while maintaining single-kernel constraints.",
+      "role": "Result",
+      "parents": [
+        2,
+        4,
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Data quality result: cuSZp preserves high reconstructed data fidelity (higher PSNR and SSIM vs cuZFP in many fields) and yields better visualization (fewer artifacts) than cuZFP and cuSZx under comparable compression settings.",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        6,
+        7,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Evidence: Global Synchronization microbenchmark achieves on average 208.06 GB/s throughput on A100 (range 120.5–260.8 GB/s across datasets), validating the hierarchical in-kernel prefix-sum implementation.",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Assumption: Scientific datasets exhibit high local smoothness inside short blocks (L small), making fixed-length per-block encoding effective and limiting the benefit of per-block Huffman or variable-length encoders.",
+      "role": "Assumption",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation and future work: current evaluation uses NVIDIA GPUs (A100, V100, RTX 3080) and CUDA; performance depends on GPU memory bandwidth and block tuning; future work includes exploiting newer GPU architectures and integrating cuSZp into live simulations.",
+      "role": "Limitation",
+      "parents": [
+        0,
+        7,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

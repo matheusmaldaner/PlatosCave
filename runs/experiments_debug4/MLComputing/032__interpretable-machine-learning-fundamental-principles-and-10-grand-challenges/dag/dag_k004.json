@@ -1,0 +1,143 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Interpretable machine learning models constrained by domain-specific interpretability requirements should be developed and preferred for high-stakes decisions because they enable understanding, troubleshooting, and safer deployment",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Principle 1: An interpretable ML model obeys a domain-specific set of constraints that make the model, its predictions, or data easier for humans to understand",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Principle 2: Interpretable models do not automatically create trust but permit users to decide whether to trust a model and thus enable informed trust or distrust",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Principle 3: There is no general tradeoff between accuracy and interpretability across the full data science process; interpretability often improves accuracy through better troubleshooting and problem formulation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Principle 4: In a full data science pipeline, both performance metrics and interpretability metrics should be iteratively reﬁned using feedback from domain experts and model inspection",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Principle 5 / Recommendation: For high-stakes decisions, use inherently interpretable models if possible rather than post-hoc explanations of black boxes",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Interpretable modeling can be formalized as constrained optimization: minimize loss plus interpretability penalty subject to interpretability constraints (Equation 1), where constraints and penalties are domain-specific (e.g., sparsity, monotonicity, decomposability, generative constraints)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Challenge 1: Sparse logical models (decision trees, lists, sets) require optimization methods beyond greedy induction because optimal sparse trees/lists are NP-hard; modern approaches include MIP/SAT, stochastic search, and customized branch-and-bound (e.g., GOSDT) but scalability, continuous variable handling, and global constraints remain open challenges",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Challenge 2: Scoring systems (sparse integer-coef linear models) are widely used in medicine and criminal justice; exact optimization (MIP, RiskSLIM), approximation, sophisticated rounding, and human-in-the-loop exploration are available but integrality, constraints, and scalability are major technical hurdles",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Challenge 4: Modern case-based reasoning for both tabular and raw data uses nearest-neighbor, prototype, and part-based prototype methods (deep kNN, ProtoPNet and extensions) to produce visually- and example-based explanations; remaining problems include video, human-supervised prototype selection, and prototype troubleshooting without full retraining",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Challenge 5 (supervised disentanglement) and Challenge 6 (unsupervised disentanglement): supervised methods align latent axes with labeled concepts (e.g., concept whitening) while unsupervised methods (VAE/GAN variants, capsule/slot architectures) aim to discover concepts without labels; both faces challenges in scaling to many concepts, disentangling whole networks, and evaluating discovered concepts",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Evidence: Real-world examples (e.g., COMPAS, medical black-box failures) and empirical studies show interpretable models can match black-box accuracy; troubleshooting with interpretable models can reveal data issues or domain shifts that would otherwise reduce deployed accuracy",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Challenge 9: The Rashomon set is the set of nearly optimal models; when large it implies existence of simpler/interpretable models (Semenova et al.); characterizing, measuring, visualizing, and exploring Rashomon sets (volume, pattern ratios, variable-importance clouds) is crucial for selecting interpretable models but remains technically challenging",
+      "role": "Claim",
+      "parents": [
+        7,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Agents optimize the time-average growth rate of wealth under given stochastic wealth dynamics, and this optimisation is equivalent to maximizing expected utility when the utility function is the ergodicity transformation of those dynamics; therefore wealth dynamics determine apparent risk preferences",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics (EE) models wealth as a stochastic process and prescribes maximization of the time-average growth rate of wealth (growth optimality) as the decision criterion for individuals",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Expected utility theory (EUT) prescribes that agents maximize the expectation value of changes in a transformed wealth quantity u(x), where u is interpreted as a psychological utility function",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "If the transformed variable u(t) has stationary independent additive increments (is a Levy process with continuous paths) then its increments are ergodic and the time-average growth rate equals the expectation-rate of change of u",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Every invertible utility function u(x) that makes u(t) a Brownian motion with drift corresponds uniquely to a wealth stochastic differential equation dx = ax(x) dt + bx(x) dW under which maximizing expected changes in u is equivalent to maximizing time-average growth of wealth",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Decision criterion based on long-time comparisons: choose process x(t) such that for sufficiently large delta t, probability that x chosen outperforms alternative exceeds 1 minus epsilon, motivating focus on long-time growth rates",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Conceptual distinction: expectation values are averages over hypothetical ensembles and are not mechanistically relevant to single agents exposed to one trajectory; time averages are mechanistically relevant to individuals",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Therefore u(t) must be a Brownian motion with drift du = a_u dt + b_u dW for the time-average growth criterion to be expressible as an expectation-rate of change of u",
+      "role": "Result",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Using Ito's lemma, given invertible twice-differentiable x(u) the SDE for x corresponding to du = a_u dt + b_u dW is dx = a_x(x) dt + b_x(x) dW with a_x(x) = a_u/b_u b_x(x) + 1/2 b_x(x) b_x'(x) and b_x(x) = b_u / u'(x) inverted appropriately",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Thus every invertible utility function encodes a unique wealth dynamic and, conversely, given a wealth dynamic satisfying consistency conditions a corresponding utility u exists solving differential relations between ax and bx",
+      "role": "Conclusion",
+      "parents": [
+        4,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Examples: linear utility u(x)=x corresponds to additive Brownian wealth dynamics; logarithmic u(x)=ln x corresponds to geometric Brownian motion; square-root u(x)=sqrt(x) maps to mixed additive-multiplicative dynamics (drift and diffusion proportional to sqrt(x))",
+      "role": "Evidence",
+      "parents": [
+        7,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Given u(t) normal with mean a_u t and variance b_u^2 t, the wealth distribution P_x(x,t) is obtained by change of variables: P_x(x,t) = P_u(u(x),t) (du/dx), enabling analytic wealth-distribution predictions from u",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "An explicit constructed example: utility u(x)=b_u e^x + C yields wealth SDE dx = (a_u/b_u e^{-x} - 1/2 e^{-2x}) dt + e^{-x} dW, produces a wealth distribution with many agents at high sticky wealth and reduced fluctuations at large x",
+      "role": "Evidence",
+      "parents": [
+        9,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Empirical/experimental support: controlled experiments with manipulable wealth dynamics (cited) support the prediction that dynamics strongly determine observed preferences, consistent with EE over fixed-preference EUT",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Formal implication: utility functions in this dynamical interpretation must be unbounded (invertible) to avoid pathological finite-time singularities or bounded-time horizons; bounded utility functions are mathematically problematic",
+      "role": "Claim",
+      "parents": [
+        7,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

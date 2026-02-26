@@ -1,0 +1,167 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.72,
+    "relevance": 0.74,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim cites well known bottlenecks in GPU lossy compression pipelines such as CPU overhead, data transfer, memory bandwidth usage, memory access patterns, and synchronization latency; these are plausible contributors to limited throughput though exact attribution may vary by implementation.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "End to end throughput better reflects real world performance since includes overheads beyond kernel compute",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.35,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible design for a pure gpu single kernel blockwise lossy compressor with per block lossless encoding, device level prefix sum for offsets, and concatenation entirely on gpu, which is technically challenging but within the realm of GPU programming capabilities; however, specifics of feasibility and performance depend on implementation details not provided.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a novel Outlier-FLE encoding with per-integer sign bits, a small fixed-length field for most integers, and adaptive outlier preservation in 1-4 bytes via a mode flag in block offset, with blockwise selection when beneficial; without external evidence, its plausibility rests on standard ideas of variable length encoding and outlier handling, but no verification against the broader literature is performed.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes common GPU optimization ideas of using vectorized memory loads and stores within a block and coalesced accesses across warp threads to maximize global memory bandwidth.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.55,
+    "relevance": 0.65,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a novel strategy for parallel prefix sums leveraging decoupled lookback to hide synchronization latency, which is plausible but not verifiable from the given text.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim describes a single kernel pure-GPU approach with a blockwise pipeline from lossy conversion to lossless encoding to prefix sum to concatenation to minimize CPU involvement and transfers",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text; no external data used; no independent verification performed.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No external verification was performed; assessment based solely on the provided claim text describing higher compression ratios in most cases and improvements on globally smooth datasets",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that CUSZP2 matches or exceeds other error bounded compressors in rate-distortion at the same error bound and outperforms transform-based cuZFP in isosurface visualization at aggressive compression; without external checks, this assessment remains uncertain and cannot be confirmed from the provided text alone.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim argues that a fine-grained selection strategy reduces computation for Outlier-FLE by determining the fixed length through a simple scan of absolute integers in a block, avoiding costly recomputation, which is plausible but not substantiated by given evidence and relies on general algorithmic intuition rather than widely established results.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based on plausibility of memory bandwidth claims for vectorized designs versus earlier compressors; no external verification performed.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.5,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No external sources checked; claim asserts a precise throughput value and a performance ratio without cited evidence, limiting verifiability",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on claim text, CUSZP2 is presented as a pure-GPU single-kernel compressor with several features, but no external evidence is provided here.",
+    "confidence_level": "medium"
+  }
+}

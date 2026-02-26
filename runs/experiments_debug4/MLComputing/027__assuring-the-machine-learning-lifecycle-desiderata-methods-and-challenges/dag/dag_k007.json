@@ -1,0 +1,180 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Assurance of machine learning (ML) components across the full ML lifecycle is required to provide evidence that ML is sufficiently safe for use in safety-critical systems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The ML lifecycle can be structured into four stages: Data Management, Model Learning, Model Verification, and Model Deployment, and assurance concerns should be organized per stage",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data Management artefacts (training and verification datasets) must satisfy desiderata: Relevant, Complete, Balanced, and Accurate to support assurance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Model Learning must produce models that are Performant, Robust, Reusable, and Interpretable, requiring methods for model selection, training, hyperparameter tuning and transfer learning",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model Verification must produce comprehensive, contextually relevant, and comprehensible evidence using test-based and formal verification to determine fitness for intended use",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Model Deployment must ensure the deployed ML model is Fit-for-Purpose, Tolerated by the system, and Adaptable through integration, monitoring, and updating strategies",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Presenting the ML lifecycle as a workflow clarifies dependencies: Data Management produces training and verification sets; Model Learning produces trained models; Model Verification produces verification results; Model Deployment integrates verified models into systems",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "MAPE control loop shows typical uses of ML models in monitoring, analysis, planning and execution, highlighting runtime data feedback into the lifecycle",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Data Management methods include experimental design, trusted data sourcing, exploratory data analysis, preprocessing, augmentation (e.g., GANs, adversarial examples), and configuration management",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Open challenges for Data Management include detecting data backdoors, demonstrating synthetic data fidelity to operational domain, detecting data leakage, measuring completeness for operational/failure/adversarial domains, finding small disjuncts, handling feature imbalance, and validating complex simulations",
+      "role": "Limitation",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Model Learning methods that support desiderata: performance metrics and statistical tests, ensemble learning, hyperparameter optimization, regularization, augmentation, transfer learning and model zoos for reuse",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Open challenges in Model Learning include selecting context-representative performance measures, run-time multi-objective evaluation, context-informed hyperparameter tuning, understanding hyperparameter impact, decoupling perturbation effects, inferring contextual robustness, defining operational-context similarity for transfer, and ensuring transferred models are fault-free; global interpretability methods are lacking",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Model Verification methods include requirement encoding, test-based verification (including context-driven synthetic tests, combinatorial and coverage measures, guided fuzzing), and formal verification methods (SMT, abstract interpretation) mainly applied to neural networks",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Open verification challenges: identifying typical ML errors and protections, defining meaningful coverage measures with empirical justification, extending formal verification beyond neural networks, mapping requirements to model features and RL states, creating general semantic synthetic test frameworks, and producing comprehensible counterexamples that guide remediation",
+      "role": "Limitation",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Deployment methods to achieve Fit-for-Purpose, Tolerated and Adaptable properties include on-target testing and numerical consistency, worst-case execution time analysis, input/environment/model-output monitoring, confidence measures and fallback architectures (monitors, aggregators, safety switch), and managed update strategies for single systems and fleets",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Open deployment challenges include timely detection of distribution shift for high-dimensional data, defining logging requirements for incident investigation, deriving robust confidence measures, designing suitably flexible safety monitors, quantifying independence among models trained on same data, and managing fleet-wide diversity during updates",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: While many methods exist across stages, significant research gaps remain in data assurance, contextual verification, interpretable global explanations, hyperparameter and transfer-learning assurance, runtime monitoring, and update management to safely deploy ML in safety-critical systems",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        2,
+        3,
+        4,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

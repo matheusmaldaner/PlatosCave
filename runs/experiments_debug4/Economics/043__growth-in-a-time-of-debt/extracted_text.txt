@@ -1,0 +1,1002 @@
+--- Page 1 ---
+The time interpretation of expected utility theory
+O. Peters1,2, A. Adamou1∗
+1London Mathematical Laboratory, 8 Margravine Gardens, W6 8RH London, UK
+2Santa Fe Institute, 1399 Hyde Park Road, Santa Fe, NM 87501, USA
+(Dated: March 2, 2021)
+Ergodicity economics is a new branch of economic theory that notes the conceptual diﬀerence
+between time averages and expectation values, which coincide only for ergodic observables.
+It
+postulates that individual agents maximise the time average growth rate of wealth, known widely
+as growth optimality. This contrasts with the dominant behavioural model in economics, expected
+utility theory, in which agents maximise expectation values of changes in psychologically transformed
+wealth. Historically, growth optimality was explored for additive and multiplicative gambles. Here
+we apply it to a general class of wealth dynamics, extending the range of economic situations where it
+may be used. Moreover, we show a correspondence between growth optimality and expected utility
+theory, in which the ergodicity transformation in the former is identiﬁed as the utility function in
+the latter. This correspondence oﬀers a theoretical basis for choosing utility functions and predicts
+that wealth dynamics are strong determinants of risk preferences.
+PACS numbers: 02.50.Ey,05.10.Gg,05.20.Gg,05.40.Jc
+I.
+INTRODUCTION
+Expected utility theory (EUT) is a foundational model
+of decisions under uncertainty, originating in [1]. In it,
+an individual agent maximises the mathematical expec-
+tation of the random change in a nonlinear transforma-
+tion of wealth. This transformation is known as the util-
+ity function.
+It is viewed as encoding the agent’s id-
+iosyncratic aversion to risk which, under the standard
+assumption of ﬁxed preferences, is stable in time and
+independent of exogenous factors.
+In short, agents in
+EUT care about the average over all possible changes of
+a transformation of wealth that reﬂects their hard-wired
+psychology.
+Since utility is a psychological construct, EUT oﬀers no
+way of reasoning deductively which utility function will
+best predict a real person’s decisions.
+In the revealed
+preferences framework, such decisions are observed ﬁrst
+and a utility function is ﬁtted to the data. If the person’s
+preferences are stable and well characterised by the ﬁtted
+utility function, then it is hoped their future decisions will
+be predictable using EUT. In practice, therefore, the the-
+ory is circular: it claims that agents maximise expected
+utility and deﬁnes this as the quantity agents are ob-
+served to maximise. It can be used to represent observed
+decisions but not to predict them a priori.
+Ergodicity economics (EE) is a recent branch of eco-
+nomics that examines the use of expectation values in
+economic models. See [13] and references therein. Expec-
+tation values are, by the law of large numbers, additive
+averages over inﬁnitely many realisations of a random
+variable. Where the random variable models a quantity
+of interest to an economic agent, like a change in wealth,
+its expectation value resembles the outcome achieved by
+each member of a large collective of agents, who agree to
+∗Electronic address: o.peters@lml.org.uk, a.adamou@lml.org.uk
+pool and share their individual outcomes. The expecta-
+tion value has no mechanistic relevance to an individual
+agent, who is exposed to only one of the possible out-
+comes. The eﬀect of a sequence of random variables on
+the agent’s wealth may be well characterised by a time
+average. The ergodicity question asks whether time av-
+erages are equivalent to expectation values. In general,
+and in particular for the increments of growth processes
+encountered in economics, they are not.
+The transformation of wealth to utility in EUT can be
+viewed as a way of restoring empirical relevance to the-
+oretically irrelevant expectation values, by introducing
+freedom to enable their ﬁtting to behavioural data. EE
+develops decision theory in a conceptually diﬀerent way:
+by modelling physical (i.e. untransformed) economic ob-
+servables, like wealth; and by specifying averages that
+are mechanistically relevant to individual agents (rather
+than to hypothetical collectives).
+More speciﬁcally, and conﬁning attention to wealth,
+EE seeks to build realistic models of its temporal evolu-
+tion. These models take the form of stochastic processes,
+whose generating equations are known as wealth dynam-
+ics. The dynamics depend on the economic circumstances
+of the agent and are deﬁned exogenously to the agent’s
+preferences. For example, an agent with labour income
+and no savings would be well modelled as experiencing
+additive changes in wealth, while for an agent with sig-
+niﬁcant invested capital a multiplicative dynamic would
+be more realistic.
+EE posits that an agent is concerned with the time av-
+erage growth rate of wealth, i.e. that achieved in a single
+trajectory of the stochastic process over long time. This
+is the mechanistically relevant maximand for an individ-
+ual exposed to a sequence of economic choices. In con-
+trast, the growth rate of the expectation value of wealth,
+i.e. the average over all possible trajectories, would be
+relevant to a collective of agents. For general wealth dy-
+namics, these growth rates are diﬀerent.
+In EE all agents are assumed to have the same prefer-
+arXiv:1801.03680v2  [q-fin.EC]  28 Feb 2021
+
+
+--- Page 2 ---
+2
+ence: to maximise the time average growth rate of wealth.
+This decision criterion is not new and is often referred to
+as growth optimality. It has a long history in the setting
+of multiplicative gambles, made famous as the “Kelly cri-
+terion” in the 1950s [6] and dating as far back as the 1870s
+[16]. The cases of additive and multiplicative wealth dy-
+namics were treated in the EE framework in [14].
+What is a growth rate? In simple terms, it is the co-
+eﬃcient of time in a growth function. Diﬀerent dynam-
+ics correspond to diﬀerent growth functions and, there-
+fore, to diﬀerent growth rates. For example, wealth that
+grows linearly in time, x = gt, has its growth rate ex-
+tracted by the operation dx/dt = g; while for exponen-
+tial growth, x = exp(gt), the growth rate is extracted
+by d ln x/dt = g. In both cases, a constant is obtained
+from a time-varying function as the rate of change of
+transformed wealth, linear and logarithmic in these sim-
+ple examples. In stochastic growth models, it is no longer
+possible to ﬁnd functions of wealth whose rates of change
+are constant. Instead, the function, known in EE as the
+ergodicity transformation, is chosen to extract an ergodic
+growth rate from the stochastic process.
+We do two things in this paper. Firstly, we generalise
+growth optimality beyond the additive and multiplica-
+tive wealth dynamics treated in the literature hitherto.
+Economically speaking, we allow wealth to evolve in a
+general manner, rather than through income and con-
+sumption ﬂows or the compounding of investments. This
+broadens the range of economic situations that can be
+modelled in EE.
+Secondly, we draw a correspondence between EE and
+EUT by noting that the time average of the ergodic
+growth rate for given wealth dynamics is, by virtue of
+its ergodicity, equal to its expectation value. This allows
+growth optimal decisions to be formulated as maximis-
+ing expected utility, by identifying the utility function in
+EUT as the ergodicity transformation for the wealth dy-
+namics in EE. We show that this correspondence exists
+for a class of wealth dynamics, speciﬁcally those that ad-
+mit an ergodicity transformation, and we derive the con-
+ditions for membership of this class. Going in the oppo-
+site direction, we show that all invertible utility functions
+have corresponding wealth dynamics for which expected
+utility maximisation is growth optimal.
+This correspondence between two conceptually diﬀer-
+ent but well established behavioural models opens tan-
+talising new avenues to researchers in both areas. Since
+wealth dynamics are deﬁned exogenously, the apparent
+utility function of an agent is predicted a priori. In other
+words, EE provides a theoretical basis for the choice of
+utility function in EUT, absent from the latter frame-
+work. Conversely, if a utility function is already speciﬁed
+in an EUT model, EE gives it a physical interpretation in
+terms of wealth dynamics. Furthermore, the exogeneity
+of wealth dynamics implies that, if dynamics change, so
+do the agent’s apparent preferences. This contrasts with
+the standard of assumption of ﬁxed preferences. Recent
+experiments with controllable wealth dynamics have been
+conducted to compare the predictions of EE against those
+of EUT with ﬁxed preferences [9]. They support the pre-
+diction of EE that dynamics are strong determinants of
+preferences.
+II.
+EXPECTED UTILITY THEORY
+Here we provide a brief recap of EUT. To keep it rele-
+vant and manageable, we restrict it to ﬁnancial decisions.
+We will not consider the utility of an apple or a poem,
+but only utility diﬀerences between diﬀerent monetary
+amounts. We restrict ourselves to situations where any
+non-ﬁnancial attendant circumstances of the decision can
+be disregarded. In other words, we work with a form of
+homo economicus.
+For an agent facing a choice between diﬀerent courses
+of action, the workﬂow of EUT is as follows.
+1. Imagine everything that could happen under the
+diﬀerent actions:
+Associate with any action A, B, C, . . . a set of pos-
+sible future events ΩA, ΩB, ΩC, . . . .
+2. Estimate how likely the consequences of each ac-
+tion are and how they aﬀect your wealth:
+For set ΩA, associate a probability p(ωA) and a
+change in wealth ∆xωAwith each elementary event
+ωA ∈ΩA, and similarly for all other sets.
+3. Specify how these outcomes aﬀect your utility:
+Deﬁne a utility function, u(x), that depends only on
+wealth and describes the agent’s risk preferences.
+4. Aggregate the utility changes for each event:
+Compute the expected changes in utility asso-
+ciated
+with
+each
+available
+action,
+⟨∆uA⟩
+=
+P
+ΩA p(ωA)u(x+∆x(ωA))−u(x), and similarly for
+actions B, C, . . . .
+5. Pick the action that increases your utility most:
+The option with the highest expected utility change
+is the agent’s preferred choice.
+We assume all steps in this workﬂow are possible.
+Thus we assume that all possible future events, asso-
+ciated probabilities, and changes in wealth are known;
+that a suitable utility function is available; and that the
+mathematical expectation of utility changes is the mathe-
+matical object whose ordering reﬂects preferences among
+actions.
+For simplicity, we also make the common as-
+sumption that the time between taking an action and
+experiencing the corresponding change in wealth is inde-
+pendent of the action taken.
+III.
+TECHNICAL
+Here we present the technical development of decision
+theory in EE, namely time average growth rate maximi-
+sation under general wealth dynamics.
+
+
+--- Page 3 ---
+3
+We suppose that an individual’s wealth evolves over
+time according to a stochastic process.
+This is a de-
+parture from classical decision theory, where wealth is
+supposed to be described by a random variable without
+dynamic. To turn a gamble into a stochastic process and
+enable the techniques we have developed, a dynamic must
+be assumed, that is, a mode of repetition of the gamble,
+see [14].
+The individual is required to choose one from a set of
+alternative stochastic processes, say x(t) and x∗(t). We
+suppose that this is done by considering how the decision
+maker would fare in their long-time limits.
+At each decision time, t0, our individual acts to max-
+imise subsequent changes in his wealth by selecting x(t)
+so that if he waits long enough his wealth will be greater
+under the chosen process than under the alternative pro-
+cess with certainty. Mathematically speaking, there ex-
+ists a suﬃciently large t such that the probability of the
+chosen x(t) being greater than x∗(t) is arbitrarily close
+to one,
+∀ε, x∗(t)
+∃∆t
+s.t.
+P(∆x > ∆x∗) > 1 −ϵ,
+(1)
+where 0 < ε < 1 and
+∆x ≡x(t0 + ∆t) −x(t0),
+(2)
+with ∆x∗similarly deﬁned.
+The criterion is necessarily probabilistic since the
+quantities ∆x and ∆x∗are random variables and it might
+be possible for the latter to exceed the former for any ﬁ-
+nite ∆t. Only in the limit ∆t →∞does the randomness
+vanish from the system.
+Conceptually this criterion is tantamount to maximis-
+ing lim∆t→∞{∆x} or, equivalently, lim∆t→∞{∆x/∆t}.
+However, neither limit is guaranteed to exist. For exam-
+ple, consider a choice between two geometric Brownian
+motions,
+dx = x(µdt + σdW),
+(3)
+dx∗= x∗(µ∗dt + σ∗dW),
+(4)
+with µ > σ2/2 and µ∗> σ∗2/2. The quantities ∆x/∆t
+and ∆x∗/∆t both diverge in the limit ∆t →∞and a
+criterion requiring the larger to be selected fails to yield
+a decision.
+To overcome this problem we introduce a montonically
+increasing function of wealth, which we call suggestively
+u(x). We deﬁne:
+∆u ≡u(x(t0 + ∆t)) −u(x(t0));
+(5)
+∆u∗≡u(x∗(t0 + ∆t)) −u(x∗(t0)).
+(6)
+The monotonicity of u(x) means that the events ∆x >
+∆x∗and ∆u > ∆u∗are the same. Taking ∆t > 0 allows
+this event to be expressed as ∆u/∆t > ∆u∗/∆t, whence
+the decision criterion in (Eq. 1) becomes
+∀ε, x∗(t)
+∃∆t
+s.t.
+P
+∆u
+∆t > ∆u∗
+∆t
+
+> 1 −ϵ.
+(7)
+Our decision criterion has been recast such that it fo-
+cuses on the rate of change
+r ≡∆u
+∆t ,
+(8)
+As before, it is conceptually similar to maximising
+¯r ≡
+lim
+∆t→∞
+∆u
+∆t
+
+=
+lim
+∆t→∞{r}.
+(9)
+If x(t) satisﬁes certain conditions, to be discussed be-
+low, then the function u(x) can be chosen such that this
+limit exists. We shall see that ¯r is then the time-average
+growth rate mentioned in Section I. For the moment we
+leave our criterion in the probabilistic form of (Eq. 7)
+but to continue the discussion we assume that the limit
+(Eq. 9) exists.
+Everything is now set up to make the link to EUT.
+Perhaps (Eq. 9) is the same as the rate of change of the
+expectation value of ∆u
+⟨∆u⟩
+∆t
+= ⟨r⟩.
+(10)
+We could then make the identiﬁcation of u(x) being the
+utility function, noting that our criterion is equivalent to
+maximizing the rate of change in expected utility. We
+note ∆u and hence r are random variables but ⟨r⟩is not.
+Taking the long-time limit is one way of removing ran-
+domness from the problem, and taking the expectation
+value is another. The expectation value is simply another
+limit: it’s an average over N realizations of the random
+number ∆u, in the limit N →∞. The eﬀect of removing
+randomness is that the process x(t) is collapsed into the
+scalar ∆u, and consistent transitive decisions are possible
+by ranking the relevant scalars. In general, maximising
+⟨r⟩does not yield the same decisions as the criterion es-
+poused in (Eq. 7). This is only the case for a particular
+function u(x) whose shape depends on the process x(t).
+Our aim is to ﬁnd these pairs of processes and functions.
+When using such u(x) as the utility function, EUT will
+be consistent with optimisation over time. It is then pos-
+sible to interpret observed behavior that is found to be
+consistent with EUT using the utility function u(x) in
+purely dynamical terms: such behavior will lead to the
+fastest possible wealth growth over time.
+We ask what sort of dynamic u must follow so that ¯r =
+⟨r⟩or, put another way, so that r is an ergodic observable,
+in the sense that its time and ensemble averages are the
+same [7, p. 32].
+We start by expressing the change in utility, ∆u, as a
+sum over M equal time intervals,
+∆u ≡u(t0 + ∆t) −u(t0)
+(11)
+=
+M
+X
+m=1
+[u(t0 + mδt) −u(t0 + (m −1)δt)] (12)
+=
+M
+X
+m=1
+δum(t),
+(13)
+
+
+--- Page 4 ---
+4
+where δt ≡∆t/M and δum(t) ≡u(t0 + mδt) −u(t0 +
+(m −1)δt). From (Eq. 9) we have
+¯r =
+lim
+∆t→∞
+(
+1
+∆t
+M
+X
+m=1
+δum
+)
+(14)
+=
+lim
+M→∞
+(
+1
+M
+M
+X
+m=1
+δum
+δt
+)
+,
+(15)
+keeping δt ﬁxed. From (Eq. 10) we obtain
+⟨r⟩= lim
+N→∞
+(
+1
+N
+N
+X
+n=1
+∆un
+∆t
+)
+(16)
+where each ∆un is drawn independently from the distri-
+bution of ∆u.
+We now compare the two expressions (Eq. 15) and
+(Eq. 16). Clearly the value of ¯r in (Eq. 15) cannot depend
+on the way in which the diverging time period is parti-
+tioned, so the length of interval δt must be arbitrary and
+can be set to the value of ∆t in (Eq. 16), for consistency
+we then call δum(t) = ∆um(t). Expressions (Eq. 15) and
+(Eq. 16) are equivalent if the successive additive incre-
+ments, ∆um(t), are distributed identically to the ∆un
+in (Eq. 16), which requires only that they are stationary
+and independent.
+Thus we have a condition on u(t) which suﬃces to
+make ¯r = ⟨r⟩, namely that it be a stochastic process
+whose additive increments are stationary and indepen-
+dent. This means that u(t) is, in general, a L´evy process.
+Without loss of realism we shall restrict our attention to
+processes with continuous paths. According to a theo-
+rem stated in [4, p. 2] and proved in [2, Chapter 12] this
+means that u(t) must be a Brownian motion with drift,
+du = audt + budW,
+(17)
+where dW is the inﬁnitesimal increment of the Wiener
+process.
+By arguing backwards we can address concerns regard-
+ing the existence of ¯r. If u follows the dynamics speciﬁed
+by (Eq. 17), then it is straightforward to show that the
+limit ¯r always exists and takes the value a. Consequently
+the decision criterion (Eq. 7) is equivalent to the optimi-
+sation of ¯r, the time-average growth rate. The process
+x(t) may be chosen such that (Eq. 17) does not apply
+for any choice of u(x). In this case we cannot interpret
+EUT dynamically, and such processes are likely to be
+pathological.
+This gives our central result:
+For EUT to be equivalent to optimisation over
+time, utility must follow an additive stochastic pro-
+cess with stationary increments which, in our frame-
+work, we shall take to be a Brownian motion with
+drift.
+This is a fascinating general connection. If the phys-
+ical reason why we observe non-linear utility functions
+is the non-linear eﬀect of ﬂuctuations over time, then a
+given utility function encodes a corresponding stochastic
+wealth process. Provided that a utility function u(x) is
+invertible, i.e. provided that its inverse, x(u), exists, a
+simple application of Itˆo calculus to (Eq. 17) yields di-
+rectly the SDE obeyed by the wealth, x.
+Thus every
+invertible utility function encodes a unique dynamic in
+wealth which arises from a Brownian motion in utility.
+This is explored further below.
+IV.
+DYNAMIC FROM A UTILITY FUNCTION
+We now illustrate the relationship between utility func-
+tions and wealth dynamics.
+For the reasons discussed
+above we assume that utility follows a Brownian motion
+with drift.
+If u(x) can be inverted to x(u) = u−1(u), and x(u)
+is twice diﬀerentiable, then it is possible to ﬁnd the
+dynamic that corresponds to the utility function u(x).
+Equation (17) is an Itˆo process. Itˆo’s lemma tells us that
+dx will be another Itˆo process, and Itˆo’s formula speciﬁes
+how to ﬁnd dx in terms of the relevant partial derivatives
+dx =
+∂x
+∂t + au
+∂x
+∂u + 1
+2b2
+u
+∂2x
+∂u2
+
+|
+{z
+}
+ax(x)
+dt + bu
+∂x
+∂u
+| {z }
+bx(x)
+dW
+(18)
+We have thus shown that
+Theorem 1. For any invertible utility function u(x) a
+class of corresponding wealth processes dx can be obtained
+such that the (linear) rate of change in the expectation
+value of net changes in utility is the time-average growth
+rate of wealth.
+As a consequence, optimizing expected changes in such
+utility functions is equivalent to optimizing the time-
+average growth, in the sense of Section III, under the
+corresponding wealth process.
+The origin of optimizing expected utility can be un-
+derstood as follows: in the 18th century, the distinction
+between ergodic and non-ergodic processes was unknown,
+and all stochastic processes were treated by computing
+expectation values. Since the expectation value of the
+wealth process is an irrelevant mathematical object to
+an individual whose wealth is modelled by a non-ergodic
+process the available methods failed. The formalism was
+saved by introducing a non-linear mapping of wealth,
+namely the utility function.
+The (failed) expectation
+value criterion was interpreted as theoretically optimal,
+and the non-linear utility functions were interpreted as
+a psychologically motivated pattern of human behavior.
+Conceptually, this is wrong.
+Optimization of time-average growth recognizes the
+non-ergodicity of the situation and computes the appro-
+priate object from the outset – a procedure whose build-
+
+
+--- Page 5 ---
+5
+ing blocks were developed beginning in the late 19th cen-
+tury. It does not assume anything about human psychol-
+ogy and indeed predicts that the same behavior will be
+observed in any growth-optimizing entities that need not
+be human.
+A.
+Examples
+Equation (18), creates pairs of utility functions u(x)
+and dynamics dx. In discrete time, two such pairs were
+investigated in [14], namely cases 1. and 2. below.
+1.
+Linear utility
+The trivial linear utility function corresponds to addi-
+tive wealth dynamics (Brownian motion),
+u(x) = x
+↔
+dx = audt + budW.
+(19)
+2.
+Logarithmic utility
+Introduced by Bernoulli in 1738 [1], the logarithmic
+utility function is in wide use and corresponds to multi-
+plicative wealth dynamics (geometric Brownian motion),
+u(x) = ln(x)
+↔
+dx = x
+
+au + 1
+2b2
+u
+
+dt + budW
+
+.
+(20)
+In practice the most useful case will be multiplicative
+wealth dynamics. But to demonstrate the generality of
+the procedure, we carry it out for a diﬀerent special case
+that is historically important.
+3.
+Square-root (Cramer) utility
+The ﬁrst utility function ever to be suggested was the
+square-root function u(x) = x1/2, by Cramer in a 1728
+letter to Daniel Bernoulli, partially reproduced in [1].
+This function is invertible, namely x(u) = u2, so that
+(Eq. 18) applies. We note that the square root, in a spe-
+ciﬁc sense, sits between the linear function and the log-
+arithm: limx→∞x1/2
+x
+= 0 and limx→∞
+ln(x)
+x1/2 = 0. Since
+linear utility produces additive dynamics and logarith-
+mic utility produces multiplicative dynamics, we expect
+square-root utility to produce something in between or
+some mix. Substituting for x(u) in (Eq. 18) and carrying
+out the diﬀerentiations we ﬁnd
+dx =
+
+2aux1/2 + b2
+u
+
+dt + 2bux1/2dW
+(21)
+The drift term contains a multiplicative element (by
+which we mean an element with x-dependence) and an
+additive element.
+We see that the square-root utility
+function that lies between the logarithm and the linear
+function indeed represents a dynamic that is partly ad-
+ditive and partly multiplicative.
+(Eq. 21) is reminiscent of the Cox-Ingersoll-Ross model
+[3] in ﬁnancial mathematics, especially if au < 0. Simi-
+lar dynamics, i.e. with a noise amplitude that is propor-
+tional to √x, are also studied in the context of absorbing-
+state phase transitions in statistical physics [5, 8]. That a
+300-year-old letter is related to recent work in statistical
+mechanics is not surprising: the problems that motivated
+the development of decision theory, and indeed of prob-
+ability theory itself are far-from equilibrium processes.
+Methods to study such processes were only developed in
+the 20th century and constitute much of the work cur-
+rently carried out in statistical mechanics.
+V.
+UTILITY FUNCTION FROM A DYNAMIC
+We now ask under what circumstances the procedure
+in (Eq. 18) can be inverted. When can a utility func-
+tion be found for a given dynamic? In other words, what
+conditions does the dynamic dx have to satisfy so that
+optimization over time can be represented by optimiza-
+tion of expected net changes in utility u(x)?
+We ask whether a given dynamic can be mapped into
+a utility whose increments are described by Brownian
+motion, (Eq. 17).
+The dynamic is an arbitrary Itˆo process
+dx = ax(x)dt + bx(x)dW,
+(22)
+where ax(x) and bx(x) are arbitrary functions of x. For
+this dynamic to translate into a Brownian motion for the
+utility, u(x) must satisfy the equivalent of (Eq. 18) with
+the special requirement that the coeﬃcients au and bu in
+(Eq. 17) be constants, namely
+du =
+
+ax(x)∂u
+∂x + 1
+2b2
+x(x)∂2u
+∂x2
+
+|
+{z
+}
+au
+dt + bx(x)∂u
+∂x
+|
+{z
+}
+bu
+dW. (23)
+Explicitly, we arrive at two equations for the coeﬃcients
+au = ax(x)u′ + 1
+2b2
+x(x)u′′
+(24)
+and
+bu = bx(x)u′.
+(25)
+Diﬀerentiating (Eq. 25), it follows that
+u′′(x) = −bub′
+x(x)
+b2x(x) .
+(26)
+Substituting in (Eq. 24) for u′ and u′′ and solving for
+ax(x) we ﬁnd the drift term as a function of the noise
+term,
+ax(x) = au
+bu
+bx(x) + 1
+2bx(x)b′
+x(x).
+(27)
+
+
+--- Page 6 ---
+6
+In other words, knowledge of only the dynamic is suﬃ-
+cient to determine whether a corresponding utility func-
+tion exists. We do not need to construct the utility func-
+tion explicitly to know whether a pair of drift term and
+noise term is consistent or not.
+Having determined for some dynamic that a consistent
+utility function exists, we can construct it by substituting
+for bx(x) in (Eq. 24). This yields a diﬀerential equation
+for u
+au = ax(x)u′ + b2
+u
+2u′2 u′′
+(28)
+or
+0 = −auu′2 + ax(x)u′3 + b2
+u
+2 u′′.
+(29)
+Overall, then the triplet noise term, drift term, utility
+function is interdependent. Given a noise term we can
+ﬁnd consistent drift terms, and given a drift term we
+ﬁnd a consistency condition (diﬀerential equation) for the
+utility function.
+A.
+Example
+Given a dynamic, it is possible to check whether this
+dynamic can be mapped into a utility function, and the
+utility function itself can be found. We consider the fol-
+lowing example
+dx =
+au
+bu
+e−x −1
+2e−2x
+
+dt + e−xdW.
+(30)
+We note that ax(x) = au
+bu e−x −1
+2e−2x and bx(x) = e−x.
+Equation (27) imposes conditions on the drift term ax(x)
+in terms of the noise term bx(x). Substituting in (Eq. 27)
+reveals that the consistency condition is satisﬁed by the
+dynamic in (Eq. 30).
+A typical trajectory of (Eq. 30) is shown in Fig. 1.
+0
+200
+400
+600
+800
+1000
+Time
+0
+1
+2
+3
+4
+5
+6
+7
+8
+Cash
+0
+100
+200
+300
+400
+500
+Utility
+FIG. 1: Typical trajectories of the wealth trajectory x(t) de-
+scribed by (Eq. 30), with parameter values au = 1/2 and
+bu = 1, and the corresponding Brownian motion u(t). Note
+that the ﬂuctuations in x(t) become smaller for larger wealth.
+Because (Eq. 30) is internally consistent, it is possi-
+ble to derive the corresponding utility function. Equa-
+tion (25) is a ﬁrst-order ordinary diﬀerential equation for
+u(x)
+u′(x) =
+bu
+bx(x),
+(31)
+which can be integrated to
+u(x) =
+Z x
+0
+d˜x bu
+bx(˜x) + C,
+(32)
+with C an arbitrary constant of integration. This con-
+stant corresponds to the fact that only changes in utility
+are meaningful, as was pointed out by von Neumann and
+Morgenstern [15] – this robust feature is visible whether
+one thinks in dynamic terms and time averages or in
+terms of consistent measure-theoretic concepts and ex-
+pectation values.
+Substituting for bx(x) from (Eq. 30), (Eq. 31) becomes
+u′(x) = buex,
+(33)
+which is easily integrated to
+u(x) = buex + C,
+(34)
+plotted in Fig. 2.
+This expoential utility function is
+monotonic and therefore invertible, which is reﬂected
+in the fact that the consistency condition is satisﬁed.
+The utility function is convex.
+From the perspective
+of expected-utility theory an individual behaving opti-
+mally according to this function would be labelled “risk-
+seeking.” The dynamical perspective corresponds to a
+qualitatively diﬀerent interpretation: Under the dynamic
+
+
+--- Page 7 ---
+7
+(Eq. 30) the “risk-seeking” individual behaves optimally,
+in the sense that his wealth will grow faster than that
+of a risk-averse individual. The dynamic (Eq. 30) has
+the feature that ﬂuctuations in wealth become smaller as
+wealth grows. High wealth is therefore sticky – an indi-
+vidual will quickly ﬂuctuate out of low wealth and into
+higher wealth. It will then tend to stay there.
+VI.
+WEALTH DISTRIBUTION FROM A
+DYNAMIC
+The dynamical interpretation of EUT makes it partic-
+ularly simple to compute wealth distributions. A util-
+ity function u(x) implies a dynamic x(t), and that dy-
+namic generates a wealth distribution Px(x, t). We know
+that u(t) follows a simple Brownian motion, wherefore
+we know that u(t) is normally distributed according to
+Pu(u, t) = N
+ aut, b2
+ut2
+.
+(35)
+Since we know Pu(u, t), the distribution of x is easily
+derived. The wealth distribution in a large population,
+is
+Px(x, t) = Pu(u(x), t)du
+dx.
+(36)
+A.
+Example of a wealth distribution
+The utility function (Eq. 34) corresponds to the exam-
+ple dynamic (Eq. 30). The wealth distribution at any
+time t can be read oﬀ(Eq. 36)
+Px(x, t) =
+1
+p
+2πb2ut2 exp
+ 
+−(buex + C −aut)2
+p
+2b2ut2
+!
+buex,
+(37)
+which is shown in Fig. 3.
+The distribution is sensible
+given what we know about the dynamic – since ﬂuctu-
+ations diminish with increasing wealth many individuals
+will be found at high wealth (all those that have ﬂuctu-
+ated away from low wealth), with a heavy tail towards
+lower wealth.
+$0
+$1
+$2
+$3
+$4
+$5
+Cash
+0
+20
+40
+60
+80
+100
+120
+140
+Utility
+FIG. 2: Utility function of (Eq. 34), with bu = 1 and C = 0.
+Optimizing the expected change in this utility function also
+optimizes time-average growth under the corresponding dy-
+namic (Eq. 30). An unusual utility function – like the convex
+function shown here – reﬂects unusual dynamics, see text.
+$0.0
+$0.5
+$1.0
+$1.5
+$2.0
+$2.5
+$3.0
+$3.5
+$4.0
+Cash
+0.000
+0.005
+0.010
+0.015
+0.020
+0.025
+0.030
+0.035
+Probability density
+FIG. 3: Probability density function of wealth, also known as
+the wealth distribution, (Eq. 37). This distribution is gener-
+ated by the wealth dynamic (Eq. 30). The time is ﬁxed to
+t = 5, and we use au = 1/2, bu = 1, and C = 0.
+VII.
+UNBOUNDEDNESS OF u(x)
+The scheme outlined in Section V is informative for the
+debate regarding the boundedness of utility functions. A
+well-established but false belief in the economics liter-
+ature, due to Karl Menger [10, 11], is that permissible
+utility functions must be bounded. We have argued pre-
+viously that boundedness is an unnecessary restriction,
+
+
+--- Page 8 ---
+8
+and that Menger’s arguments are not valid [12, 14]. Sec-
+tion V implies that the interpretation of expected utility
+theory we oﬀer here formally requires unboundedness of
+utility functions. Bounded functions are not invertible,
+and Menger’s incorrect result therefore contributed to
+obscuring the simple natural arguments we present here.
+Of course whether u(x) is bounded or not is practically
+irrelevant because x will always be ﬁnite. However, for
+a clean mathematical formalism an unbounded u(x) is
+highly desirable.
+The problem is easily demonstrated by considering the
+case of zero noise. Since u(x) always follows a Brownian
+motion in our treatment, in the zero-noise case it follows
+du = audt,
+(38)
+meaning linear growth in time.
+For u to be bounded,
+time itself would have to be bounded. Another way to
+see the problem is inverting u(x) to ﬁnd x(u).
+If we
+require simultaneously linear growth of u(t) in time, and
+boundedness from above, limx→∞u(x) = Ub, then x(t)
+has to diverge in the ﬁnite time it takes for u(t) to reach
+Ub, namely in Tb =
+Ub
+au (assuming for simplicity u(t =
+0) = 0).
+Such features – an end of time or a ﬁnite-time singu-
+larity of wealth – are inconvenient to carry around in
+a formalism. Since they have no physical meaning, for
+simplicity a model without them should be chosen, i.e.
+unbounded utility functions will be much better. We re-
+peat that Menger’s arguments against unbounded utility
+functions are invalid and we need not worry about them.
+VIII.
+DISCUSSION
+EUT is an 18th-century patch, applied to a ﬂawed con-
+ceptual framework established in the 17th century that
+made blatantly wrong predictions of human behavior.
+Because the mathematics of randomness was in its in-
+fancy in the 18th century, the conceptual problems were
+overlooked, and utility theory set economics oﬀin the
+wrong direction. Without any of the arbitrariness inher-
+ent in utility functions it is nowadays possible to give a
+physical meaning to the non-linear mappings people seem
+to apply to monetary amounts.
+These apparent map-
+pings simply encode the non-linearity of wealth dyan-
+mics.
+[1] D. Bernoulli. Specimen Theoriae Novae de Mensura Sor-
+tis. Translation “Exposition of a new theory on the mea-
+surement of risk” by L. Sommer (1954). Econometrica,
+22(1):23–36, 1738.
+[2] L. Breiman.
+Probability.
+Addison-Wesley Publishing
+Company, 1968.
+[3] J. C. Cox, J. E. Ingersoll, and S. A. Ross.
+An in-
+tertemporal general equilibrium model of asset prices.
+Econometrica, 53(2):363–384, 1985.
+[4] J. M. Harrison.
+Brownian motion of performance and
+control. Cambridge University Press, 2013.
+[5] H. Hinrichsen. Non-equilibrium critical phenomena and
+phase transitions into absorbing states.
+Adv. Phys.,
+49(7):815–958, 2000.
+[6] J. L. Kelly, Jr. A new interpretation of information rate.
+Bell Sys. Tech. J., 35(4):917–926, July 1956.
+[7] P. E. Kloeden and E. Platen.
+Numerical solution of
+stochastic diﬀerential equations, volume 23. Springer Sci-
+ence & Business Media, 1992.
+[8] J. Marro and R. Dickman.
+Nonequilibrium Phase
+Transitions in Lattice Models.
+Cambridge University
+Press, 1999.
+[9] D. Meder, F. Rabe, T. Morville, K. H. Madsen, M. T.
+Koudahl, R. J. Dolan, H. R. Siebner, and O. J. Hulme.
+Ergodicity-breaking reveals time optimal economic be-
+havior in humans. arXiv:1906.04652, 2019.
+[10] K. Menger. Das Unsicherheitsmoment in der Wertlehre.
+J. Econ., 5(4):459–485, 1934.
+[11] O.
+Peters.
+Menger
+1934
+revisited.
+http://arxiv.org/abs/1110.1578, 2011.
+[12] O.
+Peters.
+Optimal
+leverage
+from
+non-ergodicity.
+Quantitative Finance, 11(11):1593–1602, Nov. 2011.
+[13] O. Peters. The ergodicity problem in economics. Nature
+Physics, 15:1216–1221, 2019.
+[14] O. Peters and M. Gell-Mann. Evaluating gambles using
+dynamics. Chaos, 26:23103, 2016.
+[15] J. von Neumann and O. Morgenstern. Theory of Games
+and Economic Behavior.
+Princeton University Press,
+1944.
+[16] W. A. Whitworth. Choice and chance. Deighton Bell, 2
+edition, 1870.

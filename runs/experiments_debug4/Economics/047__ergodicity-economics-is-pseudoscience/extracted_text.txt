@@ -1,0 +1,803 @@
+--- Page 1 ---
+1 
+ 
+Quantum propensity in economics 
+ 
+David Orrell1 
+Monireh Houshmand2 
+ 
+Abstract: This paper describes an approach to economics that is inspired by quantum computing, 
+and is motivated by the need to develop a consistent quantum mathematical framework for 
+economics. The traditional neoclassical approach assumes that rational utility-optimisers drive 
+market prices to a stable equilibrium, subject to external perturbations. While this approach has 
+been highly influential, it has come under increasing criticism following the financial crisis of 
+2007/8. The quantum approach, in contrast, is inherently probabilistic and dynamic. Decision-
+makers are described, not by a utility function, but by a propensity function which specifies the 
+probability of transacting. We show how a number of cognitive phenomena such as preference 
+reversal and the disjunction effect can be modelled by using a simple quantum circuit to generate 
+an appropriate propensity function. Conversely, a general propensity function can be quantized to 
+incorporate effects such as interference and entanglement that characterise human decision-
+making. Applications to some common problems in economics and finance are discussed. 
+ 
+Keywords: Quantum economics, quantum finance, quantum cognition, quantum probability, 
+quantum decision theory, quantum computing 
+ 
+1. Introduction 
+ 
+Theories of economics always rely on theories of value. In classical economics, it was assumed 
+that value is the product of labour (Smith, 1776). A problem of course is that labour is difficult to 
+measure, and the link with value is not always clear. This became obvious with the development 
+of sophisticated financial markets in the late nineteenth century, where prices for something like a 
+                                                          
+1 Systems Forecasting, Toronto, Canada 
+2 Department of Electrical Engineering, Imam Reza International University, Mashhad, Iran. 
+m.hooshmand@imamreza.ac.ir. 
+ 
+ 
+
+
+--- Page 2 ---
+2 
+ 
+share in a railway company didn’t directly reflect human labour. Neoclassical economists reacted 
+by substituting labour with utility, which had been defined by Bentham in his 1789 Principles of 
+Morals and Legislation as that which appears to “augment or diminish the happiness of the party 
+whose interest is in question.” 
+ 
+As with labour, utility seemed hard to measure directly, but as Jevons pointed out in his Theory of 
+Political Economy (1871), another approach was to simply assume that utility was reflected by 
+price. While this turned utility into a somewhat circular concept (Robinson, 1962), it did seem to 
+hold out the possibility that economics could be put on a rational scientific basis; a task eventually 
+undertaken by Von Neumann and Morgenstern, whose Theory of Games and Economic Behaviour 
+(1944) developed a consistent set of axioms to describe rational economic behaviour based on a 
+theory of expected utility. 
+ 
+The assumption that people act rationally to optimise their own utility became the basis for 
+economics as it developed in the post-war era. However while this model of rational economic 
+behaviour remains the default approach in economics, cognitive psychologists have shown that its 
+assumptions are often violated. For example, one of the key axioms of expected utility theory is 
+that people have fixed preferences. Yet the widely-demonstrated phenomenon of preference 
+reversal shows that in fact people do not have stable preferences and have a tendency to change 
+their mind depending on things like context (Tversky and Thaler, 1990). 
+ 
+The belief that rational utility-optimisers drive prices to a stable equilibrium was also sorely tested 
+by the financial crisis of 2007/8. In response to that crisis, economists began to adopt methods 
+from behavioural economics, in which so-called cognitive anomalies were accommodated by 
+modifying the utility function to account for effects such as loss aversion or herd behaviour 
+(Kahneman, 2011). As discussed below, though, a range of cognitive phenomena continue to elude 
+behavioural approaches, because they do not conform to classical logic (Wendt, 2015). This has 
+motivated interest in adopting a mathematical framework based on quantum probability.  
+ 
+Quantum probability is a set of mathematical rules to calculate probabilities of events in quantum 
+mechanics. Its properties such as nonadditivity and noncommutativity make it well-suited to model 
+
+
+--- Page 3 ---
+3 
+ 
+uncertainty in decision-making behavior in social sciences, particularly in economics and more 
+generally human cognition where it extends classical utility theory (Qadir, 1978; Segal, 1998; 
+Baaquie, 2004; Derman, 2004; Busemeyer and Bruza, 2012; Haven and Khrennikov, 2013). The 
+approach known as quantum decision theory, first proposed in (Yukalov and Sornette, 2008), 
+provides a framework for modeling and predicting human decisions, that can be used to explain 
+many behavioural phenomena which are unaccounted by utility-theoretic approaches. Quantum 
+decision theory allows us to characterize the rational–irrational dual behavior of real decision 
+makers, who evaluate not only the utility of the given prospects, but also their respective 
+attractiveness. In (Yukalov and Sornette, 2014) and (Yukalov and Sornette, 2015), the lotteries 
+consisting only of gains are considered, then the idea is extended to lotteries with both gain and 
+loss (Yukalov and Sornette, 2017). In (Zhang, C. and Kjellström, 2021) multi-modal attraction 
+factor function that take multiple emotional and cognitive items into account are considered. 
+  
+The approach in this paper is to generalize the quantum approach, by modelling economic 
+decision-making using a probabilistic propensity function that can be expressed in quantum terms. 
+In other words, we model the economy in a manner consistent with, and inspired, by quantum 
+computing (Nielsen and Chuang, 2002; Nakahara M and Ohmi T, 2008). The plan of the remainder 
+of the paper is as follows. Section 2 motivates the use of quantum probability to model economic 
+decisions. Section 3 shows how a simple quantum circuit, of a sort commonly used in quantum 
+algorithms, can simulate a variety of cognitive phenomena which elude a classical approach. 
+Section 4 shows how a general propensity function can be quantized to yield the quantum 
+dynamics of financial transactions. Finally Section 5 summarises the main results. 
+ 
+2. Quantum probability 
+ 
+The key difference between quantum computers and classical computers is that, instead of storing 
+information in binary bits which can take on the value 0 and 1, quantum computers use qubits, 
+which randomly collapse to a particular state when measured. Quantum computers are therefore 
+inherently probabilistic rather than deterministic, so a quantum circuit may have to be run and 
+measured many times in order to build up a statistical estimate to a solution. Probabilities of 
+
+
+--- Page 4 ---
+4 
+ 
+quantum measurements are modelled by a 2-norm (which involves a sum of squares) rather than a 
+1-norm.  
+ 
+In order to motivate, from first principles, the use of quantum probability in a social context, 
+suppose that we wish to model the state of a person who is going to make a binary choice between 
+two options. If the person is equally likely to choose either, then the situation is the same as for a 
+random coin toss. In general, the state could be modelled by the diagonal ray in Figure 1.A, where 
+two dimensions are required because we want to capture the possibility of either outcome. If the 
+ray has length 1, and we associate the probabilities of obtaining heads or tails by taking the square, 
+i.e. the 2-norm, of the projections onto the respective axis, then the probabilities add to 1 as 
+expected. 
+ 
+ 
+ 
+  
+Figure 1. A) A coin toss for a balanced coin can be expressed as a superposition of two states, 
+heads and tails. B) because the 2-norm of a probability is its square, we can also consider negative 
+projections. C) Applying the Hadamard transformation rotates S1 by 45 degrees clockwise which 
+aligns with the H axis (S3). The ray H3 (the rotated version of H1) can be viewed as a superposition 
+of horizontal and vertical parts (not shown), and the same for T3 (the rotated version of T1); 
+however the vertical parts now cancel out, leaving only a horizontal ray S3. 
+ 
+The state can therefore be interpreted as a propensity to give different outcomes, in this case heads 
+or tails. Because the 2-norm of a probability depends on the square, one can also imagine cases 
+where the projections are negative (Haug, 2004; Aaronson, 2013). For example, in Figure 1.B the 
+
+
+--- Page 5 ---
+5 
+ 
+projection on the heads axis is negative, but the 2-norm of the probability is unchanged. Since 
+negative numbers are allowed, the need for mathematical closure suggests that complex numbers 
+should be as well, for example to accommodate situations where we need to calculate square roots 
+(Aaronson, 2013). 
+ 
+Suppose now that we apply a unitary (and so norm-preserving) transformation, known as the 
+Hadamard transformation, which rotates S1 by 45 degrees clockwise. A coin in the superposed 
+state of Figure 1.A will then be rotated so that it aligns with the H axis, as in Figure 1.C, which 
+means that when measured it will be Heads for sure. The indeterminate system has become 
+deterministic. Another way to think about this is to recall that the initial propensity state is a 
+superposition of two orthogonal states, denoted H1 and T1 in the figure. After being rotated, T1 
+leads to T3 and H1 leads to H3. The T3 ray has a positive heads and a positive tails component. 
+However the H3 ray has a positive heads and a negative tails. The positive and negative tails 
+components therefore cancel out, leaving only the positive heads components. This is an example 
+of interference, which again occurs because the 2-norm allows negative terms. 
+ 
+Finally, we can also ask what happens when we have a more complicated system, for example two 
+coins instead of one. The possible final outcomes are then HH, HT, TH, and TT, where HT is 
+heads for the first coin and tails for the second, and so on. But now, representing the superposed 
+state of the system is considerably more complicated, because instead of just needing two axes, H 
+and T, we now need four axes: HH, HT, TH and TT. For some situations, it is possible to treat 
+each coin separately, which would allow us to represent our information about each one in its own 
+two-dimensional figure; but if say the system is in a balanced superposition of HH and TT – i.e. 
+there is an equal probability of getting either both heads, or both tails, and those are the only 
+possibilities – then we say that the coins are entangled. Entanglement can therefore be viewed as 
+a particular kind of superposed state, which leads to correlation in measurement probabilities of 
+subsystems.  
+ 
+The adoption of the 2-norm as a probabilistic measure therefore models the related phenomena of 
+superposition, interference, and entanglement, which are characteristic of quantum systems, and 
+are exploited in quantum computers to give significant computational advantages over classical 
+
+
+--- Page 6 ---
+6 
+ 
+computers (Aaronson, 2013). In a quantum computer, the coin toss would be modelled using the 
+wave function |𝜓〉 of a single qubit, which is in a superposition of two basis states |0〉= (1
+0) and 
+|1〉= (0
+1), with the first representing heads and the second representing tails. We can then write 
+|𝜓〉= 𝑎0|0〉+ 𝑎1|1〉= (𝑎0
+𝑎1) 
+where 𝑎0 and 𝑎1 are complex numbers with |𝑎0|2 + |𝑎1|2 = 1. When measured in the 
+computational basis, the possible outcomes are |0〉 with a probability |𝑎0|2 and |1〉 with a 
+probability |𝑎1|2. Quantum gates which produce transformations are represented by unitary 
+matrices, and two or more qubits are represented by tensor products, as seen below.  
+ 
+To summarise, classical probability is the simplest kind of probability, which is based on the 1-
+norm and involves positive numbers. The next-simplest kind of probability uses the 2-norm, and 
+includes complex numbers. The reason this kind of probability is called quantum probability, is 
+for the historical reason that it turns out to be the right framework for quantum physics, and is the 
+basis of quantum computing; however there is no reason we can’t apply it to other areas, such as 
+economics. 
+ 
+3. Quantum circuits 
+ 
+Quantum probability has been adopted in areas such as quantum cognition and quantum game 
+theory because it naturally accounts for effects such as interference and entanglement (Busemeyer 
+and Bruza, 2012; Wendt, 2015; Haven et al, 2018). Well-known examples from the quantum 
+cognition literature include the order effect, where responses to questions in a survey depend on 
+the order in which they are asked; the disjunction effect, where extra information seems to interfere 
+with decision-making in a manner that eludes classical logic; preference reversal, where a decision 
+changes depending on context; or games such as the prisoner’s dilemma, where experiments show 
+that people behave not as individual utility-optimisers, but as people who are entangled through 
+things like a social contract. 
+ 
+For the order effect, the usual way to think about this is in terms of a sequence of projections, as 
+illustrated in Figure 2. If question A is followed by question B, and we assume that the questions 
+
+
+--- Page 7 ---
+7 
+ 
+have yes/no responses, then the first response is modelled by collapsing the state, shown by the 
+diagonal grey line, onto one of the two axes labelled “A yes” or “A no”. That state is then used as 
+the starting point for a projection onto the B axes. The probabilities of the possible outcomes when 
+question A is asked first are as shown in Table 1. Similar calculations can be made with the order 
+reversed to reveal the order effect, which has been demonstrated in a broad range of empirical 
+studies (Wang et al, 2014). The probability of outcomes when question A is followed by question 
+B and vice versa are shown in Table 2. 
+ 
+ 
+ 
+Figure 2. The order effect for two questions labelled A and B. The state vector (grey line) is at an 
+angle 𝜃 to the axes for A. The axes for B are rotated by an angle 𝜑 to those for A. 
+ 
+ 
+
+
+--- Page 8 ---
+8 
+ 
+Table 1. Probabilistic outcomes from the quantum circuit for a sequence of two queries A and then 
+B. 
+Measured 
+state 
+Response A 
+Probability 
+Response B 
+Conditional 
+Probability 
+Joint Probability 
+|00〉 
+Yes 
+cos2 𝜃 
+Yes 
+cos2 𝜑 
+cos2 𝜃cos2 𝜑 
+|01〉 
+Yes 
+cos2 𝜃 
+No 
+sin2 𝜑 
+cos2 𝜃sin2 𝜑 
+|10〉 
+No 
+sin2 𝜃 
+Yes 
+sin2 𝜑 
+sin2 𝜃sin2 𝜑 
+|11〉 
+No 
+sin2 𝜃 
+No 
+cos2 𝜑 
+sin2 𝜃cos2 𝜑 
+ 
+Table 2: Probabilities of the possible outcomes based on order effect 
+Question 
+order 
+A yes 
+A no 
+B yes 
+B no 
+A then B 
+cos2 𝜃 
+sin2 𝜃 
+cos2 𝜃cos2 𝜑
++ sin2 𝜃sin2 𝜑 
+cos2 𝜃sin2 𝜑
++ sin2 𝜃cos2 𝜑 
+B then A 
+cos2(𝜃−𝜑) cos2 𝜑
++ sin2(𝜃−𝜑) sin2 𝜑 
+cos2(𝜃−𝜑) sin2 𝜑
++ sin2(𝜃−𝜑) cos2 𝜑 
+cos2( 𝜃−𝜑) 
+sin2( 𝜃−𝜑) 
+ 
+An equivalent representation of this sequence, based on the methods of quantum computing, is the 
+quantum circuit shown in Figure 3. The input on the left is two qubits, each of which is initialised 
+to |0〉. The joint initial state is written 
+𝜓0 = |00〉= (1
+0) ⊗(1
+0) = (
+1
+0
+0
+0
+). 
+The top qubit is acted on by the gate A, which is a rotation matrix of the form 
+𝐴= 𝑅𝜃= (cos 𝜃
+−sin 𝜃
+sin 𝜃
+cos 𝜃). 
+The lower qubit is acted on by the similar rotation matrix 𝐵= 𝑅𝜑 where 𝜑 represents the 
+difference in the frameworks used to answer the two questions. The two qubits are then entangled 
+through a C-NOT gate, which is represented by the matrix 
+𝑋𝑐= (
+1
+0
+0
+0
+0
+1
+0
+0
+0
+0
+0
+1
+0
+0
+1
+0
+). 
+
+
+--- Page 9 ---
+9 
+ 
+The operation 𝜓𝑓= 𝑋𝑐(𝐴⊗𝐵)𝜓0 depicted in Figure 3 then yields the same output probabilities 
+for the possible states as in Table 1. Similar calculations can be made with the order of questions 
+reversed, by inverting the C-NOT gate so that the second qubit acts as the control and updating 𝐴 
+as 𝑅𝜑 and 𝐵 as 𝑅(𝜃−𝜑). 
+ 
+ 
+Figure 3. Quantum circuit for a decision B influenced by a context A. 
+ 
+As seen in the Appendix, this relationship holds when gates A and B are arbitrary unitary matrices, 
+so the circuit is quite flexible and can be used to simulate any problem that can be described either 
+by a sequence of projections, as in quantum cognition, or by an entangled system as in quantum 
+decision theory (Yukalov and Sornette, 2015). For the disjunction effect (Blutner and Graben, 
+2016), gate A represents a context or a piece of information, while gate B represents a decision. 
+For preference reversal (Yukalov and Sornette, 2015), gate A represents a subjective context, while 
+gate B represents an objective utility such as a monetary award. The circuit can also be used to 
+simulate a version of the prisoner’s dilemma, where gate B represents one player’s strategy, and 
+gate A represents their ideas about the other player’s strategy (Orrell, 2020b). 
+ 
+A particularly strong, and economically relevant, example of a quantum social phenomenon is the 
+existence of threshold effects. For the case of preference reversal, if the context-dependent 
+subjective factors represented by gate A are assumed to be random, then they can be expected to 
+have a roughly equal effect as the objective factors (such as the prize in a lottery) represented by 
+gate B. Because changes in context often have a switch-like nature (for example, a person may or 
+may not have a particular piece of information or experience a particular event) the result is a kind 
+of threshold effect, where objective costs are balanced by subjective factors which can suddenly 
+change. According to the preference reversal criterion (Yukalov and Sornette, 2018), if the less 
+attractive option has an associated cost 𝑥1 and the more attractive option has a cost 𝑥2, then a 
+
+
+--- Page 10 ---
+10 
+ 
+switch from the more attractive to the less attractive option will only occur if 𝑥2 𝑥1
+⁄
+> 3. This 
+criterion has been empirically tested in a range of experiments, and appears to be quite robust 
+(Yukalov and Sornette, 2015; 2018; Orrell, 2021a). We return to the question of threshold effects 
+below. 
+ 
+4. Propensity and entropic force 
+ 
+The above examples show that the quantum approach, native to quantum computers, is well-suited 
+to studying a variety of problems that involve interference and entanglement, and are therefore not 
+easily addressed using classical logic or behavioural approaches, which is why quantum methods 
+are seeing increasing use in the social sciences (Wendt, 2015; Der Derian and Wendt, 2020). For 
+the case of economics the quantum approach, with its change from utility to propensity, also leads 
+to a shift in our understanding of how decisions are made, and how financial transactions are 
+modelled.  
+ 
+Smith (1776) argued that the “propensity to truck, barter, and exchange” was inherent in human 
+nature – and while we can’t directly observe utility, we can certainly observe people buying and 
+selling. We can therefore define a propensity function as a kind of schedule which describes the 
+probability that a person will take a certain decision. Similar propensity curves are used in 
+marketing, where the technique known as “propensity modelling” is used to simulate how a 
+customer’s willingness to buy is affected by attributes including price (Wilcox, n.d.). Since as we 
+have seen quantum probability can be used to derive a propensity function for the discrete case, a 
+natural question to ask is whether it is possible to go the other way, and use a given propensity 
+function to derive a quantum model. 
+ 
+As an example, suppose that we made a probabilistic estimate of the price of a house. The result 
+could resemble a normal distribution, as in Figure 4, where the center of the distribution would be 
+our best estimate, while the standard deviation would be a measure of our uncertainty. In quantum 
+terms, this can be interpreted as a superposition state, where the chance of selecting a particular 
+price depends on the squared amplitude of an underlying wave function. The situation is therefore 
+
+
+--- Page 11 ---
+11 
+ 
+similar to the coin toss, except that instead of only heads or tails there is now a continuous range 
+of possible outcomes.  
+ 
+ 
+Figure 4. The curves show propensity as a function of price, measured in millions of dollars. Both 
+are centered at P = 1, but the panel on the right has a higher level of price flexibility. The arrows 
+indicate the strength and direction of the associated entropic forces (discussed later). 
+ 
+While it is traditional in economics to talk about the forces of supply and demand, these forces are 
+assumed to cancel at equilibrium, and there is no consistent concept of economic mass. The 
+dynamics of economic transactions are therefore not usually considered in detail, other than to 
+assume the system is at balance. In contrast, an advantage of the propensity framework is that it 
+leads to the concept of entropic force, which reflects the tendency of a system to achieve maximum 
+entropy (Sokolov, 2010; Caticha, 2019). In statistical physics, an entropic force for a probability 
+distribution 𝑃(𝑥) is given by 
+𝑓(𝑥) = 𝛾𝑃′(𝑥)
+𝑃(𝑥) = 𝑘𝐵𝑇𝑃′(𝑥)
+𝑃(𝑥) 
+where 𝑇 is temperature and 𝑘𝐵 is the Boltzmann constant. In economics, the propensity can 
+similarly be viewed as the product of an entropic force acting on the mental state of the 
+buyer/seller; and 𝛾 can be interpreted as a kind of energy which is related to information (Orrell, 
+2020a). 
+ 
+As an example, suppose a propensity function 𝑃(𝑥) is normal with mean 𝜇 and standard 
+deviation 𝜎, where price 𝑥 is a logarithmic variable. Then the corresponding entropic force is 
+
+
+--- Page 12 ---
+12 
+ 
+𝐹(𝑥) = 𝛾𝑃′(𝑥)
+𝑃(𝑥) = −𝑘(𝑥−𝜇) 
+where 𝑘= 𝛾𝜎2
+⁄
+ is a force constant. The linear force, which is the same as that of a spring, 
+therefore represents the mental desire for a buyer or seller to adjust the price to their own preferred 
+level.  
+ 
+While the entropic force allows us to interpret the system in terms of dynamics, it doesn’t tell us 
+anything about the relevant mass that the force acts on; and as already seen we want to be able to 
+account for effects such as interference and entanglement. We can address these issues by again 
+moving to a quantum framework, and viewing the propensity function as being the product of an 
+underlying wave function. The quantum version of a spring system is the quantum harmonic 
+oscillator. This has a ground state whose corresponding probability distribution for position x is a 
+normal distribution with mean 𝜇 and standard deviation 𝜎. The associated mass is 
+𝑚= 
+ℏ
+2𝜔𝜎2 
+so mass varies inversely with variance. Referring to Figure 4, the narrow propensity curve on the 
+left has a higher associated mass than does the wider curve on the right. The scaling factor 𝛾 is 
+given by 𝛾= ℏ𝜔2
+⁄  which has units of energy. 
+ 
+In statistical physics, a frequency 𝜈 is related to the inverse of the Boltzmann time 𝜏𝐵= ℏ(𝑘𝐵𝑇)
+⁄
+ 
+which is the theoretical order of time needed for an arbitrary nonstationary state to reach thermal 
+equilibrium (Goldstein, Hara, and Tasaki, 2015). In the social version, the frequency can therefore 
+be thought of as representing a linearised resistance to change. For something like a stock market, 
+the frequency can be used to represent the speed of mean reversion of returns (Ahn et al, 2017). 
+ 
+In an economic transaction, the buyer propensity function will normally have a higher mean price 
+than that of the seller, so the only parts of these curves which will be active are near the mid-price, 
+as illustrated in Figure 5. It is easily checked that the joint propensity function, which is the product 
+of the buyer and seller propensities, is a scaled normal curve and has an entropic force which is 
+just the sum of the buyer and seller forces. The case where the supplier fixes the price and refuses 
+to negotiate is handled by assuming an infinitely thin propensity curve located at the sale price.  
+ 
+
+
+--- Page 13 ---
+13 
+ 
+ 
+Figure 5. Propensity curves for a buyer (to the left) and a seller (to the right). The shaded area is 
+the joint propensity. 
+ 
+Because the oscillator model is inherently probabilistic, it can be used to model features such as 
+the statistics of financial markets, and the pricing and volume of financial options (Orrell, 2020a; 
+2021). Another difference between quantum and classical oscillators is that the former features 
+discrete energy levels. The ground state, which again can be viewed as representing the potential 
+for a transaction to occur, corresponds to the normal distribution, while the other states show more 
+complicated distributions, and contribute the non-normal behavior also seen with markets (Ahn et 
+al, 2017). 
+ 
+A main advantage of the quantum approach, when coupled with the entropic approach, is therefore 
+that it gives us a consistent set of equations and units with which we can describe the dynamics of 
+the system; and is particularly well adapted to the study of financial transactions, which involve 
+the flow of information rather than just physical objects. For example, returning to the general case 
+where the entropic force is given by  
+𝑓(𝑥) = 𝛾𝑃′(𝑥)
+𝑃(𝑥) 
+we can look at a particular mental state where the log price is 𝑥1 and ask how much work – which 
+again is linked to information – must be done against the entropic force to move to another state 
+𝑥2. This is simply 
+
+
+--- Page 14 ---
+14 
+ 
+∆𝐸= ∫
+𝐹(𝑥)
+𝑥2
+𝑥1
+𝑑𝑥= 𝛾log (𝑃(𝑥2)
+𝑃(𝑥1)) 
+which depends only on the ratio of the initial and final propensities. The change in propensity 
+required for preference reversal, as mentioned above, is typically a factor 3, which is close to 
+Euler’s number. It follows that what might be called the energy or information required to change 
+a person’s mind is 
+∆𝐸= ℏ𝜔
+2 log(3) ≅ℏ𝜔
+2 log(𝑒) = ℏ𝜔
+2  
+which is the base energy of a quantum oscillator. In a quantum computer, it is also the order of 
+energy needed to flip a qubit from one state to another. 
+ 
+5. Conclusion 
+ 
+In early neoclassical economics, utility was viewed as a kind of energy. In his 1892 book 
+Mathematical Investigations in the Theory of Value and Prices, Irving Fisher for example 
+expressed economic transactions in physical terms, where utility had units of energy. The quantum 
+framework returns to this idea of energy, but associates it with a change in propensity rather than 
+a utility. While previous works have demonstrated the usefulness of quantum methods in 
+modelling cognitive phenomena, the propensity approach allows us to view economic transactions 
+in general as a quantized probabilistic system, of the sort simulated in quantum computing. 
+ 
+Of course, many social scientists will argue that it is inappropriate to quantify things like social 
+power or mental energy, since they cannot be reduced to exact equations. However one 
+consequence of the rational utility-optimizing picture is that complex social topics such as power 
+relationships were downplayed or ignored (Häring and Douglas, 2013; Orrell, 2017).3 Since 
+economics is a quantitative discipline, we need a suitable framework with which to describe the 
+interplay between objective and subjective forces that make up power. 
+ 
+                                                          
+3 The topic of power receives more attention from heterodox economists. For example the “capital as 
+power” approach of Nitzan and Bichler (2009) sees money and capital as manifestations of power, but 
+does not attempt to quantify power directly. 
+
+
+--- Page 15 ---
+15 
+ 
+A main contribution of the quantum approach is to connect power with propensity. While human 
+motivations cannot be reduced to equations, it seems reasonable to quantify the propensity for a 
+person to make a particular decision (indeed, this is the entire basis for fields such as behavioural 
+economics). The entropic force (along with its associated energy) is merely another way of 
+expressing a propensity function. The approach can be used to simulate a variety of economic 
+phenomena, from cognitive interference in the decision-making process, to the price of financial 
+options. 
+ 
+To summarise, neoclassical economics was marked by a switch from a labour theory of value, to 
+one based on utility. Quantum economics makes a similar switch, by expressing value in terms of 
+a propensity function. Adopting a quantum probabilistic framework allows us to incorporate 
+cognitive effects such as interference and entanglement; express basic economic quantities such 
+as forces of supply and demand in consistent units; and consider both subjective and objective 
+factors on an equal footing. 
+ 
+Appendix 
+ 
+Each measurement in a non-computational basis is equivalent to applying a unitary matrix and 
+then measuring in the computational basis (Nielsen, 2002). It follows that the circuit in Figure 2 is 
+equivalent to Figure A.1, where A = [a11
+a12
+a21
+a22] and B = [b11
+b12
+b21
+b22] are unitary matrices 
+determined based on the given non-computational basis. This Appendix shows how this one-qubit 
+circuit is equivalent to the two-qubit quantum circuit depicted in Figure 3 for the general case 
+where A and B are unitary matrices. 
+
+
+--- Page 16 ---
+16 
+ 
+ 
+Figure A.1. A one-qubit circuit with two stages of measurement. 
+ 
+For the one-qubit circuit in Figure A.1, the qubit after gate A will be in the state 𝐴|0⟩ = [𝑎11
+𝑎21]. The 
+first measurement collapses the state to |0⟩ with probability equal to |𝑎11|2 (EVENT 𝐴+) and to 
+|1⟩ with probability |𝑎21|2 (EVENT 𝐴−). For the order effect, 𝐴+ would correspond to answering 
+“Yes” to the first question, and 𝐴− would correspond to answering “No”. 
+ 
+If EVENT 𝐴+ happens, then the output state after applying 𝐵 is 𝐵|0⟩= [𝑏11
+𝑏21]. The second 
+measurement collapses the state to |0⟩ with probability equal to |𝑏11|2 (EVENT 𝐵+) and collapses 
+to |1⟩ with probability equal to |𝑏21|2 (EVENT 𝐵−).  
+ 
+With the same argument for the other path we have: 
+ 
+EVENTS 
+𝐴+𝐵+ 
+𝐴+𝐵− 
+𝐴−𝐵+ 
+𝐴−𝐵− 
+Result State 
+|00⟩ 
+|01⟩ 
+|10⟩ 
+|11⟩ 
+Probability 
+|𝑎11𝑏11|2 
+|𝑎11𝑏21|2 
+|𝑎21𝑏12|2 
+|𝑎21𝑏22|2 
+ 
+On the other hand the output of the two-qubit circuit, when the control qubit is at the top of the 
+circuit, is 𝑎11𝑏11|00⟩+ 𝑎11𝑏21|01⟩+ 𝑎21𝑏21|10⟩+ 𝑎21𝑏11|11⟩ with associated probabilities: 
+
+
+--- Page 17 ---
+17 
+ 
+ 
+Result State 
+|00⟩ 
+|01⟩ 
+|10⟩ 
+|11⟩ 
+Probability 
+|𝑎11𝑏11|2 
+|𝑎11𝑏21|2 
+|𝑎21𝑏21|2 
+|𝑎21𝑏11|2 
+ 
+Since 𝐵 is unitary, its columns (or its rows) form an orthonormal basis (Steeb, 2006). In the case 
+of a 2-by-2 unitary matrix, |𝑏11|2 + |𝑏12|2 = |𝑏11|2 + |𝑏21|2 = 1 which implies |𝑏12|2 = |𝑏21|2, 
+and |𝑏11|2 + |𝑏21|2 = |𝑏21|2 + |𝑏22|2 = 1 which implies |𝑏11|2 = |𝑏22|2. It therefore follows that 
+the final probabilities for the two circuits are the same. (Note that the intermediate probabilities 
+are not the same.) 
+ 
+ 
+References 
+ 
+Aaronson S (2013) Quantum Computing Since Democritus. Cambridge: Cambridge University 
+Press. 
+ 
+Ahn K, Choi MY, Dai B, Sohn S and Yang B (2017) Modeling stock return distributions with a 
+quantum harmonic oscillator. EPL 120(3): 38003. 
+ 
+Bentham J (1907) An Introduction to the Principles of Morals and Legislation. Oxford: Clarendon 
+Press. 
+ 
+Baaquie BE (2004) Quantum Finance. Cambridge University Press, Cambridge, NewYork  
+ 
+Busemeyer J and Bruza P (2012) Quantum Models of Cognition and Decision. Cambridge: 
+Cambridge University Press. 
+ 
+Caticha A (2019) The Entropic Dynamics Approach to Quantum Mechanics. Entropy 21(10): 943. 
+ 
+Der Derian J and Wendt A (2020) Quantizing international relations: The case for quantum 
+approaches to international theory and security practice. Security Dialogue 51(5):399-413. 
+
+
+--- Page 18 ---
+18 
+ 
+ 
+Derman D (2004) My Life as a Quant: Reflections on Physics and Finance. Hoboken: Wiley. 
+ 
+Fisher I (1892) Mathematical Investigations in the Theory of Value and Prices. New Haven, CT: 
+Connecticut Academy of Arts and Sciences. 
+ 
+Goldstein S, Hara T, and Tasaki H (2015) Extremely quick thermalization in a macroscopic 
+quantum system for a typical nonequilibrium subspace. New Journal of Physics 174: 045002. 
+ 
+Häring N and Douglas N (2013) Economists and the Powerful: Convenient Theories, Distorted 
+Facts, Ample Rewards. London: Anthem Press. 
+ 
+Haug EG (2004) Why so Negative to Negative Probabilities, Wilmott Magazine, Sep/Oct, pp 34- 
+38. 
+ 
+Haven E, Khrennikov A, Ma A, and Sozzo S (2018) Introduction to quantum probability theory 
+and its economic applications. Journal of Mathematical Economics 78: 127-130. 
+ 
+Haven E and Khrennikov A (2013) Quantum Social Science. Cambridge: Cambridge University 
+Press. 
+ 
+Jevons WS (1957) The Theory of Political Economy. 5th Edition. New York: Kelley and Millman. 
+ 
+Kahneman D (2011) Thinking, Fast and Slow. New York: Farrar, Straus and Giroux. 
+ 
+Khrennikov A (2010) Ubiquitous Quantum Structure. Berlin: Springer. 
+ 
+Khrennikov A (2016) ‘Social Laser’: action amplification by stimulated emission of social 
+energy. Philosophical Transactions of the Royal Society. A, 3742054: 20150094 
+ 
+
+
+--- Page 19 ---
+19 
+ 
+Khrennikova P and Haven E (2014) Instability of political preferences and the role of mass media: 
+a dynamical representation in a quantum framework. International Journal of Theoretical Physics 
+2014, 53:1346–1360. 
+ 
+Kondratenko AV (2015) Probabilistic Economic Theory. Novosibirsk: Nauka. 
+ 
+Kondratyev A (2020) Non-Differentiable Learning of Quantum Circuit Born Machine with 
+Genetic Algorithm. Available at: https://ssrn.com/abstract=3569226 
+ 
+Nakahara M and Ohmi T (2008) Quantum Computing: from Linear Algebra to Physical 
+Realizations. Boca Raton: Taylor & Francis. 
+ 
+Nielsen MA and Chuang IL (2002) Quantum Computation and Quantum Information. Cambridge: 
+Cambridge University Press.  
+ 
+Nitzan J and Bichler S (2009) Capital as Power. A Study of Order and Creorder. New York: 
+Routledge. 
+ 
+Orrell D (2017) Economyths: 11 Ways Economics Gets It Wrong. London: Icon Books. 
+ 
+Orrell D (2020) The value of value: A quantum approach to economics, security and international 
+relations. Security Dialogue 51(5): 482–498. 
+ 
+Orrell D (2020a) A quantum model of supply and demand. Physica A 539: 122928. 
+ 
+Orrell D (2020b) Quantum Economics and Finance: An Applied Mathematics Introduction. UK: 
+Panda Ohana. 
+ 
+Orrell D (2021) A quantum walk model of financial options. Wilmott 2021(112) (in press). 
+ 
+Orrell D (2021a) Quantum financial entanglement: The case of strategic default (under review). 
+
+
+--- Page 20 ---
+20 
+ 
+ 
+Orrell D and Chlupatý R (2016) The Evolution of Money. New York: Columbia University Press. 
+ 
+Planck M (1949) Scientific Autobiography and Other Papers. New York: New York Philosophical 
+Library. 
+ 
+Qadir A (1978) Quantum Economics. Pakistan Economic and Social Review 16 (3/4): 117–26. 
+ 
+Robinson J (1962). Economic Philosophy. Harmondsworth, Middlesex, UK: Penguin Books. 
+ 
+Sokolov IM (2010) Statistical mechanics of entropic forces: disassembling a toy. European 
+Journal of Physics 31: 1353–1367. 
+ 
+Segal W and Segal IE (1998) The Black-Scholes pricing formula in the quantum context. Proc. 
+Nat. Acad. Sci. 95, 4072–4075. 
+ 
+Smith A (1776) An Inquiry into the Nature and Causes of the Wealth of Nations. London: W. 
+Strahan & T. Cadell. 
+ 
+Steeb W-H (2006) Problems and Solutions in Introductory and Advanced Matrix Calculus. 
+Singapore: World Scientific. 
+ 
+Tversky A and Thaler RH (1990) Anomalies: preference reversals. Journal of Economic 
+Perspectives 4: 201–11. 
+ 
+Von Neumann J and Morgenstern O (1944) Theory of Games and Economic Behavior. Princeton, 
+NJ: Princeton University Press. 
+ 
+Wang Z, Solloway T, Shiffrin RS and Busemeyer JR (2014) Context effects produced by question 
+orders reveal quantum nature of human judgments. Proceedings of the National Academy of 
+Sciences 111(26): 9431-6. 
+ 
+
+
+--- Page 21 ---
+21 
+ 
+Wendt A (2015) Quantum Mind and Social Science: Unifying Physical and Social Ontology. 
+Cambridge: Cambridge University Press.  
+ 
+Wilcox 
+R. 
+Conjoint 
+Analysis: 
+Propensity 
+Modeling. 
+Coursera 
+video. 
+https://www.coursera.org/lecture/uva-darden-bcg-pricing-strategy-customer-value/conjoint-
+analysis-propensity-modeling-JZjcJ 
+ 
+Yukalov VI and Sornette D (2008) Quantum decision theory as quantum theory of measurement. 
+Physics Letters A 372(46): 6867–6871. 
+ 
+Yukalov VI and Sornette D (2014), Conditions for quantum interference in cognitive Sciences. 
+Topics in Cognitive Science 6: 79-90. 
+ 
+Yukalov VI and Sornette D (2015) Preference reversal in quantum decision theory. Frontiers in 
+Psychology 6: 1–7. 
+ 
+Yukalov VI and Sornette D (2017) Quantum probabilities as behavioral probabilities. Entropy 
+19(3): 112. 
+ 
+Yukalov VI and Sornette D (2018) Quantitative predictions in quantum decision theory.  
+ IEEE Transactions on Systems, Man, and Cybernetics, 48(3): 366-381. 
+ 
+Zhang C and Kjellström H (2021) A subjective model of human decision making based on 
+quantum decision theory. arXiv preprint arXiv:2101.05851. 
+ 

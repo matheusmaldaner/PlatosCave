@@ -1,0 +1,167 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that VGC uses several complementary compression algorithms including No-delta, Delta, and Outlier and supports 1D, 2D, and 3D processing to handle diverse HPC data features; without external evidence, plausibility rests on general HPC compressor design trends, but the statement remains unverified.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general GPU compression principles, the statements are plausible but not verifiable without the paper.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim proposes two modes in VGC: memory-efficient compression via kernel fission to compute exact compressed size before allocation, and selective decompression via early stopping in prefix sums to locate ROIs; without external sources its plausibility is uncertain.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.25,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim's specifics regarding CUDA implementation details are unverified and highly specific to a particular codebase, with no external corroboration available from the provided text.",
+    "confidence_level": "low"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general intuition that adaptive or ensemble compression approaches can outperform fixed single algorithm compressors on heterogeneous data, but specifics would require empirical validation across datasets and configurations",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.45,
+    "relevance": 0.75,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "This evaluation relies solely on the stated claim and general knowledge of delta and outlier encoding concepts; no external sources or methodological details are provided.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general intuition about memory locality and delta based schemes, but specific evidence or implementation details are not provided in the claim text.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessed claim aligns with general ideas of fused kernel approaches in data compression pipelines; specifics not verifiable from provided text.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.7,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible two-pass GPU kernel strategy where a first kernel profiles per-block compressed sizes and performs a global scan to determine allocation, followed by a second kernel that compresses and writes blocks using computed offsets; this is a reasonable method for reducing live memory footprint but its applicability depends on implementation details.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible approach where selective decompression uses block metadata to determine an early stopping point via a global prefix sum up to the region of interest and then decompresses only necessary blocks, enabling random access and write-back, which is conceptually consistent with known selective or lazy decompression strategies but the specific combination and sequence are not clearly established as standard practice.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text; no external verification performed; plausibility depends on experimental details and whether the baselines and datasets are standard in the field.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the stated throughput figures and VGC-O versus cuSZp2 are presented without methodological details.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.52,
+    "relevance": 0.75,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "No external verification performed; assessment based solely on the provided claim text and general background knowledge.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that VGC improves prior GPU lossy compressors through design features leading to fast throughput, competitive compression ratios, reduced GPU memory footprint, and efficient random access for HPC workloads, but no external evidence is evaluated here.",
+    "confidence_level": "medium"
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes plausible components of a GPU kernel based compression pipeline, consistent with known techniques such as quantization, Lorenzo prediction, fixed length encoding with sign maps, prefix sum synchronization, and bit shuffle, but there is no cited evidence here to confirm it specifically for cuSZp.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that quantization maps floating point data to integers within a user defined error bound and a one dimensional one layer Lorenzo predictor records differences between adjacent quantized integers inside each block to reduce effective bits.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a plausible fixed length encoding scheme for nonzero blocks using the maximum absolute quantized integer to set bits per value plus a sign map, and states a compressed block size formula as (Fk plus one) times L divided by eight bytes, but no external sources are cited here to verify correctness.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes hierarchical global synchronization on GPU using an exclusive prefix-sum to compute per-block offsets and final compressed size entirely on device; plausibility is moderate given standard GPU prefix-sum techniques, but cannot be verified from the text alone.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that a block bit-shuffle rearranges fixed length encoded bits by bit offset into bytes, placing the k-th offset into the k-th byte to enable aligned writes and parallel storage, which is a plausible description of a data layout transformation aimed at memory alignment and parallelism.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts design choices favor fixed-length encoding and lightweight Lorenzo to replace variable-length encoders like Huffman, leveraging block smoothness to maintain compression; without external sources, assessment is uncertain.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Evaluation described uses specific hardware, datasets, and metrics, but no details on experimental setup or statistical rigor are provided.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.58,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the Lorenzo prediction is said to reduce effective bits per quantized integer within blocks, potentially from fourteen to four, improving fixed-length encoding efficiency; without additional data or references, evaluation remains hypothetical.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given common data characteristics of spatially smooth scientific blocks and typical compression benefits from fixed length encoding, but it relies on specific CDF results for L=8 and L=32 that are not independently verifiable here.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a specific throughput and capability of cuSZp's hierarchical on-GPU synchronization and its impact on concatenating variable-length blocks without CPU-GPU transfers, but no independent evidence is provided in the text.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.65,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general ideas about bitshuffle benefiting from block organization and parallelism, but lacks specifics; overall plausibility is moderate and not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, a single kernel design is claimed to remove CPU preprocessing and host-device data transfer overheads, which would affect throughput compared to prior tools like cuSZ.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.1,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the provided claim text without external verification.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, the assertion is plausible but cannot be verified without sources; credibility moderate and evidence is unknown.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that a specific method cuSZp achieves error bounded lossy compression fully within a single GPU kernel while meeting throughput, compression ratio, and data quality for many datasets, which is plausible but uncertain given typical constraints and without external corroboration.",
+    "confidence_level": "medium"
+  }
+}

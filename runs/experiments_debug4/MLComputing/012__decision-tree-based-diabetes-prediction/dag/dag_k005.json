@@ -1,0 +1,134 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Decision tree classification (J48/C4.5) applied with WEKA to the Pima Indian diabetes dataset can accurately predict whether a patient tests positive for diabetes",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Data mining classification is useful in medicine for predicting diseases such as diabetes by building models from training and test data",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "The study used the Pima Indian Diabetes dataset (768 female Pima Indian patients, 8 predictive numeric attributes, class 0 negative or 1 positive)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "J48 (an implementation of C4.5) decision tree induction in WEKA was used, selecting attributes by maximizing normalized information gain (entropy reduction), handling continuous and missing values and offering pruning",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model evaluation used a confusion matrix to report true positives, true negatives, false positives, false negatives and compute accuracy, precision, recall and F-measure",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The WEKA J48 model achieved overall accuracy of 84.1146% on the loaded Pima dataset",
+      "role": "Result",
+      "parents": [
+        4,
+        2,
+        3
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Confusion matrix counts reported: True Positives 468, True Negatives 178, False Positives 32, False Negatives 90 (leading to 84.1146% correct classification)",
+      "role": "Evidence",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Entropy and information gain calculations on attributes showed plasma glucose had the highest information gain (gain 0.1332) compared to BMI (0.0724) and pregnancy count (0.0366), so plasma glucose was selected as the root split",
+      "role": "Result",
+      "parents": [
+        3,
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Compared to an existing method the proposed J48 approach improved accuracy by 0.48 percentage points (from 83.63% to 84.1146%) while increasing model build time by 0.02 seconds (0.03 to 0.05 s)",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "The Pima dataset contains missing or zero values for several attributes (e.g., glucose=0 in 5 records, BMI=0 in 11, blood pressure=0 in 28, skinfold=192, insulin=140), which can bias results if not handled",
+      "role": "Limitation",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Conclusion: Decision tree (J48) in WEKA is effective for predicting diabetes on the Pima dataset but accurate prediction requires addressing missing values and further testing in different environments",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        7,
+        8,
+        9
+      ],
+      "children": null
+    }
+  ]
+}

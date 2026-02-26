@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with the standard Adam algorithm characterization, describing per-parameter adaptive learning rates from first and second moment estimates and invariance to diagonal rescaling, with stepsize bound approximately by the hyperparameter.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.95,
+    "relevance": 0.9,
+    "evidence_strength": 0.7,
+    "method_rigor": 0.5,
+    "reproducibility": 0.7,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the Adam optimizer update steps including moment estimates, bias correction, and parameter update.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.4,
+    "relevance": 0.9,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on general knowledge, Adam does not universally guarantee O(sqrt(T)) regret; claims of provable convergence require specific conditions and may not hold in all cases.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "Adam is widely reported to perform well in practice and is competitive with other stochastic optimizers across common deep learning tasks based on general knowledge.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Bias correction using division by one minus beta to address zero initialization of moment estimates is a standard technique to reduce early bias in moving averages, especially when beta near one and gradients are sparse.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with standard bias correction in Adam where v_t biases toward zero as beta2^t grows, but the specific small term and VAEs experiments are not derivable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim combines known aspects of Adam as combining AdaGrad and RMSProp ideas and using a diagonal Fisher-like preconditioner, but without external sources it remains uncertain whether the Fisher diagonal approximation is established.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a regret bound for Adam with decaying learning rate and geometric beta1 under bounded gradient norms and parameter diameter, yielding average regret of order one over square root of T and zero long-run average regret, which is plausible but depends on specific assumptions and is not universally established.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.75,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim describes optimizer performance on MNIST and sparse IMDB features; evaluation depends on experimental results for Adam, SGD with Nesterov momentum, and AdaGrad without access to external sources",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim that Adam converges faster than many first-order methods and faster than SFO under dropout is plausible but not universally established and would depend on architecture, data, and regularization details; no sources are provided to confirm consensus.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.68,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general understanding that Adam and SGD can converge faster than AdaGrad in CNN experiments, and that Adam provides per layer adaptive learning rates, while eps can dominate the second moment estimate in CNNs.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "AdaMax is a known variant of Adam using the infinity norm for the second moment update, with u_t defined as the maximum of beta2 times the previous u_t and the absolute gradient; the claim that u_t requires no bias correction and that update rule uses theta_t with alpha over (1 minus beta1 to the t) divided by u_t aligns with standard formulations and is generally considered numerically stable",
+    "confidence_level": "high"
+  },
+  "13": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim notes a observed limitation where the second moment term can vanish in some CNN experiments, causing updates to be dominated by the epsilon term and potentially slowing Adagrad convergence, but there are no specific references or methodological details provided to confirm this across studies.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim aligns with standard optimization practices in deep learning including Adam defaults and Polyak averaging; however exact defaults may vary by implementation and hyperparameter tuning.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts Adam is robust for large scale nonconvex optimization based on theoretical bounds bias correction practical defaults extensions and empirical evaluation, which is plausible but not verifiable from the given text alone.",
+    "confidence_level": "medium"
+  }
+}

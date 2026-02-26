@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Assuring machine learning for safety-critical systems requires generating stage-specific evidence across the entire machine learning lifecycle",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Machine learning components used in safety-critical systems must be assured end-to-end because ML errors can cause irreversible harm",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        15
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The machine learning lifecycle consists of four stages: Data Management, Model Learning, Model Verification, and Model Deployment",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4,
+        6,
+        9,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Data Management should produce datasets that are Relevant to the operational domain, Complete across input/failure/adversarial spaces, Balanced across classes/features, and Accurate in measurement and labelling",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        5,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Methods supporting Data Management include collection, preprocessing (labeling, feature engineering), augmentation (e.g., GANs, adversarial examples, dustbin class), exploratory data analysis, experimental design and simulation verification; configuration and provenance management mitigate integrity and bias risks",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Open Data Management challenges include detecting data backdoors, demonstrating synthetic-data representativeness, detecting data leakage, measuring completeness for operational/failure/adversarial domains, finding small disjuncts and correcting feature imbalance, ensuring consistent human labelling, and verifying complex simulations",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Model Learning should produce models that are Performant (contextual metrics), Robust to distributional and adversarial perturbations, Reusable via transfer, and Interpretable/explainable",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Methods for Model Learning include model selection, training with validation and cross-validation, hyperparameter optimization (grid/random/search, automated tuners), regularization (dropout, l1/l2, early stopping), transfer learning and ensembles to improve performance and robustness",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Open Model Learning challenges include selecting performance measures reflecting operational context, run-time multi-objective evaluation, context-aware hyperparameter tuning, understanding hyperparameter impact, decoupling perturbation effects on robustness, defining contextual robustness metrics, identifying similarity for transfer, ensuring reused models are fault-free, and global interpretability for complex models",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Model Verification must produce evidence that is Comprehensive (coverage of requirements, data, model properties), Contextually Relevant (maps to real-world perturbations and system semantics), and Comprehensible to stakeholders",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Verification methods include requirement encoding into tests and formal properties, test-based verification (data and model coverage, guided fuzzing, simulation-based tests), and formal techniques for neural networks (SMT solvers, abstract interpretation) as well as verifier tools for other model classes and verification of ML libraries",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Open Model Verification challenges include discovering typical ML failure modes and defenses, defining meaningful test and model-coverage measures with justification, extending formal verification beyond neural networks, mapping requirements to model features and RL states, creating general context-aware synthetic test frameworks, and producing counterexamples that guide model repair",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Model Deployment must ensure deployed models are Fit-for-Purpose within the system context, Tolerated by system architectures (can fail safely), and Adaptable (updates and fleet management)",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Deployment methods include integration with system sensors/effectors, monitoring inputs/environment/model internals/outputs, built-in tests and confidence measures, aggregation or monitors and fallback architectures to tolerate errors, on-target testing for hardware differences, and update processes including staged fleet roll-outs and compatibility checks",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: A comprehensive assurance approach requires stage-specific desiderata, applying and extending existing ML, software-engineering and formal methods, and targeted research to resolve the open challenges identified across the lifecycle",
+      "role": "Conclusion",
+      "parents": [
+        1
+      ],
+      "children": null
+    }
+  ]
+}

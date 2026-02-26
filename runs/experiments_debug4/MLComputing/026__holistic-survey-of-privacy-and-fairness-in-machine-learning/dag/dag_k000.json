@@ -1,0 +1,138 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "How do privacy and fairness objectives interact in machine learning, and how can they be jointly achieved across supervised, unsupervised, semi-supervised, and reinforcement learning?",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We perform a holistic literature survey of nearly 200 papers examining privacy and fairness across SL, UL, SSL, and RL, consolidating notions, mechanisms, architectures, impacts, and open challenges.",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Context: Privacy aims to control disclosure of individuals' data (e.g., differential privacy, homomorphic encryption); fairness aims to ensure equitable and non-discriminatory outcomes (many group and individual notions).",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "There is no consensus on how privacy and fairness relate: literature reports both trade-offs and alignments depending on methods, models, data distributions, and application domains.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Five common architectures for combining privacy and fairness: (A) sanitize data then fairness processing; (B) joint private-and-fair training; (C) separate private sanitization of sensitive attributes then pipeline; (D) federated learning with local privacy + global fairness; (E) cryptographic fairness audits (MPC/secure aggregation).",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Impact of privacy on fairness: empirical and theoretical evidence is mixed—some studies find DP or HE reduces bias or supports fairness (aligned), others show DP (e.g., DP-SGD, strong noise) amplifies errors for underrepresented groups and harms fairness (contrasting).",
+      "role": "Result",
+      "parents": [
+        3,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Impact of fairness on privacy: outcomes also conflict—certain fairness constraints (e.g., individual fairness, equalized odds) can reduce attribute inference risk or be compatible with DP, while other fairness interventions can increase membership/attribute leakage for underprivileged subgroups.",
+      "role": "Result",
+      "parents": [
+        3,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Algorithms that attempt concurrent privacy and fairness include: DP-aware fairness methods (e.g., FairDP), joint objective/adversarial methods, privacy-preserving federated learning with fairness components, and mechanisms leveraging exponential mechanism for selection problems; theoretical limits exist (impossibility results under some notions).",
+      "role": "Claim",
+      "parents": [
+        3,
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Application-specific observations: healthcare, NLP, computer vision, and spatial data each present distinct interactions between privacy and fairness (e.g., synthetic data in healthcare; DP on census/spatial data can induce allocation disparities).",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Open challenges and vision for large language models and modern ML: increased privacy and fairness risks from model memorization and representations, API-based guarding, learning-from-human-feedback as an avenue, and need for methods that scale to LLMs.",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Cryptographic approaches (HE, PHE, SHE, MPC) offer promise to relax trust assumptions for joint privacy-fairness solutions but raise implementation challenges (limited operations, performance, expressing fairness constraints over encrypted data).",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: No universal solution—privacy and fairness can be aligned or in tension; practical joint solutions require careful choice of fairness notion, privacy mechanism, architecture, domain considerations, and tuning; future work needed on LLMs, fair privacy guarantees, and cryptographic implementations.",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        9,
+        10,
+        0
+      ],
+      "children": null
+    }
+  ]
+}

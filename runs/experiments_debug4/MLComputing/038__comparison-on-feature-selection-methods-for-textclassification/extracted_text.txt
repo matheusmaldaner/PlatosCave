@@ -1,0 +1,652 @@
+--- Page 1 ---
+.
+.
+Latest updates: hps://dl.acm.org/doi/10.1145/3380625.3380677
+.
+.
+RESEARCH-ARTICLE
+Comparison on Feature Selection Methods for Text Classification
+WENKAI LIU, Tianjin University, Tianjin, China
+.
+JIONGEN XIAO, Guangdong University of Finance & Economics, Guangzhou, Guangdong,
+China
+.
+MING HONG, South China University of Technology, Guangzhou, Guangdong, China
+.
+.
+.
+Open Access Support provided by:
+.
+Tianjin University
+.
+Guangdong University of Finance & Economics
+.
+South China University of Technology
+.
+PDF Download
+3380625.3380677.pdf
+29 December 2025
+Total Citations: 7
+Total Downloads: 264
+.
+.
+Published: 17 January 2020
+.
+.
+Citation in BibTeX format
+.
+.
+ICMSS 2020: 2020 4th International
+Conference on Management
+Engineering, Soware Engineering and
+Service Sciences
+January 17 - 19, 2020
+Wuhan, China
+.
+.
+ICMSS 2020: Proceedings of the 2020 4th International Conference on Management Engineering, Soware Engineering and Service Sciences (January 2020)
+hps://doi.org/10.1145/3380625.3380677
+ISBN: 9781450376419
+.
+
+
+--- Page 2 ---
+Comparison on Feature Selection Methods for Text 
+Classification 
+Wenkai Liu 
+College of Management and 
+Economics 
+Tianjin University  
+Tianjin, China 
+Jiongen Xiao* 
+International Business School 
+Guangdong University of  
+Finance & Economics 
+Guangzhou, China 
+*Corresponding Author 
+20191068@gdufe.edu.cn 
+Ming Hong 
+School of Economics and Commerce 
+South China University of Technology 
+Guangzhou, China 
+ 
+ 
+ 
+ 
+ABSTRACT 
+The high-dimensional text data always contains a large quantity of 
+noisy terms which bring negative effects on the performance of 
+text classification. Feature selection is the common solution for 
+dimension reduction in text classification. The choices of feature 
+selection methods for text classification have significant impacts 
+on classification accuracy. According to our literature review, few 
+recent studies of feature selection focus on performance 
+comparisons on feature selection methods. To fill this gap, this 
+paper conducts discussions to compare performances of typical 
+feature selection methods which are commonly involved in 
+previous studies for text classification. Firstly, we introduce and 
+discuss a series of typical feature selection methods in previous 
+studies for text classification in details. Secondly, we conduct 
+comparison experiments on four benchmark datasets to compare 
+the effectiveness of twenty typical feature selection methods in 
+text classification. Finally, we give conclusions on performance of 
+the typical feature selection methods. The result of this paper 
+gives a guideline for selecting appropriate feature selection 
+methods for text classification academic analysis or real-world 
+text classification applications. 
+CCS Concepts 
+•Computing methodologies →Machine learning →Machine 
+learning algorithms →Feature selection. 
+Keywords 
+Text mining; Text classification; Feature selection 
+1. INTRODUCTION 
+Text classification (TC) is one of the most important subfields of 
+text mining. TC aims to attach pre-defined class labels to text 
+documents with unknown classes for further mining of 
+commercial value and practical meaning of text. TS has been 
+involved in various practical tasks, such as the analysis of public 
+opinion [1] and security [2], the applications of business [3], 
+education [4] and social media [5]. 
+The performance of TC models is significantly affected by the 
+quality of text data. However, the high-dimensional text data 
+always contains a lot of noisy terms. These noisy terms bring 
+negative effects on performance of the classification models. 
+Recently, many researchers have made efforts to design more 
+precise TC models, including improved traditional models [6], 
+models based on deep neural networks [7] and hybrid models 
+combining traditional and deep learning models [8].These 
+improved models are still unable to avoid the negative effects 
+because noisy terms are still taken advantages of in the training 
+process. Feature selection (FS) is one of the solutions to ease the 
+negative effects of noisy terms on performance of TC. Generally, 
+FS is the technique to select effective features from a large 
+quantity of coordinate features of target data. In text domain, FS 
+can be used to select informative terms for the training of 
+classification models. FS is beneficial for the improvement of TC 
+accuracy because it decreases the proportion of noisy terms and 
+increases the proportion of informative terms. The negative effects 
+of noisy terms on TC can be reduced by FS. 
+A lot of FS methods have been proposed for TC. However, few 
+researches have discussed the different performances of FS 
+methods in TC. A systematic comparison of FS methods for TC is 
+of academic and practical values: (1) researchers are able to 
+choose appropriate FS methods for their studies on TC so that 
+quality of their experiments can be improved. (2) TC applications 
+in real-world scenarios can be improved by better classification 
+accuracy caused by FS. According to our literature reviews of FS, 
+few recent studies focus on performance comparison on FS 
+methods. To fill this gap, we conduct systematic summarization 
+and discussion on FS methods. Firstly, we summarize the typical 
+FS methods for text classification. Typical FS methods are 
+commonly involved in previous researches. Secondly, we 
+compare the different performance of these methods by 
+conducting comparative experiments on benchmark datasets. 
+Finally, we give conclusions on performance of the typical feature 
+selection methods. 
+The contribution of this paper is the systematic comparison on 
+performance of commonly used FS methods for TC. We provide a 
+comprehensive summarization on typical FS methods in previous 
+researches and discuss the performance of these FS methods 
+experimentally. According to our literature review, few recent 
+researches cover comparisons on FS methods. The result of our 
+paper gives a guideline for other researchers (or users) to select 
+appropriate FS methods for academic TC tasks (or real-world TC 
+applications). 
+Permission to make digital or hard copies of all or part of this work for 
+personal or classroom use is granted without fee provided that copies are 
+not made or distributed for profit or commercial advantage and that 
+copies bear this notice and the full citation on the first page. Copyrights 
+for components of this work owned by others than ACM must be 
+honored. Abstracting with credit is permitted. To copy otherwise, or 
+republish, to post on servers or to redistribute to lists, requires prior 
+specific permission and/or a fee. Request permissions from 
+Permissions@acm.org. 
+ICMSS 2020, January 17–19, 2020, Wuhan, China 
+© 2020 Association for Computing Machinery. 
+ACM ISBN 978-1-4503-7641-9/20/01…$15.00 
+DOI: https://doi.org/10.1145/3380625.3380677 
+82
+
+
+--- Page 3 ---
+The rest of this paper is organized as follows. Section 2 gives 
+literature review on FS in recent researches. Section 3 introduces 
+and discusses typical FS methods in previous studies. Section 4 
+conducts comparison experiments on four benchmark datasets to 
+discuss performance of 20 typical FS methods introduced in 
+Section 3. Section 5 gives conclusions. 
+2. LITERATURE REVIEW 
+Recent researches focus on developing effective FS methods for 
+text classification. 
+Some researchers develop FS methods based optimization 
+techniques. Most of these methods are developed according to 
+evolutionary algorithms such as particle swarm optimization 
+(PSO), genetic algorithms and ant colony optimization. Lee et al. 
+(2019a) [9] presented a method based on PSO. In this method, 
+term subset was modified according to effectiveness by the 
+selected operator to solve the problem of degenerated term subsets. 
+Kushwaha and Pant (2018) [10] presented an improved PSO 
+based FS method. The method updated particles according to 
+neighbor best position to extend the limitation of traditional global 
+best updating strategy. Abualigah and Khader (2017) [11] 
+developed a hybrid method by integrating PSO with genetic 
+algorithm and k-means clustering. The k-means clustering is used 
+for evaluating the quality of the term subset. Onan and Korukoglu 
+(2017) [12] introduced an ensemble FS method. The method 
+created term subsets by using different other FS methods. Genetic 
+algorithm is applied to aggregate these term subsets. Ahmad et al. 
+(2019) [13] introduced a FS method based on ant colony 
+optimization algorithm.The method used k-nearest neighbor to 
+generate the final term subset. Based on other optimization 
+algorithm, Huang et al. (2019) [14] used the concept of multiple 
+objectives optimization for FS. The proposed methodwas able to 
+achieve the best number of terms automatically. Moreover, the 
+authors developed a parallel algorithm to lower the computational 
+cost of optimization process. 
+There 
+are 
+researches 
+on 
+FS 
+methods 
+which 
+select 
+discriminative terms according to frequency information of 
+text directly. Kim and Zzang (2019) [15] presented a FS method 
+to emphasize the use of relative document frequencies. The 
+method selected discriminative terms according to true positive 
+rate and false positive rate. Lee et al. (2019b) [16] proposed a new 
+memetic FS method to solve the problem that conventional 
+memetic FS methods was limited to use ineffective feature filter 
+to achieve term subsets with low accuracy. Shain and Kilic (2019) 
+[17] proposed two modified FS methods. One of the two methods 
+was developed by employing new parameters to the original 
+Relevance Frequency method. Another method was achieved by 
+changing parameters of the traditional Accuracy2 method. Labani 
+et al. (2018) [18] proposed a FS method which focused on both 
+redundancy and relevancy of terms. The method reduced 
+redundant terms and then evaluated redundancy between terms 
+according to their correlations. Rehman et al. (2017) [19] 
+presented an improved method which considered relative 
+document frequencies. The proposal the method aimed to solve 
+the problem that ACC2 method assigned equal rankings to terms 
+with equal difference calculating by frequencies in positive and 
+negative classes. 
+Information theory is also used by researchers to design FS 
+methods. Tang et al. (2019) [20] decomposed the problem of FS 
+based on mutual information to a sum of low-order interactions 
+and then employed the five-dimensional joint mutual information 
+to estimate the interaction terms. Li et al. (2017) [21] presented a 
+FS method based on information theory. The method used mutual 
+information based on Renyi entropy to evaluated relationships 
+between terms and class labels. The discriminative term subset 
+was created by maximum mutual information. 
+Theories of economy and neural science can also be used for 
+designing FS methods. Wang et al. (2019) [22] proposed a FS 
+based on utility, an economic concept. The method selected 
+discriminative terms by measuring the usefulness terms.The 
+useful terms werehelpful for authors to express their main ideas. 
+Wang and Hong (2019) [23] applied the Hebb rule to develop a 
+FS method for TC. The method treated terms and class labels as 
+neurons and select effective terms according to the strength of 
+relationships between terms and class labels. 
+This paper is motivated by the following two observations 
+according to literature review in this section. 
+Observation 1: In recent researches, typical FS methods are 
+involved as benchmarks for evaluating the effectiveness of the 
+proposed methods. However, the comparison experiments only 
+cover a few typical FS methods. A systematic comparison on 
+performance of typical FS methods can provide researchers a 
+guideline to select benchmark FS methods to better illustrate their 
+experimental results in order to achieve more persuasive 
+conclusion. 
+Observation 2: The recently proposed FS methods have not been 
+compared in various text domains. The effectiveness of these 
+methods remains to be further evaluated. On the contrary, the 
+typical FS methods are commonly used in TC tasks or as 
+benchmarks in previous studies. The performances of these typical 
+FS methods have been evaluated by various studies in many text 
+domains. The performances of typical FS methods in TC are more 
+reliable. However, recent studies do not cover the systematic 
+comparison on many typical FS methods.  
+In this paper, we try to conduct systematic comparison 
+experiments 
+to 
+provide 
+a 
+comprehensive 
+research 
+on 
+performances of typical FS methods in TC. We do our best to 
+cover as many typical FS methods as possible. Moreover, we try 
+to use more reliable datasets which have been involved in publish 
+papers and covers various text domains. 
+3. TYPICAL FS METHODS 
+This section introduces and discusses typical FS methods. These 
+methods are either supervised or unsupervised. Supervised 
+methods take advantages of class information during FS process 
+while unsupervised methods ignore class information. 
+Before text classification, unstructured text data is commonly 
+transformed into a structured matrix termed document-term matrix 
+(DTM. The general form of the 𝑛× 𝑚 DTM is shown in Figure 1. 
+The 𝑖th row 𝑑𝑖 represents the 𝑖th text document (𝑖= 1,2, ⋯, 𝑛). 
+The 𝑗th column 𝑡𝑗represents the 𝑗th term in the 𝑛 text documents 
+(𝑗= 1,2, ⋯, 𝑚). The (𝑖, 𝑗) element 𝑡𝑖𝑗 represents term frequency 
+of 𝑡𝑗in 𝑑𝑖. 
+ 
+Figure 1. General form of the 𝒏× 𝒎 DTM 
+83
+
+
+--- Page 4 ---
+3.1 Supervised Methods 
+Supervised methods measures terms according to relationship 
+between frequencies and classes. In the following Formulas, 
+𝐶𝐿represents the set of classes, 𝑐𝑘 represents the 𝑘th class in 𝐶𝐿. 
+𝑃(∗) represents probability. 
+Information gain (IG) given by Formula (1) is the most commonly 
+used FS method in previous studies. IG measures the quantity of 
+information that terms offer for text classification.  
+𝐼𝐺(𝑡𝑗) =
+𝑃(𝑡𝑗) ∑
+𝑃(𝑐𝑘|𝑡𝑗)
+𝑐𝑘∈𝐶𝐿
+𝑙𝑜𝑔
+𝑃(𝑐𝑘|𝑡𝑗)
+𝑃(𝑐𝑘) +
+𝑃(𝑡̅𝑗) ∑
+𝑃(𝑐𝑘|𝑡̅𝑗)
+𝑐𝑘∈𝐶𝐿
+𝑙𝑜𝑔
+𝑃(𝑐𝑘|𝑡̅𝑗)
+𝑃(𝑐𝑘)  
+(1) 
+Expected cross entropy (ECE) is given by Formula (2). ECE 
+improves IG by ignoring absences of terms in classes (the second 
+part in Formula (1)). 
+𝐸𝐶𝐸(𝑡𝑗) = 𝑃(𝑡𝑗) ∑
+𝑃(𝑐𝑘|𝑡𝑗)
+𝑐𝑘∈𝐶𝐿
+𝑙𝑜𝑔
+𝑃(𝑐𝑘|𝑡𝑗)
+𝑃(𝑐𝑘)                  (2) 
+The average and maximum versions of mutual information (MI) 
+are respectively given by Formula (3) and (4). MI measures 
+correlations between terms and classes. It can be treated as the 
+simple form of ECE. 
+𝑀𝐼𝑎𝑣𝑔(𝑡𝑗) = ∑
+𝑃(𝑐𝑘)𝑙𝑜𝑔
+𝑃(𝑐𝑘 |𝑡𝑗)
+𝑃(𝑐𝑘)
+𝑐𝑘∈𝐶𝐿
+                 (3) 
+𝑀𝐼𝑚𝑎𝑥(𝑡𝑗) = max𝑐𝑘∈𝐶𝐿[𝑙𝑜𝑔
+𝑃(𝑐𝑘 |𝑡𝑗)
+𝑃(𝑐𝑘) ]                    (4) 
+Gini index (GI) and improved Gini index (IGI) are respectively 
+given by Formula (5) and (6). GI observes purity of distribution of 
+terms over classes. GI further simplifies MI. IGI improves GI by 
+adding distribution of classes over terms. 
+𝐺𝐼(𝑡𝑗) = ∑
+𝑃(𝑐𝑘|𝑡𝑗)
+2
+𝑐𝑘∈𝐶𝐿
+                     (5) 
+𝐼𝐺𝐼(𝑡𝑗) = ∑
+𝑃(𝑐𝑘|𝑡𝑗)
+2𝑃(𝑡𝑗|𝑐𝑘)
+2
+𝑐𝑘∈𝐶𝐿
+              (6) 
+The core of Chi-square (CHI) is given by Formula (7). The three 
+versions of CHI are respectively given by Formula (8) to (10). 
+CHI measures the lack of independence between terms and classes 
+𝜒2(𝑡𝑗, 𝑐𝑘) =
+𝑁[𝑃(𝑡𝑗 ,𝑐𝑘)𝑃(𝑡̅𝑗,𝑐̅𝑘)−𝑃(𝑡𝑗 ,𝑐̅𝑘)𝑃(𝑡̅𝑗 ,𝑐𝑘)]2
+𝑃(𝑡𝑗)𝑃(𝑡̅𝑗)𝑃(𝑐𝑘)𝑃(𝑐̅𝑘)
+              (7) 
+𝐶𝐻𝐼𝑎𝑣𝑔(𝑡𝑗) = ∑
+𝑃(𝑐𝑘)𝜒2(𝑡𝑗, 𝑐𝑘)
+𝑐𝑘∈𝐶𝐿
+                        (8) 
+𝐶𝐻𝐼𝑚𝑎𝑥(𝑡𝑗) = 𝑚𝑎𝑥𝑐𝑘∈𝐶𝐿𝜒2(𝑡𝑗, 𝑐𝑘)                            (9) 
+𝐶𝐻𝐼𝑠𝑢𝑚(𝑡𝑗) = ∑
+𝜒2(𝑡𝑗, 𝑐𝑘)
+𝑐𝑘∈𝐶𝐿
+                          (10) 
+The core of Odd ration (OR) is given by Formula (11).The four 
+versions of OR is given by Formula (12) to (15). OR observes 
+correlations between terms and classes. 
+𝑂𝑅(𝑡𝑗, 𝑐𝑘) = 𝑙𝑜𝑔
+𝑃(𝑡𝑗|𝑐𝑘)[1−𝑃(𝑡𝑗|𝑐̅𝑘)]
+[1−𝑃(𝑡𝑗|𝑐𝑘)]𝑃(𝑡𝑗|𝑐̅𝑘)                      (11) 
+𝐸𝑂𝑅(𝑡𝑗) = ∑
+𝑂𝑅(𝑡𝑗, 𝑐𝑘)
+𝑐𝑘∈𝐶𝐿
+                          (12) 
+𝑊𝑂𝑅(𝑡𝑗) = ∑
+𝑃(𝑐𝑘)𝑂𝑅(𝑡𝑗, 𝑐𝑘)
+𝑐𝑘∈𝐶𝐿
+                (13) 
+𝑀𝑂𝑅(𝑡𝑗) = ∑
+|𝑂𝑅(𝑡𝑗, 𝑐𝑘)|
+𝑐𝑘∈𝐶𝐿
+                        (14) 
+𝑀𝐶−𝑂𝑅(𝑡𝑗) = ∑
+𝑃(𝑐𝑘)|𝑂𝑅(𝑡𝑗, 𝑐𝑘)|
+𝑐𝑘∈𝐶𝐿
+                  (15) 
+3.2 Unsupervised Methods 
+Unsupervised methods select informative terms by measuring 
+frequency statistical characteristics. 
+Document frequency (DF) assumes that effective terms should 
+exist in many text documents. DF is given by Formula (16). 
+𝐷𝐹(𝑡𝑗) = ∑(𝑡𝑖𝑗> 0)
+𝑖
+                            (16) 
+Term frequency (TF) assumes that frequent terms are informative. 
+TF is given by Formula (17). 
+𝑇𝐹(𝑡𝑗) = ∑𝑡𝑖𝑗
+𝑖
+                                       (17) 
+Mean median (MM) measures information of a term by the 
+difference between its arithmetic mean (𝑚𝑒𝑎𝑛(𝑡𝑗)) and median 
+(𝑚𝑒𝑑𝑖𝑎𝑛(𝑡𝑗)). MM is given by Formula (18). 
+𝑀𝑀(𝑡𝑗) = |𝑚𝑒𝑎𝑛(𝑡𝑗) −𝑚𝑒𝑑𝑖𝑎𝑛(𝑡𝑗)|                      (18) 
+Arithmetic Mean and Geometric Mean (AMGM) evaluates a term 
+by the difference between its arithmetic mean and its geometric 
+mean. AMGM is given by Formula (19). 
+𝐴𝑀𝐺𝑀(𝑡𝑗) ==
+1
+𝑛∑𝑒𝑥𝑝(𝑡𝑖𝑗)
+𝑖
+𝑒𝑥𝑝(1
+𝑛∑𝑡𝑖𝑗
+𝑖
+)                                   (19) 
+Term variance (TV) measures information of terms by variances. 
+TV is given by Formula (20). 
+𝑇𝑉(𝑡𝑗) =
+1
+𝑛∑[𝑡𝑖𝑗−𝑚𝑒𝑎𝑛(𝑡𝑗)]2
+𝑖
+                              (20) 
+Mean Absolute Difference (MAD) can be treated as the simplified 
+form of TV. MAD is given by Formula (21). 
+𝑀𝐴𝐷(𝑡𝑗) =
+1
+𝑛∑|𝑡𝑖𝑗−𝑚𝑒𝑎𝑛(𝑡𝑗)|
+𝑖
+                         (21) 
+Term variance quality (TVQ) evaluates a term by difference 
+between its sum of squares and squares of sum 
+𝑇𝑉𝑄(𝑡𝑗) = ∑𝑡𝑖𝑗2
+𝑖
+−
+1
+𝐷𝐹(𝑡𝑗) (∑𝑡𝑖𝑗
+𝑖
+)
+2                          (22) 
+4. EXPERIMENTS 
+4.1 Datasets and Evaluation Metrics 
+Four datasets achieved from the UCI repository are used in our 
+comparison experiments. The four datasets are named as CARR, 
+COMD, IMDB, and KDCN respectively. The CARR dataset 
+contains user reviews on various kinds of cars of a famous brand. 
+The COMD dataset is made up of textual business descriptions on 
+Brazilian companies of nine classes. The IMDB dataset contains 
+positive and negative movie reviews. The KDCN dataset contains 
+manyTurkish news. The quality of our comparison experiments 
+can be guaranteed because the four selected datasets cover various 
+domains such as cars, companies, movies as well as news, and 
+moreover, they have been involved in published papers of several 
+text mining tasks. 
+Decision tree (DT) which has been successfully involved in 
+various TC domains is chosen as the classifier for our experiments. 
+The commonly used classification accuracy is used to measure 
+performance of DT classifier to compare performance of FS 
+methods. 10-fold cross validation is used to provide more 
+robustexperimental results. 
+4.2 Experimental Results 
+The experimental results of DT classification accuracies are 
+shown in Figure 2 to 5. DT classifiers are trained under the 
+84
+
+
+--- Page 5 ---
+different numbers (the numbers of the X axis) of selected terms. 
+The following conclusions can be draw according to experimental 
+results. 
+(1) IGI, MOR and MC-OR performs the best among all the 
+methods. Moreover, there are not significant differences 
+between classification accuracies of MOR and MC-OR. The 
+ranking is MOR = MC-OR > IGI. 
+(2) TV, TVQ, TF and DF achieve relatively good performance. 
+According to the classification accuracies, the general 
+ranking of the four methods are TV > TVQ > TF > DF. 
+However, TVQ performs the best among all the methods in 
+the IMDB dataset. 
+(3) The three versions of CHI achieve relatively good 
+performance. Classification accuracies of the three versions 
+are not significant different. 
+(4) ECE performs well in most of the cases. However, it is unable 
+to achieve good classification accuracies for small numbers 
+(e.g. 20, 50) of selection terms 
+(5) The performances of AMGM, MM and MAD are not stable in 
+the four datasets. Performances of AMGM in the KDCN 
+dataset are much worse than its performances in other 
+datasets. Similar to AMGM, MM and MAD do not perform 
+well in the CARR dataset, according to the comparisons on 
+their performances in other datasets. 
+(6) IG, GI and MI achieve the worst classification accuracy 
+among all the methods. Moreover, the maximum version of 
+MI is better than its average version. 
+(7) General performances of EOR and WOR are followed by 
+performances of IG, GI and MI. 
+ 
+Figure 2. Experimental results of the CARR dataset 
+ 
+Figure 3. Experimental results of the COMD dataset 
+ 
+Figure 4. Experimental Results of the IMDB dataset 
+ 
+Figure 5. Experimental Results of the KDCN dataset 
+According to the above discussions, MOR and MC-OR are both 
+the best choice of FS method for TC. However, their formulas are 
+relatively complicated among all the methods. In addition, IGI are 
+the ideal candidate FS methods. On the one hand, IGI performs 
+well in the comparison experiments. On the other hand, the 
+formula of IGI is relatively simple and convenient to be 
+implemented by computer programs. Although MOR, MC-OR 
+and IGI perform well in TC tasks, they are necessary to calculate 
+distributions between terms and classes. Compared with TV, TVQ, 
+TF and DF, the above three supervised methods are necessary to 
+calculate probability of terms and classes, resulting in more 
+complex computational cost. The unsupervised TV, TVQ, TF and 
+DF are the better choices in the cases that efficiency is concerned 
+most under the premise of relatively high classification accuracies. 
+5. CONCLUSIONS 
+This paper compares the performances of 20 typical FS methods 
+in experiments. Conclusions are given as follows. 
+(1) MOR and MC-OR are both the best choices for TC. However, 
+the formulas of the two methods are relatively complex. 
+(2) IGI is the ideal candidate for MOR and MC-OR. IGI achieves 
+good performances which follow the performances of MOR and 
+MC-OR. Moreover, the formula of IGI is much simpler. 
+(3) TV, TVQ, TF and DF are the better choices in the cases that 
+efficiency is concerned most under the premise of relatively high 
+classification accuracies. 
+(4) In select appropriate FS methods, we need to make a better 
+strategy by considering both classification accuracy and 
+computational efficiency. 
+85
+
+
+--- Page 6 ---
+Our paper is of practical values to give a guideline for researchers 
+(or users) to select appropriate FS methods for academic TC 
+analysis (or TC application in real-world scenarios). 
+6. REFERENCES 
+[1] Zhang, S., Chen, Y. & Huang, X. L. (2019). Text 
+Classification of Public Feedbacks using Convolutional 
+Neural Network Based on Differential Evolution Algorithm. 
+International Journal of Computers Communications & 
+Control, 14, 1(Feb. 2019), 124-134. 
+DOI=10.15837/ijccc.2019.1.3420. 
+[2] Mujtaba, G., Shuib, L. & Raj, R. G. 2019. Detection of 
+Suspicious Terrorist Emails Using Text Classification: A 
+Review. Malaysian Journal of Computer Science, 31, 
+4(2018), 271-299. DOI=10.22452/mjcs.vol31no4.3. 
+[3] Bharadwaj, S., Sridhar, S. & Choudhary, R. 2018. Persona 
+Traits Identification based on Myers-Briggs Type 
+IndicatorMBTI -- A Text ClassificationApproach. In 
+Proceedings of the 7th International Conference on 
+Computing, Communications and Informatics ICACCI 
+(Bangalore, India, Sep. 19-22, 2018), IEEE, New York, NY, 
+1076-1082. 
+[4] Wenando, F. A., Adji, T. B. & Ardiyanto, I. 2017. Text 
+classification to detect student level of understanding in prior 
+knowledge activation process. Advanced Science Letters, 23, 
+3(Mar. 2017), 2285-2287. DOI=10.1166/asl.2017.8768. 
+[5] Parwez, M., A., Abulaish, M. & Jahiruddin. 2019. Multi-
+Label Classification of Microblogging Texts Using 
+Convolution Neural Network. IEEE Access, 7(2019), 68678-
+68691. DOI=10.1109/ACCESS.2019.2919494. 
+[6] Viegas, F., Rocha, L., Resende, E., et al. 2018. Exploiting 
+efficient and effective lazy Semi-Bayesian strategies for text 
+classification. Neurocomputing, 307(Sep. 2018), 153-171. 
+DOI=10.1016/j.neucom.2018.04.033. 
+[7] Jiang, M., Liang, Y., Feng, X., et al. 2018. Text classification 
+based on deep belief network and softmax regression. Neural 
+Computing & Applications, 29, 1(Jan. 2018), 61-70. 
+DOI=10.1007/s00521-016-2401-x. 
+[8] Kilimci, Z., H. & Akyokus, S. 2018. Deep Learning- and 
+Word Embedding-Based Heterogeneous Classifier 
+Ensembles for Text Classification. Complexity, 2018(2018), 
+1-10. DOI=10.1155/2018/7130146 . 
+[9] Lee, J., Park, J., Kim, H. C., et al. 2019a. Competitive 
+particle swarm optimization for multi-category text feature 
+selection. Entropy, 21, 6(Jun. 2019). 
+DOI=10.3390/e21060602. 
+[10] Kushwaha, N. & Pant, M. 2018. Link based BPSO for 
+feature selection in big data text clustering. Future 
+Generation Computer Systems-The International Journal of 
+Escience, 82(May. 2018), 109-199. 
+DOI=10.1016/j.future.2017.12.005. 
+[11] Abualigah, L. M. & Khader, A. T. 2017. Unsupervised text 
+feature selection technique based on hybrid particle swarm 
+optimization algorithm with genetic operators for the text 
+clustering. Journal of Supercomputing, 73, 11(Nov. 2017), 
+4773-4795. DOI=10.1007/s11227-017-2046-2. 
+[12] Onan, A. & Korukoglu, S. 2017. A feature selection model 
+based on genetic rank aggregation for text sentiment 
+classification. Journal of Information Science, 43, 1(Feb. 
+2017), 25-38. DOI=10.1177/0165551515613226. 
+[13] Ahmad, S. R., Abu Bakar, A. & Yaaku, M. R. 2019. Ant 
+colony optimization for text feature selection in sentiment 
+analysis. Intelligent Data Analysis, 23, 1(2019), 133-158. 
+DOI=10.3233/IDA-173740. 
+[14] Huang, C., Zhu, J., Liang Y., et al. 2019. An efficient 
+automatic multiple objectives optimization feature selection 
+strategy for internet text classification. International Journal 
+of Machine Learning and Cybernetics, 10, 5(May. 2019), 
+1151-1163. DOI= 10.1007/s13042-018-0793-x. 
+[15] Kim, K. &Zzang, S. Y. 2019. Trigonometric comparison 
+measure: A feature selection method for text categorization. 
+Data & Knowledge Engineering, 119(Jan. 2019), 1-21. 
+DOI=10.1155/2018/7130146. 
+[16] Lee, J., Yu, I., Park, J., et al. 2019b. Memetic feature 
+selection for multilabel text categorization label frequency 
+difference. Information Sciences, 485(Jun. 2019), 263-280. 
+DOI=10.1016/j.ins.2019.02.021. 
+[17] Sahin, D. O. &Kilic, E. 2019. Two new feature selection 
+metrics for text classification. Automatika, 60, 2(2019), 162-
+171. DOI=10.1080/00051144.2019.1602293. 
+[18] Labani, M., Moradi, P., Ahmadizar, F., et al. 2018. A novel 
+multivariate filter method for feature selection in text 
+classification problems.Engineering Applications of Artificial 
+in Intelligence, 70(Apr. 2018), 25-37. 
+DOI=10.1016/j.engappai.2017.12.014. 
+[19] Rehman, A., Javed, K. & Babri, H. A. 2017. Feature 
+selection based on a normalized difference measure for text 
+classification. Information Processing & Mangement, 53, 
+2(Mar. 2017), 473-489. DOI=10.1016/j.ipm.2016.12.004. 
+[20] Tang, X., Dai, Y., Xiang, Y. 2019. Feature selection based on 
+feature interactions with application to text categorization. 
+Expert Systems with Applications, 120(Apr. 2019), 207-216. 
+DOI=10.1016/j.eswa.2018.11.018. 
+[21] Li, Z., Lu, W., Sun, Z., et al. 2017. A parallel feature 
+selection method study for text classification. Neural 
+Computing & Applications, 28, 1(Dec. 2017), S513-S524. 
+DOI=10.1007/s00521-016-2351-3. 
+[22] Wang, H., Hong, M. & Lay, R. Y. K. 2019. Utility-based 
+feature selection for text classification. Knowledge and 
+information systems, 61, 1(Oct. 2019), 197-226. DOI= 
+10.1007/s10115-018-1281-z. 
+[23] Wang, H., Hong, M. 2019. Supervised Hebb rule based 
+feature selection for text classification. Information 
+Processing & Management, 56, 1(Jan. 2019), 167-191. DOI= 
+10.1016/j.ipm.2018.09.004. 
+ 
+86

@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible for HPC workflows due to growing data volumes and known use of GPU based lossy compression with user controlled error bounds, though specifics depend on workload and compressor design.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.62,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the three limitations identified are plausible challenges for GPU lossy compressors, but no specific evidence is provided here.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a design approach combining multiple algorithms, dimension-aware processing, memory-efficient compression, selective decompression, and a single kernel implementation; without specific context or sources it is plausible but unverified.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.72,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a multi stage compression pipeline with blockwise processing and a global prefix sum for concatenation, combining lossy and lossless steps; without empirical evidence it's plausible but not verifiable here.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.4,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Without external sources, the claim's specifics about VGC per-dimension modes and 1D to 3D blocking are plausible but not verifiable from the provided text alone.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim proposes a specific encoding approach that combines dimension aware delta encoding with block level processing to optimize memory access on GPUs, which is plausible but not standard knowledge.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.62,
+    "relevance": 0.78,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible two pass kernel approach where per block compressed size is estimated first, a global scan determines total size, memory is allocated exactly, and a second kernel writes the compressed blocks using computed offsets; this aligns with general GPU memory management practices but lacks cited evidence and context to confirm adoption in a specific work.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a selective decompression technique using early stopping in a global prefix sum over block metadata to identify necessary blocks for region of interest, then decompress and write back into compressed array for homomorphic operations; without corroborating text, assessment is speculative.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the given claim text and general background knowledge about GPU capabilities; no external data consulted.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim alone, VGC is said to outperform or match state of the art GPU compressors in throughput with roughly two times higher performance than several baselines and higher decompression throughput than cuSZp2, but no data, methodology, or independent verification is provided.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, without external data or verification, the reported dominance of VGC-O over cuSZp2 across 13 datasets at REL 1e-4 is uncertain and cannot be confirmed from general knowledge alone.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts dimensionality improves compression and cites RTM field example with 3D outperforming 1D by about 51 percent; without external data, assessment is plausible but not verified.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim, the described memory efficient compression plausibly reduces actual allocated memory and retains around seventy percent throughput, but without empirical details or references the claims cannot be independently verified.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the claimed throughputs are highly specific and extreme, with no accompanying methodology, thus credibility is plausible but uncertain and evidence strength remains unknown.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, no external verification is performed; metrics appear plausible but require the original study for confirmation.",
+    "confidence_level": "medium"
+  }
+}

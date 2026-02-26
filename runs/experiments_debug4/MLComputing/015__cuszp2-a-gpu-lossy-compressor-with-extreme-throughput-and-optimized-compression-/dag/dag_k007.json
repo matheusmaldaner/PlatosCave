@@ -1,0 +1,203 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A single-kernel, pure-GPU lossy compressor (CUSZP2) can achieve extreme end-to-end throughput and optimized compression ratios while preserving user-bounded error guarantees and high reconstructed data quality",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "CUSZP2 is implemented as a single GPU kernel that performs compression/decompression entirely on-device and operates on uniformly-sized blocks, avoiding CPU computations and CPU-GPU data movement",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Outlier fixed-length encoding (Outlier-FLE) selectively encodes blocks by preserving an adaptive outlier size and per-element effective bit lengths to reduce compressed size compared to plain fixed-length encoding",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Vectorized memory accesses: use vector variables within blocks and coalesced block-level accesses across warps to reduce memory instructions and maximize global memory bandwidth utilization",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Global prefix-sum via decoupled lookback: a compression-aware adaptive lookback allows thread blocks to aggregate predecessors' reductions while waiting, hiding device-level synchronization latency",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "CUSZP2 supports two lossless encoding modes: Plain-FLE for maximum throughput and Outlier-FLE with a fine-tuned per-block selection strategy for improved compression ratio",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        2,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "End-to-end throughput is measured as the time to produce the final concatenated compressed (or reconstructed) array on GPU including malloc, memcpy, kernel calls, and device-level APIs, not just kernel-only throughput",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "CUSZP2 workflow: (1) lossy conversion to quantization integers within error bound, (2) lossless encoding per block (Plain-FLE or Outlier-FLE), (3) device-level prefix-sum via decoupled lookback to compute offsets, (4) block concatenation into unified byte array",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Outlier-FLE selection yields higher compression ratios for smooth datasets by storing a small outlier representation and per-element effective bit lengths; selection is cheap by iterating absolute values",
+      "role": "Claim",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Outlier-FLE encodes mode flag, outlier length (2 bits), and fixed-length (5 bits) in block offset byte to enable adaptive outlier storage without extra overhead",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Vectorization and coalescing increased measured GPU global memory throughput from 159-397 GB/s (baseline pure-GPU compressors) to about 1100-1175 GB/s for CUSZP2 on NVIDIA A100, approaching hardware limit",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Decoupled lookback synchronization achieved about 846.85 GB/s device-level synchronization throughput, 2.41x faster than plain chained-scan, reducing prefix-sum latency",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Measured end-to-end results on NVIDIA A100 across 9 HPC datasets: average compression throughput 332.42 GB/s and decompression throughput 513.04 GB/s, about 2x of state-of-the-art pure-GPU compressors and ~200x of CPU-GPU hybrids",
+      "role": "Result",
+      "parents": [
+        6,
+        10,
+        11,
+        7
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 13,
+      "text": "CUSZP2-O (Outlier-FLE) attains higher compression ratios than baselines in 24 of 27 evaluated cases and improves ratios substantially for globally smooth datasets (e.g., CESM-ATM, HACC, Miranda)",
+      "role": "Result",
+      "parents": [
+        8,
+        5
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "CUSZP2 preserves high reconstructed data quality: matches or exceeds visualization isosurface fidelity compared to cuZFP at aggressive compression ratios and yields best rate-distortion among error-bounded GPU compressors (same lossy quantization step)",
+      "role": "Evidence",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "CUSZP2 features and optimizations generalize: supports double-precision with higher absolute throughput (e.g., 612.8-809.7 GB/s), random access to blocks with ~1010 GB/s average, and achieves ~2x throughput advantage on RTX 3090/3080 versus baselines",
+      "role": "Result",
+      "parents": [
+        12,
+        13
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Processing data with 1D first-order difference (rather than 2D/3D Lorenzo) is a tradeoff: 1D simplifies memory access and yields higher throughput while multi-dimensional variants raise memory complexity and only marginally improve compression ratio in many cases",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    }
+  ]
+}

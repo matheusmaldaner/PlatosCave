@@ -1,0 +1,163 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Likelihood-based analysis of vector autoregressive (VAR) models provides a coherent statistical framework to model, estimate and test cointegration relations among nonstationary economic time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "There are three parametric model formulations to represent cointegration: the regression residual approach (Engle-Granger), the autoregressive error correction VAR formulation, and the unobserved components formulation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "The cointegrated VAR model analyzed has the error correction form: Delta x_t = alpha(beta' x_{t-1} + Upsilon D_t) + sum Gamma_i Delta x_{t-i} + Phi d_t + epsilon_t with i.i.d. errors epsilon_t and cointegration rank r",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Granger Representation Theorem: under the I(1) condition the solution of the error correction VAR has a moving average representation with r stationary long-run relations beta' x_t and p-r common stochastic trends given by alpha_perp sum epsilon_i",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "I(1) condition: the characteristic polynomial has only unit root at one and |alpha_perp Gamma beta_perp| not equal to zero; this ensures the pole at z=1 is simple and avoids I(2) or higher integration",
+      "role": "Assumption",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Maximum likelihood estimation in the cointegrated VAR can be implemented via reduced rank regression (RRR) after forming residuals conditional on short-run dynamics and deterministic terms",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Likelihood ratio test for cointegration rank r versus full rank p is given by -2 log LR = -T sum_{i=r+1}^p log(1 - lambda_i) where lambda_i are eigenvalues from the RRR eigenproblem",
+      "role": "Result",
+      "parents": [
+        0,
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Asymptotic distribution of the rank test is nonstandard: it depends on the number of common trends p-r and on deterministic terms (Dickey-Fuller type functionals involving Brownian motion), so critical values vary with specification",
+      "role": "Result",
+      "parents": [
+        0,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Asymptotic estimation results: the estimator of cointegrating vectors beta is mixed Gaussian after T scaling and conditionally Gaussian given the common trend paths, while estimators of alpha and short-run parameters are asymptotically Gaussian and asymptotically independent of beta estimates",
+      "role": "Result",
+      "parents": [
+        0,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Interpretation: cointegrating coefficients represent long-run relations; a coefficient can be interpreted as the effect of a long-run change in one variable on another holding other variables fixed in the long run via the mapping k = C xi and adjustment dynamics",
+      "role": "Claim",
+      "parents": [
+        0,
+        3,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Weak exogeneity for a subset of variables is represented by corresponding zero rows in alpha; if alpha2 = 0 then those variables are weakly exogenous and conditional estimation for remaining parameters is valid",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Model extensions: when parameters violate the I(1) condition an I(2) parametrization is required, e.g. formulations for Delta^2 x_t involving additional cointegration between levels and differences, with specialized estimation and nonstandard asymptotics",
+      "role": "Claim",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Practical specification checks necessary for reliable likelihood inference include lag length selection, tests for autocorrelation and heteroskedasticity, normality of residuals, treatment of outliers and testing for parameter constancy or structural breaks",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitations and open problems: need for small-sample corrections and bootstrap methods, theory for nonlinear cointegration and regime switching, and development of economic theory that incorporates nonstationary empirical findings",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

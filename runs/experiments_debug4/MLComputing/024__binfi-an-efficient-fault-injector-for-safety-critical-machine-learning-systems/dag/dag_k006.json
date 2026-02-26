@@ -1,0 +1,172 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An efficient binary-search based fault injector can identify safety-critical bits in machine learning applications with much lower cost than exhaustive fault injection while preserving high coverage and accurate resilience estimates",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many common ML computations and their composition exhibit monotonic or approximately monotonic error-propagation behavior",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Random fault injection is unsuitable for finding clustered safety-critical bits because it may miss clusters and cannot guarantee coverage; exhaustive FI guarantees coverage but is prohibitively expensive",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We can exploit (approximate) monotonicity to prune the fault injection space and search for an SDC-boundary bit using a binary-search-like procedure",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Basic operations (Conv, MatMul, Add), activation functions (ReLu, ELu), pooling, SoftMax, batch normalization and simple data transforms are monotonic or approximately monotonic in inference",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Some functions (e.g., local response normalization, certain activations) are non-monotonic, so composite EP functions can be only approximately monotonic leading to possible small inaccuracies",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Identifying safety-critical bits enables selective protection mechanisms that reduce overhead compared to full replication or instruction duplication",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "BinFI: algorithm that for each operator output element converts value to binary, partitions bit indices for zeros and ones, and performs binary-search fault injections to locate the highest-order bit that causes SDC (the SDC-boundary)",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Implementation: extended TensorFI to support DNN operators and added Binary FI and exhaustive FI modes; uses one-fault-per-execution model and injects faults at operator outputs in TensorFlow graphs",
+      "role": "Method",
+      "parents": [
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Fault model and assumptions: soft transient faults in processor datapath (pipeline registers and ALUs), main memory/cache/register file assumed protected, faults during inference only, single-bit flips representative of multi-bit behavior",
+      "role": "Assumption",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evaluation setup: 8 ML models (2-layer NN, kNN, LeNet-4, AlexNet, VGG11, VGG16, Nvidia Dave steering, Comma.ai steering) over 6 datasets including driving and traffic-sign data; comparison against exhaustive FI (ground truth) and random FI",
+      "role": "Method",
+      "parents": [
+        8
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Knowing critical bits found by BinFI can guide dynamic, selective protection or adaptive voltage/error tradeoffs to protect only sensitive regions and reduce cost",
+      "role": "Conclusion",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Approximate monotonicity can cause BinFI to miss a small fraction of critical bits when non-monotonic local behavior makes a lower-order fault cause SDC while a higher-order fault does not",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "BinFI identified on average 99.56% of safety-critical bits with 99.63% precision across evaluated benchmarks, significantly outperforming random FI given the same number of trials",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "BinFI accurately estimates overall SDC probability (deviations from exhaustive FI close to zero for monotonic models; small deviations for approximately monotonic models); for pure SDC-rate estimation random FI can be efficient",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "BinFI reduces number of fault injection trials to about 20% of exhaustive FI (approximate 5X speedup) and its cost scales logarithmically with data bit-width",
+      "role": "Result",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

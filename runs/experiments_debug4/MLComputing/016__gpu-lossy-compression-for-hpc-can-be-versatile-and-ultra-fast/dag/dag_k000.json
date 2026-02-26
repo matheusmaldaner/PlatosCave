@@ -1,0 +1,147 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A versatile GPU lossy compression framework that is dimension-aware, supports multiple algorithms, provides memory-efficient compression and selective decompression, and is implemented as highly optimized GPU kernels can address HPC data challenges by delivering ultra-fast throughput, high compression ratios, reduced GPU memory footprint, and efficient random access",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "HPC workloads generate extremely large and diverse datasets that create two dominant needs: (Pattern-1) reduce real-time GPU memory footprint for memory-bound workflows and (Pattern-2) reduce data movement overhead and support direct operations on compressed data for bandwidth-bound workflows",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Existing GPU lossy compressors have three main limitations: limited generalization across diverse data features (lack of dimension awareness and single fixed algorithm), inability to reduce actual GPU memory footprint because they pre-allocate maximum compressed size, and lack of effective random access (dimension-unaware flattening or fixed-ratio methods lacking error control)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "VGC framework design: provide three compression algorithms (No-delta, Delta, Outlier), support 1D/2D/3D dimension-aware processing, implement dimension-aware delta encoding, fuse most operations into a single GPU kernel for throughput, and provide two special modes — memory-efficient compression via kernel fission and selective decompression via early stopping in prefix-sum",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "VGC implements error-bounded lossy quantization followed by lossless stages (delta encoding when used, fixed-length encoding, and optional outlier preservation) so reconstructed data obey user-specified relative error bounds and decompression simply reverses these steps",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Because HPC datasets vary (high-dimensional meshes, 2D slices, sparse particle data, ML weights), an effective compressor must capture dimension information and adapt algorithm choice to data structure",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Dimension-aware Delta Encoding in VGC uses a register-level, fused row/column/depth delta strategy that preserves spatial locality, enables coalesced and vectorized memory accesses, avoids shared memory and branch divergence, and balances throughput and compression ratio for 1D/2D/3D blocks",
+      "role": "Method",
+      "parents": [
+        2,
+        3,
+        5
+      ],
+      "children": [
+        7,
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Memory-efficient Compression in VGC uses a two-kernel (kernel fission) approach: first kernel profiles per-block compressed sizes and computes global prefix-sum to get exact total compressed size for allocation, second kernel performs blockwise compression and concatenation using computed offsets to allocate only required GPU memory",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Selective Decompression in VGC leverages block metadata and an early-stopping prefix-sum to compute offsets up to target ROI, allowing direct locating and decompression of one or multiple ROIs without decompressing the entire dataset and supports writing back to compressed array",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "VGC fuses compression/decompression (except memory-efficient two-kernel mode) into a single, highly optimized GPU kernel with intra-kernel optimizations (vectorized loads/stores, decoupled lookback scan, register-only operations) to approach global memory bandwidth limits and maximize throughput",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Across 13 real-world HPC datasets and standard baselines, VGC achieves state-of-the-art throughput and competitive or superior compression ratios while maintaining error bounds: average single-precision throughput approx 320 GB/s compression and 470 GB/s decompression (higher for double-precision), and VGC-O often yields higher compression ratios than cuSZp2 and comparable ratios to PFPL with substantially higher throughput",
+      "role": "Result",
+      "parents": [
+        4,
+        6,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Experimental evidence of VGC capabilities: (a) Memory-efficient mode reduces GPU memory footprint by allocating exact compressed size (example: SCALE fields reduced from hundreds of MB to single-digit MBs) while retaining ~70% throughput; (b) Selective decompression attains ~1.1 TB/s (single) and ~2.1 TB/s (double) for single block access; (c) LLM KV-cache case: VGC-N 1D memory-efficient compression achieves ~211 GB/s compression, ~296 GB/s decompression and reduces KV cache memory by ~46% with negligible end-to-end fidelity loss; (d) Inter-node transfer case: VGC out-of-core pipeline compresses 256 GB field in 2 GB chunks reducing transfer time up to 12.5x versus uncompressed transfer and achieves ~328 GB/s compression and ~405 GB/s decompression in that scenario",
+      "role": "Evidence",
+      "parents": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The Naive Bayes classifier is an effective and reliable method for identifying and filtering spam emails on a combined dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Spam email prevalence disrupts communication and poses security risks, motivating automated detection methods",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Naive Bayes is a text classification method that applies Bayes rule with a conditional independence assumption to compute class posterior probabilities from word likelihoods and class priors",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data preprocessing pipeline: text cleaning (remove punctuation, HTML, stop words; lowercase), tokenization into words, and feature extraction using Bag of Words to produce word-frequency vectors",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Study dataset: combined 2007 TREC Public Spam Corpus and Enron-Spam dataset with 83,446 emails (43,910 spam, 39,538 ham) split randomly 80% train (66,756) / 20% test (16,690) preserving class proportions",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Word likelihoods are estimated by tallying term frequencies per class and applying Laplace smoothing (add-one) to avoid zero probabilities",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The classifier predicts by computing product of per-word likelihoods given a class, multiplying by class prior, and selecting the class with higher posterior probability",
+      "role": "Claim",
+      "parents": [
+        2,
+        3,
+        5
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Training/testing split resulted in train: 35,128 spam and 31,630 ham; test: 8,782 spam and 7,908 ham",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Class priors computed as class message counts divided by total messages in the dataset",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Model evaluation used 5-fold cross-validation to select best-performing fold and then evaluated the selected model on the held-out test subset",
+      "role": "Method",
+      "parents": [
+        0,
+        6,
+        7
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Cross-validation accuracies across folds: 0.9733, 0.9766, 0.9762, 0.9759, 0.9755 with mean about 0.9751, indicating stable performance",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Selected model (fold 2) achieved overall test accuracy of 97.82% on the test subset",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Confusion matrix test outcomes: ham (7908 tested) -> 7800 true negatives, 108 false positives; spam (8782 tested) -> 8526 true positives, 256 false negatives",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Per-class performance: ham accuracy 98.64%; spam accuracy 97.08%; precision, recall, and F1-score approximately 0.98 for both classes (macro and weighted averages 0.98)",
+      "role": "Result",
+      "parents": [
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Naive Bayes exhibited high precision, recall, F1, and stable accuracy on this combined dataset, making it a well-suited and reliable approach for spam detection in many real-world applications",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        11,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Future work and limitations: potential improvements include exploring hybrid models with SVM or deep learning and adding contextual and semantic analysis to address limitations of the independence assumption",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

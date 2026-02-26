@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree based machine learning model can classify and predict diabetes status of patients using the Pima Indians Diabetes dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We implement a binary decision tree classifier using standard impurity measures (information gain with entropy, Gini index, classification error) to grow and prune the tree",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We use the Pima Indians Diabetes Database (768 instances, 9 attributes) as the dataset for training and evaluation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data preprocessing: entries with zero values in BloodPressure, BMI, or Glucose are treated as measurement errors and those rows are removed before modeling",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Implementation uses Python (Spyder), Pandas for data handling, and scikit-learn DecisionTreeClassifier for model training, prediction, and visualization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Entropy is defined as negative sum over classes of p(i|t) log2 p(i|t); entropy is zero for pure nodes and maximal for uniform class distribution",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Gini index and classification error are alternative heterogeneity measures; Gini minimizes expected misclassification and classification error is suitable for pruning",
+      "role": "Claim",
+      "parents": [
+        1,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Data inspection revealed outliers and 35 samples with zero values for features where zero is implausible, motivating removal of those samples",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Model training workflow: load data, split into train/test, train DecisionTreeClassifier, predict, compute accuracy, classification report and confusion matrix, and render the tree colored by majority class",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Experiment 1: train/test split 70%/30% produced a measurable classification result (visualized and evaluated), used to compare performance across splits",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Experiment 2: train/test split 50%/50% achieved accuracy 0.71 and produced a visualized decision tree",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Experiment 3: train/test split 30%/70% produced a measurable classification result (visualized and evaluated) and results were compared to other splits",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Comparison across splits indicates that allocation of training data affects accuracy; authors report best observed accuracy of 0.71 at 50% training / 50% testing",
+      "role": "Evidence",
+      "parents": [
+        9,
+        10,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusions: decision trees are a suitable predictive modeling tool for medical classification tasks; they offer fast learning, intuitive rule generation, nonparametric modeling, and competitive accuracy",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        6
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Practical limitation and recommendation: model outputs require a doctor's consultation for final diagnosis and feature limitations in dataset can reduce system value if users lack access to some measurements",
+      "role": "Limitation",
+      "parents": [
+        13,
+        7
+      ],
+      "children": null
+    }
+  ]
+}

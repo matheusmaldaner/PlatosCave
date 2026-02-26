@@ -1,0 +1,1276 @@
+--- Page 1 ---
+Cointegration. Overview and Development
+Søren Johansen
+Department of Applied Mathematics and Statistics, University of Copenhagen
+sjo@math.ku.dk
+Summary. This article presents a survey of the analysis of cointegration using the
+vector autoregressive model. After a few illustrative economic examples, the three
+model based approaches to the analysis of cointegration are discussed. The vector
+autoregressive model is deﬁned and the moving average representation of the solu-
+tion, the Granger representation, is given. Next the interpretation of the model and
+its parameters and likelihood based inference follows using reduced rank regression.
+The asymptotic analysis includes the distribution of the Gaussian maximum likeli-
+hood estimators, the rank test, and test for hypotheses on the cointegrating vectors.
+Finally, some applications and extensions of the basic model are mentioned and the
+survey concludes with some open problems.
+1 Introduction
+Granger [13] coined the term cointegration as a formulation of the phenom-
+enon that nonstationary processes can have linear combinations that are sta-
+tionary. It was his investigations of the relation between cointegration and
+error correction that brought modeling of vector autoregressions with unit
+roots and cointegration to the center of attention in applied and theoretical
+econometrics; see Engle and Granger [10].
+During the last 20 years, many have contributed to the development of
+theory and applications of cointegration. The account given here focuses on
+theory, more precisely on likelihood based theory for the vector autoregressive
+model and its extensions; see [21]. By building a statistical model as a frame-
+work for inference, one has to make explicit assumptions about the model
+used and hence has a possibility of checking the assumptions made.
+1.1 Two examples of cointegration
+As a ﬁrst simple economic example of the main idea in cointegration, consider
+the exchange rate series, et, between Australian and US dollars and four time
+
+
+--- Page 2 ---
+2
+Søren Johansen
+series pau
+t , pus
+t , iau
+t , ius
+t
+: log consumer price and ﬁve year treasury bond rates
+in Australia and US. If the quarterly series from 1972:1 to 1991:1 are plotted,
+they clearly show nonstationary behavior, and we discuss in the following a
+method of modeling such nonstationary time series. As a simple example of an
+economic hypothesis consider Purchasing Power Parity (PPP), which asserts
+that et = pus
+t −pau
+t . This identity is not found in the data, so a more realistic
+formulation is that pppt = et −pus
+t
++ pau
+t
+is a stationary process, possibly
+with mean zero. Thus we formulate the economic relation, as expressed by
+PPP, as a stationary relation among nonstationary processes. The purpose
+of modeling could be to test the null hypothesis that pppt is stationary, or
+in other words that (et, pus
+t , pau
+t iau
+t , ius
+t ) cointegrate with (1, −1, 1, 0, 0)0 as a
+cointegration vector. If that is not found, an outcome could be to suggest
+other cointegration relations, which have a better chance of capturing co-
+movements of the ﬁve processes in the information set. For a discussion of the
+ﬁnding that real exchange rate, pppt, and the spread, iau
+t −ius
+t , are cointegrated
+I(1) processes so that a linear combination pppt −c (iau
+t
+−ius
+t ) is stationary,
+see Juselius and MacDonald [31].
+Another example is one of the ﬁrst applications of the idea of cointegration
+in ﬁnance; see Campbell and Shiller [8]. They considered a present value model
+for the price of a stock Yt at the end of period t and the dividend yt paid during
+period t. They assume that there is a vector autoregressive model describing
+the data which contain Yt and yt and may contain values of other ﬁnancial
+assets. The expectations hypothesis is expressed as
+Yt = θ(1 −δ)
+∞
+X
+i=0
+δjEtyt+i + c,
+where c and θ are positive constants and the discount factor δ is between 0
+and 1. The notation Etyt+i means model based conditional expectations of
+yt+i given information in the data at the end of period t. By subtracting θyt,
+the model is written as
+Yt −θyt = θ(1 −δ)
+∞
+X
+i=0
+δjEt(yt+i −yt) + c.
+It is seen that when the processes yt and Yt are nonstationary and their
+diﬀerences stationary, the present value model implies that the right hand
+side and hence the left hand side are stationary. Thus there is cointegration
+between Yt and yt with a cointegration vector β0 = (1, −θ, 0, . . . , 0); see section
+6.1 for a discussion of rational expectations and cointegration.
+There are at present three diﬀerent ways of modeling the cointegration
+idea in a parametric statistical framework. To illustrate the ideas they are
+formulated in the simplest possible case, leaving out deterministic terms.
+
+
+--- Page 3 ---
+Cointegration. Overview and Development
+3
+1.2 Three ways of modeling cointegration
+The regression formulation
+The multivariate process xt = (x0
+1t, x0
+2t)0 of dimension p = p1 + p2 is given by
+the regression equations
+x1t = γ0x2t + u1t,
+∆x2t = u2t,
+where ut = (u0
+1t, u0
+2t)0 is a linear invertible process deﬁned by i.i.d. errors εt
+with mean zero and ﬁnite variance. The assumptions behind this model imply
+that x2t is nonstationary and not cointegrated, and hence the cointegration
+rank, p1, is known so that models for diﬀerent ranks are not nested. The ﬁrst
+estimation method used in this model is least squares regression, Engle and
+Granger [10], which is shown to give a superconsistent estimator by Stock [46].
+This estimation method gives rise to residual based tests for cointegration. It
+was shown by Phillips and Hansen [42] that a modiﬁcation of the regression
+estimator, involving a correction using the long-run variance of the process
+ut, would give useful methods for inference for coeﬃcients of cointegration
+relations; see also Phillips [41].
+The autoregressive formulation
+The autoregressive formulation is given by
+∆xt = αβ0xt−1 + εt,
+where εt are i.i.d. errors with mean zero and ﬁnite variance, and α and β
+are p × r matrices of rank r. Under the condition that ∆xt is stationary, the
+solution is
+xt = C
+t
+X
+i=1
+εi +
+∞
+X
+i=0
+Ciεt−i + A,
+(1)
+where C = β⊥(α0
+⊥β⊥)−1α0
+⊥and β0A = 0. Here β⊥is a full rank p × (p −
+r) matrix so that β0β⊥= 0. This formulation allows for modeling of both
+the long-run relations, β0x, and the adjustment, or feedback α, towards the
+attractor set {x : β0x = 0} deﬁned by the long-run relations. Models for
+diﬀerent cointegration ranks are nested and the rank can be analyzed by
+likelihood ratio tests. Thus the model allows for a more detailed description
+of the data than the regression model. Methods usually applied for the analysis
+are derived from the Gaussian likelihood function, which are discussed here;
+see also [18, 21], and Ahn and Reinsel [1].
+
+
+--- Page 4 ---
+4
+Søren Johansen
+The unobserved component formulation
+Let xt be given by
+xt = ξη0
+t
+X
+i=1
+εi + vt,
+where vt is a linear process, typically independent of the process εt, which is
+i.i.d. with mean zero and ﬁnite variance.
+In this formulation too, hypotheses of diﬀerent ranks are nested. The pa-
+rameters are linked to the autoregressive formulation by ξ = β⊥and η = α⊥,
+even though the linear process in (1) depends on the random walk part, so the
+unobserved components model and the autoregressive model are not the same.
+Thus both adjustment and cointegration can be discussed in this formulation,
+and hypotheses on the rank can be tested. Rather than testing for unit roots
+one tests for stationarity, which is sometimes a more natural formulation. Es-
+timation is usually performed by the Kalman ﬁlter, and asymptotic theory of
+the rank tests has been worked out by Nyblom and Harvey [37].
+1.3 The model analyzed in this article
+In this article cointegration is modelled by the vector autoregressive model
+for the p−dimensional process xt
+∆xt = α (β0xt−1 + ΥDt) +
+k−1
+X
+i=1
+Γi ∆xt−i + Φdt + εt,
+(2)
+where εt are i.i.d. with mean zero and variance Ω, and Dt and dt are deter-
+ministic terms, like constant, trend, seasonal- or intervention dummies. The
+matrices α and β are p × r where 0 ≤r ≤p. The parametrization of the
+deterministic term αΥDt + Φdt, is discussed in section 2.2. Under suitable
+conditions, see again section 2.2, the processes β0xt and ∆xt are stationary
+around their means, and (2) can be formulated as
+∆xt −E(∆xt) = α (β0xt−1 −E(β0xt−1)) +
+k−1
+X
+i=1
+Γi (∆xt−i −E(∆xt−i)) + εt.
+This shows how the change of the process reacts to feedback from disequi-
+librium errors β0xt−1 −E(β0xt−1) and ∆xt−i −E(∆xt−i), via the short-run
+adjustment coeﬃcients α and Γi. The equation β0xt −E(β0xt) = 0 deﬁnes the
+long-run relations between the processes.
+There are many surveys of the theory of cointegration; see for instance
+Watson [48] or Johansen [26]. The topic has become part of most textbooks
+in econometrics; see among others Banerjee, Dolado, Galbraith and Hendry
+[4], Hamilton [14], Hendry [17] and Lütkepohl [34]. For a general account of
+the methodology of the cointegrated vector autoregressive model, see Juselius
+[32].
+
+
+--- Page 5 ---
+Cointegration. Overview and Development
+5
+2 Integration, cointegration and Granger’s
+Representation Theorem
+The basic deﬁnitions of integration and cointegration are given together with
+a moving average representation of the solution of the error correction model
+(2). This solution reveals the stochastic properties of the solution. Finally the
+interpretation of cointegration relations is discussed.
+2.1 Deﬁnition of integration and cointegration
+The vector autoregressive model for the p−dimensional process xt given by (2)
+is a dynamic stochastic model for all components of xt. By recursive substitu-
+tion, the equations deﬁne xt as function of initial values, x0, . . . , x−k+1, errors
+ε1, . . . , εt, deterministic terms, and parameters. Properties of the solution of
+these equations are studied through the characteristic polynomial
+Ψ(z) = (1 −z)Ip −Πz −(1 −z)
+k−1
+X
+i=1
+Γizi
+(3)
+with determinant |Ψ(z)|. The function C(z) = Ψ(z)−1 has poles at the roots of
+the polynomial |Ψ(z)| and the position of the poles determines the stochastic
+properties of the solution of (2). First a well known result is mentioned; see
+Anderson [3].
+Theorem 1. If |Ψ(z)| = 0 implies that |z| > 1, then α and β have full rank p,
+and the coeﬃcients of Ψ−1(z) = P∞
+i=0 Cizi are exponentially decreasing. Let
+μt = P∞
+i=0 Ci(αΥDt−i + Φdt−i). Then the distribution of the initial values of
+xt can be chosen so that xt −μt is stationary. Moreover, xt has the moving
+average representation
+xt =
+∞
+X
+i=0
+Ciεt−i + μt.
+(4)
+Thus the exponentially decreasing coeﬃcients are found by simply invert-
+ing the characteristic polynomial if the roots are outside the unit disk. If
+this condition fails, the equations generate nonstationary processes of various
+types, and the coeﬃcients are not exponentially decreasing. Still, the coeﬃ-
+cients of C(z) determine the stochastic properties of the solution of (2), as
+is discussed in section 2.2. A process of the form (4) is a linear process and
+forms the basis for the deﬁnitions of integration and cointegration.
+Deﬁnition 1. The process xt is integrated of order 1, I(1), if ∆xt −E(∆xt)
+is a linear process, with C(1) = P∞
+i=0 Ci 6= 0. If there is a vector β 6= 0 so
+that β0xt is stationary around its mean, then xt is cointegrated with cointe-
+gration vector β. The number of linearly independent cointegration vectors is
+the cointegration rank.
+
+
+--- Page 6 ---
+6
+Søren Johansen
+Example 1. A bivariate process is given for t = 1, . . . , T by the equations
+∆x1t = α1(x1t−1 −x2t−1) + ε1t,
+∆x2t = α2(x1t−1 −x2t−1) + ε2t.
+Subtracting the equations, we ﬁnd that the process yt = x1t −x2t is autore-
+gressive and stationary if |1+α1 −α2| < 1 and the initial value is given by its
+invariant distribution. Similarly we ﬁnd that St = α2x1t −α1x2t is a random
+walk, so that
+µx1t
+x2t
+¶
+=
+1
+α2 −α1
+µ1
+1
+¶
+St −
+1
+α2 −α1
+µα1
+α2
+¶
+yt.
+This shows, that when |1 + α1 −α2| < 1, xt is I(1), x1t −x2t is stationary,
+and α2x1t −α1x2t is a random walk, so that xt is a cointegrated I(1) process
+with cointegration vector β0 = (1, −1). We call St a common stochastic trend
+and α the adjustment coeﬃcients.
+Example 1 presents a special case of the Granger Representation Theorem,
+which gives the moving average representation of the solution of the error
+correction model.
+2.2 The Granger Representation Theorem
+If the characteristic polynomial Ψ(z) deﬁned in (3) has a unit root, then
+Ψ(1) = −Π is singular, of rank r < p, and the process is not stationary. Next
+the I(1) condition is formulated. It guarantees that the solution of (2) is a
+cointegrated I(1) process. Let Γ = Ip−Pk−1
+i=1 Γi and denote for a p×m matrix
+a by a⊥a p × (p −m) matrix of rank p −m.
+Condition 1. (The I(1) condition) The I(1)condition is satisﬁed if |Ψ(z)| = 0
+implies that |z| > 1 or z = 1 and that
+|α0
+⊥Γβ⊥| 6= 0.
+(5)
+Condition (5) is needed to avoid solutions that are integrated of order 2
+or higher; see section 6. For a process with one lag Γ = Ip and
+β0xt = (Ir + β0α)β0xt−1 + β0εt.
+In this case the I(1) condition is equivalent to the condition that the absolute
+value of the eigenvalues of Ir +β0α are bounded by one, and in example 1 the
+condition is |1 + α1 −α2| < 1.
+Theorem 2. (The Granger Representation Theorem) Let Ψ(z) be deﬁned by
+(3). If Ψ(z) has unit roots and the I(1) condition is satisﬁed, then
+
+
+--- Page 7 ---
+Cointegration. Overview and Development
+7
+(1 −z)Ψ(z)−1 = C(z) =
+∞
+X
+i=0
+Cizi = C + (1 −z)C∗(z)
+(6)
+converges for |z| ≤1 + δ for some δ > 0 and
+C = β⊥(α0
+⊥Γβ⊥)−1α0
+⊥.
+(7)
+The solution xt of equation (2) has the moving average representation
+xt = C
+t
+X
+i=1
+(εi + Φdi) +
+∞
+X
+i=0
+C∗
+i (εt−i + Φdt−i + αΥDt−i) + A,
+(8)
+where A depends on initial values, so that β0A = 0.
+This result implies that ∆xt and β0xt are stationary, so that xt is a cointe-
+grated I(1) process with r cointegration vectors β and p−r common stochastic
+trends α0
+⊥
+Pt
+i=1 εi. The interpretation of this is that among p nonstationary
+processes the model (2) generates r stationary or stable relations and p −r
+stochastic trends or driving trends, which create the nonstationarity.
+The result (6) rests on the observation that the singularity of Ψ(z) for z = 1
+implies that Ψ(z)−1 has a pole at z = 1. Condition (5) is a condition for this
+pole to be of order one. This is not proved here, see [27], but it is shown how
+this result can be applied to prove the representation result (8), which shows
+how coeﬃcients of the inverse polynomial determine the properties of xt.
+We multiply Ψ(L)xt = Φdt + αΥDt + εt by
+(1 −L)Ψ(L)−1 = C(L) = C + (1 −L)C∗(L)
+and ﬁnd
+∆xt = (1 −L)Ψ(L)−1Ψ(L)xt = (C + ∆C∗(L))(εt + αΥDt + Φdt).
+Now deﬁne the stationary process zt = C∗(L)εt and the deterministic function
+μt = C∗(L)(αΥDt + Φdt), and note that CαΥ = 0, so that
+∆xt = C(εt + Φdt) + ∆(zt + μt),
+which cumulates to
+xt = C
+t
+X
+i=1
+(εi + Φdi) + zt + μt + A,
+where A = x0 −z0 −μ0. The distribution of x0 is chosen so that β0x0 =
+β0(z0 + μ0), and hence β0A = 0. Then xt is I(1) and β0xt = β0zt + β0μt is
+stationary around its mean E(β0xt) = β0μt. Finally, ∆xt is stationary around
+its mean E(∆xt) = CΦdt + ∆μt.
+
+
+--- Page 8 ---
+8
+Søren Johansen
+One of the useful applications of the representation (8) is to investigate
+the role of the deterministic terms. Note that dt cumulates in the process
+with a coeﬃcient CΦ, but that Dt does not, because CαΥ = 0. A leading
+special case is the model with Dt = t, and dt = 1, which ensures that any
+linear combination of the components of xt is allowed to have a linear trend.
+Note that if Dt = t is not allowed in the model, that is Υ = 0, then xt has a
+trend given by CΦt, but the cointegration relation β0xt has no trend because
+β0CΦ = 0.
+2.3 Interpretation of cointegrating coeﬃcients
+Consider ﬁrst a usual regression
+x1t = γ2x2t + γ3x3t + εt,
+(9)
+with i.i.d. errors εt which are independent of the processes x2t and x3t. The
+coeﬃcient γ2 is interpreted via a counterfactual experiment, that is, the coef-
+ﬁcient γ2 is the eﬀect on x1t of a change in x2t, keeping x3t constant.
+The cointegration relations are long-run relations. This means that they
+have been there all the time, and they inﬂuence the movement of the process
+xt via the adjustment coeﬃcients α. The more the process β0xt deviates from
+Eβ0xt, the more the adjustment coeﬃcients pull the process back towards its
+mean. Another interpretation is that they are relations that would hold in the
+limit, provided all shocks in the model are set to zero after a time t.
+It is therefore natural that interpretation of cointegration coeﬃcients in-
+volves the notion of a long-run value. From the Granger Representation The-
+orem 8 applied to the model with no deterministic terms, it can be proved,
+see [25], that
+x∞|t = lim
+h→∞E(xt+h|xt, . . . , xt−k+1) = C(xt −
+k−1
+X
+i=1
+Γixt−i) = C
+t
+X
+i=1
+εi + x∞|0.
+This limiting conditional expectation is a long-run value of the process.
+Because β0x∞|t = 0, the point x∞|t is in the attractor set {x : β0x = 0} =
+sp{β⊥}, see Figure 1.
+Thus if the current value, xt, is shifted to xt + h, then the long-run value
+is shifted from x∞|t to x∞|t + Ch, which is still a point in the attractor set
+because β0x∞|t + β0Ch = 0. If a given long-run change k = Cξ in x∞|t is
+needed, Γk is added to the current value xt. This gives the long-run value
+x∞|t + CΓk = x∞|t + CΓCξ = x∞|t + Cξ = x∞|t + k,
+where the identity CΓC = C is applied; see (7). This idea is now used to give
+an interpretation of a cointegration coeﬃcient in the simple case of r = 1,
+p = 3, and where the relation is normalized on x1
+
+
+--- Page 9 ---
+Cointegration. Overview and Development
+9
+-
+6
+x1t
+x2t
+¡
+¡
+¡
+¡
+¡
+¡
+¡
+¡
+¡
+¡
+¡
+¡
+¡¡
+sp(β⊥)
+XXXX
+z
+−α
+xt b
+x∞|t
+b
+X
+X
+X
+X
+y
+α
+·························
+β0xt
+·············
+¡
+¡
+¡¡
+µ
+¡
+¡
+¡
+¡
+ª
+α0
+⊥
+St
+i=1 εi
+Fig. 1. In the model ∆xt = αβ0xt−1 +εt, the point xt = (x1t, x2t) is moved towards
+the long-run value x∞|t on the attractor set {x|β0x = 0} = sp(β⊥} by the forces −α
+or +α, and pushed along the attractor set by the common trends α0
+⊥
+St
+i=1 εi.
+x1 = γ2x2 + γ3x3,
+(10)
+so that β0 = (1, −γ2, −γ3). In order to give the usual interpretation as a
+regression coeﬃcient (or elasticity if the measurements are in logs), a long-
+run change with the properties that x2 changes by one, x1 changes by γ2, and
+x3 is kept ﬁxed, is needed. Thus the long-run change is k = (γ2, 1, 0), which
+satisﬁes β0k = 0, so that k = Cξ for some ξ, and this can be achieved by
+moving the current value from xt to xt + CΓk. In this sense, a coeﬃcient in
+an identiﬁed cointegration relation can be interpreted as the eﬀect of a long-
+run change to one variable on another, keeping all others ﬁxed in the long
+run. More details can be found in [25] and Proietti [43].
+3 Interpretation of the I(1) model for cointegration
+In this section model H(r) deﬁned by (2) is discussed. The parameters in H(r)
+are
+(α, β, Γ1, . . . , Γk−1, Υ, Φ, Ω) .
+All parameters vary freely and α and β are p × r matrices. The normalization
+and identiﬁcation of α and β are discussed, and some examples of hypotheses
+on α and β, which are of economic interest are given.
+3.1 The models H(r)
+The models H(r) are nested
+
+
+--- Page 10 ---
+10
+Søren Johansen
+H(0) ⊂· · · ⊂H(r) ⊂· · · ⊂H(p).
+Here H(p) is the unrestricted vector autoregressive model, so that α and β are
+unrestricted p×p matrices. The model H(0) corresponds to the restriction α =
+β = 0, which is the vector autoregressive model for the process in diﬀerences.
+Note that in order to have nested models, we allow in H(r) for all processes
+with rank less than or equal to r.
+The formulation allows us to derive likelihood ratio tests for the hypothesis
+H(r) in the unrestricted model H(p). These tests can be applied to check if
+one’s prior knowledge of the number of cointegration relations is consistent
+with the data, or alternatively to construct an estimator of the cointegration
+rank.
+Note that when the cointegration rank is r, the number of common trends
+is p−r. Thus if one can interpret the presence of r cointegration relations one
+should also interpret the presence of p −r independent stochastic trends or
+p −r driving forces in the data.
+3.2 Normalization of parameters of the I(1) model
+The parameters α and β in (2) are not uniquely identiﬁed, because given any
+choice of α and β and any nonsingular r×r matrix ξ, the choice αξ and βξ0−1
+gives the same matrix Π = αβ0 = αξ(βξ0−1)0.
+If xt = (x0
+1t, x0
+2t)0 and β = (β0
+1, β0
+2)0, with |β1| 6= 0, we can solve the
+cointegration relations as
+x1t = γ0x2t + ut,
+where ut is stationary and γ0 = −(β0
+1)−1β0
+2. This represents cointegration as
+a regression equation. A normalization of this type is sometimes convenient
+for estimation and calculation of ‘standard errors’ of the estimate, see section
+5.2, but many hypotheses are invariant with respect to a normalization of β,
+and thus, in a discussion of a test of such a hypothesis, β does not require
+normalization. As seen in subsection 3.3, many stable economic relations are
+expressed in terms of identifying restrictions, for which the regression formu-
+lation is not convenient.
+From the Granger Representation Theorem we see that the p −r common
+trends are the nonstationary random walks in C Pt
+i=1 εi, that is, can be chosen
+as α0
+⊥
+Pt
+i=1 εi. For any full rank (p −r)×(p −r) matrix η, ηα0
+⊥
+Pt
+i=1 εi could
+also be used as common trends because
+C
+t
+X
+i=1
+εi = β⊥(α0
+⊥Γβ⊥)−1(α0
+⊥
+t
+X
+i=1
+εi) = β⊥(ηα0
+⊥Γβ⊥)−1(ηα0
+⊥
+t
+X
+i=1
+εi).
+Thus identifying restrictions on the coeﬃcients in α⊥are needed to ﬁnd their
+estimates and standard errors.
+In the cointegration model there are therefore three diﬀerent identiﬁcation
+problems: one for the cointegration relations, one for the common trends, and
+ﬁnally one for the short run dynamics, if the model has simultaneous eﬀects.
+
+
+--- Page 11 ---
+Cointegration. Overview and Development
+11
+3.3 Hypotheses on long-run coeﬃcients
+The purpose of modeling economic data is to test hypotheses on the coeﬃ-
+cients, thereby investigating whether the data supports an economic hypoth-
+esis or rejects it. In the example with the series xt = (pau
+t , pus
+t , iau
+t , ius
+t , et)0
+the hypothesis of PPP is formulated as the hypothesis that (1, −1, 1, 0, 0)
+is a cointegration relation. Similarly, the hypothesis of price homogeneity is
+formulated as
+R0β = (1, 1, 0, 0, 0)β = 0,
+or equivalently as β = R⊥ϕ = Hϕ, for some vector ϕ and H = R⊥. The hy-
+pothesis that the interest rates are stationary is formulated as the hypothesis
+that the two vectors (0, 0, 0, 1, 0) and (0, 0, 0, 0, 1) are cointegration vectors. A
+general formulation of restrictions on each of r cointegration vectors, including
+a normalization, is
+β = (h1 + H1ϕ1, . . . , hr + Hrϕr) .
+(11)
+Here hi is p × 1 and orthogonal to Hi which is p × (si −1) of rank si −1, so
+that p −si restrictions are imposed on the vector βi. Let Ri = (hi, Hi)⊥then
+βi satisﬁes the restrictions R0
+iβi = 0, and the normalization (h0
+ihi)−1h0
+iβi = 1.
+Wald’s identiﬁcation criterion is that βi is identiﬁed if
+R0
+i(β1, . . . , βr) = r −1.
+3.4 Hypotheses on adjustment coeﬃcients
+The coeﬃcients in α measure how the process adjusts to disequilibrium errors.
+The hypothesis of weak exogeneity is the hypothesis that some rows of α are
+zero; see Engle, Hendry and Richard [11]. The process xt is decomposed as
+xt = (x0
+1t, x0
+2t)0 and the matrices are decomposed similarly so that the model
+equations without deterministic terms become
+∆x1t = α1β0xt−1 + Pk−1
+i=1 Γ1i∆xt−i + ε1t,
+∆x2t = α2β0xt−1 + Pk−1
+i=1 Γ2i∆xt−i + ε2t.
+If α2 = 0, there is no levels feedback from β0xt−1 to ∆x2t, and if the errors
+are Gaussian, x2t is weakly exogenous for α1, β. The conditional model for
+∆x1t given ∆x2t and the past is
+∆x1t = ω∆x2t + α1β0xt−1 +
+k−1
+X
+i=1
+(Γ1i −ωΓ2i)∆xt−i + ε1t −ωε2t,
+(12)
+where ω = Ω12Ω−1
+22 . Thus full maximum likelihood inference on α1 and β can
+be conducted in the conditional model (12).
+An interpretation of the hypothesis of weak exogeneity is the following:
+if α2 = 0 then α⊥contains the columns of (0, Ip−r)0, so that Pt
+i=1 ε2i are
+common trends. Thus the errors in the equations for x2t cumulate in the
+system and give rise to nonstationarity.
+
+
+--- Page 12 ---
+12
+Søren Johansen
+4 Likelihood analysis of the I(1) model
+This section contains ﬁrst some comments on what aspects are important
+for checking for model misspeciﬁcation, and then describes the calculation
+of reduced rank regression, introduced by Anderson [2]. Then reduced rank
+regression and modiﬁcations thereof are applied to estimate the parameters
+of the I(1) model (2) and various submodels.
+4.1 Checking the speciﬁcations of the model
+In order to apply Gaussian maximum likelihood methods, the assumptions
+behind the model have to be checked carefully, so that one is convinced that
+the statistical model contains the density that describes the data. If this is
+not the case, the asymptotic results available from the Gaussian analysis need
+not hold. Methods for checking vector autoregressive models include choice
+of lag length, test for normality of residuals, tests for autocorrelation, and
+test for heteroscedasticity in errors. Asymptotic results for estimators and
+tests derived from the Gaussian likelihood turn out to be robust to some
+types of deviations from the above assumptions. Thus the limit results hold
+for i.i.d. errors with ﬁnite variance, and not just for Gaussian errors, but
+autocorrelated errors violate the asymptotic results, so autocorrelation has to
+be checked carefully.
+Finally and perhaps most importantly, the assumption of constant para-
+meters is crucial. In practice it is important to model outliers by suitable
+dummies, but it is also important to model breaks in the dynamics, breaks
+in the cointegration properties, breaks in the stationarity properties, etc. The
+papers by Seo [45] and Hansen and Johansen [16] contain some results on
+recursive tests in the cointegration model.
+4.2 Reduced rank regression
+Let ut, wt, and zt be three multivariate time series of dimensions pu, pw, and
+pz respectively. The algorithm of reduced rank regression, see Anderson [2],
+can be described in the regression model
+ut = αβ0wt + Γzt + εt,
+(13)
+where εt are the errors with variance Ω. The product moments are
+Suw = T −1
+T
+X
+t=1
+utw0
+t,
+and the residuals, which we get by regressing ut on wt, are
+(ut|wt) = ut −SuwS−1
+wwwt,
+
+
+--- Page 13 ---
+Cointegration. Overview and Development
+13
+so that the conditional product moments are
+Suw.z = Suw −SuzS−1
+zz Szw = T −1
+T
+X
+t=1
+(ut|zt)(wt|zv)0,
+Suu.w,z = T −1
+T
+X
+t=1
+(ut|wt, zt)(ut|wt, zt)0 = Suu.w −Suz.wS−1
+zz.wSzu.w.
+Let Π = αβ0. The unrestricted regression estimates are
+ˆΠ = Suw.zS−1
+ww.z, ˆΓ = Suz.wS−1
+zz.w, and ˆΩ= Suu.w,z.
+Reduced rank regression of ut on wt corrected for zt gives estimates of α, β
+and Ωin (13). First the eigenvalue problem
+|λSww.z −Swu.zS−1
+uu.zSuw.z| = 0
+(14)
+is solved. The eigenvalues are ordered ˆλ1 ≥· · · ≥ˆλpw, with corresponding
+eigenvectors ˆv1, . . . , ˆvpw. The reduced rank estimates of β, α, Γ, and Ωare
+given by
+ˆβ = (ˆv1, . . . , ˆvr),
+ˆα = Suw.zˆβ,
+ˆΓ = Suz.ˆβ
+0wS−1
+zz.ˆβ
+0w,
+ˆΩ= Suu.z −Suw.zˆβˆβ
+0Swu.z,
+| ˆΩ| = |Suu.z| Qr
+i=1(1 −ˆλi).
+(15)
+The eigenvectors are orthogonal because ˆv0
+iSww.zˆvj = 0 for i 6= j, and are
+normalized by ˆv0
+iSww.zˆvi = 1. The calculations described here are called a
+reduced rank regression and are denoted by RRR(ut, wt|zt).
+4.3 Maximum likelihood estimation in the I(1) model and
+derivation of the rank test
+Consider the I(1) model given by equation (2). Note that the multiplier αΥ
+of Dt is restricted to be proportional to α so that, by the Granger Represen-
+tation Theorem, Dt does not cumulate in the process. It is assumed for the
+derivations of maximum likelihood estimators and likelihood ratio tests that
+εt is i.i.d. Np(0, Ω), but for asymptotic results the Gaussian assumption is not
+needed. The Gaussian likelihood function shows that the maximum likelihood
+estimator can be found by the reduced rank regression
+RRR(∆xt, (x0
+t−1, D0
+t)0|∆xt−1, . . . , ∆xt−k+1, dt).
+It is convenient to introduce the notation for residuals
+R0t = (∆xt|∆xt−1, . . . , ∆xt−k+1, dt)
+R1t = ((x0
+t−1, D0
+t)0|∆xt−1, . . . , ∆xt−k+1, dt)
+
+
+--- Page 14 ---
+14
+Søren Johansen
+and product moments
+Sij = T −1
+T
+X
+t=1
+RitR0
+jt.
+The estimates are given by (15), and the maximized likelihood is, apart from
+a constant, given by
+L−2/T
+max
+= | ˆΩ| = |S00|
+r
+Y
+i=1
+(1 −ˆλi).
+(16)
+Note that all the models H(r), r = 0, . . . , p, have been solved by the
+same eigenvalue calculation. The maximized likelihood is given for each r
+by (16) and by dividing the maximized likelihood function for r with the
+corresponding expression for r = p, the likelihood ratio test for cointegration
+rank is obtained:
+−2logLR(H(r)|H(p)) = −T
+p
+X
+i=r+1
+log(1 −ˆλi).
+(17)
+This statistic was considered by Bartlett [5] for testing canonical correlations.
+The asymptotic distribution of this test statistic and the estimators are dis-
+cussed in section 5.
+The model obtained under the hypothesis β = Hϕ, is analyzed by
+RRR(∆xt, (H0x0
+t−1, D0
+t)0|∆xt−1, . . . , ∆xt−k+1, dt),
+and a number of hypotheses of this type for β and α can be solved in the
+same way, but the more general hypothesis
+β = (h1 + H1ϕ1, . . . , hr + Hrϕr) ,
+cannot be solved by reduced rank regression. With α = (α1, . . . , αr) and
+Υ = (Υ 0
+1, . . . , Υ 0
+r)0, equation (2) becomes
+∆xt =
+r
+X
+j=1
+αj((hj + Hjϕj)0xt−1 + ΥjDt) +
+k−1
+X
+i=1
+Γi∆xt−i + Φdt + εt.
+This is reduced rank regression, but there are r reduced rank matrices
+αj(1, ϕ0
+j, Υj) of rank one. The solution is not given by an eigenvalue problem,
+but there is a simple modiﬁcation of the reduced rank algorithm, which is
+easy to implement and is quite often found to converge. The algorithm has
+the property that the likelihood function is maximized in each step. The algo-
+rithm switches between reduced rank regressions of ∆xt on (x0
+t−1(Hi, hi), D0
+t)0
+corrected for
+(((hj + Hjϕj)0xt−1 + ΥjDt)j6=i, ∆xt−1, . . . , ∆xt−k+1, dt).
+This result can immediately be applied to calculate likelihood ratio tests
+for many diﬀerent restrictions on the coeﬃcients of the cointegration relations.
+Thus, in particular, this can give a test of over-identifying restrictions.
+
+
+--- Page 15 ---
+Cointegration. Overview and Development
+15
+5 Asymptotic analysis
+A discussion of the most important aspects of the asymptotic analysis of
+the cointegration model is given. This includes the result that the rank test
+requires a family of Dickey-Fuller type distributions, depending on the speci-
+ﬁcation of the deterministic terms of the model. The asymptotic distribution
+of ˆβ is mixed Gaussian and that of the remaining parameters is Gaussian, so
+that tests for hypotheses on the parameters are asymptotically distributed as
+χ2. All results are taken from Johansen [21]
+5.1 Asymptotic distribution of the rank test
+The asymptotic distribution of the rank test is given in case the process has
+a linear trend.
+Theorem 3. Let εt be i.i.d. (0, Ω) and assume that Dt = t and dt = 1,
+in model (2). Under the assumptions that the cointegration rank is r, the
+asymptotic distribution of the likelihood ratio test statistic (17) is
+−2logLR(H(r)|H(p))
+d→tr{
+Z 1
+0
+(dB)F 0(
+Z 1
+0
+FF 0du)−1
+Z 1
+0
+F(dB)0},
+(18)
+where F is deﬁned by
+F(u) =
+µ B(u)
+u
+¯¯¯¯ 1
+¶
+,
+and B(u) is the p −r dimensional standard Brownian motion.
+The limit distribution is tabulated by simulating the distribution of the
+test of no cointegration in the model for a p −r dimensional model with
+one lag and the same deterministic terms. Note that the limit distribution
+does not depend on the parameters (Γ1, . . . , Γk−1, Υ, Φ, Ω), but only on p−r,
+the number of common trends, and the presence of the linear trend. For ﬁnite
+samples, however, the dependence on the parameters can be quite pronounced.
+A small sample correction for the test has been given in [24], and the bootstrap
+has been investigated by Swensen [47].
+In the model without deterministics the same result holds, but with F(u) =
+B(u). A special case of this, for p = 1, is the Dickey-Fuller test and the
+distributions (18) are called the Dickey—Fuller distributions with p−r degrees
+of freedom; see [9].
+The asymptotic distribution of the test statistic for rank depends on the
+deterministic terms in the model. It follows from the Granger Representa-
+tion Theorem that the deterministic term dt is cumulated to CΦ Pt
+i=1 di. In
+deriving the asymptotics, xt is normalized by T −1/2. If Pt
+i=1 di is bounded,
+this normalization implies that the limit distribution does not depend on the
+precise form of Pt
+i=1 di. Thus, if dt is a centered seasonal dummy, or an ‘inno-
+vation dummy’ dt = 1{t=t0}, it does not change the asymptotic distribution.
+
+
+--- Page 16 ---
+16
+Søren Johansen
+If, on the other hand, a ‘step dummy’ dt = 1{t≥t0} is included, then the cumu-
+lation of this is a broken linear trend, and that inﬂuences the limit distribution
+and requires special tables; see [29].
+5.2 Asymptotic distribution of the estimators
+The main result here is that the estimator of β, suitably normalized, converges
+to a mixed Gaussian distribution, even when estimated under continuously
+diﬀerentiable restrictions [20]. This result implies that likelihood ratio tests
+on β are asymptotically χ2 distributed. Furthermore the estimators of the
+adjustment parameters α and the short-run parameters Γi are asymptotically
+Gaussian and asymptotically independent of the estimator for β.
+In order to illustrate these results, the asymptotic distribution of ˆβ for
+r = 2 is given, when β is identiﬁed by
+β = (h1 + H1ϕ1, h2 + H2ϕ2).
+(19)
+Theorem 4. In model (2) without deterministic terms and εt i.i.d. (0, Ω),
+the asymptotic distribution of Tvec(ˆβ −β) is given by
+µH1 0
+0 H2
+¶ µρ11H0
+1GH1 ρ12H0
+1GH2
+ρ21H0
+2GH1 ρ22H0
+2GH2
+¶−1 Ã
+H0
+1
+R 1
+0 G(dV1)
+H0
+2
+R 1
+0 G(dV2)
+!
+,
+(20)
+where
+T −1/2x[T u]
+d→G = CW,
+T −1S11
+d→G = C R 1
+0 WW 0duC0,
+and
+V = α0Ω−1W = (V1, V2)0,
+ρij = α0
+iΩ−1αj.
+The estimators of the remaining parameters are asymptotically Gaussian and
+asymptotically independent of ˆβ.
+Note that G and V are independent Brownian motions so that the limit
+distribution is mixed Gaussian and the asymptotic conditional distribution
+given G is Gaussian with asymptotic conditional variance
+µH1 0
+0 H2
+¶ µρ11H0
+1GH1 ρ12H0
+1GH2
+ρ21H0
+2GH1 ρ22H0
+2GH2
+¶−1 µH0
+1 0
+0 H0
+2
+¶
+.
+A consistent estimator for the asymptotic conditional variance is
+T
+µH1 0
+0 H2
+¶ µˆρ11H0
+1S11H1 ˆρ12H0
+1S11H2
+ˆρ21H0
+1S11H2 ˆρ22H0
+2S11H2
+¶−1 µH0
+1 0
+0 H0
+2
+¶
+.
+(21)
+In order to interpret these results, note that the observed information
+about β in the data (keeping other parameters ﬁxed) is given by
+
+
+--- Page 17 ---
+Cointegration. Overview and Development
+17
+JT = T
+µρ11H0
+1S11H1 ρ12H0
+1S11H2
+ρ21H0
+2S11H1 ρ22H0
+2S11H2
+¶
+,
+which normalized by T 2 converges to the stochastic limit
+J =
+µρ11H0
+1GH1 ρ12H0
+1GH2
+ρ21H0
+2GH1 ρ22H0
+2GH2
+¶
+.
+Thus the result (20) states that, given the asymptotic information or equiva-
+lently the limit of the common trends, α0
+⊥W, the limit distribution of T(ˆβ−β)
+is Gaussian with a variance that is a function of the inverse limit information.
+Hence the asymptotic distribution of
+J 1/2
+T
+µ ¯H0
+1(ˆβ1 −β1)
+¯H0
+2(ˆβ2 −β2)
+¶
+is a standard Gaussian distribution. Here ¯H0
+i = (H0
+iHi)−1H0
+i. This implies
+that Wald and therefore likelihood ratio tests on β can be conducted using
+the asymptotic χ2 distribution.
+It is therefore possible to scale the deviations ˆβ −β in order to obtain an
+asymptotic Gaussian distribution. Note that the scaling matrix J 1/2
+T
+is not an
+estimate of the asymptotic variance of ˆβ, but an estimate of the asymptotic
+conditional variance given the information in the data. It is therefore not the
+asymptotic distribution of ˆβ that is used for inference, but the conditional
+distribution given the information; see Basawa and Scott [6] or [19] for a
+discussion. Finally the result on the likelihood ratio test for the restrictions
+given in (19) is formulated.
+Theorem 5. Let εt be i.i.d. (0, Ω). The asymptotic distribution of the likeli-
+hood ratio test statistic for the restrictions (19) in model (2) with no deter-
+ministic terms is χ2 with degrees of freedom given by Pr
+i=1(p −r −si + 1).
+This result is taken from [21], and a small sample correction for some tests
+on β has been developed in [23].
+6 Further topics in the area of cointegration
+It is mentioned here how the I(1) model can be applied to test hypotheses
+implied by rational expectations. The basic model for I(1) processes can be
+extended to other models of nonstationarity. In particular models for sea-
+sonal roots, explosive roots, I(2) processes, fractionally integrated processes
+and nonlinear cointegration. We discuss here models for I(2) processes, and
+refer to the paper by Lange and Rahbek [33] for some models of nonlinear
+cointegration.
+
+
+--- Page 18 ---
+18
+Søren Johansen
+6.1 Rational expectations
+Many economic models operate with the concept of rational or model based
+expectations; see Hansen and Sargent [15]. An example of such a formulation
+is uncovered interest parity,
+∆eet+1 = i1
+t −i2
+t,
+(22)
+which expresses a balance between interest rates in two countries and economic
+expectations of exchange rate changes. If a vector autoregressive model
+∆xt = αβ0xt−1 + Γ1∆xt−1 + εt,
+(23)
+ﬁts the data xt = (et, i1
+t, i2
+t)0, the assumption of model based expectations,
+Muth [35], means that ∆eet+1 can be replaced by the conditional expectation
+Et∆et+1 based upon model (23). That is,
+∆eet+1 = Et∆et+1 = α1β0xt + Γ11∆xt.
+Assumption (22) implies the identity
+i1
+t −i2
+t = α1β0xt + Γ11∆xt.
+Hence the cointegration relation is
+β0xt = i1
+t −i2
+t,
+and the other parameters are restricted by α1 = 1, and Γ11 = 0. Thus,
+the hypothesis (22) implies a number of testable restrictions on the vec-
+tor autoregressive model. The implications of model based expectations for
+the cointegrated vector autoregressive model is explored in [30], where it is
+shown that, as in the example above, rational expectation restrictions assume
+testable information on cointegration relations and short-run adjustments. It
+is demonstrated how estimation under rational expectation restrictions can
+be performed by regression and reduced rank regression in certain cases.
+6.2 The I(2) model
+It is sometimes found that inﬂation rates are best described by I(1) processes
+and then log prices are I(2). In such a case α0
+⊥Γβ⊥has reduced rank; see (5).
+Under this condition model (2) can be parametrized as
+∆2xt = α(β0xt−1 + ψ0∆xt−1) + Ωα⊥(α0
+⊥Ωα⊥)−1κ0τ 0∆xt−1 + εt,
+(24)
+where α and β are p × r and τ is p × (r + s), or equivalently as
+∆2xt = α
+µ β
+δ0
+¶0 µ
+xt−1
+¯τ0
+⊥∆xt−1
+¶
++ ζτ0∆xt−1 + εt,
+(25)
+
+
+--- Page 19 ---
+Cointegration. Overview and Development
+19
+where
+δ = ψ0τ⊥, ζ = αψ0¯τ + Ωα⊥(α0
+⊥Ωα⊥)−1κ0;
+see [22] and Paruolo and Rahbek [39]. Under suitable conditions on the para-
+meters, the solution of equations (24) or (25) has the form
+xt = C2
+t
+X
+i=1
+i
+X
+j=1
+εj + C1
+t
+X
+i=1
+εi + A1 + tA2 + yt,
+where yt is stationary and C1 and C2 are functions of the model parameters.
+One can prove that the processes ∆2xt, β0xt + ψ0∆xt, and τ 0∆xt are sta-
+tionary. Thus τ 0xt are cointegration relations from I(2) to I(1). The model
+also allows for multicointegration, that is, cointegration between levels and
+diﬀerences because β0xt + ψ0∆xt is stationary; see Engle and Yoo [12]. Maxi-
+mum likelihood estimation can be performed by a switching algorithm using
+the two parametrizations given in (24) and (25). The same techniques can be
+used for a number of hypotheses on the cointegration parameters β and τ.
+The asymptotic theory of likelihood ratio tests and maximum likelihood es-
+timators is developed by Johansen [22, 28], Rahbek, Kongsted, and Jørgensen
+[44], Paruolo [38, 40], Boswijk [7] and Nielsen and Rahbek [36]. It is shown
+that the likelihood ratio test for rank involves not only Brownian motion,
+but also integrated Brownian motion and hence some new Dickey-Fuller type
+distributions that have to be simulated. The asymptotic distribution of the
+maximum likelihood estimator is quite involved, as it is not mixed Gaussian,
+but many hypotheses still allow asymptotic χ2 inference; see [28].
+7 Concluding remarks
+What has been developed for the cointegrated vector autoregressive model is a
+set of useful tools for the analysis of macroeconomic and ﬁnancial time series.
+The theory is part of many textbooks, and software for the analysis of data
+has been implemented in several packages, e.g. in CATS in RATS, Givewin,
+Eviews, Microﬁt, Shazam, R, etc.
+Many theoretical problems remain unsolved, however. We mention here
+three important problems for future development.
+1. The analysis of models for time series strongly relies on asymptotic
+methods, and it is often a problem to obtain suﬃciently long series in eco-
+nomics which actually measure the same variables for the whole period. There-
+fore periods which can be modelled by constant parameters are often rather
+short, and it is therefore extremely important to develop methods for small
+sample correction of the asymptotic results. Such methods can be analytic or
+simulation based. When these will become part of the software packages, and
+are routinely applied, they will ensure more reliable inference.
+2. A very interesting and promising development lies in the analysis of
+cointegration in nonlinear time series, where the statistical theory is still in its
+
+
+--- Page 20 ---
+20
+Søren Johansen
+beginning. Many diﬀerent types of nonlinearities are possible, and the theory
+has to be developed in close contact with applications in order to ensure that
+useful models and concepts are developed; see the overview [33].
+3. Most importantly, however, is the development of an economic theory
+which takes into account the ﬁndings of empirical analyses of nonstationary
+economic data. For a long time, regression analysis and correlations have
+been standard tools for quantitative analysis of relations between variables
+in economics. Economic theory has incorporated these techniques in order to
+learn from data. In the same way economic theory should be developed to
+incorporate nonstationarity of data and develop theories consistent with the
+ﬁndings of empirical cointegration analyses.
+References
+1. Ahn SK, Reinsel GC (1990) Estimation for partially nonstationary multivariate
+autoregressive models. Journal of the American Statistical Association 85:813—
+823
+2. Anderson TW (1951) Estimating linear restrictions on regression coeﬃcients for
+multivariate normal distributions. Annals of Mathematical Statistics 22:327—351
+3. Anderson TW (1971) The statistical analysis of time series. Wiley, New York
+4. Banerjee A, Dolado JJ, Galbraith JW, Hendry DF (1993) Co-integration error-
+correction and the econometric analysis of nonstationary data. Oxford Univer-
+sity Press, Oxford
+5. Bartlett M (1948) A note on the statistical estimation of the demand and supply
+relations from time series. Econometrica 16:323—329
+6. Basawa IV, Scott DJ (1983) Asymptotic optimal inference for non-ergodic mod-
+els. Springer, New York
+7. Boswijk P (2000) Mixed normality and ancillarity in I(2) systems. Econometric
+Theory 16:878—904
+8. Campbell J, Shiller RJ (1987) Cointegration and tests of present value models.
+Journal of Political Economy 95:1062—1088
+9. Dickey DA, Fuller WA (1981) Likelihood ratio statistics for autoregressive time
+series with a unit root. Econometrica 49:1057—1072
+10. Engle RF, Granger CWJ (1987) Co-integration and error correction: Represen-
+tation, estimation and testing. Econometrica 55:251—276
+11. Engle RF, Hendry DF, Richard J-F (1983) Exogeneity. Econometrica 51:277—
+304
+12. Engle RF, Yoo BS (1991) Cointegrated economic time series: A survey with
+new results. In: Granger CWJ, Engle RF (eds) Long-run economic relations.
+Readings in cointegration. Oxford University Press, Oxford
+13. Granger CWJ (1983) Cointegrated variables and error correction models. UCSD
+Discussion paper 83-13a
+14. Hamilton JD (1994) Time series analysis. Princeton University Press, Princeton
+New Jersey
+15. Hansen LP, Sargent TJ (1991) Exact linear rational expectations models: Spec-
+iﬁcation and estimation. In: Hansen LP, Sargent TJ (eds) Rational expectations
+econometrics. Westview Press, Boulder
+
+
+--- Page 21 ---
+Cointegration. Overview and Development
+21
+16. Hansen H, Johansen S (1999) Some tests for parameter constancy in the coin-
+tegrated VAR. The Econometrics Journal 2:306—333
+17. Hendry DF (1995) Dynamic econometrics. Oxford University Press, Oxford
+18. Johansen S (1988) Statistical analysis of cointegration vectors. Journal of Eco-
+nomic Dynamics and Control 12:231—254
+19. Johansen S (1995) The role of ancillarity in inference for nonstationary variables.
+Economic Journal 13:302—320
+20. Johansen S (1991) Estimation and hypothesis testing of cointegration vectors
+in Gaussian vector autoregressive models. Econometrica 59:1551—1580
+21. Johansen S (1996) Likelihood-based inference in cointegrated vector autoregres-
+sive models. Oxford University Press, Oxford
+22. Johansen S (1997) Likelihood analysis of the I(2) model. Scandinavian Journal
+of Statistics 24:433—462
+23. Johansen S (2000) A Bartlett correction factor for tests on the cointegration
+relations. Econometric Theory 16:740—778
+24. Johansen S (2002) A small sample correction of the test for cointegration rank
+in the vector autoregressive model. Econometrica 70:1929—1961
+25. Johansen S (2005) The interpretation of cointegration coeﬃcients in the cointe-
+grated vector autoregressive model. Oxford Bulletin of Economics and Statistics
+67:93—104
+26. Johansen S (2006a) Cointegration: a survey. In Mills TC and Patterson K (eds)
+Palgrave handbook of econometrics: Volume 1, Econometric theory. Palgrave
+Macmillan, Basingstoke
+27. Johansen S (2006b) Representation of cointegrated autoregressive processes with
+application to fractional processes. Forthcoming in Econometric Reviews
+28. Johansen S (2006c) Statistical analysis of hypotheses on the cointegration rela-
+tions in the I(2) model. Journal of Econometrics 132:81—115
+29. Johansen S, Mosconi R, Nielsen B (2000) Cointegration analysis in the presence
+of structural breaks in the deterministic trend. The Econometrics Journal 3:1—34
+30. Johansen S, Swensen AR (2004) More on testing exact rational expectations in
+vector autoregressive models: Restricted drift term. The Econometrics Journal
+7:389—397
+31. Juselius K, MacDonald R (2004) The international parities between USA and
+Japan. Japan and the World Economy 16:17—34
+32. Juselius K (2006) The cointegrated VAR model: Econometric methodology and
+macroeconomic applications. Oxford University Press, Oxford
+33. Lange T, Rahbek A (2006) An introduction to regime switching time series
+models. This Volume
+34. Lütkepohl H (2006) Introduction to multiple times series analysis. Springer,
+New York
+35. Muth JF (1961) Rational expectations and the theory of price movements.
+Econometrica 29:315—335
+36. Nielsen HB, Rahbek A (2004) Likelihood ratio testing for cointegration ranks
+in I(2) Models. Forthcoming Econometric Theory
+37. Nyblom J, Harvey A (2000) Tests of common stochastic trends. Econometric
+Theory 16:176—199
+38. Paruolo P (1996) On the determination of integration indices in I(2) systems.
+Journal of Econometrics 72:313—356
+39. Paruolo P, Rahbek A (1999) Weak exogeneity in I(2) VAR systems. Journal of
+Econometrics 93:281—308
+
+
+--- Page 22 ---
+22
+Søren Johansen
+40. Paruolo P (2000) Asymptotic eﬃciency of the two stage estimator in I(2) sys-
+tems. Econometric Theory 16:524—550
+41. Phillips PCB (1991) Optimal inference in cointegrated systems. Econometrica
+59:283—306
+42. Phillips PCB, Hansen BE (1990) Statistical inference on instrumental variables
+regression with I(1) processes. Review of Economic Studies 57:99—124
+43. Proietti T (1997) Short-run dynamics in cointegrated systems. Oxford Bulletin
+of Economics and Statistics 59:405—422
+44. Rahbek A, Kongsted HC, Jørgensen C (1999) Trend-stationarity in the I(2)
+cointegration model. Journal of Econometrics 90:265—289
+45. Seo B (1998) Tests for structural change in cointegrated systems. Econometric
+Theory 14:222—259
+46. Stock JH (1987) Asymptotic properties of least squares estimates of cointegra-
+tion vectors. Econometrica 55:1035—1056
+47. Swensen AR (2006) Bootstrap algorithms for testing and determining the coin-
+tegrating rank in VAR models. Forthcoming Econometric Theory
+48. Watson M (1994) Vector autoregressions and cointegration. In: Engle RF, Mc-
+Fadden D (eds) Handbook of econometrics Vol. 4. North Holland Publishing
+Company, Netherlands

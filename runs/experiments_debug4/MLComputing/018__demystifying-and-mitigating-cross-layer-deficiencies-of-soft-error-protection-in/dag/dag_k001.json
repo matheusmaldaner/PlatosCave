@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "LLVM-based selective instruction duplication may provide over-optimistic SDC protection when evaluated at LLVM IR level and have cross-layer deficiencies at assembly instruction level",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We perform a cross-layer quantitative evaluation by injecting datapath single-bit-flip faults at both LLVM IR level and x86 assembly level across 16 HPC benchmarks",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Analyze translation and optimization differences between LLVM IR and assembly to identify root causes of protection gaps and propose compiler-level patches named Flowery to mitigate them",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Instruction duplication duplicates computation sequences and inserts checkers before synchronization points to detect mismatches between original and duplicated computations",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Fault model: datapath single-bit-flips injected into destination registers of dynamic instructions; focus on SDCs not DUEs; experiments repeated 3000 campaigns per benchmark and protection level",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Measured SDC coverage at LLVM IR level is often substantially higher than measured at assembly level for the same protection level and benchmarks",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Observed average SDC coverage gap between LLVM IR and assembly evaluations is 31.21%, with a maximum gap up to 82% in Stringsearch; full (100%) IR protection often yields far less than 100% assembly coverage",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Root-causes of assembly-level unprotected sites are classified into five categories: store penetration, branch penetration, comparison penetration, call penetration, and mapping penetration",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Design three LLVM IR compiler passes comprising Flowery: eager-store (move store before checker), postponed branch condition check (record branch decision and check after branch), and anti-comparison-duplication-optimization (isolate compares to prevent compiler optimization)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Store, branch, and comparison penetrations account for about 94.4% of deficiency cases; call and mapping penetrations account for the remaining ~5.6% and are harder to fix at IR level",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Examples: IR store may become multiple movs at assembly leading to unprotected mov; IR branch without preceding icmp may generate test and conditional jump that are unprotected; compiler optimizations can remove duplicated comparisons",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Applying Flowery increases assembly-level SDC coverage substantially and closes most of the LLVM-assembly gap across benchmarks",
+      "role": "Result",
+      "parents": [
+        8,
+        6
+      ],
+      "children": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Flowery yields average assembly-level SDC coverage improvement of about 31.21% over the original IR-level duplication evaluated at assembly, raising average full-protection coverage from 76.74% to 93.72% across benchmarks",
+      "role": "Evidence",
+      "parents": [
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Flowery incurs low additional runtime overhead over original instruction duplication: measured additional overheads about 1.63% to 3.74% depending on protection level, and compile-time transformation takes about 0.12s on average per benchmark",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: IR-level instruction duplication alone can be over-optimistic; Flowery largely mitigates cross-layer deficiencies with small runtime and compile-time costs, but some penetrations (call and mapping) remain limitations at IR level",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        9,
+        12,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation: evaluation is on x86 ISA and datapath single-bit-flip model; some penetration cases require assembly-level or backend support and Flowery may not fully eliminate all assembly-level unprotected sites",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

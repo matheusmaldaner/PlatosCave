@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Interpretable machine learning models should be developed and used (especially for high-stakes decisions) because inherent interpretability enables safer, more trustworthy, and more useful decision-making than relying on black-box models explained post hoc",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Interpretability is crucial for high-stakes decisions and troubleshooting because interpretable models are easier to understand, debug, and verify in changing environments",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Interpretable models permit users to decide whether to trust them but do not automatically create trust; they enable decisions about trust",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "There is no scientific evidence of a universal tradeoff between accuracy and interpretability; interpretability often begets accuracy when considering the full data science process",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Post hoc explanations of black boxes (XAI) can be misleading or insufficient for high-stakes use, so inherently interpretable models are preferable when feasible",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Evidence that post hoc explanations are problematic: saliency maps are unreliable and different explanation methods disagree; explanations can give false authority to black boxes and hide errors (examples in radiology and fairness assessments)",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "General interpretable ML formulation: choose model f in class F to minimize empirical loss plus C times an interpretability penalty, subject to interpretability constraints; constraints are domain specific (sparsity, monotonicity, decomposability, disentanglement, generative constraints)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "A large Rashomon set often exists for many problems: many distinct models can achieve approximately equal, good performance, opening the possibility that some of those models are interpretable",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evidence for Rashomon sets: empirically many algorithms perform similarly on tabular data; theoretical results show a large Rashomon set increases the likelihood of existence of simple interpretable models (Semenova et al.)",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Challenge and methods for sparse logical models: optimizing decision trees, decision lists, and decision sets is NP-hard in general; modern approaches include mixed integer programming, SAT solvers, stochastic search, and dynamic programming with branch-and-bound to jointly optimize accuracy and sparsity",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Scoring systems challenge: create sparse integer-coefﬁcient linear models (risk scores) via optimization; naive rounding harms performance and integer constraints make optimization hard; exact MIP methods (e.g., RiskSLIM) and approximation or polishing heuristics are used",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Generalized additive models (GAMs) provide interpretable component functions per feature; challenges include controlling sparsity and smoothness, imposing monotonicity, and using GAMs to troubleshoot messy medical or tabular datasets",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Modern case-based reasoning and prototype methods offer interpretable approaches for raw data: nearest neighbors in learned latent spaces, prototype and part-based prototype networks (e.g., ProtoPNet) allow visualizable, example-based explanations; challenges include video data, human-supervision of prototypes, and troubleshooting invalid prototypes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Supervised disentanglement aims to align neurons or axes in latent space with predefined human concepts so information about each concept flows through dedicated units; challenges include scaling to whole layers and networks, selecting concept sets, and making the mapping from concepts to outputs interpretable",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Unsupervised disentanglement seeks to discover meaningful latent factors without labels via generative models and compositional architectures (VAEs, GANs, capsule or slot models); challenges include evaluation, transfer to realistic complex images or other domains (materials), and designing suitable inductive biases",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Dimension reduction for visualization is an interpretable unsupervised task (PCA, t-SNE, UMAP, PaCMAP): local versus global preservation tradeoffs, sensitivity to hyperparameters, and the need to convey mapping and uncertainty are important open problems",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

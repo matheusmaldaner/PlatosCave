@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Applying feature selection to high-dimensional data reduces computation, mitigates the curse of dimensionality, improves prediction performance, and aids data understanding in supervised machine learning",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Problem context: modern datasets often contain hundreds of variables with irrelevant or redundant features that harm generalization and increase computation",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Feature selection methods are broadly classified as Filter, Wrapper, and Embedded approaches",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Filter methods rank features using criteria (e.g., Pearson correlation, mutual information, RELIEF) as preprocessing to select top features without involving the learning algorithm",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Wrapper methods search feature subsets using predictor performance as objective, employing sequential searches (SFS, SBS, SFFS) or heuristic searches (GA, PSO, CHCGA), trading higher accuracy for higher computation and risk of overfitting",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Embedded methods incorporate feature selection into model training (examples: mRMR using mutual information, SVM-RFE, network pruning) to reduce re-training overhead and capture inter-feature redundancy",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Stability is a key concern: feature selection algorithms can be unstable to perturbations of training data, motivating ensemble or aggregation methods to obtain robust feature sets",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Two commonly used classifiers for feature selection and evaluation are Support Vector Machines (SVM) and Radial Basis Function networks (RBFN), each with specific training and parameterization considerations",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experimental methodology: applied filter (correlation and mutual information), wrapper (SFFS, CHCGA) with SVM and RBF classifiers on seven datasets (UCI datasets and RF Fault Mode data); used 50/50 train/test split and cross-validation for evaluation; RBF parameters tuned per subset",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Experimental results: wrapper and embedded-style search (SFFS, CHCGA) with SVM generally achieved the highest test-set accuracies and compact subsets; example CHCGA+SVM top results included Breast cancer 97.36% (5 features), Ionosphere 94.29% (16 features), FaultMode discrete 98.83% (6 features)",
+      "role": "Result",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Conclusion: no single feature selection method universally dominates; choice should consider simplicity, stability, number of selected features, classification accuracy, and computational/storage cost; feature selection often yields better generalization and domain insight",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        9,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Filter methods advantages and limitations: computationally light and avoid classifier bias but can select redundant features and may discard features that are informative only in combination",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Wrapper methods advantages and limitations: often find higher-accuracy subsets tailored to a classifier but are computationally expensive due to repeated training and risk overfitting unless validation/holdout used",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Embedded methods trade off between filters and wrappers by using model-derived criteria (weights, mutual information with redundancy penalty) to select non-redundant informative features during training",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Evidence on stability and ensemble approaches: literature and experiments indicate instability across runs and perturbations; ensemble feature selection (bootstrapping and aggregation) improves stability and robustness of selected signatures",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    }
+  ]
+}

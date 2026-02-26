@@ -1,0 +1,186 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large-scale empirical comparison of ten supervised learning algorithms across multiple datasets and performance metrics will reveal their relative strengths, weaknesses, and effects of probability calibration",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: We evaluated ten algorithms (SVMs, neural nets, logistic regression, naive bayes, memory-based learning, random forests, decision trees, bagged trees, boosted trees, boosted stumps) with extensive parameter variation and trained about 2000 models per trial",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Experimental design used 11 binary classification problems, 5-fold cross validation on 5000-case training samples (4000 train, 1000 validation), and large held-out test sets; evaluations averaged over five trials",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: We used eight performance metrics grouped as threshold metrics (accuracy, F-score, lift), ordering/rank metrics (ROC area, average precision, precision/recall break-even), and probability metrics (squared error, cross-entropy); performances normalized per problem and metric",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: We examined calibration via Platt Scaling (sigmoid) and Isotonic Regression (PAV algorithm) applied using the 1000-point validation set to transform model scores into probability estimates",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Before calibration, bagged trees, random forests, and neural nets gave the best average performance across the eight metrics and eleven problems",
+      "role": "Result",
+      "parents": [
+        3,
+        2,
+        1
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: After calibration with Platt or Isotonic methods, boosted trees produced the best overall performance (particularly improving probability metrics), and calibrated SVMs performed comparably to neural nets and nearly as well as boosted trees, random forests and bagged trees",
+      "role": "Result",
+      "parents": [
+        4,
+        3,
+        1
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: Calibration effects varied by algorithm: calibration dramatically improved boosted trees, SVMs, boosted stumps, and naive bayes; neural nets were already well calibrated and could be hurt by calibration; random forests saw small improvements",
+      "role": "Result",
+      "parents": [
+        4,
+        3,
+        1
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Claim: Ensembles of trees (boosted trees after calibration, random forests, bagged trees) dominate average performance on the selected datasets and metrics, while naive bayes, logistic regression, single decision trees, and boosted stumps perform poorly on average",
+      "role": "Claim",
+      "parents": [
+        5,
+        6,
+        7
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: Ordering/ranking metrics were well served by boosted trees, random forests, bagged trees, neural nets and SVMs even before calibration; probability metrics improved most after calibration for models that already ordered well",
+      "role": "Result",
+      "parents": [
+        5,
+        6,
+        3
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: Model selection variance matters: using 1k validation sets for parameter selection produced a mean normalized score drop of about 0.023 compared to optimal selection on test sets; high-variance models (neural nets, boosted trees) suffer larger drops than low-variance models (random forests)",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence: Bootstrap analysis over problems and metrics (1000 resamples) showed boosted trees ranked 1st in 58% of samples and random forests 1st in 39%; ensembles of trees occupy top ranks with low probability for other methods to appear top-three",
+      "role": "Evidence",
+      "parents": [
+        10,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Results depend on the chosen 11 datasets, the eight performance metrics, and training sample size (5000); different problems or metrics can change rankings and some algorithms perform very well on specific datasets",
+      "role": "Limitation",
+      "parents": [
+        2,
+        3,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: Calibrated boosted trees are the best overall on the evaluated suite, with random forests and bagged trees close behind; SVMs and neural nets are competitive (SVMs after calibration), while NB, logistic regression, single trees and boosted stumps are generally weaker",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        5,
+        8,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Partial modelling using Boolean networks (BNs) and combining partial models can serve as an inductive discovery procedure to develop economic theory",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        5,
+        10,
+        14
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Wallace proposes deploying partial models utilising Boolean networks as an inductive discovery procedure and combining them to build larger economic models",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "BNs have been applied in systems biology and are claimed to frequently yield results with high predictive power",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "In systems biology the term 'predict' often means reproducing known or non-surprising results or calibration to existing data rather than making blind out-of-sample predictions",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "A sufficiently complicated model can be made to match known data (flexibility) but may be poor at making non-trivial, blind predictions",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The proposed method combines BNs into larger models while simplifying partial models (e.g., excluding node values that produce multiple steady states and excluding feedback loops) and converting BNs to ODEs where desired",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        7,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Pruning features such as feedback loops or excluding multistate nodes to avoid intractability risks removing essential dynamics and can undermine model realism",
+      "role": "Claim",
+      "parents": [
+        1,
+        5
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Extending a model by adding nodes does not necessarily account for missing information or capture missing dynamics because model structure, not just size, determines representational adequacy",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "In a yeast gene regulation case, the main experimentally verified prediction concerned stochastic effects invisible to any ODE model regardless of added equations or parameters",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Predictive models used by drug companies for cancer treatment optimise dynamical cell population effects that cannot be captured by BNs or ODEs alone, so they use combined ODE/agent-based approaches and limit parameters to measurable quantities",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Model structure limitations, hidden opposing feedback loops, stochastic effects, and difficulty identifying parameters mean that combining and enlarging partial models may not improve predictive power",
+      "role": "Claim",
+      "parents": [
+        0,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "children": [
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "As model detail increases the number of unknown parameters and uncertainty about structure increases, producing 'sloppy parameters' that cannot be determined from data",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Opposing positive and negative feedback loops are often hidden and hard to identify from data; their presence causes instability and sensitivity where small parameter changes produce large outcome differences",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Given these structural and parameter-identification limits, the strategy of patching partial models into a comprehensive dynamic model is unlikely to resolve the main practical limitations of modelling complex living systems and economies",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11,
+        12
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "An alternative 'dashboard' approach: use a range of model types kept mostly separate, each capturing complementary aspects of reality, limit model size to avoid high dimensionality problems, and treat models as partial approximations",
+      "role": "Method",
+      "parents": [
+        0,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Before combining models investigate incentive structures (e.g., funding sources and regulatory interests) because incentives shape assumptions, questions asked, and model construction",
+      "role": "Claim",
+      "parents": [
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

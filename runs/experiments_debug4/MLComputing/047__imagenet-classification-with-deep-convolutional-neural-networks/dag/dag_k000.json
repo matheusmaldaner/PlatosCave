@@ -1,0 +1,167 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network can achieve substantially better object recognition performance on the ImageNet Large-Scale Visual Recognition Challenge than previous methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We trained an 8-layer deep CNN (5 convolutional layers followed by 3 fully-connected layers and a 1000-way softmax) with 60 million parameters and 650,000 neurons on the ImageNet ILSVRC subsets",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "To make training feasible and improve performance we used specific architectural and training techniques: Rectified Linear Units (ReLUs), local response normalization, overlapping max pooling, data augmentation (translations, reflections, and PCA color jitter), dropout in the fully-connected layers, weight decay, momentum, and an optimized GPU implementation including multi-GPU parallelism",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Training was done with stochastic gradient descent (batch size 128, momentum 0.9, weight decay 0.0005), manual learning rate schedule, weight initialization from zero-mean Gaussian, and took about five to six days on two GTX 580 GPUs for roughly 90 epochs over 1.2 million images",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "GPU memory and available training time limit network size; larger/faster GPUs and larger datasets are expected to further improve results",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "The trained CNN achieved top-1 and top-5 test error rates of 37.5% and 17.0% on ILSVRC-2010, outperforming prior best published methods (top-5 25.7% and 28.2%)",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Variants and ensembles of the model achieved top-5 test error rates of 15.3% on ILSVRC-2012 (ensemble of pre-trained and fine-tuned models), with single-model top-5 around 18.2% and five-model averaging 16.4%",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The overall architecture includes specific layer details: first conv layer 96 filters 11x11x3 stride 4, subsequent conv layers with 256,384,384,256 filters of sizes 5x5 and 3x3, and two 4096-neuron fully-connected hidden layers",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Using Rectified Linear Units speeds training significantly compared to saturating nonlinearities and enabled practical training of very large CNNs",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Local response normalization (brightness-style normalization across adjacent kernel maps) and overlapping pooling each reduced top-1/top-5 error by measurable amounts: response normalization reduced top-1 by 1.4% and top-5 by 1.2%; overlapping pooling reduced top-1 by 0.4% and top-5 by 0.3%",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Data augmentation via random 224x224 translations and horizontal reflections and PCA-based RGB intensity perturbation substantially reduced overfitting (translation augmentation expanded effective training set and PCA color jitter reduced top-1 error by over 1%)",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Applying dropout with probability 0.5 in the first two fully-connected layers reduced overfitting and improved test performance, although it roughly doubled iterations required to converge",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Spreading the model across two GPUs with restricted inter-GPU connectivity reduced error rates (improves top-1 by 1.7% and top-5 by 1.2% compared to a one-GPU smaller-kernel variant) and slightly reduced training time",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "The empirical results demonstrate that supervised training of very large deep CNNs, combined with the described architectural choices and regularization techniques, produces state-of-the-art performance on large-scale object recognition benchmarks",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "ReLUs enabled several-fold faster convergence on CIFAR-10 in experiments, implying faster practicable experimentation for large architectures",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    }
+  ]
+}

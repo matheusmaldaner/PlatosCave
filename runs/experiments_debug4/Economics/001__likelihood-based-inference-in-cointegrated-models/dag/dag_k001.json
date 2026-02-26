@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A likelihood-based analysis of vector autoregressive models with unit roots can be used to define, test, and interpret cointegration relations among nonstationary economic time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Context: Cointegration describes that nonstationary processes can have linear combinations that are stationary and is central to modeling vector autoregressions with unit roots and error correction",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: The cointegrated vector autoregressive I(1) model is specified as Delta x_t = alpha beta' x_{t-1} + sum(Gamma_i Delta x_{t-i}) + deterministic terms + epsilon_t, with alpha and beta p by r",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Claim: Under the I(1) condition (unit root at one and |alpha_perp Gamma beta_perp| != 0) the Granger Representation Theorem gives a moving average representation showing xt is I(1) with r cointegration relations beta' x_t stationary and p-r common stochastic trends",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: Reduced rank regression (RRR) estimates alpha and beta by solving an eigenvalue problem on residual covariance matrices; maximum likelihood for the I(1) VAR reduces to RRR on residuals",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: Cointegration coefficients beta can be interpreted as long-run relations; a coefficient gives the long-run effect of a permanent change in one variable on another holding other variables fixed in the long run",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Result: The likelihood ratio test for cointegration rank r versus p is computable from the eigenvalues lambda_i of the RRR and equals -T sum_{i=r+1}^p log(1-lambda_i)",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence / Asymptotic result: The LR rank test has nonstandard Dickey–Fuller type limit distributions depending on the number p-r of common trends and deterministic terms; estimators of beta are mixed Gaussian while short-run parameters are asymptotically Gaussian and independent of beta",
+      "role": "Evidence",
+      "parents": [
+        3,
+        4,
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Claim: Testing and inference on beta can be conducted via scaled Wald or likelihood ratio tests which are asymptotically chi-square under regularity and appropriate normalization despite the mixed Gaussian limit",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Method / Limitation: Model diagnostics (lag length, residual autocorrelation, heteroscedasticity, parameter constancy, structural breaks, outliers) are crucial because violations (especially autocorrelation and parameter instability) can invalidate Gaussian-based asymptotic results",
+      "role": "Limitation",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Application: Rational expectations restrictions (e.g., uncovered interest parity) imply testable linear restrictions on cointegration relations and short-run adjustment coefficients and can be tested within the VAR cointegration framework",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Extension: The I(2) model parametrization allows modeling variables integrated of order two with cointegration among levels and differences; likelihood methods extend but require new limit distributions involving integrated Brownian motion and more complex asymptotics",
+      "role": "Claim",
+      "parents": [
+        3,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Method / Practical: Deterministic terms must be parameterized carefully (constants, trends, seasonal or intervention dummies); inclusion or exclusion affects whether deterministic components cumulate and changes asymptotic distributions",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: The cointegrated VAR likelihood framework provides estimable parameterizations, rank tests, and economic interpretation of long-run relations, but requires careful diagnostics, small-sample corrections, and extensions (nonlinear cointegration, small-sample methods) for robust applied use",
+      "role": "Conclusion",
+      "parents": [
+        4,
+        7,
+        9,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

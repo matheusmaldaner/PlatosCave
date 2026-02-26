@@ -1,0 +1,172 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "VGC (Versatile GPU lossy Compression) can provide a versatile, error-bounded, and ultra-fast GPU lossy compression framework that addresses key limitations of existing GPU compressors for HPC (generalization across data features, real GPU memory footprint reduction, and effective random access)",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "VGC implements multiple complementary compression algorithms (No-delta, Delta, Outlier) and supports 1D/2D/3D processing to adapt to diverse HPC data features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "VGC uses a dimension-aware delta encoding and fused single-kernel standard compression to maintain spatial locality, memory-coalesced accesses, and ultra-high throughput on GPU",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "VGC introduces two special modes: Memory-efficient Compression (kernel fission to compute exact compressed size then allocate) and Selective Decompression (early stopping in prefix-sum to locate and decompress ROIs)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "VGC is implemented as a highly optimized CUDA codebase (single fused kernel for most modes, block sizes: 32 for 1D, 8x8 for 2D, 4x4x4 for 3D) and exposes end-to-end GPU APIs",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Supporting multiple algorithms plus dimension-aware processing increases compression ratios across heterogeneous HPC datasets compared to fixed single-algorithm compressors",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "No-delta is intended for highly random data (e.g., ML weights), Delta for sparse or locally smooth data, and Outlier for globally smooth datasets where preserving block-first values improves ratio",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Dimension-aware delta encoding performs row-wise (and fused column/depth) deltas accessing consecutive memory to preserve spatial locality with low branch divergence and register-only buffering",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "The fused single-kernel standard compression pipeline: data blocking, blockwise compression (integer quantization, delta/fixed-length/outlier stages), global prefix-sum, and block concatenation, enabling single-pass high throughput",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Memory-efficient mode divides work into two GPU kernels: kernel1 profiles per-block compressed sizes and computes global scan to obtain total compressed size for exact allocation; kernel2 compresses and writes blocks using computed offsets, reducing live GPU memory footprint",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Selective Decompression reads block metadata and performs an early-stopping global prefix-sum up to the ROI, then locally decompresses only needed blocks enabling random access and write-back to compressed array",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evaluation on 13 real-world HPC datasets on an NVIDIA A100 shows VGC achieves state-of-the-art throughput and competitive or better compression ratios versus baselines (cuSZp2, PFPL, cuZFP, FZ-GPU, cuSZp1)",
+      "role": "Evidence",
+      "parents": [
+        4,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Quantitative results: average single-precision throughput ~320 GB/s (compression) and ~470 GB/s (decompression); double-precision ~600 GB/s and ~1000 GB/s; VGC-O achieved higher compression ratios than cuSZp2 on 12/13 datasets and up to 86% higher on some fields",
+      "role": "Result",
+      "parents": [
+        5,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Memory and use-case evidence: Memory-efficient mode reduces actual GPU allocation to the exact compressed size (example: SCALE fields from hundreds of MB down to single-digit MB for some fields); Selective Decompression reaches ~1.1 TB/s (single) and ~2.1 TB/s (double) for ROI access; LLM KV cache case: VGC-N memory-efficient compression achieved ~211 GB/s compress, ~296 GB/s decompress and reduced KV cache footprint by ~46% with BLEU ~90; In-situ transfer case: using VGC reduced end-to-end transfer time by 12.5x for a 256 GB field with pipelined 2 GB chunks",
+      "role": "Evidence",
+      "parents": [
+        9,
+        10,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: VGC addresses key limitations of prior GPU lossy compressors by combining algorithmic versatility, dimension-aware encoding, memory-efficient allocation, and selective decompression to deliver ultra-fast throughput, higher or comparable compression ratios, real GPU memory footprint reduction, and efficient random access for HPC workflows",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

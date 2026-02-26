@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Applying feature selection methods reduces dimensionality and improves computation, prediction performance, and data understanding in machine learning applications",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Benefits of feature selection include reduced computation, mitigation of curse of dimensionality, improved generalization, and insight into relevant variables",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        12
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Feature selection methods are broadly classified into Filter, Wrapper, and Embedded approaches for supervised learning",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Empirical evaluation on seven datasets (UCI and fault-mode data) shows wrapper-based sequential and evolutionary searches (SFFS, CHCGA) with SVM/RBF often achieve top predictive performance with reduced feature subsets",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Irrelevant or redundant features can harm classifier generalization and may be removed when they are independent of class labels or highly correlated with other features",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Filter methods rank or score individual features using criteria such as Pearson correlation, mutual information, RELIEF, or class-density measures and select top-ranked features as preprocessing",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Wrapper methods use the classifier performance as the objective and search the subset space with sequential algorithms (SFS, SBS, SFFS, ASFFS) or heuristic searches (GA, PSO, CHCGA)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        13,
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Embedded methods integrate feature selection into model training using criteria such as mutual information trade-off (max-relevancy/min-redundancy), mRMR, classifier weights, SVM-RFE, or network pruning",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Pearson correlation criterion measures linear dependency between each feature and the target and can be used to rank features but detects only linear relations",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Mutual information (MI) ranks features by estimated reduction in output entropy but requires PDF estimation and neglects inter-feature redundancy unless conditional MI or mRMR-style corrections are used",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "RELIEF and other filter heuristics provide lightweight scoring but selecting thresholds and handling feature interactions or redundancy are known drawbacks",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Experimental results: CHCGA with SVM produced high test accuracies for datasets (examples: Breast cancer 97.36% with 5 features; Ionosphere 94.29% with 16 features); SFFS with SVM also found consistently high-performing subsets; RBF wrappers required per-subset clustering and showed variable behavior",
+      "role": "Evidence",
+      "parents": [
+        3,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Stability, computational cost, NP-hardness, risk of overfitting to validation data, and sensitivity to classifier choice are key limitations affecting feature selection method reliability",
+      "role": "Limitation",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Sequential floating algorithms (SFFS, ASFFS, Plus-L-Minus-r) attempt to reduce nesting and redundancy by combining forward inclusion and conditional exclusion steps",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "SVM-RFE and weight-based embedded approaches use model weights or saliency to rank and iteratively remove features, trading wrapper accuracy for much lower retraining cost",
+      "role": "Method",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Recommendations: choose feature selection approach based on simplicity, stability, number of reduced features, classifier compatibility, storage and computation constraints; ensemble or stability-aware methods can improve robustness",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        3
+      ],
+      "children": null
+    }
+  ]
+}

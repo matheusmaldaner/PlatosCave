@@ -1,0 +1,163 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Lexicon-based Hedonometer sentiment scores differ from machine-learning based Azure scores and these differences may be caused by specific Hedonometer lexical entries or depend on domain",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We compare Hedonometer (lexicon-based) against Microsoft Azure Text Analytics (machine-learning) across four English-language domains to identify words that cause score differences",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We model the differences between Hedonometer and Azure sentiment scores using linear regression with Hedonometer lexical entries as independent variables and Azure scores as target",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Datasets used: Finance (~5k phrases), News (~50k articles), Social media (40k tweets), IMDB reviews (50k reviews); Hedonometer lexicon entries observed: Finance 966, News 274, Social media 1886, IMDB 2673, all domains 3810",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Assume Azure sentiment scores are a suitable standard target to compare against Hedonometer",
+      "role": "Assumption",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Sentiment scores were computed for each document with Hedonometer and Azure; score differences vary by domain with finance and news showing closer agreement, social media showing greater differences, and IMDB showing extreme differences",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Hedonometer has a narrower range of output values compared to Azure, contributing to larger differences particularly for IMDB reviews",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Analysis was limited to Hedonometer words appearing in at least three of the four domains to search for consistent outlier lexical entries",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Regression p-values identify words with smallest p-values as candidates whose Hedonometer weights would need change to match Azure, and largest p-values as words with similar interpretations",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Spearman correlation between Hedonometer word happiness ranking and p-value ranking is weak and domain-dependent: finance -0.1126, news -0.1206, social media 0.2949, IMDB 0.3300",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "No major outlier Hedonometer words systematically cause differences across domains; only the word \"mom\" appears with extreme p-values in more than one domain",
+      "role": "Conclusion",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Importance of a Hedonometer word to differences with Azure depends on domain and the subset of lexicon observed in that domain",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        9,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Limitations include restricted coverage of Hedonometer lexicon in datasets (3810 of 10,222 words), potential multiple hypothesis testing issues from many independent variables, and using linear regression rather than non-parametric models",
+      "role": "Limitation",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Future work: target texts containing specific Hedonometer words for greater coverage, apply multiple testing correction or use non-parametric ML models to compute feature importance",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Practical implication: because there is no universal ground truth for sentiment and human agreement is limited, adjusting Hedonometer weights is unlikely to materially change overall sentiment analysis outcomes if tools are used consistently",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

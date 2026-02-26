@@ -1,0 +1,157 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU and Wi-Fi can implement integrated smart home automation and smart security that overcomes short-range and reliability drawbacks of existing wireless methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing wireless home automation approaches (Bluetooth, ZigBee, GSM, voice recognition) have limitations: limited range, dependence on Bluetooth range or SNR, low reliability of GSM SMS delivery",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Proposed architecture uses Node MCU as primary controller, Arduino UNO for camera, sensors including IR, MQ135, DHT11, OV7670 camera, relay board, connected via Wi-Fi to a smartphone or internet",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "System operation integrates three functions: smart security (IR-triggered image capture and email alert), remote home automation (control lights and fans from smartphone over internet or 3G/4G), and environment monitoring (temperature, humidity, air quality readings sent to phone)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The implementation overcomes short-range limits of Bluetooth and ZigBee by using Wi-Fi and mobile data, and addresses GSM unreliability by using internet email delivery of alerts and images",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Motivation: overcome those existing drawbacks by implementing an IoT based smart security and home automation prototype",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Hardware selection: Node MCU chosen for Wi-Fi connectivity and multiple sensor connections; Arduino UNO used to interface the OV7670 camera due to analog pin limitations on Node MCU",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Sensors and actuators: IR sensor for motion detection, OV7670 camera for capture, MQ135 for air quality, DHT11 for temperature and humidity, 4-channel 5V relay board to switch appliances",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Software and interface: system updates sensor values to a web server and displays real-time readings and control on a smartphone app (Blink), and sends captured images via email to predefined owner address",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Security workflow result: when IR detects motion, camera is activated, image is captured and stored on PC, and the image is sent to the owner by email as an intruder alert",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Home automation workflow result: owner can remotely switch lights and fans via smartphone over internet or mobile data, enabling long distance control and assistance for handicapped and elderly users",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Environment monitoring result: DHT11 and MQ135 provide per-second temperature, humidity and air quality readings to the smartphone; high values can trigger fans to ventilate",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Claim supported by prototype: the implemented low cost prototype demonstrates combined security, automation and monitoring features with remote access and email alerting",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Advantages observed: low cost, minimal requirements, remote device control, helpful for handicapped and aged people, time saving",
+      "role": "Conclusion",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation and future scope: system requires internet connectivity to operate; authors note Wi-Fi alternatives via 3G/4G and suggest possible implementation using Raspberry Pi",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

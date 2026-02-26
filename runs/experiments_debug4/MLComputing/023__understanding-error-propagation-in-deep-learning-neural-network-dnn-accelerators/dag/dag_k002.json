@@ -1,0 +1,203 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The error propagation and silent data corruption (SDC) risk in DNN systems (DNN software on specialized accelerators) depends on data type, numeric value ranges, layer types and positions, and data reuse, and can be characterized and mitigated with targeted software and hardware techniques to meet safety FIT targets",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Modified Tiny-CNN simulator to map software executions to accelerator microarchitectural components and perform large-scale random single-bit fault injection (3000 faults per latch) in datapaths and buffers for four CNNs (ConvNet, AlexNet, CaffeNet, NiN) and multiple data types",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Case study of the Eyeriss accelerator (projected to 16nm) to measure SDC probabilities and compute FIT rates per buffer and overall using a projected raw FIT rate and component sizes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Claim: Define SDC categories for DNNs as changes to top-1 label, top-5 membership, or confidence deviations of +/-10% or +/-20%, and measure SDC probability conditioned on activated faults",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Faults in datapath latches (read once) and buffer storage (may be reused and read multiple times) propagate differently and must be studied separately",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: Traditional DNN-agnostic resilience techniques (e.g., full TMR or generic selective instruction duplication) are costly on accelerators and often impractical for self-driving and similar cost/latency constrained systems",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result/Evidence: SDC probabilities vary widely by network topology and data type; ConvNet (shallow) is much more SDC-sensitive than deeper networks, and ImageNet networks show similar SDC patterns across SDC definitions while small-output networks (CIFAR-10) show different sensitivity",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        7,
+        8,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result/Evidence: Bit-position sensitivity: for floating point types, high-order exponent bits cause most SDCs; for fixed-point types, high-order integer bits are most vulnerable; vulnerability correlates with dynamic range offered by the data type",
+      "role": "Result",
+      "parents": [
+        1,
+        6
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result/Evidence: Value deviation effect: errors that produce large magnitude deviations from typical layer activation ranges are much more likely to cause SDCs; many layers' activations are tightly bounded in fault-free runs",
+      "role": "Evidence",
+      "parents": [
+        1,
+        6
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result/Evidence: Eyeriss case study shows buffers (global buffer, filter SRAM) can have FIT rates orders of magnitude higher than datapath due to large size and reuse; e.g., ConvNet global buffer FIT up to ~87 FIT and filter SRAM ~63 FIT with 16b fixed point",
+      "role": "Result",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result/Evidence: Datapath FIT rates vary with data type and network (examples: datapath FIT up to 2.45 in ConvNet with 32b_rb10; much lower with narrower dynamic range types), showing datapath protection may be required depending on chosen datatype and network",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Claim/Implication: Design guidelines - choose data types that provide just-enough dynamic range and precision per network/layer; place normalization layers where possible to mask large deviations; add protection to large buffers introduced for data reuse; selectively protect most sensitive bits in datapath",
+      "role": "Claim",
+      "parents": [
+        5,
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Method/Proposal: Symptom-based Error Detector (SED) - learn per-layer activation bounds from fault-free runs (with 10% cushion) and asynchronously check global buffer activations between layers to detect SDC-causing anomalous magnitudes",
+      "role": "Method",
+      "parents": [
+        11,
+        8
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Method/Proposal: Selective Latch Hardening (SLH) - exploit asymmetric bit sensitivity by hardening only the most SDC-critical latches with a mix of hardened latch designs to cost-effectively reduce datapath FIT",
+      "role": "Method",
+      "parents": [
+        11,
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Result: Evaluation of mitigations - SED achieved average precision ~90.2% and recall ~92.5% across evaluated networks and datatypes and reduces Eyeriss FIT (example) by up to 96% for FLOAT; SLH combinations can reduce datapath latch FIT by 100x with ~20-25% latch area overhead in examples",
+      "role": "Result",
+      "parents": [
+        12,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Targeted, DNN-aware mitigation combining symptom-based software detectors and selective hardware hardening, together with datatype and architectural choices, can reduce SDC rates and projected FITs of DNN accelerators to meet safety standards with acceptable overheads",
+      "role": "Conclusion",
+      "parents": [
+        14,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

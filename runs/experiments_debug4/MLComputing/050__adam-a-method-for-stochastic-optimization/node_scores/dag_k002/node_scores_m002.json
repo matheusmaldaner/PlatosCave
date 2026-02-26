@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with Adam optimizer behavior: adaptive per-parameter updates from first and second moment estimates; invariance to positive diagonal gradient scaling and step size bound are plausible but not exact.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.92,
+    "relevance": 0.88,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.55,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the standard Adam optimization update with first and second moment estimates and bias correction, a widely used and established method in deep learning.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.25,
+    "relevance": 0.6,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.3,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on general knowledge, Adam alone is not guaranteed to have a sqrt T regret in online convex optimization; claims of such guarantees typically require variants like AMSGrad or specific assumptions and may not hold for vanilla Adam.",
+    "confidence_level": "low"
+  },
+  "4": {
+    "credibility": 0.75,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with common knowledge that Adam performs well in practice and is competitive with other stochastic optimizers on standard tasks such as logistic regression and neural networks.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.6,
+    "reproducibility": 0.8,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with standard practice in adaptive moment estimation where bias correction compensates zero initialization of moment estimates.",
+    "confidence_level": "high"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim aligns with standard bias correction in first and second moment estimates and with empirical observations in VAEs noting instability without bias correction when beta2 is near 1",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Claim aligns with common understanding that Adam blends AdaGrad and RMSProp and uses a diagonal preconditioner, with some interpretations linking it to Fisher information, though precise equivalence is debated.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts Adam with decaying learning rate and geometrically decaying beta1 achieves a regret bound leading to average regret of order one over square root T and vanishing per-iteration regret; without external references, plausibility depends on standard convergence results for adaptive methods under bounded gradient and diameter.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given general knowledge about optimizer behavior on image and text classification tasks, but there is no specified evidence or methodology in the text to verify; thus the claim remains uncertain and requires empirical confirmation",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that in multilayer neural networks with dropout,Adam converges faster than many first order methods and faster than SFO in both iterations and wall clock time, while SFO is slower per iteration and may fail with stochastic subfunctions, which is plausible but not universally guaranteed across architectures and datasets.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim reflects common optimizer behavior (Adam often converges faster than AdaGrad and adapts per-layer rates), but there is no cited evidence in the given claim text to independently verify specifics about CNN experiments and second moment eps effects.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.85,
+    "relevance": 0.9,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.7,
+    "reproducibility": 0.8,
+    "citation_support": 0.7,
+    "sources_checked": [],
+    "verification_summary": "AdaMax uses the infinity norm update u_t = max(beta2 times u_{t-1}, |g_t|) and updates theta_t using m_t divided by u_t with bias correction only on m_t; this is consistent with the standard AdaMax formulation and its claimed numerical stability without bias correction for u_t.",
+    "confidence_level": "high"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.0,
+    "method_rigor": 0.0,
+    "reproducibility": 0.0,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim proposes that in some CNN experiments the bvt term vanishes reducing the second moment approximation, leading to eps dominated updates and slower Adagrad convergence.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.85,
+    "relevance": 0.95,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim describes common default hyperparameters for adaptive optimizers like Adam, elementwise operations, possible learning rate annealing, and Polyak averaging as a generalization enhancement, which are widely discussed in practice though not universally mandated.",
+    "confidence_level": "high"
+  },
+  "15": {
+    "credibility": 0.73,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general knowledge, Adam is presented as robust across problems with theoretical, bias-corrected, practical and empirical support, but without cited sources the strength is uncertain.",
+    "confidence_level": "medium"
+  }
+}

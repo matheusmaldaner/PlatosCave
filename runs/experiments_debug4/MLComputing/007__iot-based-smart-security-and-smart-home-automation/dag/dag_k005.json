@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU can provide integrated smart home automation and smart security over Wi-Fi/3G/4G, overcoming range and reliability drawbacks of existing short-range wireless methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing short-range home automation methods (Bluetooth, ZigBee, voice via Bluetooth) and GSM have limitations: limited range, dependence on signal to noise ratio, and unreliable message delivery",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Proposed system architecture: sensors and actuators connected to Node MCU; camera connected to Arduino UNO; Node MCU provides Wi-Fi connectivity and can fall back to 3G/4G; user interacts via smartphone app and receives email alerts",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "System functions combine three modes: smart security (IR-triggered image capture and email alert), smart home automation (remote control of lights and fans via internet), and environment monitoring (DHT11 and MQ135 sensors reporting temperature, humidity, and air quality)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Hardware components used include Node MCU (ESP8266), Arduino UNO, OV7670 camera module, IR sensor, DHT11, MQ135, relay board and smartphone app",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "These limitations motivated implementation of an IoT system that uses Wi-Fi and cellular fallback to enable long-distance control and more reliable alerts",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Camera is connected to Arduino UNO because Node MCU has a single analog input; when IR sensor detects motion Arduino powers camera, stores captured images on PC, and sends the image by email to the owner",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Sensors (DHT11, MQ135, IR) are read by Node MCU and values are updated to smartphone every second via the app, enabling environment monitoring and remote actuation",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        11,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Relays driven by the microcontroller switch AC/DC loads (lights, fans) on owner command from remote smartphone or in response to sensor conditions",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: When IR detects motion the system captures an image and sends it by email to the predefined owner address; owner can remotely trigger lights/fans or alert authorities",
+      "role": "Result",
+      "parents": [
+        3,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Result: Remote control of lights and fans via internet demonstrated; system can operate over Wi-Fi or via cellular data (3G/4G) when Wi-Fi is unavailable",
+      "role": "Result",
+      "parents": [
+        3,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Result: Environment monitoring data (temperature, humidity, air purity) is displayed on the smartphone app every second and can trigger fan activation if air impurity or temperature exceeds thresholds",
+      "role": "Result",
+      "parents": [
+        3,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Advantages claimed: low cost, supports both security and automation, helpful for handicapped and elderly, long distance control, improved user decision making via camera images",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: IoT based home automation and security can provide comfort and simplicity and allow users to respond to intrusions or environmental hazards remotely; system could be implemented on other platforms such as Raspberry Pi",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: The overall system functionality depends on availability of internet or cellular data; IoT growth raises additional concerns and considerations",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    }
+  ]
+}

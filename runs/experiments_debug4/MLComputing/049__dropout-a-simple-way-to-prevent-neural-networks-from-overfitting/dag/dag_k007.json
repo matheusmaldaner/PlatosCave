@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Applying dropout during training reduces overfitting and improves generalization of neural networks by effectively averaging an exponential number of thinned models",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dropout method: during training randomly remove units (hidden and input) with independent Bernoulli(p) masks, creating a sampled thinned subnetwork each presentation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Test-time approximation: use the full network with outgoing weights scaled by p to approximate averaging predictions of exponentially many thinned networks",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Training procedure: perform stochastic gradient descent per training case on the sampled thinned network, average gradients in minibatches, and optionally combine with max-norm constraints, high learning rate with decay and high momentum",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Max-norm regularization: constrain norm of incoming weight vector at each hidden unit to ||w||2 <= c (project when exceeded), improves SGD with dropout and permits larger learning rates",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Monte-Carlo model averaging of k sampled networks approaches the scaled-weight approximation quickly (about k=50 matches approximation on MNIST), supporting the scaling heuristic",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Experimental evidence: dropout substantially lowers test error across domains (vision, speech, text, computational biology) and achieves state-of-the-art on benchmarks including MNIST, SVHN, CIFAR, ImageNet",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Representative results: MNIST error reduced from ~1.6% to 0.95% with dropout+max-norm; SVHN error improved to 2.55% with dropout in all layers; CIFAR-10 improved to 12.61% without augmentation; ImageNet top-5 error reduced to ~16% using conv nets with dropout",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Dropout effects on representations: dropout breaks co-adaptations, producing more interpretable first-layer features and inducing sparser hidden activations even without explicit sparsity penalties",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical feature/sparsity evidence: autoencoders and RBMs trained with dropout show localized edge/stroke detectors and histograms with many near-zero activations compared to non-dropout models",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Theoretical and alternative views: dropout can be seen as model averaging, as multiplicative Bernoulli or Gaussian noise on activations, and in simple cases (linear regression) marginalizing dropout yields a modified L2 (ridge) regularizer",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Marginalization and variants evidence: for linear regression dropout expectation equals minimize ||y - pXw||^2 + p(1-p)||Gamma w||^2; multiplicative Gaussian noise with variance (1-p)/p performs comparably or slightly better in experiments",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Dropout extends beyond feed-forward nets: Dropout Restricted Boltzmann Machines (Dropout RBMs) are defined by binary retention masks on hidden units and trained with standard RBM methods (e.g., CD-1), yielding sparser and coarser features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitations and trade-offs: dropout increases training time and gradient noise (typically 2-3x slower), and may underfit with very small datasets or overly aggressive dropout rates; choice of p couples with layer size (use n >= desired/p)",
+      "role": "Limitation",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Practical heuristics: typical hidden-unit retention p in 0.5-0.8, input p higher (e.g., 0.8), increase layer size by ~1/p, use high learning rates and high momentum (0.95-0.99) with max-norm bounds c around 3-4, tune via validation",
+      "role": "Method",
+      "parents": [
+        3,
+        4
+      ],
+      "children": null
+    }
+  ]
+}

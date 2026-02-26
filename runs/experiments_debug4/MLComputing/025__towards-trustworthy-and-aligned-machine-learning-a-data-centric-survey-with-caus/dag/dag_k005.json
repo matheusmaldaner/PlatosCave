@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Trustworthy machine learning can be advanced by a data-centric perspective that identifies and mitigates spurious or noncausal features in datasets, and Pearl's causality hierarchy provides a unifying framework to categorize and connect methods across robustness, adversarial robustness, interpretability, and fairness",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many disparate methods across robustness, adversarial robustness, interpretability, and fairness converge to a small set of principled formulations built on empirical risk minimization: (a) adversarial/worst-case data augmentation (max over perturbations), (b) domain/adversarial invariant representation learning (minimax with domain classifier), and (c) sample reweighting/group-DRO",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Pearl's causal hierarchy (associational L1, interventional L2, counterfactual L3) organizes techniques: many ML methods implicitly or explicitly operate at L1 or L2, and counterfactual/latent-generation approaches correspond to L3",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data-centric techniques correspond to causal procedures: data augmentation/randomization implements randomized controlled trials (intervention), feature/representation alignment and adversarial invariance implement backdoor/frontdoor adjustments or feature-level interventions, and importance weighting implements inverse-probability weighting",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Counterfactual generation and latent-variable generative models (VAEs, GANs, SCM priors) enable L3-style reasoning for explanation, augmentation, and estimating treatment effects (NDE, NIE, TE) to isolate direct and indirect influences",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "These data-centric and causal framings extend to large pretrained models via fine-tuning, parameter-efficient tuning, prompting/in-context learning and RL from human feedback, because these techniques can be mapped to constrained ERM variants",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Evidence: canonical examples (sea turtle vs tortoise, husky vs wolf) and literature show models learn background/texture confounders producing poor OOD performance, motivating augmentation and invariance regularizations",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Result: master equations summarizing recurring solutions — (i) minimax over perturbations (adversarial training / worst-case augmentation), (ii) minimax with domain discriminator (DANN-style invariance), and (iii) weighted ERM — capture the main algorithmic patterns used across topics",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Method/Explanation: L1 methods estimate associations P(Y|X) and are insufficient under distribution shift; L2 interventions (do-operator) model population-level changes and can be approximated by randomized augmentation or adjustment; L3 counterfactuals reason about individual alternate outcomes and require stronger causal assumptions",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Claim: Mapping ML techniques to the causal ladder sets expectations: methods grounded in L2 can remove certain confounding effects without experiments, while L3 enables individual-level explanations but demands stronger SCM specification and latent inference",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Limitation: application of causal tools to deep learning is challenged by unobserved confounders and entanglement of causal and non-causal features, making strict causal identification difficult in many practical ML datasets",
+      "role": "Limitation",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Method: Randomized controlled trial analogue via data augmentation (randomizing confounder ˜C) implements intervention P(x|do(c)) and produces training objectives that deconfound models (empirical objective replaced by expectation over counterfactual augmentations)",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Method: Adjustment-based procedures in ML — backdoor adjustment (conditioning/summing over strata), front-door (mediator-based) and instrumental variables — are formulated for representation-level or group stratification to remove spurious correlations when direct interventions are impractical",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Evidence/Result: Generative and latent-space models (GANs, VAEs, SCM priors) have been used to synthesize counterfactuals for robustness and explanation, and treatment-effect estimators have been adapted to measure and mitigate bias and spurious cues in vision, language and vision-language tasks",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Claim/Evidence: Fine-tuning, prompting, and PEFT can be expressed as ERM variants (init or constrain parameter subsets, or modulate input via prompts), so the same master formulations (invariance, worst-case augmentation, weighting) can be applied to large pretrained models",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Result/Claim: RLHF complements data-centric causal methods by aligning pretrained models to human preferences (a human-specified objective), but RLHF alone does not remove dataset confounders nor guarantee fairness or adversarial robustness",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: A unified, causality-aware, data-centric language and mathematical backbone helps compare, connect, and extend trustworthy ML methods across topics and to large pretrained models, and suggests directions for future methods that explicitly address unobserved confounding and entanglement",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "children": null
+    }
+  ]
+}
