@@ -151,3 +151,148 @@ Outputs to inspect:
 - `runs/ablation_studies/study_03_edge_feature_ablation/study_variant_summary.csv`
 - `runs/ablation_studies/study_04_propagation_ablation/study_variant_summary.csv`
 - `runs/ablation_studies/study_05_graph_component_ablation/study_variant_summary.csv`
+
+## Exhaustive numeric grid search from cache
+
+For true combinatorial searches over numeric scorer settings, use the dedicated
+grid-search CLI. This stays fully offline and reuses cached `dag/*.json` and
+`node_scores/*.json` artifacts.
+
+Supported override key patterns:
+
+- `metric_w.<metric>`: global node metric weights
+- `node_q.<Role>.<metric>`: role-specific node quality weights
+- `edge_w.<feature>`: edge combine weights
+- `graph_w.<component>`: graph score weights
+- `penalty.<field>`: propagation / trust-gating parameters
+
+Example search-space JSON:
+
+```json
+{
+  "name": "edge_weight_grid",
+  "normalize_metric_weights": false,
+  "params": {
+    "edge_w.role_prior": [0.1, 0.2, 0.3],
+    "edge_w.parent_quality": [0.1, 0.2, 0.3],
+    "edge_w.child_quality": [0.1, 0.2, 0.3],
+    "edge_w.alignment": [0.0, 0.1],
+    "edge_w.synergy": [0.1, 0.2, 0.3]
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 1.0
+    }
+  ]
+}
+```
+
+Run it:
+
+```bash
+python -m experiments.grid_search_cli \
+  --runs-root runs/experiments_debug4 \
+  --out-root runs/grid_search \
+  --search-space experiments/search_spaces/weight_grid_smoke.json \
+  --max-workers 8 \
+  --reuse-cache \
+  --verbose
+```
+
+Key outputs:
+
+- `config_index.csv`: every accepted configuration after constraints
+- `per_paper_summary.csv`: one row per `(paper, config)`
+- `config_summary.csv`: aggregated ranking metrics per configuration
+- `top_configs.json`: best configurations by AUC and Spearman
+
+Parallelism:
+
+- The runner parallelizes over papers using worker processes.
+- Each worker loads that paper's cached trials once, then scores all accepted
+  configurations locally to reduce JSON reload overhead.
+
+## Optuna search from cache
+
+For dense search over numeric settings without enumerating every combination,
+use the Optuna tuner. It samples from a defined search space and evaluates each
+trial fully offline against cached `dag/*.json` and `node_scores/*.json`.
+
+Install dependency in the experiment environment first:
+
+```bash
+.venv-exp/bin/pip install optuna
+```
+
+Search-space JSON uses Optuna-style parameter distributions:
+
+```json
+{
+  "name": "optuna_edge_graph_search",
+  "objective_metric": "auc_good_vs_bad",
+  "direction": "maximize",
+  "sampler": {
+    "type": "tpe",
+    "seed": 0,
+    "n_startup_trials": 20,
+    "multivariate": true
+  },
+  "pruner": {
+    "type": "median",
+    "n_startup_trials": 10,
+    "n_warmup_steps": 5
+  },
+  "params": {
+    "edge_w.role_prior": { "type": "float", "low": 0.0, "high": 0.4, "step": 0.05 },
+    "edge_w.parent_quality": { "type": "float", "low": 0.0, "high": 0.4, "step": 0.05 },
+    "edge_w.child_quality": { "type": "float", "low": 0.0, "high": 0.4, "step": 0.05 },
+    "edge_w.alignment": { "type": "float", "low": 0.0, "high": 0.3, "step": 0.05 },
+    "edge_w.synergy": { "type": "float", "low": 0.0, "high": 0.4, "step": 0.05 },
+    "graph_w.best_path": { "type": "float", "low": 0.0, "high": 0.5, "step": 0.05 },
+    "graph_w.bridge_coverage": { "type": "float", "low": 0.0, "high": 0.5, "step": 0.05 },
+    "penalty.alpha": { "type": "float", "low": 0.25, "high": 2.0, "step": 0.25 },
+    "penalty.eta": { "type": "float", "low": 0.5, "high": 1.0, "step": 0.05 }
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 1.0
+    }
+  ]
+}
+```
+
+Run it:
+
+```bash
+.venv-exp/bin/python -m experiments.optuna_search_cli \
+  --runs-root runs/experiments_debug4 \
+  --out-root runs/optuna_search \
+  --search-space experiments/search_spaces/optuna_debug4_dense_v1.json \
+  --n-trials 50 \
+  --n-jobs 4 \
+  --verbose
+```
+
+Key outputs:
+
+- `optuna_study.sqlite3`: persistent Optuna study storage
+- `trials.csv`: one row per trial with params and aggregate metrics
+- `best_trial.json`: best completed trial
+- `top_trials.json`: top completed trials
+- `top_trial_per_paper/*.csv`: per-paper summaries for top saved trials

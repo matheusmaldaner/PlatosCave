@@ -1,0 +1,21 @@
+{
+  "name": "weight_grid_smoke",
+  "description": "Tiny smoke-test grid across global node, edge, graph, and propagation weights.",
+  "normalize_metric_weights": false,
+  "include_component_means": true,
+  "params": {
+    "metric_w.credibility": [0.5, 1.0],
+    "metric_w.relevance": [0.5, 1.0],
+    "edge_w.role_prior": [0.2, 0.3],
+    "edge_w.synergy": [0.1, 0.2],
+    "graph_w.best_path": [0.15, 0.25],
+    "penalty.alpha": [0.5, 1.0]
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": ["edge_w.role_prior", "edge_w.synergy"],
+      "value": 1.0
+    }
+  ]
+}
