@@ -44,6 +44,10 @@ class Study:
     def pruned_count(self) -> int:
         return sum(t.state == "PRUNED" for t in self.trials)
 
+    @property
+    def base_dir(self) -> Path:
+        return self.trials_path.parent
+
 
 def _safe_float(text: str) -> float | None:
     if text is None:
@@ -123,6 +127,23 @@ def _svg_text(x: float, y: float, text: str, cls: str = "label", anchor: str = "
 
 def _svg_line(x1: float, y1: float, x2: float, y2: float, cls: str = "axis") -> str:
     return f'<line class="{cls}" x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" />'
+
+
+def _svg_line_custom(
+    x1: float,
+    y1: float,
+    x2: float,
+    y2: float,
+    *,
+    stroke: str,
+    width: float = 2.0,
+    dash: str | None = None,
+) -> str:
+    dash_attr = f' stroke-dasharray="{dash}"' if dash else ""
+    return (
+        f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" '
+        f'stroke="{stroke}" stroke-width="{width:.2f}"{dash_attr} />'
+    )
 
 
 def _svg_rect(x: float, y: float, w: float, h: float, fill: str, opacity: float = 1.0) -> str:
@@ -397,6 +418,138 @@ def render_stage3_param_panels(stage3: Study, out_path: Path, top_n: int = 250) 
     _save_svg(out_path, lines)
 
 
+def _normalize_rating(label: str) -> str | None:
+    raw = str(label or "").strip().lower()
+    if raw.startswith("good"):
+        return "Good"
+    if raw.startswith("neutral"):
+        return "Neutral"
+    if raw.startswith("bad"):
+        return "Bad"
+    return None
+
+
+def _best_per_paper_rows(study: Study) -> List[Dict[str, str]]:
+    path = study.base_dir / "top_trial_per_paper" / f"trial_{study.best_trial_number:06d}_per_paper.csv"
+    with path.open("r", encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def render_score_sum_by_rating(studies: Sequence[Study], out_path: Path) -> None:
+    width, height = 1120, 860
+    left, top = 60, 82
+    panel_w, panel_h = 1000, 220
+    gap = 24
+    rating_colors = {"Good": "#2f7d5b", "Neutral": "#a07c2f", "Bad": "#b64940"}
+    all_vals: List[float] = []
+    by_study: List[tuple[Study, Dict[str, List[float]]]] = []
+    for study in studies:
+        groups = {"Good": [], "Neutral": [], "Bad": []}
+        for row in _best_per_paper_rows(study):
+            group = _normalize_rating(row.get("rating", ""))
+            if group is None:
+                continue
+            val = float(row["score_sum"])
+            groups[group].append(val)
+            all_vals.append(val)
+        by_study.append((study, groups))
+    xmin = min(all_vals) - 1.0
+    xmax = max(all_vals) + 1.0
+    bins = np.linspace(xmin, xmax, 18)
+    xticks = _nice_ticks(xmin, xmax, 6)
+
+    lines = _svg_header(width, height, "Best-trial total score distributions by paper rating")
+    lines.append(_svg_text(left, 34, "Best-trial total score distributions by paper rating", "title"))
+    lines.append(
+        _svg_text(
+            left,
+            54,
+            "For each stage, the best trial's per-paper raw total score (score_sum) is split by human label. "
+            "Better searches push Good papers to the right and Bad papers to the left.",
+            "subtitle",
+        )
+    )
+
+    legend_x = width - 220
+    for idx, label in enumerate(["Good", "Neutral", "Bad"]):
+        yy = 34 + idx * 18
+        lines.append(_svg_rect(legend_x, yy - 10, 14, 10, rating_colors[label], 0.78))
+        lines.append(_svg_text(legend_x + 22, yy, label, "legend"))
+
+    for idx, (study, groups) in enumerate(by_study):
+        y0 = top + idx * (panel_h + gap)
+        lines.append(f'<rect class="panel" x="{left}" y="{y0}" width="{panel_w}" height="{panel_h}" rx="10" />')
+        plot_left = left + 56
+        plot_right = left + panel_w - 20
+        plot_top = y0 + 24
+        plot_bottom = y0 + panel_h - 36
+        plot_w = plot_right - plot_left
+        plot_h = plot_bottom - plot_top
+        ymax = 1
+        histograms = {}
+        for label, vals in groups.items():
+            counts, edges = np.histogram(np.array(vals, dtype=float), bins=bins)
+            histograms[label] = (counts, edges)
+            ymax = max(ymax, int(counts.max()))
+        yticks = _nice_ticks(0.0, float(ymax), 4)
+
+        def x_map(v: float) -> float:
+            return plot_left + (v - xmin) / (xmax - xmin) * plot_w
+
+        def y_map(v: float) -> float:
+            return plot_bottom - (v / ymax) * plot_h
+
+        for tick in yticks:
+            yy = y_map(float(tick))
+            lines.append(_svg_line(plot_left, yy, plot_right, yy, "grid"))
+            lines.append(_svg_text(plot_left - 8, yy + 4, f"{int(tick)}", "small", "end"))
+        for tick in xticks:
+            xx = x_map(float(tick))
+            lines.append(_svg_line(xx, plot_bottom, xx, plot_bottom + 6, "axis"))
+            lines.append(_svg_text(xx, plot_bottom + 22, f"{tick:.0f}", "small", "middle"))
+        lines.append(_svg_line(plot_left, plot_top, plot_left, plot_bottom, "axis"))
+        lines.append(_svg_line(plot_left, plot_bottom, plot_right, plot_bottom, "axis"))
+
+        # Draw three semi-transparent histograms on the same axes.
+        offsets = {"Good": -0.22, "Neutral": 0.0, "Bad": 0.22}
+        for label in ["Good", "Neutral", "Bad"]:
+            counts, edges = histograms[label]
+            for count, b0, b1 in zip(counts, edges[:-1], edges[1:]):
+                if count <= 0:
+                    continue
+                bin_w = x_map(float(b1)) - x_map(float(b0))
+                xx0 = x_map(float(b0)) + bin_w * (0.18 + offsets[label] * 0.25)
+                bar_w = max(1.5, bin_w * 0.22)
+                yy = y_map(float(count))
+                lines.append(_svg_rect(xx0, yy, bar_w, plot_bottom - yy, rating_colors[label], 0.68))
+
+        means = []
+        for label in ["Good", "Neutral", "Bad"]:
+            vals = groups[label]
+            if vals:
+                mean_val = float(np.mean(vals))
+                means.append(f"{label} mean {mean_val:.1f}")
+                lines.append(
+                    _svg_line_custom(
+                        x_map(mean_val),
+                        plot_top,
+                        x_map(mean_val),
+                        plot_bottom,
+                        stroke=rating_colors[label],
+                        width=2.0,
+                        dash="6 4",
+                    )
+                )
+
+        lines.append(_svg_text(plot_left, y0 + 16, study.label, "paneltitle"))
+        counts_str = "  ".join(f"{label} {len(groups[label])}" for label in ["Good", "Neutral", "Bad"])
+        lines.append(_svg_text(plot_right, y0 + 16, counts_str, "small", "end"))
+        lines.append(_svg_text(plot_left, plot_top + 14, "  ".join(means), "small"))
+
+    lines.append(_svg_text(width / 2, height - 12, "score_sum for the best trial of each stage", "label", "middle"))
+    _save_svg(out_path, lines)
+
+
 def render_summary_json(studies: Sequence[Study], out_path: Path) -> None:
     out = []
     for study in studies:
@@ -445,6 +598,7 @@ def main() -> None:
     render_histogram_panels(studies, DOCS_IMG / "optuna_stage_objective_histograms.svg")
     render_best_so_far(studies, DOCS_IMG / "optuna_stage_best_so_far.svg")
     render_stage3_param_panels(studies[-1], DOCS_IMG / "optuna_stage3_key_param_histograms.svg")
+    render_score_sum_by_rating(studies, DOCS_IMG / "optuna_stage_score_sum_by_rating.svg")
     render_summary_json(studies, DOCS_IMG / "optuna_stage_summary.json")
 
 

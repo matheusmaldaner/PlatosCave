@@ -335,6 +335,16 @@ Best-so-far improvement across the three searches:
 
 ![Optuna best-so-far](../docs/img/optuna_stage_best_so_far.svg)
 
+Raw per-paper total scores for each stage's best trial, split by paper label
+(`Good (theory)` is folded into `Good`):
+
+![Best-trial total score by rating](../docs/img/optuna_stage_score_sum_by_rating.svg)
+
+`score_sum` is the raw total score accumulated across a paper's cached trial
+rows for a given configuration. It complements `graph_score_mean`: the mean is
+the normalized ranking metric used in summaries, while `score_sum` makes the
+absolute separation between `Good`, `Neutral`, and `Bad` papers easier to see.
+
 Stage-3 concentration of the surviving live parameters in the top `250`
 completed trials:
 
@@ -390,5 +400,6 @@ Generated files:
 
 - [../docs/img/optuna_stage_objective_histograms.svg](../docs/img/optuna_stage_objective_histograms.svg)
 - [../docs/img/optuna_stage_best_so_far.svg](../docs/img/optuna_stage_best_so_far.svg)
+- [../docs/img/optuna_stage_score_sum_by_rating.svg](../docs/img/optuna_stage_score_sum_by_rating.svg)
 - [../docs/img/optuna_stage3_key_param_histograms.svg](../docs/img/optuna_stage3_key_param_histograms.svg)
 - [../docs/img/optuna_stage_summary.json](../docs/img/optuna_stage_summary.json)
