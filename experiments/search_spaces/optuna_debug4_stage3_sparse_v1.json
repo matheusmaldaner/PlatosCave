@@ -1,0 +1,97 @@
+{
+  "name": "optuna_debug4_stage3_sparse_v1",
+  "description": "Stage-3 sparse refine search after the 4096-trial refine run. Dead parameters are frozen explicitly with fixed values, and only the live region is optimized with finer steps.",
+  "objective_metric": "auc_good_vs_bad",
+  "direction": "maximize",
+  "normalize_metric_weights": true,
+  "include_component_means": true,
+  "save_top_k_per_paper": 5,
+  "sampler": {
+    "type": "tpe",
+    "seed": 0,
+    "n_startup_trials": 128,
+    "multivariate": true,
+    "constant_liar": true
+  },
+  "pruner": {
+    "type": "median",
+    "n_startup_trials": 64,
+    "n_warmup_steps": 16,
+    "interval_steps": 4
+  },
+  "params": {
+    "metric_w.credibility": { "type": "fixed", "value": 0.25 },
+    "metric_w.relevance": { "type": "fixed", "value": 0.25 },
+    "metric_w.evidence_strength": { "type": "float", "low": 0.5, "high": 1.25, "step": 0.0625 },
+    "metric_w.method_rigor": { "type": "float", "low": 1.5, "high": 2.0, "step": 0.0625 },
+    "metric_w.reproducibility": { "type": "float", "low": 1.25, "high": 2.0, "step": 0.0625 },
+    "metric_w.citation_support": { "type": "float", "low": 1.5, "high": 2.0, "step": 0.0625 },
+
+    "edge_w.role_prior": { "type": "fixed", "value": 0.0 },
+    "edge_w.parent_quality": { "type": "float", "low": 0.0, "high": 0.15, "step": 0.0125 },
+    "edge_w.child_quality": { "type": "float", "low": 0.05, "high": 0.2, "step": 0.0125 },
+    "edge_w.alignment": { "type": "float", "low": 0.0, "high": 0.075, "step": 0.0125 },
+    "edge_w.synergy": { "type": "float", "low": 0.15, "high": 0.25, "step": 0.0125 },
+
+    "penalty.agg": { "type": "categorical", "choices": ["mean", "softmin", "dampmin"] },
+    "penalty.alpha": { "type": "float", "low": 0.625, "high": 1.375, "step": 0.0625 },
+    "penalty.eta": { "type": "float", "low": 0.65, "high": 0.75, "step": 0.0125 },
+    "penalty.softmin_beta": { "type": "float", "low": 5.0, "high": 11.5, "step": 0.5 },
+    "penalty.dampmin_lambda": { "type": "float", "low": 0.5, "high": 0.8, "step": 0.025 },
+
+    "graph_w.bridge_coverage": { "type": "fixed", "value": 0.0 },
+    "graph_w.best_path": { "type": "float", "low": 0.4, "high": 0.475, "step": 0.0125 },
+    "graph_w.redundancy": { "type": "fixed", "value": 0.0 },
+    "graph_w.fragility": { "type": "float", "low": -0.3, "high": -0.25, "step": 0.0125 },
+    "graph_w.coherence": { "type": "fixed", "value": 0.0 },
+    "graph_w.coverage": { "type": "fixed", "value": 0.0 }
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 0.55
+    },
+    {
+      "type": "sum_gte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 0.3
+    },
+    {
+      "type": "sum_abs_lte",
+      "params": [
+        "graph_w.bridge_coverage",
+        "graph_w.best_path",
+        "graph_w.redundancy",
+        "graph_w.fragility",
+        "graph_w.coherence",
+        "graph_w.coverage"
+      ],
+      "value": 0.8
+    },
+    {
+      "type": "sum_abs_gte",
+      "params": [
+        "graph_w.bridge_coverage",
+        "graph_w.best_path",
+        "graph_w.redundancy",
+        "graph_w.fragility",
+        "graph_w.coherence",
+        "graph_w.coverage"
+      ],
+      "value": 0.6875
+    }
+  ]
+}

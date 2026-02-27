@@ -1,0 +1,97 @@
+{
+  "name": "optuna_debug4_refine_v1",
+  "description": "Refine-stage Optuna search centered on the strongest regions from the 4096-trial dense study. Uses finer parameter steps and tighter bounds around high-performing graph, edge, and propagation settings.",
+  "objective_metric": "auc_good_vs_bad",
+  "direction": "maximize",
+  "normalize_metric_weights": true,
+  "include_component_means": true,
+  "save_top_k_per_paper": 5,
+  "sampler": {
+    "type": "tpe",
+    "seed": 0,
+    "n_startup_trials": 128,
+    "multivariate": true,
+    "constant_liar": true
+  },
+  "pruner": {
+    "type": "median",
+    "n_startup_trials": 64,
+    "n_warmup_steps": 16,
+    "interval_steps": 4
+  },
+  "params": {
+    "metric_w.credibility": { "type": "float", "low": 0.25, "high": 0.75, "step": 0.125 },
+    "metric_w.relevance": { "type": "float", "low": 0.25, "high": 0.75, "step": 0.125 },
+    "metric_w.evidence_strength": { "type": "float", "low": 0.25, "high": 2.0, "step": 0.125 },
+    "metric_w.method_rigor": { "type": "float", "low": 0.5, "high": 2.0, "step": 0.125 },
+    "metric_w.reproducibility": { "type": "float", "low": 0.5, "high": 2.0, "step": 0.125 },
+    "metric_w.citation_support": { "type": "float", "low": 1.0, "high": 2.0, "step": 0.125 },
+
+    "edge_w.role_prior": { "type": "float", "low": 0.0, "high": 0.2, "step": 0.025 },
+    "edge_w.parent_quality": { "type": "float", "low": 0.0, "high": 0.5, "step": 0.025 },
+    "edge_w.child_quality": { "type": "float", "low": 0.0, "high": 0.4, "step": 0.025 },
+    "edge_w.alignment": { "type": "float", "low": 0.0, "high": 0.25, "step": 0.025 },
+    "edge_w.synergy": { "type": "float", "low": 0.0, "high": 0.25, "step": 0.025 },
+
+    "penalty.agg": { "type": "categorical", "choices": ["mean", "softmin", "dampmin"] },
+    "penalty.alpha": { "type": "float", "low": 0.25, "high": 1.5, "step": 0.125 },
+    "penalty.eta": { "type": "float", "low": 0.65, "high": 0.95, "step": 0.025 },
+    "penalty.softmin_beta": { "type": "float", "low": 3.0, "high": 12.0, "step": 0.5 },
+    "penalty.dampmin_lambda": { "type": "float", "low": 0.2, "high": 0.8, "step": 0.025 },
+
+    "graph_w.bridge_coverage": { "type": "float", "low": 0.0, "high": 0.1, "step": 0.025 },
+    "graph_w.best_path": { "type": "float", "low": 0.35, "high": 0.5, "step": 0.025 },
+    "graph_w.redundancy": { "type": "float", "low": 0.0, "high": 0.05, "step": 0.025 },
+    "graph_w.fragility": { "type": "float", "low": -0.3, "high": -0.2, "step": 0.025 },
+    "graph_w.coherence": { "type": "float", "low": 0.0, "high": 0.05, "step": 0.025 },
+    "graph_w.coverage": { "type": "float", "low": 0.0, "high": 0.05, "step": 0.025 }
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 1.0
+    },
+    {
+      "type": "sum_gte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 0.35
+    },
+    {
+      "type": "sum_abs_lte",
+      "params": [
+        "graph_w.bridge_coverage",
+        "graph_w.best_path",
+        "graph_w.redundancy",
+        "graph_w.fragility",
+        "graph_w.coherence",
+        "graph_w.coverage"
+      ],
+      "value": 1.1
+    },
+    {
+      "type": "sum_abs_gte",
+      "params": [
+        "graph_w.bridge_coverage",
+        "graph_w.best_path",
+        "graph_w.redundancy",
+        "graph_w.fragility",
+        "graph_w.coherence",
+        "graph_w.coverage"
+      ],
+      "value": 0.7
+    }
+  ]
+}

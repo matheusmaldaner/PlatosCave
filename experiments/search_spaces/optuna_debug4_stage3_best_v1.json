@@ -1,0 +1,94 @@
+{
+  "name": "optuna_debug4_stage3_best_v1",
+  "description": "Deterministic replay of the best stage-3 sparse Optuna configuration.",
+  "objective_metric": "auc_good_vs_bad",
+  "direction": "maximize",
+  "normalize_metric_weights": true,
+  "include_component_means": true,
+  "save_top_k_per_paper": 5,
+  "sampler": {
+    "type": "tpe",
+    "seed": 0,
+    "n_startup_trials": 1,
+    "multivariate": true,
+    "constant_liar": true
+  },
+  "pruner": {
+    "type": "nop"
+  },
+  "params": {
+    "metric_w.credibility": { "type": "fixed", "value": 0.25 },
+    "metric_w.relevance": { "type": "fixed", "value": 0.25 },
+    "metric_w.evidence_strength": { "type": "fixed", "value": 1.0625 },
+    "metric_w.method_rigor": { "type": "fixed", "value": 2.0 },
+    "metric_w.reproducibility": { "type": "fixed", "value": 1.9375 },
+    "metric_w.citation_support": { "type": "fixed", "value": 1.6875 },
+
+    "edge_w.role_prior": { "type": "fixed", "value": 0.0 },
+    "edge_w.parent_quality": { "type": "fixed", "value": 0.025 },
+    "edge_w.child_quality": { "type": "fixed", "value": 0.0625 },
+    "edge_w.alignment": { "type": "fixed", "value": 0.0 },
+    "edge_w.synergy": { "type": "fixed", "value": 0.25 },
+
+    "penalty.agg": { "type": "fixed", "value": "mean" },
+    "penalty.alpha": { "type": "fixed", "value": 0.75 },
+    "penalty.eta": { "type": "fixed", "value": 0.7 },
+    "penalty.softmin_beta": { "type": "fixed", "value": 9.0 },
+    "penalty.dampmin_lambda": { "type": "fixed", "value": 0.8 },
+
+    "graph_w.bridge_coverage": { "type": "fixed", "value": 0.0 },
+    "graph_w.best_path": { "type": "fixed", "value": 0.4125 },
+    "graph_w.redundancy": { "type": "fixed", "value": 0.0 },
+    "graph_w.fragility": { "type": "fixed", "value": -0.2875 },
+    "graph_w.coherence": { "type": "fixed", "value": 0.0 },
+    "graph_w.coverage": { "type": "fixed", "value": 0.0 }
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 0.55
+    },
+    {
+      "type": "sum_gte",
+      "params": [
+        "edge_w.role_prior",
+        "edge_w.parent_quality",
+        "edge_w.child_quality",
+        "edge_w.alignment",
+        "edge_w.synergy"
+      ],
+      "value": 0.3
+    },
+    {
+      "type": "sum_abs_lte",
+      "params": [
+        "graph_w.bridge_coverage",
+        "graph_w.best_path",
+        "graph_w.redundancy",
+        "graph_w.fragility",
+        "graph_w.coherence",
+        "graph_w.coverage"
+      ],
+      "value": 0.8
+    },
+    {
+      "type": "sum_abs_gte",
+      "params": [
+        "graph_w.bridge_coverage",
+        "graph_w.best_path",
+        "graph_w.redundancy",
+        "graph_w.fragility",
+        "graph_w.coherence",
+        "graph_w.coverage"
+      ],
+      "value": 0.6875
+    }
+  ]
+}

@@ -296,3 +296,99 @@ Key outputs:
 - `best_trial.json`: best completed trial
 - `top_trials.json`: top completed trials
 - `top_trial_per_paper/*.csv`: per-paper summaries for top saved trials
+
+For longer studies, prefer multiple single-job workers sharing one SQLite
+storage URL over a single process with large `--n-jobs`. The staged runs below
+were executed as 4 concurrent workers with `--n-jobs 1` and `1024` trials per
+worker.
+
+## Multi-stage Optuna results
+
+Three consecutive searches were run over the cached `runs/experiments_debug4`
+dataset:
+
+| Stage | Search space | Best AUC | Complete / Pruned | Best trial |
+| --- | --- | ---: | ---: | ---: |
+| Stage 1 dense | [optuna_debug4_dense_v1.json](search_spaces/optuna_debug4_dense_v1.json) | `0.702486` | `1147 / 2949` | `3457` |
+| Stage 2 refine | [optuna_debug4_refine_v1.json](search_spaces/optuna_debug4_refine_v1.json) | `0.759423` | `2573 / 1523` | `3950` |
+| Stage 3 sparse | [optuna_debug4_stage3_sparse_v1.json](search_spaces/optuna_debug4_stage3_sparse_v1.json) | `0.765838` | `3429 / 667` | `1011` |
+
+Machine-readable summary:
+
+- [../docs/img/optuna_stage_summary.json](../docs/img/optuna_stage_summary.json)
+
+Raw local study artifacts referenced by that summary are intentionally left under
+`runs/optuna_search_live`, `runs/optuna_search_refine`, and
+`runs/optuna_search_stage3` rather than committed to git.
+
+Headline deltas:
+
+- Dense -> refine: `+0.056937` AUC, while prune rate dropped from `72.0%` to `37.2%`.
+- Refine -> stage 3 sparse: `+0.006415` AUC, while prune rate dropped from `37.2%` to `16.3%`.
+- Dense -> stage 3 sparse: `+0.063352` AUC overall.
+
+Objective distributions by stage:
+
+![Optuna objective histograms](../docs/img/optuna_stage_objective_histograms.svg)
+
+Best-so-far improvement across the three searches:
+
+![Optuna best-so-far](../docs/img/optuna_stage_best_so_far.svg)
+
+Stage-3 concentration of the surviving live parameters in the top `250`
+completed trials:
+
+![Stage-3 key parameter histograms](../docs/img/optuna_stage3_key_param_histograms.svg)
+
+What mattered:
+
+- The graph head collapsed to a sparse `best_path + fragility` form. By stage 3, `graph_w.bridge_coverage`, `graph_w.redundancy`, `graph_w.coherence`, and `graph_w.coverage` were frozen to `0.0`, while `graph_w.best_path` stayed around `0.41-0.45` and `graph_w.fragility` around `-0.30..-0.275`.
+- `metric_w.credibility` and `metric_w.relevance` kept falling to the floor, so stage 3 fixed both at `0.25`.
+- `metric_w.method_rigor`, `metric_w.reproducibility`, and `metric_w.citation_support` consistently stayed high. `metric_w.evidence_strength` remained important, but settled into a narrower mid-high band instead of saturating at the max.
+- The edge model simplified materially: `edge_w.role_prior` went to `0`, `edge_w.alignment` stayed near `0`, `edge_w.parent_quality` and `edge_w.child_quality` stayed small, and `edge_w.synergy` pushed to the top of its refined range.
+- `penalty.agg = mean` became the most stable winner in the refined searches, with `penalty.eta` around `0.70` and mid-range `penalty.alpha`.
+
+Best stage-3 sparse configuration:
+
+- Reusable fixed replay config: [optuna_debug4_stage3_best_v1.json](search_spaces/optuna_debug4_stage3_best_v1.json)
+
+Key stage-3 best settings:
+
+- `metric_w.evidence_strength = 1.0625`
+- `metric_w.method_rigor = 2.0`
+- `metric_w.reproducibility = 1.9375`
+- `metric_w.citation_support = 1.6875`
+- `edge_w.parent_quality = 0.025`
+- `edge_w.child_quality = 0.0625`
+- `edge_w.alignment = 0.0`
+- `edge_w.synergy = 0.25`
+- `penalty.agg = mean`
+- `penalty.alpha = 0.75`
+- `penalty.eta = 0.7`
+- `graph_w.best_path = 0.4125`
+- `graph_w.fragility = -0.2875`
+
+Replay the fixed best configuration:
+
+```bash
+.venv-exp/bin/python -m experiments.optuna_search_cli \
+  --runs-root runs/experiments_debug4 \
+  --out-root runs/optuna_search_replay \
+  --search-space experiments/search_spaces/optuna_debug4_stage3_best_v1.json \
+  --n-trials 1 \
+  --n-jobs 1 \
+  --verbose
+```
+
+Regenerate the SVG report assets and machine-readable summary:
+
+```bash
+.venv-exp/bin/python experiments/generate_optuna_report_assets.py
+```
+
+Generated files:
+
+- [../docs/img/optuna_stage_objective_histograms.svg](../docs/img/optuna_stage_objective_histograms.svg)
+- [../docs/img/optuna_stage_best_so_far.svg](../docs/img/optuna_stage_best_so_far.svg)
+- [../docs/img/optuna_stage3_key_param_histograms.svg](../docs/img/optuna_stage3_key_param_histograms.svg)
+- [../docs/img/optuna_stage_summary.json](../docs/img/optuna_stage_summary.json)
