@@ -1,0 +1,165 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Feature selection methods (filter, wrapper, embedded) can reduce computation, improve prediction performance, and increase understanding of high-dimensional data in machine learning applications",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "High-dimensional datasets (hundreds of variables) contain irrelevant and redundant variables that hurt computation and generalization; feature selection addresses this",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Feature selection methods are broadly classified into Filter, Wrapper and Embedded approaches with distinct trade-offs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Filter methods rank features using criteria (e.g., correlation, mutual information, RELIEF) as preprocessing; they are computationally light but can produce redundant subsets and ignore classifier interactions",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Wrapper methods use a predictor as a black box and search heuristics (sequential search, evolutionary search) to optimize subset performance but are computationally expensive and prone to overfitting",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10,
+        15
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Embedded methods integrate feature selection into training (e.g., mRMR, SVM-RFE, weight-based ranking, network pruning) to reduce retraining cost and address redundancy",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Stability of feature selection algorithms (consistency under data perturbations) is an important concern; unstable selectors produce inconsistent subsets and unreliable biomarkers",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Common classifiers used with feature selection are Support Vector Machines (SVM) and Radial Basis Function networks (RBF); validation methods include k-fold and leave-one-out cross validation",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Correlation criterion (Pearson) detects linear dependence; Mutual Information (MI) measures dependency but requires density estimation and can miss inter-feature redundancy; RELIEF ranks by relevance but requires threshold choice",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Sequential search algorithms (SFS, SBS, SFFS, ASFFS, Plus-L-Minus-r) and heuristic/evolutionary searches (GA, CHCGA, PSO) provide tractable suboptimal wrappers; CHCGA preserves diversity and can converge faster",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Embedded criteria include mRMR (max-relevancy min-redundancy using MI), SVM-RFE (recursive feature elimination using SVM weights), and neural network saliency/pruning to select nonredundant informative features",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "An experimental evaluation applied filter (correlation, MI), SFFS wrapper, and CHCGA wrapper with SVM and RBF on seven datasets (UCI datasets plus RF generator Fault Mode data) to compare methods",
+      "role": "Method",
+      "parents": [
+        0,
+        2,
+        4,
+        7
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Experimental results: CHCGA with SVM found high-accuracy small subsets (examples: Breast cancer 97.36% with 5 features; Ionosphere 94.29% with 16 features; FaultMode discrete 98.83% with 6 features), SFFS-based wrappers often achieved or matched top performance while filter rankings produced irregular/unreliable curves",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Applying feature selection yields benefits (reduced dimensionality, insight, improved generalization) but method choice depends on simplicity, stability, computational cost, and classifier interaction; wrappers/embedded often give better predictive subsets than simple filters",
+      "role": "Conclusion",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Limitations: Wrapper methods require retraining for many subsets (high computation), can overfit if validation is inadequate, and filter methods can discard features that are informative only in combinations",
+      "role": "Limitation",
+      "parents": [
+        4,
+        6
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,3709 @@
+--- Page 1 ---
+.
+.
+Latest updates: hps://dl.acm.org/doi/10.1145/3295500.3356177
+.
+.
+RESEARCH-ARTICLE
+BinFI: an eﬀicient fault injector for safety-critical machine learning
+systems
+ZITAO CHEN, The University of British Columbia, Vancouver, BC, Canada
+.
+GUANPENG LI, The University of British Columbia, Vancouver, BC, Canada
+.
+KARTHIK PATTABIRAMAN, The University of British Columbia, Vancouver, BC, Canada
+.
+NATHAN A DEBARDELEBEN, Los Alamos National Laboratory, Los Alamos, NM, United
+States
+.
+.
+.
+Open Access Support provided by:
+.
+The University of British Columbia
+.
+Los Alamos National Laboratory
+.
+PDF Download
+3295500.3356177.pdf
+29 December 2025
+Total Citations: 85
+Total Downloads: 1117
+.
+.
+Published: 17 November 2019
+.
+.
+Citation in BibTeX format
+.
+.
+SC '19: The International Conference
+for High Performance Computing,
+Networking, Storage, and Analysis
+November 17 - 19, 2019
+Colorado, Denver
+.
+.
+Conference Sponsors:
+SIGHPC
+SC '19: Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis (November 2019)
+hps://doi.org/10.1145/3295500.3356177
+ISBN: 9781450362290
+.
+
+
+--- Page 2 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine
+Learning Systems
+Zitao Chen
+zitaoc@ece.ubc.ca
+University of British Columbia
+Guanpeng Li
+gpli@ece.ubc.ca
+University of British Columbia
+Karthik Pattabiraman
+karthikp@ece.ubc.ca
+University of British Columbia
+Nathan DeBardeleben
+Los Alamos National Laboratory
+ndebard@lanl.gov
+ABSTRACT
+As machine learning (ML) becomes pervasive in high performance
+computing, ML has found its way into safety-critical domains (e.g.,
+autonomous vehicles). Thus the reliability of ML has grown in im-
+portance. Specifically, failures of ML systems can have catastrophic
+consequences, and can occur due to soft errors, which are increasing
+in frequency due to system scaling. Therefore, we need to evaluate
+ML systems in the presence of soft errors.
+In this work, we propose BinFI, an efficient fault injector (FI)
+for finding the safety-critical bits in ML applications. We find the
+widely-used ML computations are often monotonic. Thus we can
+approximate the error propagation behavior of a ML application as a
+monotonic function. BinFI uses a binary-search like FI technique to
+pinpoint the safety-critical bits (also measure the overall resilience).
+BinFI identifies 99.56% of safety-critical bits (with 99.63% precision)
+in the systems, which significantly outperforms random FI, with
+much lower costs.
+KEYWORDS
+Error Resilience, Machine Learning, Fault Injection
+ACM Reference Format:
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben.
+2019. BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning
+Systems . In The International Conference for High Performance Computing,
+Networking, Storage, and Analysis (SC ’19), November 17–22, 2019, Denver, CO,
+USA. ACM, New York, NY, USA, 14 pages. https://doi.org/10.1145/3295500.
+3356177
+1
+INTRODUCTION
+The past decade has seen the massive adoption of machine learning
+(ML) in a diverse set of areas [36, 47, 71, 72]. ML has also found its
+way into the high performance computing (HPC) domain, where
+the high computing capacity empowers ML to manage the large
+volume of scientific and engineering data [35, 56, 65, 81]. Many of
+these ML applications are safety-critical [19, 26, 60, 80, 81]. One
+emerging example is autonomous vehicles (AVs), in which the high
+throughput, low latency, high reliability requirements make the
+ACM acknowledges that this contribution was authored or co-authored by an employee,
+contractor, or affiliate of the United States government. As such, the United States
+government retains a nonexclusive, royalty-free right to publish or reproduce this
+article, or to allow others to do so, for government purposes only.
+SC ’19, November 17–22, 2019, Denver, CO, USA
+© 2019 Association for Computing Machinery.
+ACM ISBN 978-1-4503-6229-0/19/11...$15.00
+https://doi.org/10.1145/3295500.3356177
+hardware of these applications rival those of some supercomputers.
+For example, Nvidia Drive AGX Xavier, a system-on-chip (SoC)
+designed for AVs application, is able to deliver 30 TOPS (trillion
+operations per second) of performance at 30W [10], much like HPC
+systems [49]. While we focus on AVs in this paper, similar trends
+apply for ML applications in domains such as health-care [80, 81].
+As the trends toward exascale computing and AVs continue
+to grow, the ability of ML to deliver high performance critically
+depends on the reliability of the system [23, 70]. The ISO 26262
+standard for functional safety of road vehicles specifies that there
+can be no more than 10 FIT (Failures in Time), which is 10 failures in
+a billion hours of operation [8, 49]. A recent study of failures in AVs
+shows that faults related to ML systems are the major culprits, often
+requiring the fallback of human driver intervention [18]. Many of
+these failures are due to hardware transient faults, also known as
+soft errors, which are typically caused by high-energy particles due
+to cosmic rays that interact with electronic components (e.g., a
+terrestrial neutron strike may cause current spikes in logic circuits
+or storage elements, and subsequently lead to a bit flip). Moreover,
+soft errors are increasing in frequency as system scale increases
+(especially in HPC applications [23, 70, 73]) and they could lead to
+undesirable consequences in ML systems [25, 49, 62]. In addition,
+hardware faults can also be deliberately induced by malicious at-
+tackers (e.g., selectively flipping specific bits), which can also cause
+significant performance degradation in DNNs [38].
+Traditional techniques (e.g., replicating hardware components
+[53]; instruction duplication [51]) incur high overheads in hardware
+cost, energy and performance, which make them impractical to
+be deployed in HPC ML systems [49]. For example, an AV ready
+for real-world deployment should be able to process the driving
+data within a few milliseconds (per iteration) [2, 15]. Deploying
+traditional protection techniques may lead to delays in response
+time, which may in turn lead to reaction-time-based accidents [18].
+Therefore, we need to identify the parts of the ML systems that
+are the most sensitive to hardware transient faults, and selectively
+protect the sensitive parts at low costs.
+In this paper, we focus on the problem of identifying the safety-
+critical bits in ML applications. These are the bits in the ML program,
+which if affected by hardware transient faults, result in a safety-
+condition violation. A well-established approach to experimental
+resilience assessment is random fault injection (FI), which works
+by randomly sampling from a set of fault locations, and injecting
+the faults into the program to obtain a statistically significant esti-
+mate of their overall resilience. Random FI has been used on ML
+
+
+--- Page 3 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+applications for overall resilience assessment [49, 62], but it is un-
+fortunately not suitable for identifying the safety-critical bits in the
+program due to two reasons. First, because random FI relies on sta-
+tistical sampling, it is not guaranteed to cover all the safety-critical
+bits. Second, the safety-critical bits are often clustered in the state
+space, and random sampling is unable to find them (e.g., Fig. 3).
+The only known approach to identify the safety-critical bits
+of a ML program is exhaustive FI, which involves flipping each
+bit of the program, and checking if it resulted in a safety violation.
+Unfortunately, exhaustive FI incurs huge performance overheads, as
+only one fault is typically injected in each trial (for controllability).
+The time taken by exhaustive FI is therefore directly proportional
+to the number of bits in the program, which can be very large.
+In this paper, we propose an efficient FI approach, which can
+identify the safety-critical bits in ML applications, and also measure
+the overall resilience, with reasonable overheads. The key insight
+of our approach is that the functions used in ML applications are
+often tailored for specific purposes. For example, for a network
+to classify an image of a vehicle, the ML computations would be
+designed in a way that they can produce larger response upon the
+detection of the vehicular feature in the image, while keeping the
+response to irrelevant features small. This results in the functions
+exhibiting monotonicity based on how compatible is the input with
+the target (e.g., vehicular features), and the composition of these
+ML functions can be approximated as a single monotonic composite
+function (Section 3.2). The monotonicity of the function helps us
+prune the FI space and efficiently identify the safety-critical bits.
+Analogous to how binary search on a sorted array has an exponential
+time reduction compared to linear search, our approach results in an
+exponential reduction in the FI space of ML applications to identify
+the safety-critical bits, compared to exhaustive FI. Therefore, we call
+our approach Binary fault injection or BinFI (in short).
+Prior work has attempted to find safety violations in ML pro-
+grams for design/software bugs through random testing approaches [31,
+54, 59, 78]. However, these papers do not examine the effects of
+hardware faults, more specifically, soft errors. Other papers have at-
+tempted to prune the FI space for general-purpose programs [33, 69],
+or even eliminate FI altogether [51]. Unfortunately, these papers do
+not consider the specific properties of ML programs. To the best of
+our knowledge, BinFI is the first fault injection technique to efficiently
+find safety violations in generic ML applications due to soft errors.
+Our main contributions in this paper are as follows:
+• Analyze the common operations used in ML applications and
+identify that many of them exhibit monotonicity. We approximate
+the composition of these functions as a monotonic function.
+• Present BinFI, a fault injection approach that leverages the approx-
+imated monotonic composite function, to find the safety-critical
+bits, and also measure the overall resilience of the program.
+• Extend an open-source FI tool, TensorFI to incorporate BinFI,
+and evaluate it over 8 ML applications with a total of 6 datasets
+(including a real-world driving dataset).
+Our evaluation shows that BinFI can identify 99.56% of the crit-
+ical bits with 99.63% precision, which significantly outperforms
+random FI. Further, it can also accurately estimate the overall SDC
+probability of the application. Finally, BinFI incurs only around 20%
+of the performance overhead of exhaustive FI, which is the only
+other way to identify most of the critical bits in a program (to our
+knowledge) i.e., it obtains a speedup of 5X over exhaustive FI.
+While the coverage of BinFI is not 100% in identifying safety-
+critical bits, it presents an attractive alternative to traditional ex-
+haustive fault injection due to its significantly low overheads. Fur-
+ther, the proportion of critical bits missed by BinFI is less than
+0.5%, which is acceptable in many situations given that soft errors
+are relatively rare events, and that not all bit-flips would lead to
+safety violations in practice [43]. Therefore, BinFI is the first step
+towards exploring the space of techniques that trade-off resilience
+for performance overheads in safety-critical ML applications.
+2
+BACKGROUND AND FAULT MODEL
+We start by providing an overview of the fault injection tool we
+used. We then discuss the requirements for AVs, and finally present
+the fault model we assume.
+2.1
+TensorFlow and Fault Injection Tool
+In our work, we use an open-source fault injector called TensorFI,
+which is a configurable FI tool to inject faults in TensorFlow ap-
+plications [50]. We choose it as it supports FI experiments on ML
+algorithms implemented using the TensorFlow framework [16],
+which is the most popular ML framework in use today [14]1. The
+main advantage of TensorFlow is that it abstracts the operations
+in a ML program as a set of operators and a dataflow graph - this
+allows programmers to focus on the high-level programming logic.
+There are two main components in the TensorFlow dataflow
+graph: (1) operator is the computational unit (e.g., matrix multiplica-
+tion) and tensor is the data unit. Users can build the ML model using
+the built-in operators or define their customized operators. Ten-
+sorFI duplicates the TensorFlow graph with customized operators
+[50], which are designed to not only be able to perform compu-
+tation as standard operators do, but also inject faults at runtime.
+TensorFI is provided as a library so that users can easily integrate
+TensorFI into their TensorFlow programs. It also allows different
+configuration (e.g., how and where to inject fault) options through
+a YAML interface.
+2.2
+AVs Requirements
+Autonomous vehicles (AVs) are complex systems that use ML to
+integrate data from various electronic components (e.g., LiDAR) and
+deliver real-time driving decisions. AVs entail several requirements:
+(1) high throughput (e.g., large amounts of data must be processed as
+they arrive from the sensors [1, 15]), and (2) low latency (e.g., apply
+the brakes upon the detection of a pedestrian in front of the vehicle
+within a few ms) [2, 15]. These requirements present significant
+challenges for reliability in AV applications.
+As mentioned, AVs reliability is mandated by stringent regulation
+- no more than 10 FIT as governed by ISO 26262 safety standard.
+There are two kinds of faults that can cause this standard to be
+violated [2], namely (1) systematic faults, and (2) transient faults.
+The former are caused by design defects in hardware and software,
+while the latter by cosmic rays and electromagnetic disturbances.
+Systematic faults in AVs can be mitigated at design time, and have
+1Our approach is also applicable for applications using other ML frameworks such as
+PyTorch, Keras, etc., as they are similar to TensorFlow in structure.
+
+
+--- Page 4 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+SC ’19, November 17–22, 2019, Denver, CO, USA
+been well explored in the literature [59, 67, 78]. Hardware transient
+faults, on the other hand, need runtime mitigation and are less
+studied in the context of AVs. FIT due to soft errors is orders of
+magnitude higher than the 10 FIT requirement [49]. Therefore, it is
+important to study soft errors’ effect on AV’s reliability.
+2.3
+Fault Model
+In this paper, we consider hardware transient faults (i.e., soft errors)
+that randomly occur during the execution of ML programs. The
+errors are caused by different sources such as alpha particles and
+electro-magnetic effects. In our fault model, we assume faults occur
+in the processor’s data path, i.e., in pipeline registers and ALUs. We
+assume that main memory, cache and the register file are protected
+by ECC or parity, and hence we do not consider faults that originate
+in them. This is a common assumption made in fault injection
+studies [17, 29, 51]. We also assume that faults do not occur in the
+processor’s control logic, as that constitutes only a small portion
+of the total area of the processor. Note that our fault model only
+considers faults that are not masked before reaching the software
+layer, as masked faults do not affect the application’s execution.
+Since TensorFI operates on TensorFlow graphs, we map the fault
+occurrence to the interface of the operators in the graph. This
+is because the details of each operation are hidden from the ML
+program, and are also platform specific (e.g., the GPU version of
+these operators are often different from the CPU version). As a
+result, we inject faults directly to the output value of operators in
+ML programs - this method is in line with prior work [20, 50, 51].
+We follow the one-fault-per-execution model as soft errors are
+relatively rare events with respect to the typical time of a program’s
+execution - again this is a common assumption in the literature [17,
+27, 51, 79]. Soft errors can manifest in the software layer as single
+or multiple-bit flips. However, recent work [20, 68] has shown that
+multiple bit flip errors result in similar error propagation patterns
+and SDC probabilities as single-bit flip errors (at the program level),
+showing that studying single-bit flip fault injection is sufficient for
+drawing conclusions about error resilience.
+We assume that faults do not modify the state/structure of the
+model (e.g., change the model’s parameters [42, 54]), nor do we
+consider faults in the inputs provided to the model (e.g., sensor
+faults such as brightness change of the image [67, 78]), as they
+are outside the scope of the technique. Finally, we only consider
+faults during the inference phase of ML programs as ML models are
+usually trained once offline, and the inference phase is performed
+repeatedly in deployment (typically, hundreds of thousands of times
+in AVs), which makes them much more prone to soft errors.
+3
+METHODOLOGY
+We consider Silent Data Corruption (SDC) as a mismatch between
+the output of a faulty program and that of a fault-free program exe-
+cution. For example, in classifier models, an image misclassification
+due to soft errors would be an SDC. We leave the determination
+of whether an SDC is a safety violation to the application, as it
+depends on the application’s context (see Section 4). Unlike tradi-
+tional programs, where faults can lead to different control flows
+[33, 51, 58], faults in ML programs only result in numerical changes
+of the data within the ML models (though faults might also change
+the execution time of the model, this rarely happens in practice as
+the control flow is not modified).
+Critical bits are those bits in the program where the occurrence of
+fault would lead to an SDC (e.g., unsafe scenarios in safety-critical
+applications). Our goal is to efficiently identify these critical bits in
+ML programs without resorting to exhaustive fault injection into
+every bit.
+We first provide an example of how faults propagate in ML pro-
+gram in Section 3.1. We then define the terms monotonicity and
+approximate monotonicity that we use throughout the paper. Then
+we present our findings regarding the monotonicity of the func-
+tions used in common ML algorithms in Section 3.3, so that we can
+model the composition of all the monotonic functions involved in
+fault propagation either as a monotonic or approximately mono-
+tonic function (Section 3.4). Finally, we show how we leverage the
+(approximate) monotonicity property to design a binary-search like
+FI algorithm to efficiently identify the critical bits, in Section 3.5.
+3.1
+Error Propagation Example
+The principle of error propagation in different ML models is sim-
+ilar in that a transient fault corrupts the data, which becomes an
+erroneous data, and will be processed by all the subsequent com-
+putations until the output layer of the model. In this section, we
+consider an example of error propagation in the k-nearest neigh-
+bor algorithm (kNN), in Fig. 1 (k=1). The program is written using
+TensorFlow, and each TensorFlow operator has a prefix of tf (e.g.,
+tf.add). We use this code as a running example in this section.
+We assume that the input to the algorithm is an image (testImд),
+and the output is a label for the image. Line 1 calculates the negative
+value of the raw pixel in testImд. The program also has a set of
+images called neiдhbors, whose labels are already known; and the
+goal of the program is to assign the label from one of the neiдhbors
+(called nearest neighbor) to the testImд. Line 2 computes the rela-
+tive distance of testImд to each of neiдhbors. Line 3 generates the
+absolute distances and line 4 summarizes the per-pixel distance into
+a total distance. Line 5 looks for the index of the nearest neighbor,
+whose label is the predicted label for testImд.
+Figure 1: An example of error propagation in kNN model
+(k=1), fault occurs at the tf.add operator - line 2.
+Assume a fault occurs at the add operator (line 2) and modifies
+its output relativeDistance. If each image’s dimension is (28, 28),
+then the result from the tf.add operator is a matrix with shape
+(|N |, 784), where |N | is the number of neighbors and each vector
+with 784 elements corresponds to each neighbor. If the ith image
+is the nearest neighbor, we have disi < disj, ∀j ∈|N |,i  j, where
+disi is the distance of the ith image to the test image. The fault
+might or might not lead to an SDC - we consider both cases below.
+SDC: The fault occurs at (i,y),y ∈[1, 784] (i.e., corresponding
+to the nearest neighbor), which incurs a positive value deviation
+(e.g., flipping 0 to 1 in a positive value). The fault would increase
+
+
+--- Page 5 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+disi, which indicates a potential SDC as disi might no longer be the
+smallest one among disj, j ∈|N |. Similarly, the fault at (j,y),y ∈
+[1, 784] incurs a negative deviation and may result in an SDC.
+No SDC: The fault at (i,y),y ∈[1, 784] incurs a negative value
+deviation, thus decreasing disi. This will not cause SDC since disi
+is always the nearest neighbor. Similarly, a fault incurring positive
+deviation at (j,y),y ∈[1, 784] would always be masked.
+3.2
+Monotonicity and Approximate
+Monotonicity
+We now define the terms monotonicity and approximate mono-
+tonicity that we use in this paper.
+• Non-strictly monotonic function: A non-strictly monotonic
+function is either monotonically increasing: f (xi) ≥f (xj), ∀xi >
+xj; or monotonically decreasing: f (xi) ≤f (xj), ∀xi > xj. We say
+a function has monotonicity when it is non-strictly monotonic.
+• Approximately monotonic: We call a function approximately
+monotonic if it is non-strictly monotonic in a non-trivial interval,
+i.e., the function does not exhibit both monotonically increasing
+and decreasing interchangeably (e.g., Sine function). We say a
+function has approximate monotonicity when it is approximately
+monotonic. For example, f (x) = 100 ∗max(x −1, 0) −max(x, 0)
+is monotonically increasing when x > 1, but not when x ∈(0, 1).
+Hence, we consider f (x) is approximately monotonic.
+Error propagation (EP) function: We define EP function, which
+is a composite function of those functions involved in propagat-
+ing the fault from the fault site to the model’s output. For ex-
+ample, there are MatMul (matrix multiplication) and ReLu (rec-
+tified linear unit [57]) following the occurrence of the fault, in
+this case EP function is the composite function of both functions:
+EP(x) = ReLu(MatMul(xorд −xerr ,w)), where w is the weight for
+the MatMul computation, xorд and xerr are the values before and
+after the presence of fault. Thus xorд −xerr is the deviation caused
+by the fault at the fault site. Note that we are more interested in the
+deviation caused by the fault rather than the value of the affected
+data (xerr ). Thus, the input to EP is the bit-flip deviation at the fault
+site and the output of EP is the outcome deviation by the fault at
+the model’s output.
+The main observation we make in this paper is that most of the
+functions in ML model are monotonic, as a result of which the EP
+function is either monotonic or approximately monotonic. The main
+reason for the monotonicity of ML functions (and especially DNNs)
+is that they are designed to recognize specific features in the input.
+For example, the ML model in Fig. 2 is built for recognizing the
+image of digit 1, so the ML computation is designed in a way that it
+will have stronger responses to images with similar features as digit
+1. Specifically, the ML computation would generate larger output, if
+the image has stronger features that are consistent with the target.
+In Fig. 2, the output of the three inputs increases as they exhibit
+higher consistency (values in the middle column for each input)
+with the ML target. And the final output by the model is usually
+determined by the numerical magnitude of the outputs (e.g., larger
+output means higher confidence of the image to be digit 1).
+The EP function can be monotonic or approximately monotonic,
+based on the ML model. This (approximate) monotonicity can help
+us to prune the fault injection space of the technique. For simplicity,
+ 
+
+"
+
+
+!
+#
+
+%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+	
+ 
+ 
+	
+
+ 
+	
+
+&$
+	 
+& !
+ 
+&!#
+ 
+
+	
+ 
+
+
+
+
+
+ 
+	 	
+!
+ 	
+"
+ 	
+  
+   
+  
+
+  
+  
+
+Figure 2: An example of how a ML model exhibits mono-
+tonicity for different inputs. Assume the computation is a
+simple one-time convolution (inner-product).
+let us assume the EP function is monotonic. We can model the EP
+function as: |EP(x)| ≥|EP(y)|, (x > y ≫0) ∪(x < y ≪0), x,y
+are faults at the bits of both 0 or 1 in the same data (Section 3.4
+has more details). We can therefore expect the magnitude of the
+deviation caused by larger faults (in absolute value) to be greater
+than those by smaller faults. Further, a larger deviation at the final
+output is more likely to cause an SDC. Based on the above, we can
+first inject x. If it does not lead to an SDC, we can reason that faults
+from lower-order bits y will not result in SDCs without actually
+simulating them, as these faults would have smaller outcomes.
+In practice, the EP function is often approximately monotonic
+(rather than monotonic), especially in real-world complex ML mod-
+els such as DNNs. Our approach for pruning the fault injection
+space remains the same. This leads us to some inaccuracy in the
+estimation due to our approximation of monotonicity. Nonetheless,
+we show later in our evaluation that this inaccuracy is quite small.
+3.3
+Common ML Algorithms and Monotonicity
+In this section, we first survey the major ML functions within the
+state-of-art ML models in different domains, and then discuss their
+monotonicity. Most of these models are comprised of DNNs.
+Image classification: LeNet [48], AlexNet [47], VGGNet [72], In-
+ception [75–77], ResNet [36]. Some of these networks [36, 47, 72, 76]
+are the winning architectures that achieve the best performance on
+the ILSVRC challenges [24] from 2012 to 2017.
+Object detection: Faster-RCNN [66], YoLo [63], DarkNet [64].
+These networks produce outstanding performance in object detec-
+tion (e.g., can detect over 9000 categories [64]) and we are primarily
+interested in the ML thread for classification as these networks
+include both object localization and classification.
+Steering models: Nvidia DAVE system [19], Comma.ai’s steering
+model [5], Rambo [12], Epoch [7], Autumn [3]. These models are the
+popular steering models available in the open-source community 2
+3 and are used as the benchmarks in related studies [59, 78].
+Health care and others: Detection of atrial fibrillation [80]; ar-
+rythmia detection [60]; skin cancer prediction [26]; cancer report
+analysis [81]; aircraft collision avoidance system [44].
+2https://github.com/udacity/self-driving-car
+3https://github.com/commaai/research
+
+
+--- Page 6 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Table 1: Major computations in state-of-art DNNs
+Basic
+Conv; MatMul; Add (BiasAdd)
+Activation
+ReLu; ELu;
+Pooling
+Max-pool; Average-pool
+Normalization
+Batch normalization (BN);
+Local Response Normalization (LRN)
+Data transformation
+Reshape; Concatenate; Dropout
+Others
+SoftMax; Residual function
+These tasks are important in safety-critical domains (e.g., self-
+driving cars, medical diagnosis). We are interested in those compu-
+tations for calculating the results (e.g., those in hidden layers). Note
+that errors in the input layer such as during the reading the input
+image are out of consideration. The computations are summarized
+in Table 1.
+We next discuss how most of the computations used in the above
+tasks are monotonic.
+• Basic: Convolution computation (Conv) is mainly used in the
+kernels in DNNs to learn the features. Conv is essentially an
+inner-product computation: 	X · 	
+W = xiwi,xi ∈	X,wi ∈	
+W .
+Assuming there are two faults at the same location andx1,x2(x1 >
+x2 > 0) are the deviations from the two faults. The monotonicity
+property is satisfied as: |x1wi | ≥|x2wi |. As mentioned that we
+are more interested in the effect caused by the single bit-flip fault,
+so we do not consider data that are not affected by fault. The mul-
+tiply function is monotonic, thus Conv is monotonic (similarly
+for matrix multiplication - MatMul).
+• Activation: Activation (Act) function is often used to introduce
+non-linearity into the network, which is important for the net-
+work to learn non-linear complicated mappings between the
+inputs and outputs [34]. A widely used activation function is
+Rectified linear unit (ReLu) [57], defined as: f (x) = max(0,x),
+which is monotonic. Exponential linear unit (ELu) [55] is similar
+to ReLu and is monotonic.
+• Pooling: Pooling is usually used for non-linear down sampling.
+Max-pooling and average-pooling are the two major pooling
+functions. Max-pooling function extracts the maximum value
+from a set of data for down-streaming, and it is monotonic as fol-
+lows: max(xi,xk) ≥max(xj,xk),if xi > xj, where xi,xj could
+be faults at different bits, and xk denotes all the data unaffected
+by the fault. Similarly, average-pooling function calculates the
+average value from a group of data, and it is also monotonic as
+follows: avд(xi,xk) ≥avд(xj,xk),if xi > xj.
+• Normalization: Normalization (Norm) is used to facilitate the
+training of the network by dampening oscillations in the distri-
+bution of activations, which helps prevent problems like gradient
+vanishing [41]. Local response Norm (LRN) and batch Norm (BN)
+are the two Norm approaches used in the above networks.
+LRN implements a form of lateral inhabitation by creating com-
+petition for big activities among neuron outputs from different
+kernels [47]. However, LRN does not satisfy the monotonicity
+property as it normalizes the values across different neurons in a
+way that only needs to maintain competition (relative ordering)
+among the neighboring neurons. Thus a larger input might gener-
+ate a smaller output as long as the normalized value maintains the
+same relative ordering among the neighboring neurons (we also
+validated this by experiments). However, LRN was found to have
+significant limitations [72], and hence modern ML algorithms
+usually use BN instead of LRN [12, 19, 36, 64, 75–77].
+BN normalizes the value in a mini-batch during training phase
+to improve the learning, and normalization is neither necessary
+nor desirable during the inference as the output is expected to
+be only dependent on the input deterministically [41]. And thus
+in inference phase, BN applies the same linear transformation to
+each activation function given a feature map. So we can describe
+BN in inference phase as: f (x) = wx + b, where w,b are the
+statistics learned during training phase. BN is thus monotonic as
+f ′(x) = w.
+• Data transformation: There are computations that simply trans-
+form the data, e.g., reshape the matrix, and not alter the data
+value. Dropout is considered as an identity mapping since it per-
+forms dropout only in training phase [74]. These transforming
+functions are thus monotonic as: xi > xj,if xi > xj.
+• Others: SoftMax [37] is often used in the output layer to con-
+vert the logit (the raw prediction generated by the ML model),
+computed for each class into a probability within (0,1) and the
+probabilities of all classes add up to 1. SoftMax function is de-
+fined as: f (xi) = exi /J
+j=1 exj (f or i = 1, . . ., J), where xi the
+predicted value for different class (J classes in total). The deriva-
+tive of SoftMax with respect to xi is as follows:
+∂f (xi)
+∂xi
+=
+∂
+∂xi
+(
+exi
+J
+j exj ) =
+(exi )′ ∗J
+j exj −exi ∗exi
+(J
+j exj )2
+=
+exi
+J
+j exj −
+exi
+J
+j exj ∗
+exi
+J
+j exj = f (xi)(1 −f (xi))
+(1)
+as f (xi) ranges in (0, 1), the derivative of SoftMax is always
+positive, thus SoftMax is monotonic.
+Residual function used in ResNet [36] has the property that the
+mapping from the input to output at each layer before activation
+function is added with an extra mapping: H(x) = F(x) + W x,
+where H(x) is the mapping from input to output, F(x) is the
+residual function. The insight is that it is easier to learn the resid-
+ual function F(x) than the original mapping H(x). For example,
+if H(x) is an identity mapping to be learned by the network, it
+is easier for the network to learn F(x) = 0 (W = 1) rather than
+H(x) = x. There are different types of residual blocks and we
+consider the original one in [36]:
+H(x) = BN(Conv(ReLu(BN(Conv(x))))) +Wx,
+where Wx is the extra mapping. Assuming a fault occurs at
+xi ∈x, H(xi) is monotonic if the derivatives of the original map-
+ping F(xi) and Wixi are always positive or negative. However,
+the derivative of F(xi) might vary due to fault propagation. For
+example, assume H(x) = 100 ∗ReLu(x −1) −ReLu(x), where one
+fault propagates into two state spaces (thus there are x −1 and x).
+The monotonicity of H(x) discontinues according to the value of
+x: H(x) = 99x −100,x > 1 and H(x) = −x,x ∈(0, 1). Therefore,
+we call the residual block function as approximately monotonic.
+Thus we find that almost all the operations in Table 1 exhibit
+monotonicity. However, this is not an exhaustive list, e.g., there
+
+
+--- Page 7 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+are other activation functions, some of which are non-monotonic
+(e.g., Swish [61], Sinusoid [28]). Nevertheless, the above models are
+representative of models used in domains such as object detection
+(as they yield state-of-art performance and are frequently referred
+to by other studies) and the functions in Table 1 are common ML
+functions. Thus we assume that the computations in most of the
+ML models in the application domains mentioned above have the
+monotonicity property.
+3.4
+Error Propagation and (Approximate)
+Monotonicity
+As mentioned earlier, the EP function is a composite function con-
+sisting of all the ML functions involved in error propagation. The EP
+function therefore satisfies the monotonic or approximately mono-
+tonic property, dependent on the ML model.
+• EP with monotonicity: Recall the example in Fig. 1 (kNN
+model), where the fault occurs at the tf.add operator, and it even-
+tually affects the distance of the test image to the neighbor image
+via tf.abs function. In this case, EP(x) = abs(x), which is mono-
+tonic.
+• EP with approximate monotonicity: Consider another func-
+tion in which a single fault x propagates into two state spaces
+(x −1,x) and ReLu is the subsequent function. The weights asso-
+ciated with the respective data are (100, −1), thus we can model
+the EP function simply as: EP(x) = 100∗max(x −1, 0)−max(x, 0),
+which is either monotonically increasing or decreasing in differ-
+ent intervals, e.g., EP(x) = 99x −100, x > 1 (monotonically in-
+creasing) and EP(x) = −x,x ∈(0, 1) (monotonically decreasing).
+The EP function is thus approximately monotonic as its mono-
+tonicity during x > 1 becomes discontinued when x ∈(0, 1), and
+we approximate that it is monotonic when x > 0.
+We leverage the (approximate) monotonicity of the EP function
+for injecting faults. Our methodology applies to EP functions in all
+ML models, with either monotonicity or approximate monotonicity,
+though our approach might incur minor inaccuracy in the latter
+since it is an approximation. In the following discussion, we use
+both terms (monotonicity and approximate monotonicity) inter-
+changeably and do not distinguish them if not explicitly specified.
+EP functions with monotonicity satisfy the following property:
+|EP(x)| ≥|EP(y)|, (x > y ≫0) ∪(x < y ≪0)
+(2)
+where x,y are two faults at the bits of both 0 or 1 in the same data,
+x occurs at high-order bit and y at low-order bit. We consider the
+faults that deviate considerably from 0 since faults around 0 only
+yield small deviations, and would not lead to SDCs. The monotonic
+EP function can be monotonically increasing or decreasing. When
+EP is monotonically increasing, EP(x) ≤EP(y) ≤0,x < y ≪
+0, thus Eq. 2 is satisfied. Monotonically decreasing only occurs
+in multiply-related functions (e.g., Conv, linear transformation)
+where the weights are negative. For those functions also, |f (x)| >
+|f (y)|, (x > y ≫0) ∪(x < y ≪0), thus Eq. 2 is satisfied. Hence
+the EP functions in ML models satisfy Eq. 2. Note that for EP with
+approximate monotonicity, Eq. 2 might not always hold since it is
+an approximation.
+      
+
+
+	
+ 
+
+
+
+ 
+
+!
+"
+	
+
+	
+
+Figure 3: Illustration of binary fault injection. Critical bits
+are clustered around high-order bits.
+3.5
+Binary Fault Injection - BinFI
+In this section, we discuss how we can leverage the (approximate)
+monotonicity of the EP functions in ML systems to efficiently pin-
+point the critical bits that lead to SDCs. As mentioned earlier, our
+methodology applies to all ML programs whose EP functions exhibit
+either monotonicity or approximate monotonicity.
+With (approximate) monotonicity of the EP function, the out-
+come by different faults are sorted based on the original deviation
+caused by the faults. Faults at higher-order bits (larger input) would
+have larger impact on the final outcome (larger output), and are
+thus more likely to result in SDCs. Therefore, we search for an SDC-
+boundary bit, where faults at higher-order bits would lead to SDCs
+and faults from lower-order bits would be masked. Fig. 3 illustrates
+this process. Finding such a boundary is similar to searching for a
+specific target within a sorted array (bits), and thus we decide to
+use binary-search like algorithm as the FI strategy. We outline the
+procedure of binFI in Algorithm 1. дetSDCBound function is the
+core function to search for the SDC-boundary.
+BinFI is run separately for each operator in the model and it
+considers each data element in the output of the targeted operator.
+BinFI first converts the data into a binary expression (line 2) and
+then obtains the index of the bits of 0 and 1 respectively (line 3, 4),
+because faults causing positive and negative deviations would have
+different impacts (this is why we separate the cases for x > y ≫0
+and x < y ≪0). We then find the SDC-boundary bit in the bits of
+0 and 1 (line 6, 7).
+We illustrate how binFI works on the tf.add operator in the ex-
+ample of Fig. 1 (kNN model). Assuming the fault occurs at (i,y),y ∈
+[1, 784], which corresponds to the nearest neighbor, thus the 0 bits
+in Fig. 3 are those in the data at (i,y) of the output by the tf.add
+operator. In this example, whether an SDC will occur depends on
+whether disi is still the nearest neighbor after a fault (Section 3.1).
+BinFI first bisects the injection space and injects a fault in the
+middle bit (line 16, 17). The next injection is based on the result
+from the current injection . For example, if the fault does not result
+in an SDC (i.e., disi is still the nearest neighbor), the next injection
+moves to higher-order bit (from step 1 to step 2 in Fig. 3), because
+monotonicity indicates that no fault from lower-order bits would
+lead to SDCs. More specifically, assume that the result from the
+fault at step 1 is dis
+′
+i = disi +abs(N), where abs(N) is the deviation
+caused by the simulated fault. We can express the results by faults
+in lower-order bits as dis
+′′
+i = disi + abs(M). According to Eq. 2,
+abs(N) > abs(M), N > M > 0; thus dis
+′
+i > dis
+′′
+i , where dis
+′
+i, dis
+′′
+i
+are the nearest neighbors of the node.
+Moving the next FI to a higher- or lower-order bit is done by
+adjusting the front or rear index since we are doing binary-search
+
+
+--- Page 8 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Algorithm 1: Binary-search fault injection
+Data: opOutput ←output from targeted operator
+Result: SDC boundary in the bits of 0 and 1, and SDC rate
+for each element in the targeted operator
+1: for each in opOutput do
+2:
+binVal = binary(each) // binary conversion
+3:
+0_list = дetIndexO f _0_bit(binVal) // build the bit index (bit
+of 0) from MSB to LSB
+4:
+1_list = дetIndexO f _1_bit(binVal)
+5:
+/* results for each element are stored in a list */
+6:
+sdcBound_0.append(bound0=дetSDCBound(binVal, 0_list))
+7:
+sdcBound_1.append(bound1=дetSDCBound(binVal, 1_list))
+8:
+sdcRate.append((bound0 + bound1)/length(binVal))
+9: end for
+10: return sdcBound_1, sdcBound_0, sdcRate
+Function: дetSDCBound(binVal, indexList)
+11: /* get the front and rear index for binary splitting */
+12: front = 0; // higher-order bit
+13: rear = дetLenдth(indexList)-1; // lower-order bit
+14: sdcBoundary = 0; // by default there is no SDC
+15: while front ≤rear and front  rear  lastInjectedBit do
+16:
+currInjectedBit = indexList[(front + rear)/2]; // binary split
+17:
+FIres = f ault_injection(binVal, currInjectedBit);
+18:
+if FIres results in SDC then
+19:
+front = currInjectedBit+1; //move next FI to low-order bit
+20:
+sdcBoundary = currInjectedBit; // index of critical bit
+21:
+else
+22:
+rear = currInjectedBit - 1; //move next FI to high-order bit
+23:
+end if
+24:
+lastInjectedBit = currInjectedBit
+25: end while
+26: return sdcBoundary
+like injection (e.g., line 19 moves the next injection to lower-order
+bits by adjusting the front index). Step 2 in Fig. 3 shows that the
+injection causes an SDC, and hence faults from higher-order bits
+would also lead to SDCs. The next injection will move to lower-
+order bits (from step 2 to step 3). We also record the index of the
+latest bit where a fault could lead to an SDC, and it eventually
+becomes sdcBoundary (line 20). sdcBound in line 6, 7 indicates the
+index of the SDC boundary, as well as how many critical bits (e.g.,
+sdcBound_1 = 5 means there are 5 critical bits in the bits of 1). Thus
+we can use them to calculate the SDC rate by calculating the number
+of critical bits over the total number of bits (line 8).
+4
+EVALUATION
+As mentioned in Section 2.1, we use an open-source FI tool devel-
+oped in our group called TensorFI 4, for performing FI experiments
+on TensorFlow-supported ML programs. We modify TensorFI to
+(1) provide support for DNNs, and (2) support BinFI’s approach for
+injecting faults. The former is necessary as the current version of
+TensorFI does not have support for complex operations such as
+convolutions used in DNNs - we added this support and made it
+4https://github.com/DependableSystemsLab/TensorFI
+capable of injecting faults into DNNs (these modifications have
+since been merged with the TensorFI mainline tool). The latter is
+necessary so that we have a uniform baseline to compare BinFI
+with.
+We have also made BinFI publicly available 5. For brevity, we refer
+to the implementation of TensorFI with the above modifications as
+BinFI in the rest of this paper.
+We evaluate BinFI by asking three research questions as follows:
+RQ1: Among all the critical bits in a program, how many of
+them can be identified by BinFI, compared with random FI?
+RQ2: How close is the overall SDC rate measured by BinFI to
+the ground truth SDC, compared with that measured by random
+FI?
+RQ3: What is the overhead for BinFI, compared with exhaustive
+and random FI approaches, and how does it vary by data type?
+4.1
+Experimental Setup
+Hardware. All of our experiments were conducted on nodes run-
+ning Red Hat Enterprise Linux Server 6.4, with Intel Xeon 2.50GHz
+processors with 12 cores, 64GB memory. We also use a Linux desk-
+top running Ubuntu 16.04 with an Intel i7-4930K 3.40GHz processor
+with 6 cores, 16GB memory and Nvidia GeForce GT610 GPU. Note
+that we measure the performance overheads in our experiments
+in terms of ratios, so the exact hardware configuration does not
+matter (i.e., we can leverage more HPC resources to accelerate the
+experiments both for our technique and exhaustive FI, as FI is an
+embarrassingly parallel problem).
+ML models and test datasets. We consider 8 ML models in our eval-
+uation, ranging from simple models, e.g., neural network - NN,
+kNN, to DNNs that can be used in the self-driving car domains, e.g.,
+Nvidia DAVE systems [19], Comma.ai steering model [5].
+We use 6 different datasets including general image classifica-
+tion datasets (Mnist, Cifar-10, ImageNet). These are used for the
+standard ML models. In addition, we use two datasets to represent
+two different ML tasks in AVs: motion planning and object detection.
+The first dataset is a real-world driving dataset that contains images
+captured by a camera mounted behind the windshield of a car [6].
+The dataset is recorded around Rancho Palos Verdes and San Pedro
+California, and labeled with steering angles. The second one is the
+German traffic sign dataset, which contains real-world traffic sign
+images [39]. We use two different steering models for AVs from:
+(1) Comma.ai, which is a company developing AV technology and
+provides several open-source frameworks for AVs such as open-
+pilot [5]; (2) Nvidia DAVE self-driving system [19], which has been
+implemented in a real car for road tests [11] and has been used
+as a benchmark in other studies of self-driving cars [59, 78]. We
+build a VGG11 model [72] to run on the traffic sign dataset. Table 2
+summarizes the ML models and test datasets used in this study.
+FI campaigns. We perform different FI campaigns on different op-
+erations in the network. Due to the time-consuming nature of FI
+experiments (especially considering that we need to perform ex-
+haustive FI to obtain the ground truth), we decide to evaluate 10
+inputs for each benchmark. We also made sure that the inputs were
+correctly classified by the network in the absence of faults. In the
+5https://github.com/DependableSystemsLab/TensorFI-BinaryFI
+
+
+--- Page 9 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+Table 2: ML models and datasets for evaluation
+Dataset
+Dataset Description
+ML models
+MNIST [9]
+Hand-written digits
+2-layer NN
+LeNet-4 [48]
+Survive [13]
+Prediction of patient
+kNN
+survival
+Cifar-10 [4]
+General images
+AlexNet [47]
+ImageNet [24]
+General images
+VGG16 [72]
+German traffic sign [39]
+Traffic sign images
+VGG11 [72]
+Driving [6]
+Driving video frames
+Nvidia Dave [19]
+Comma.ai [5]
+case of the driving frame dataset, there was no classification, so we
+checked if the steering angle was correctly predicted in the absence
+of faults.
+We evaluate all of the operations in the following networks:
+2-layer NN, kNN, LeNet-4 and AlexNet (without LRN). However,
+FI experiments on all operators in the other networks are very
+time-consuming, and hence we choose for injection one operator
+per type in these networks, e.g., if there are multiple convolution
+operations, we choose one of them. We perform injections on all
+the data within the chosen operator except VGG16, which consists
+of over 3 million data element in one operation’s output. Therefore,
+it is impractical to run FI on all of those data (it will take more than
+276525 hours to do exhaustive FI on one operator for one input).
+So we decide to evaluate our approach on the first 100 data items
+in the VGG16 model (this took around 13 hours for one input in
+one operator). We use 32-bit fixed-point data type (1 sign bit, 21
+integer bits and 10 mantissa bits), as the fixed-point datatype is
+more energy efficient than the floating point datatype [22, 32].
+4.2
+Results
+We organize our results by the research questions (RQs).
+RQ1: Identifying Critical Bits. To answer this RQ, we consider
+four safety-critical ML systems used in AVs. This is because SDCs
+in these systems would be potential safety violations, and hence
+finding such critical bits that lead to unsafe scenarios is important.
+We use the steering systems from Nvidia [19] and Comma.ai [5] (on
+a real-world driving dataset); VGG11 [72] (on a real-world traffic
+sign dataset) and VGG16 [72] (vehicle images in ImageNet). For
+the latter two datasets, we consider SDC as any misclassification
+produced by the system. However, for the two steering models,
+the output is the steering angle, which is a continuous value, and
+there is no clear definition of what constitutes an SDC (to our
+knowledge). Consequently, we came up with three different values
+of the acceptable threshold for deviations of the steering angle from
+the correct angle to classify SDCs, namely 5, 30 and 60 degrees.
+Note that these values include both positive and negative deviations.
+Fig. 4 shows the test images in our evaluation and exemplify the
+effect of SDCs. There are two types of deviation since the threshold
+is for both positive and negative deviations.
+Apart from steering the vehicles, it is also crucial for the AVs to
+correctly identify traffic signs and surrounding vehicles, as incorrect
+classification in such scenarios could lead to fatal consequences
+Figure 4: Single-bit flip outcome on the self-controlled steer-
+ing systems. Blue arrows point to the expected steering an-
+gles and red arrows are faulty outputs by the systems.
+Figure 5: Single-bit flip outcome on the classifier models. Im-
+ages at the first row are the input images, those at the second
+row are the faulty outputs.
+(e.g., misclassifying a “stop” sign as “go ahead” sign). We show in
+Fig. 5 the potential effects of SDC in such scenarios.
+We first perform exhaustive FI and record the results from flip-
+ping every bit in the injection space. We also record all critical bits
+identified by BinFI, and random FI for different numbers of trials.
+We report the recall (i.e., how many critical bits were found) by
+BinFI and random FI. Exhaustive FI is the baseline and it has a 100%
+recall as it covers the entire injection space. Fig. 6 presents the recall
+for different FI approaches on the four safety-critical ML systems. In
+the interest of space, we report only the recalls for the four simple
+models: LeNet - 99.84%, AlexNet - 99.61%, kNN and NN - both 100%.
+We also found that the same operation (e.g., Conv operation) in
+different layers of a DNN exhibited different resilience (which is in
+line with the finding in prior work [49]), BinFI is able to achieve
+high recall nonetheless. The reason why BinFI has a recall of 100%
+in kNN and NN is that the EP functions in these models can be
+modeled as monotonic functions, unlike the other models where
+the EP function is only approximately monotonic.
+Recall is computed as the number of critical bits (found by each
+FI approach) in the whole state space divided by the total number of
+critical bits found by exhaustive FI (ground truth). We also provide
+the number of critical bits (obtained from exhaustive FI) found in
+each benchmark and the total injection space in Table 3, across all 10
+inputs. The critical bits found in the two steering models decrease
+along with the larger SDC threshold, since larger threshold implies
+fewer SDCs are flagged.
+
+
+--- Page 10 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+SC ’19, November 17–22, 2019, Denver, CO, USA
+$##
+$##
+$##
+$##
+$##
+$##
+$##
+$##
+,,()
+,,+'
+,,+(
+,,*$
+,+*$
+,,,,
+,,,,
+,++)
+)&'(
+)&##
+)&')
+)&%$
+)&$'
+)&$)
+)&$,
+)%,'
+&,()
+&,$+
+&,'$
+&(,(
+&,%,
+&,&$
+&,'#
+&++*
+%%%(
+%%#,
+%%&#
+%#%#
+%%#,
+%%$&
+%%#+
+%$+*
+$++%
+$++&
+$+,(
+$)')
+$**+
+$***
+$()$
+$*##
+,+(
+,+*
+$##&
++)&
+,&&
+,&%
++$&
++,%
+(#%
+(#'
+($+
+''%
+'*+
+'**
+'$*
+'''
+#
+%#
+'#
+)#
++#
+$##
+
+-(
+
+-&#
+
+-)#
+
+-(
+
+-&#
+
+-)#
+
+$$
+	
+
+$)
+
+
+
+		
+	
+
+
+$
+#(
+#%(
+ #%
+ #$
+ ##(
+Figure 6: Recall of critical bits by different FI techniques on four safety-critical ML systems. ranFI −1 is random FI whose FI
+trial is the same as that by allFI; FI trial for ranFI −0.5 is half of that by allFI. ranFI ∼0.2 takes the same FI trials as BinFI.
+Table 3: Number of critical bits in each benchmark.
+Model & Dataset
+Critical Bits
+Total Bits
+Percentage
+in FI Space
+(%)
+Dave-5 - Driving
+2,267,185
+4,289,160
+52.86
+Dave-30 - Driving
+2,092,200
+4,289,160
+48.78
+Dave-60 - Driving
+1,754,487
+4,289,160
+40.91
+Comma.ai-5 - Driving
+3,352,848
+8,144,320
+41.71
+Comma.ai-30 - Driving
+2,679,756
+8,144,320
+32.90
+Comma.ai-60 - Driving
+2,217,353
+8,144,320
+27.23
+VGG11 - Traffic sign
+808,999
+4,483,840
+18.04
+VGG16 - Vehicles
+16,919
+186,000
+9.10
+For the two steering models (the left six histograms in Fig. 6), BinFI
+is able to find over 98.71% of critical bits (an average of 99.61%)
+that would lead to safety violations across all three thresholds.
+The consistently high recall of BinFI when using different SDC
+thresholds suggest that BinFI is agnostic to the specific threshold
+used for classifying SDCs in these models. Similarly, for the other
+two models, BinFI also achieves very high recalls. We thus observe
+a consistent trend across all the benchmarks, each of which exhibits
+different sensitivity to transient faults as shown in Table 3.
+The coverage of random FI depends on the number of trials
+performed. We consider different numbers of trials for randomFI
+ranging from 5% to 100% of the trials for the exhaustive FI case.
+These are labeled with the fraction of trials performed. For example,
+ranFI −0.5, means that the number of trials is 50% that of exhaustive
+injection. BinFI performs about 20% of the trials as exhaustive injec-
+tion (see Fig. 7 in RQ3), so the corresponding randomFI experiment
+(ranFI ∼0.2) with the same number of trials identifies about 19%
+of the critical bits. Even in the best case where the number of trials
+of random FI is the same as that of exhaustive FI, i.e., ranFI −1.0,
+the recall is less than 65%, which is much lower than BinFI’s recall
+of nearly 99%. This is because the bits chosen by random FI are not
+necessarily unique, especially as the number of trials increases, and
+hence not all bits are found by random FI.
+In addition to recall, we also measure the precision (i.e., how many
+bits identified as critical are indeed critical bits). This is because low
+precision might raise false alarms and waste unnecessary resources
+on over-protecting non-critical bits. We report the precision in
+the four safety-critical models, in Table 4 (precision values for the
+remaining four models range from 99.31% to 100%). We find that
+BinFI has precision of over 99% across all of the benchmarks, which
+means that it finds very few unnecessary critical bits.
+Table 4: Precision for BinFI on identifying critical bits.
+Model
+DAVE 1
+Comma.ai 1
+VGG11
+VGG16
+(Driving)
+(Driving)
+(Traffic sign)
+(Vehicles)
+Precision (%)
+99.60
+99.70
+99.99
+99.14
+1 Results are averaged from using three thresholds.
+In summary, we find that BinFI can achieve an average recall
+of 99.56% with 99.63% precision, thus demonstrating its efficacy at
+finding critical bits compared to random FI, which only finds 19% of
+the critical bits with the same number of trials.
+RQ2: Overall SDC Evaluation. We calculate the overall SDC
+probabilities measured by BinFI and random FI for the ML models.
+Note that the overall SDC probability is a product of the number of
+bits in the operator, as well as the SDC probability per bit. So we
+weight the per bit SDC with the number of bits in the operator to
+obtain the overall SDC probability. For example, the overall SDC
+probability for an operator with 100 bits (with SDC probability 20%)
+and another operator with 10000 bits (with SDC probability 5%)
+will be (100 ∗0.20 + 10000 ∗0.05)/(100 + 10000) = 5.15%.
+To quantify the accuracy of BinFI in measuring the overall SDC,
+we measure the deviation of the SDC probabilities from the ground
+truth obtained through exhaustive FI in Table 5 (error bars at the
+95% confidence intervals are shown below the SDC rates in the
+table). We limit the number of trials performed by random FI to
+those performed by BinFI to obtain a fair comparison. Overall, we
+find that the SDC probabilities measured by BinFI are very close
+to the ground truth obtained through exhaustive FI. Table 5 also
+shows that BinFI achieves 0% deviation in two ML models (NN and
+kNN), which is because the EP function in these two models are
+monotonic.
+While the above results demonstrate that BinFI can be used
+to obtain accurate estimates of the overall resilience, random FI
+achieves nearly the same results with a much lower number of trials.
+Therefore, if the goal is to only obtain the overall SDC probabilities,
+then random FI is more efficient than BinFI.
+RQ3: Performance Overhead. We evaluate the performance over-
+head for each FI technique in terms of the number of FI trials, as
+the absolute times are machine-dependent. We show the results
+for AlexNet and VGG11, in Fig. 7. The overall FI trials for VGG11
+are lower than those for AlexNet as we do not inject fault into
+all operators in VGG11. Fig. 7 shows that the number of FI trials
+performed by BinFI is around 20% of that by exhaustive FI. This
+
+
+--- Page 11 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+Table 5: Overall SDC deviation compared with ground truth.
+Deviation shown in percentage (%), and error bars shown at
+the 95% confidence intervals for random FI.
+Model
+BinFI
+ranFI∼0.2
+ranFI∼0.1
+ranFI∼0.05
+Dave-5
+0.070
+0.100
+0.101
+0.119
+(Driving)
+(±0.01 ∼±0.31)
+(±0.02 ∼±0.44)
+(±0.02 ∼±0.62)
+Dave-30
+0.036
+0.096
+0.134
+0.172
+(Driving)
+(±0.04 ∼±0.30)
+(±0.06 ∼±0.42)
+(±0.09 ∼±0.59)
+Dave-60
+0.125
+0.116
+0.118
+0.234
+(Driving)
+(±0.05 ∼±0.29)
+(±0.08 ∼±0.42)
+(±0.11 ∼±0.59)
+Comma.ai-5
+0.049
+0.064
+0.040
+0.095
+(Driving)
+(±0.23 ∼±0.24)
+(±0.33 ∼±0.34)
+(±0.47 ∼±0.48)
+Comma.ai-30
+0.212
+0.092
+0.160
+0.206
+(Driving)
+(±0.22 ∼±0.24)
+(±0.31 ∼±0.34)
+(±0.45 ∼±0.48)
+Comma.ai-60
+0.008
+0.060
+0.094
+0.212
+(Driving)
+(±0.21 ∼±0.22)
+(±0.30 ∼±0.31)
+(±0.43 ∼±0.44)
+VGG11
+0.002
+0.101
+0.156
+0.199
+(Traffic sign)
+(±0.23 ∼±0.26)
+(±0.33 ∼±0.38)
+(±0.47 ∼±0.53)
+VGG16
+0.042
+1.039
+0.778
+0.800
+(ImageNet)
+(±0.62 ∼±1.07)
+(±0.86 ∼±1.58)
+(±1.28 ∼±2.14)
+AlexNet
+0.068
+0.319
+0.420
+0.585
+(Cifar-10)
+(±0.15 ∼±0.18)
+(±0.22 ∼±0.25)
+(±0.31 ∼±0.36)
+LeNet
+0.030
+0.228
+0.366
+3.38
+(Mnist)
+(±0.45 ∼±0.46)
+(±0.64 ∼±0.65)
+(±0.887 ∼±0.95)
+NN
+0.000
+0.849
+0.930
+0.989
+(Mnist)
+(±0.33 ∼±1.1)
+(±0.47 ∼±1.55)
+(±0.67 ∼±2.20)
+kNN
+0.000
+0.196
+0.190
+0.197
+(Survival)
+(±0.05 ∼±0.2)
+(±0.19 ∼±0.32)
+(±0.195 ∼±0.47)
+is expected as BinFI performs a binary-search and we use a 32-bit
+datatype - loд231 ≈5. Note that the value is not 5/31 ≈16% since
+we separately do injection for 0-bits and 1-bits. Thus, it is closer to
+6/31(≈20%). We observe a similar trend in all the benchmarks (not
+shown due to space constraints).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+Figure 7: FI trials (overhead) for different FI techniques to
+identify critical bits in AlexNet and VGG11.
+The performance overhead of BinFI also depends on the number
+of bits used in the data representation. In general, the overhead
+gains increase as the number of bits increases (as BinFI’s time grows
+logarithmically with the number of bits, while exhaustive FI’s time
+grows linearly with the number of bits). To validate this intuition,
+we evaluate BinFI on VGG11 using datatypes with different width
+(16-bit, 32-bit and 64-bit) and compare its overhead with that of
+exhaustive FI in Fig. 8. We find that the growth rate of BinFI is indeed
+logarithmic with the number of bits. We also measure the recall
+and precision of BinFI for the three data-types. The recall values
+are 100%, 99.97%, 99.99% for 16-bit, 32-bit and 64 bits respectively,
+while the respective precision values are 100%, 99.96%, 99.94%. This
+shows that the precision and recall values of BinFI are independent
+of the datatype.
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+	
+
+
+
+Figure 8: Numbers of FI trials by BinFI and exhaustive FI to
+identify critical bits in VGG11 with different datatypes.
+5
+DISCUSSION
+We start this section by discussing the inaccuracy of BinFI, followed
+by the effects of non-monotonicity on its efficacy. Finally, we reflect
+on the implications of BinFI, and its application to other HPC areas.
+5.1
+Inaccuracy of BinFI
+As mentioned in Section 3.4, the EP function is often only approxi-
+mately monotonic - this is the main source of inaccuracy for BinFI,
+as it may overlook the critical bits in the non-monotonic portions
+of the function. Assuming EP(x) = 2 ∗max(x −1, 0) −max(x, 0)
+and a fault raises a deviation of x = 2, EP(2) = 0, which does not
+result in an SDC. According to Eq. 2, BinFI regards that all the
+faults from 0 < y < 2 will not cause SDCs as |Eq(y)| ≤0. However,
+|EP(0.5)| = 0.5, which violates Eq. 2. A fault incurring a deviation
+of 0.5 could be a critical bit unidentified by BinFI (thus resulting
+in inaccuracy). This is the reason why BinFI incurs minor inaccu-
+racy except for two models in Table 5, in which the EP function
+is monotonic (not just approximately so). Nevertheless, our eval-
+uation shows that BinFI incurs only minor inaccuracy as it has
+an average recall of 99.56% with 99.63% precision, and the overall
+SDC rate is very close to ground truth as well. This is because the
+non-monotonicity occurs in most cases when the fault is small in
+magnitude, and is hence unlikely to lead to an SDC.
+5.2
+Effect of Non-Monotonicity
+While our discussion in Section 3.2 shows that many computations
+within the state-of-art ML models are monotonic, there are also
+some models that use non-monotonic functions. Though BinFI re-
+quires the functions to be monotonic so that the EP function is
+(approximately) monotonic, we also want to measure the effects
+when BinFI is run on those models using functions that are not
+monotonic. Therefore, we conduct an experiment to evaluate BinFI
+on two networks using different non-monotonic functions. Specifi-
+cally, we use a Neural Network using a Swish activation function
+[61], and AlexNet with LRN [47]. As before, we measure the recall
+and precision of BinFI on these models.
+For the NN model, Fig. 9 shows that BinFI has a recall of 98.9%
+and a precision of 97.3%, which is quite high. The main reason is
+that Swish function is monotonic across a non-trivial interval, thus
+exhibiting approximate monotonicity, so BinFI works well on it. On
+
+
+--- Page 12 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+SC ’19, November 17–22, 2019, Denver, CO, USA
+the other hand, when it comes to AlexNet with LRN, BinFI has high
+recall but low precision, which means BinFI is not suitable for this
+model as LRN is non-monotonic in nature (Section 3.3).
+
+	
+
+		
+
+
+
+
+
+
+ 
+
+
+
+	
+
+	
+Figure 9: Recall and precision for BinFI on ML models with
+non-monotonic functions.
+5.3
+Implications for Protection
+Knowing the critical bits in ML systems can lead to the adoption
+of configurable fault-tolerance techniques with low costs, e.g., [45,
+46, 52, 82], without resorting to conservative approaches [40, 49,
+51]. For example, Li et al. [52] enable dynamic fault tolerance at
+runtime, given that they know when the protection is needed to
+save energy. Similarly, Krause et al. [46] propose a data-driven
+voltage over-scaling technique, where the supply voltage can be
+dynamically increased if the errors exceed a given threshold in a
+certain region of code. Given that BinFI is able to identify the critical
+bits, one can adopt these approaches to dynamically protect the
+ML systems with low costs. Moreover, BinFI can also identify the
+parts of application that might be exploited by malicious attackers,
+hence guiding the security protection against hardware fault attacks
+towards ML systems [38].
+However, while BinFI is able to identify 99.56% of the critical
+bits in an application, its coverage is not 100%. This means that
+there may be a few critical bits that are left unidentified when using
+BinFI. This is a limitation of our approach’s assumption of mono-
+tonicity. Unfortunately, there is no easy remedy for this problem, as
+identifying 100% of the bits requires exhaustive FI, which is highly
+time-consuming. Our study is a first step towards low-cost protec-
+tion on safety-critical ML applications and we believe that missing
+a small proportion of the critical bits is an acceptable tradeoff given:
+(1) the significant cost savings in BinFI; (2) the relatively rare oc-
+curence of soft errors; (3) not all critical bits would result in actual
+failures in the systems [43].
+5.4
+Application to Other Areas of HPC
+In this paper, we mainly use BinFI to evaluate safety-critical MLs
+in the AVs domain, which is an emerging example of ML in HPC.
+However, BinFI is not confined to this domain and there are many
+other areas of application of BinFI in the HPC context. We consider
+3 examples below. (1) Xiong et al. [80] use thousands of GPU cores
+to implement a DNN for the detection of atrial fibrillation. (2) Yoon
+et al. [81] use DNNs to extract information from cancer pathology
+reports in cancer registries, using supercomputer facility. (3) Cong
+et al. [21] use a cluster of GPUs to accelerate ML tasks for action
+recognition, which exhibits better performance in terms of both
+speedup and accuracy . There are many other examples of ML used
+in safety-critical domains [26, 44, 60]. In these domains, transient
+faults can have serious implications on safety, and hence BinFI can
+be used to find the safety-critical bits in the application. We defer
+exploration of ML in other safety critical domains to future work.
+In Section 3.3 we discuss our observation of monotonicity found
+in common ML functions, based on which we design BinFI to ef-
+ficiently identify safety-critical bits in ML programs. While it is
+possible that BinFI can be applied in other application domains if
+the computations in the application exhibit the monotonicity prop-
+erty, we believe this is unlikely to be the case in general purpose
+programs. This is because different faults in these programs could
+lead to the execution of different program paths [33, 51, 58]. For
+example, a larger fault could cause a different program path to be
+executed, whose output is not necessarily larger than the output
+from another program path caused by a smaller fault (e.g., due to the
+different computations performed), thereby violating monotonicity.
+We defer the exploration of non-ML applications to future work.
+6
+RELATED WORK
+We classify related work into three broad areas.
+Testing of ML: Pei et al. [59] propose a novel approach to gen-
+erate corner case inputs to trigger unexpected behaviors of the
+model. They analyze the decision boundary of different ML models
+and leverage gradient ascent to modify the image to efficiently
+trigger differential behaviors in different DNNs. Tian et al. [78] use
+transformation matrices (e.g., scale, rotate the image) to automati-
+cally generate corner case images. Ma et. al. [54] design a mutation
+framework to mutate the ML model, which is then used to evaluate
+the quality of the test data. The idea of mutating the ML model [54]
+is similar to fault injection. However, unlike our work which injects
+transient faults, the faults they inject have to do with emulating
+software faults such as removing a neuron or shuffling the data.
+Rubaiyat et al. [67] build a strategic software FI framework, which
+leverages hazard analysis to identify potential unsafe scenarios to
+prune the injection space. However, their approach suffers from low
+error coverage (less than 36%). None of these approaches consider
+hardware transient faults, which are growing in frequency and
+can trigger undesirable consequences in ML systems. Moreover,
+none of the above approaches leverage monotonicity of the models’
+functions to perform efficient fault injection.
+Error resilience of ML: Li et al. [49] build a fault injector to
+randomly inject transient hardware faults in ML application run-
+ning on specialized hardware accelerators. Using the injector, they
+study the resilience of the program under different conditions by
+varying different system parameters such as data types. A recent
+study designs a DNN-specific FI framework to inject faults into real
+hardware and studies the trade off between the model accuracy
+and the fault rate [62]. Santos et al. [25] investigate the resilience
+of ML under mixed-precision architectures by conducting neutron
+beam experiments. These papers measure the overall resilience of
+ML systems using random FI, while our approach identifies the bits
+that can lead to safety violations in these systems. As we showed in
+this paper, random FI achieves very poor coverage for identifying
+the critical bits in ML systems.
+Accelerating fault injection: Given the high overhead of FI
+experiments, numerous studies have proposed to accelerate the FI
+experiments by pruning the FI space or even predicting the error
+resilience without performing FI [30, 33, 51, 69]. Hari et al. [33]
+propose Relyzer, a FI technique that exploits fault equivalence (an
+observation that faults that propagate in similar paths are likely to
+
+
+--- Page 13 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+result in similar outputs) to selectively perform FI on the pilot in-
+structions that are representative of fault propagation. In follow up
+work, the authors propose GangES, which finds that faults resulting
+in the same intermediate execution state will produce the same
+faulty output [69], thus pruning the FI space further. Li et al. [51]
+propose Trident, a framework that can predict the SDC rate of the
+instructions without performing any FI. The key insight is that they
+can model the error propagation probability in data-dependency,
+control-flow and memory levels jointly to predict the SDC rate.
+They find that the Trident model is able to predict both the overall
+SDC rate of the program and those of individual instructions. How-
+ever, none of these studies are tailored for ML programs and their
+focus is on measuring the overall resilience of the system, unlike
+BinFI that can identify the critical bits.
+7
+CONCLUSION
+In this work, we propose an efficient fault injector to identify the
+critical bits in ML systems under the presence of hardware tran-
+sient faults. Our insight is based on the observation that many of
+the ML computations are monotonic, which constrains their fault
+propagation behavior. We thus identify the existence of the SDC
+boundary, where faults from higher-order bits would result in SDCs
+while faults at lower-order bits would be masked. Finally, we design
+a binary-search like fault injector to identify the SDC boundary,
+and implement it as a tool called BinFI for ML programs written
+using the TensorFlow framework.
+We evaluate BinFI on 8 ML benchmarks including ML systems
+that can be deployed in AVs. Our evaluation demonstrates that
+BinFI can correctly identify 99.56% of the critical bits with 99.63%
+precision, which significant outperforms conventional random FI-
+based approaches. It also incurs significantly lower overhead than
+exhaustive FI techniques (by 5X). BinFI can also accurately measure
+the overall resilience of the application.
+As future work, we plan to (1) extend BinFI to other ML frame-
+works than TensorFlow, (2) consider other safety-critical ML appli-
+cations than AVs, and (3) explore selective protection techniques
+based on the results from BinFI.
+BinFI is publicly available at the following URL: https://
+github.com/DependableSystemsLab/TensorFI-BinaryFI
+ACKNOWLEDGMENTS
+This work was funded in part by a grant from the Natural Sciences
+and Engineering Research Council of Canada (NSERC) through the
+Discovery grant and Strategic grant programmes. We thank the
+anonymous reviewers of SC’19 for their comments which helped
+improve the paper.
+This manuscript has been approved for unlimited release and has
+been assigned LA-UR-19-27921. This work has been co-authored
+by an employee of Triad National Security, LLC which operates Los
+Alamos National Laboratory under Contract No. 89233218CNA000001
+with the U.S. Department of Energy/National Nuclear Security Ad-
+ministration. The publisher, by accepting the article for publication,
+acknowledges that the United States Government retains a non-
+exclusive, paid-up, irrevocable, world-wide license to publish or
+reproduce the published form of the manuscript, or allow others to
+do so, for United States Government purposes.
+REFERENCES
+[1] Autonomous
+and
+ADAS
+test
+cars
+produce
+over
+11
+TB
+of
+data
+per
+day.
+https://www.tuxera.com/blog/
+autonomous-and-adas-test-cars-produce-over-11-tb-of-data-per-day/
+[2] Autonomous
+Car
+-
+A
+New
+Driver
+for
+Resilient
+Com-
+puting
+and
+Design-for-Test.
+https://nepp.nasa.gov/
+workshops/etw2016/talks/15WED/20160615-0930-Autonomous_
+Saxena-Nirmal-Saxena-Rec2016Jun16-nasaNEPP.pdf
+[3] Autumn model in Udacity challenge.
+https://github.com/udacity/
+self-driving-car/tree/master/steering-models/community-models/autumn
+[4] Cifar dataset. https://www.cs.toronto.edu/~kriz/cifar.html
+[5] comma.ai’s steering model. https://github.com/commaai/research
+[6] Driving dataset. https://github.com/SullyChen/driving-datasets
+[7] Epoch model in Udacity challenge. https://github.com/udacity/self-driving-car/
+tree/master/steering-models/community-models/cg23
+[8] Functional Safety Methodologies for Automotive Applications.
+https:
+//www.cadence.com/content/dam/cadence-www/global/en_US/documents/
+solutions/automotive-functional-safety-wp.pdf
+[9] Mnist dataset. http://yann.lecun.com/exdb/mnist/
+[10] NVIDIA DRIVE AGX.
+https://www.nvidia.com/en-us/self-driving-cars/
+drive-platform/hardware/
+[11] On-road tests for Nvidia Dave system.
+https://devblogs.nvidia.com/
+deep-learning-self-driving-cars/
+[12] Rambo.
+https://github.com/udacity/self-driving-car/tree/master/
+steering-models/community-models/rambo
+[13] Survival dataset. https://archive.ics.uci.edu/ml/datasets/Haberman‘s+Survival
+[14] Tensorflow
+Popularity.
+https://towardsdatascience.com/
+deep-learning-framework-power-scores-2018-23607ddf297a
+[15] Training AI for Self-Driving Vehicles: the Challenge of Scale. https://devblogs.
+nvidia.com/training-self-driving-vehicles-challenge-scale/
+[16] Martín Abadi, Paul Barham, Jianmin Chen, Zhifeng Chen, Andy Davis, Jeffrey
+Dean, Matthieu Devin, Sanjay Ghemawat, Geoffrey Irving, Michael Isard, et al.
+2016. Tensorflow: A system for large-scale machine learning. In 12th {USENIX}
+Symposium on Operating Systems Design and Implementation ({OSDI} 16). 265–
+283.
+[17] Rizwan A Ashraf, Roberto Gioiosa, Gokcen Kestor, Ronald F DeMara, Chen-Yong
+Cher, and Pradip Bose. 2015. Understanding the propagation of transient errors
+in HPC applications. In SC’15: Proceedings of the International Conference for High
+Performance Computing, Networking, Storage and Analysis. IEEE, 1–12.
+[18] Subho S Banerjee, Saurabh Jha, James Cyriac, Zbigniew T Kalbarczyk, and Ravis-
+hankar K Iyer. 2018. Hands Off the Wheel in Autonomous Vehicles?: A Systems
+Perspective on over a Million Miles of Field Data. In 2018 48th Annual IEEE/IFIP
+International Conference on Dependable Systems and Networks (DSN). IEEE, 586–
+597.
+[19] Mariusz Bojarski, Davide Del Testa, Daniel Dworakowski, Bernhard Firner, Beat
+Flepp, Prasoon Goyal, Lawrence D Jackel, Mathew Monfort, Urs Muller, Jiakai
+Zhang, et al. 2016. End to end learning for self-driving cars. arXiv preprint
+arXiv:1604.07316 (2016).
+[20] Chun-Kai Chang, Sangkug Lym, Nicholas Kelly, Michael B Sullivan, and Mattan
+Erez. 2018. Evaluating and accelerating high-fidelity error injection for HPC.
+In Proceedings of the International Conference for High Performance Computing,
+Networking, Storage, and Analysis. IEEE Press, 45.
+[21] G Cong, G Domeniconi, J Shapiro, F Zhou, and BY Chen. 2018. Accelerating Deep
+Neural Network Training for Action Recognition on a Cluster of GPUs. Technical
+Report. Lawrence Livermore National Lab.(LLNL), Livermore, CA (United States).
+[22] Matthieu Courbariaux, Yoshua Bengio, and Jean-Pierre David. 2014.
+Train-
+ing deep neural networks with low precision multiplications. arXiv preprint
+arXiv:1412.7024 (2014).
+[23] Nathan DeBardeleben, James Laros, John T Daly, Stephen L Scott, Christian
+Engelmann, and Bill Harrod. 2009. High-end computing resilience: Analysis of is-
+sues facing the HEC community and path-forward for research and development.
+Whitepaper, Dec (2009).
+[24] Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. 2009. Imagenet:
+A large-scale hierarchical image database. (2009).
+[25] Fernando Fernandes dos Santos, Caio Lunardi, Daniel Oliveira, Fabiano Libano,
+and Paolo Rech. 2019. Reliability Evaluation of Mixed-Precision Architectures. In
+2019 IEEE International Symposium on High Performance Computer Architecture
+(HPCA). IEEE, 238–249.
+[26] Andre Esteva, Brett Kuprel, Roberto A Novoa, Justin Ko, Susan M Swetter, He-
+len M Blau, and Sebastian Thrun. 2017. Dermatologist-level classification of skin
+cancer with deep neural networks. Nature 542, 7639 (2017), 115.
+[27] Bo Fang, Karthik Pattabiraman, Matei Ripeanu, and Sudhanva Gurumurthi. 2014.
+Gpu-qin: A methodology for evaluating the error resilience of gpgpu applications.
+
+
+--- Page 14 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+SC ’19, November 17–22, 2019, Denver, CO, USA
+In 2014 IEEE International Symposium on Performance Analysis of Systems and
+Software (ISPASS). IEEE, 221–230.
+[28] Michael S Gashler and Stephen C Ashmore. 2014. Training deep fourier neu-
+ral networks to fit time-series data. In International Conference on Intelligent
+Computing. Springer, 48–55.
+[29] Giorgis Georgakoudis, Ignacio Laguna, Dimitrios S Nikolopoulos, and Martin
+Schulz. 2017. Refine: Realistic fault injection via compiler-based instrumentation
+for accuracy, portability and speed. In Proceedings of the International Conference
+for High Performance Computing, Networking, Storage and Analysis. ACM, 29.
+[30] Jason George, Bo Marr, Bilge ES Akgul, and Krishna V Palem. 2006. Probabilistic
+arithmetic and energy efficient embedded signal processing. In Proceedings of the
+2006 international conference on Compilers, architecture and synthesis for embedded
+systems. ACM, 158–168.
+[31] Jianmin Guo, Yu Jiang, Yue Zhao, Quan Chen, and Jiaguang Sun. 2018. DLFuzz:
+differential fuzzing testing of deep learning systems. In Proceedings of the 2018 26th
+ACM Joint Meeting on European Software Engineering Conference and Symposium
+on the Foundations of Software Engineering. ACM, 739–743.
+[32] Suyog Gupta, Ankur Agrawal, Kailash Gopalakrishnan, and Pritish Narayanan.
+2015. Deep learning with limited numerical precision. In International Conference
+on Machine Learning. 1737–1746.
+[33] Siva Kumar Sastry Hari, Sarita V Adve, Helia Naeimi, and Pradeep Ramachan-
+dran. 2012. Relyzer: Exploiting application-level fault equivalence to analyze
+application resiliency to transient faults. In ACM SIGPLAN Notices, Vol. 47. ACM,
+123–134.
+[34] Simon Haykin. 1994. Neural networks. Vol. 2. Prentice hall New York.
+[35] Kim Hazelwood, Sarah Bird, David Brooks, Soumith Chintala, Utku Diril, Dmytro
+Dzhulgakov, Mohamed Fawzy, Bill Jia, Yangqing Jia, Aditya Kalro, et al. 2018.
+Applied machine learning at Facebook: a datacenter infrastructure perspective.
+In 2018 IEEE International Symposium on High Performance Computer Architecture
+(HPCA). IEEE, 620–629.
+[36] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2016. Deep residual
+learning for image recognition. In Proceedings of the IEEE conference on computer
+vision and pattern recognition. 770–778.
+[37] Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. 2015. Distilling the knowledge in
+a neural network. arXiv preprint arXiv:1503.02531 (2015).
+[38] Sanghyun Hong, Pietro Frigo, Yiğitcan Kaya, Cristiano Giuffrida, and Tudor Dumi-
+traş. 2019. Terminal Brain Damage: Exposing the Graceless Degradation in Deep
+Neural Networks Under Hardware Fault Attacks. arXiv preprint arXiv:1906.01017
+(2019).
+[39] Sebastian Houben, Johannes Stallkamp, Jan Salmen, Marc Schlipsing, and Chris-
+tian Igel. 2013. Detection of traffic signs in real-world images: The German Traffic
+Sign Detection Benchmark. In The 2013 international joint conference on neural
+networks (IJCNN). IEEE, 1–8.
+[40] Jie S Hu, Feihui Li, Vijay Degalahal, Mahmut Kandemir, Narayanan Vijaykrishnan,
+and Mary J Irwin. 2005. Compiler-directed instruction duplication for soft error
+detection. In Design, Automation and Test in Europe. IEEE, 1056–1057.
+[41] Sergey Ioffe and Christian Szegedy. 2015. Batch normalization: Accelerating
+deep network training by reducing internal covariate shift.
+arXiv preprint
+arXiv:1502.03167 (2015).
+[42] Saurabh Jha, Subho S Banerjee, James Cyriac, Zbigniew T Kalbarczyk, and Ravis-
+hankar K Iyer. 2018. Avfi: Fault injection for autonomous vehicles. In 2018 48th
+Annual IEEE/IFIP International Conference on Dependable Systems and Networks
+Workshops (DSN-W). IEEE, 55–56.
+[43] Saurabh Jha, Timothy Tsai, Subho Banerjee, Siva Kumar Sastry Hari, Michael Sul-
+livan, Steve Keckler, Zbigniew Kalbarczyk, and Ravishankar Iyer. 2019. ML-based
+Fault Injection for Autonomous Vehicles: A Case for Bayesian Fault Injection. In
+2019 49th Annual IEEE/IFIP International Conference on Dependable Systems and
+Networks.
+[44] Kyle D Julian, Jessica Lopez, Jeffrey S Brush, Michael P Owen, and Mykel J
+Kochenderfer. 2016. Policy compression for aircraft collision avoidance systems.
+In 2016 IEEE/AIAA 35th Digital Avionics Systems Conference (DASC). IEEE, 1–10.
+[45] Zvi M Kedem, Vincent J Mooney, Kirthi Krishna Muntimadugu, and Krishna V
+Palem. 2011. An approach to energy-error tradeoffs in approximate ripple carry
+adders. In Proceedings of the 17th IEEE/ACM international symposium on Low-
+power electronics and design. IEEE Press, 211–216.
+[46] Philipp Klaus Krause and Ilia Polian. 2011. Adaptive voltage over-scaling for
+resilient applications. In 2011 Design, Automation & Test in Europe. IEEE, 1–6.
+[47] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. 2012. Imagenet classifica-
+tion with deep convolutional neural networks. In Advances in neural information
+processing systems. 1097–1105.
+[48] Yann LeCun, Bernhard E Boser, John S Denker, Donnie Henderson, Richard E
+Howard, Wayne E Hubbard, and Lawrence D Jackel. 1990. Handwritten digit
+recognition with a back-propagation network. In Advances in neural information
+processing systems. 396–404.
+[49] Guanpeng Li, Siva Kumar Sastry Hari, Michael Sullivan, Timothy Tsai, Karthik
+Pattabiraman, Joel Emer, and Stephen W Keckler. 2017. Understanding error
+propagation in deep learning neural network (dnn) accelerators and applications.
+In Proceedings of the International Conference for High Performance Computing,
+Networking, Storage and Analysis. ACM, 8.
+[50] Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben. 2018. TensorFI:
+A Configurable Fault Injector for TensorFlow Applications. In 2018 IEEE Interna-
+tional Symposium on Software Reliability Engineering Workshops (ISSREW). IEEE,
+313–320.
+[51] Guanpeng Li, Karthik Pattabiraman, Siva Kumar Sastry Hari, Michael Sullivan,
+and Timothy Tsai. 2018. Modeling soft-error propagation in programs. In 2018
+48th Annual IEEE/IFIP International Conference on Dependable Systems and Net-
+works (DSN). IEEE, 27–38.
+[52] Wenchao Li, Susmit Jha, and Sanjit A Seshia. 2013. Generating control logic
+for optimized soft error resilience. In Proceedings of the 9th Workshop on Silicon
+Errors in Logic-System Effects (SELSE’13), Palo Alto, CA, USA. Citeseer.
+[53] Robert E Lyons and Wouter Vanderkulk. 1962. The use of triple-modular redun-
+dancy to improve computer reliability. IBM journal of research and development
+6, 2 (1962), 200–209.
+[54] Lei Ma, Fuyuan Zhang, Jiyuan Sun, Minhui Xue, Bo Li, Felix Juefei-Xu, Chao
+Xie, Li Li, Yang Liu, Jianjun Zhao, et al. 2018. Deepmutation: Mutation testing of
+deep learning systems. In 2018 IEEE 29th International Symposium on Software
+Reliability Engineering (ISSRE). IEEE, 100–111.
+[55] Andrew L Maas, Awni Y Hannun, and Andrew Y Ng. 2013. Rectifier nonlinearities
+improve neural network acoustic models. In Proc. icml, Vol. 30. 3.
+[56] Marisol Monterrubio-Velasco, José Carlos Carrasco-Jimenez, Octavio Castillo-
+Reyes, Fernando Cucchietti, and Josep De la Puente. 2018. A Machine Learning
+Approach for Parameter Screening in Earthquake Simulation. In 2018 30th Inter-
+national Symposium on Computer Architecture and High Performance Computing
+(SBAC-PAD). IEEE, 348–355.
+[57] Vinod Nair and Geoffrey E Hinton. 2010. Rectified linear units improve re-
+stricted boltzmann machines. In Proceedings of the 27th international conference
+on machine learning (ICML-10). 807–814.
+[58] Nahmsuk Oh, Philip P Shirvani, and Edward J McCluskey. 2002. Control-flow
+checking by software signatures. IEEE transactions on Reliability 51, 1 (2002),
+111–122.
+[59] Kexin Pei, Yinzhi Cao, Junfeng Yang, and Suman Jana. 2017. Deepxplore: Au-
+tomated whitebox testing of deep learning systems. In proceedings of the 26th
+Symposium on Operating Systems Principles. ACM, 1–18.
+[60] Pranav Rajpurkar, Awni Y Hannun, Masoumeh Haghpanahi, Codie Bourn, and
+Andrew Y Ng. 2017. Cardiologist-level arrhythmia detection with convolutional
+neural networks. arXiv preprint arXiv:1707.01836 (2017).
+[61] Prajit Ramachandran, Barret Zoph, and Quoc V Le. 2017. Searching for activation
+functions. arXiv preprint arXiv:1710.05941 (2017).
+[62] Brandon Reagen, Udit Gupta, Lillian Pentecost, Paul Whatmough, Sae Kyu Lee,
+Niamh Mulholland, David Brooks, and Gu-Yeon Wei. 2018. Ares: A framework for
+quantifying the resilience of deep neural networks. In 2018 55th ACM/ESDA/IEEE
+Design Automation Conference (DAC). IEEE, 1–6.
+[63] Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi. 2016. You
+only look once: Unified, real-time object detection. In Proceedings of the IEEE
+conference on computer vision and pattern recognition. 779–788.
+[64] Joseph Redmon and Ali Farhadi. 2017. YOLO9000: better, faster, stronger. In
+Proceedings of the IEEE conference on computer vision and pattern recognition.
+7263–7271.
+[65] Daniel A Reed and Jack Dongarra. 2015. Exascale computing and big data.
+Commun. ACM 58, 7 (2015), 56–68.
+[66] Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun. 2015. Faster r-cnn:
+Towards real-time object detection with region proposal networks. In Advances
+in neural information processing systems. 91–99.
+[67] Abu Hasnat Mohammad Rubaiyat, Yongming Qin, and Homa Alemzadeh. 2018.
+Experimental resilience assessment of an open-source driving agent. arXiv
+preprint arXiv:1807.06172 (2018).
+[68] Behrooz Sangchoolie, Karthik Pattabiraman, and Johan Karlsson. 2017. One bit
+is (not) enough: An empirical study of the impact of single and multiple bit-flip
+errors. In 2017 47th Annual IEEE/IFIP International Conference on Dependable
+Systems and Networks (DSN). IEEE, 97–108.
+[69] Siva Kumar Sastry Hari, Radha Venkatagiri, Sarita V Adve, and Helia Naeimi.
+2014. GangES: Gang error simulation for hardware resiliency evaluation. ACM
+SIGARCH Computer Architecture News 42, 3 (2014), 61–72.
+[70] Bianca Schroeder and Garth A Gibson. 2007. Understanding failures in petas-
+cale computers. In Journal of Physics: Conference Series, Vol. 78. IOP Publishing,
+012022.
+[71] David Silver, Aja Huang, Chris J Maddison, Arthur Guez, Laurent Sifre, George
+Van Den Driessche, Julian Schrittwieser, Ioannis Antonoglou, Veda Panneershel-
+vam, Marc Lanctot, et al. 2016. Mastering the game of Go with deep neural
+networks and tree search. nature 529, 7587 (2016), 484.
+[72] Karen Simonyan and Andrew Zisserman. 2014. Very deep convolutional networks
+for large-scale image recognition. arXiv preprint arXiv:1409.1556 (2014).
+[73] Marc Snir, Robert W Wisniewski, Jacob A Abraham, Sarita V Adve, Saurabh
+Bagchi, Pavan Balaji, Jim Belak, Pradip Bose, Franck Cappello, Bill Carlson, et al.
+2014. Addressing failures in exascale computing. The International Journal of
+High Performance Computing Applications 28, 2 (2014), 129–173.
+
+
+--- Page 15 ---
+SC ’19, November 17–22, 2019, Denver, CO, USA
+Zitao Chen, Guanpeng Li, Karthik Pattabiraman, and Nathan DeBardeleben
+[74] Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan
+Salakhutdinov. 2014. Dropout: a simple way to prevent neural networks from
+overfitting. The Journal of Machine Learning Research 15, 1 (2014), 1929–1958.
+[75] Christian Szegedy, Sergey Ioffe, Vincent Vanhoucke, and Alexander A Alemi.
+2017. Inception-v4, inception-resnet and the impact of residual connections on
+learning. In Thirty-First AAAI Conference on Artificial Intelligence.
+[76] Christian Szegedy, Wei Liu, Yangqing Jia, Pierre Sermanet, Scott Reed, Dragomir
+Anguelov, Dumitru Erhan, Vincent Vanhoucke, and Andrew Rabinovich. 2015.
+Going deeper with convolutions. In Proceedings of the IEEE conference on computer
+vision and pattern recognition. 1–9.
+[77] Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jon Shlens, and Zbigniew
+Wojna. 2016. Rethinking the inception architecture for computer vision. In
+Proceedings of the IEEE conference on computer vision and pattern recognition.
+2818–2826.
+[78] Yuchi Tian, Kexin Pei, Suman Jana, and Baishakhi Ray. 2018. Deeptest: Automated
+testing of deep-neural-network-driven autonomous cars. In Proceedings of the
+40th international conference on software engineering. ACM, 303–314.
+[79] Jiesheng Wei, Anna Thomas, Guanpeng Li, and Karthik Pattabiraman. 2014.
+Quantifying the accuracy of high-level fault injection techniques for hardware
+faults. In 2014 44th Annual IEEE/IFIP International Conference on Dependable
+Systems and Networks. IEEE, 375–382.
+[80] Zhaohan Xiong, Martin K Stiles, and Jichao Zhao. 2017. Robust ECG signal
+classification for detection of atrial fibrillation using a novel neural network. In
+2017 Computing in Cardiology (CinC). IEEE, 1–4.
+[81] Hong-Jun Yoon, Arvind Ramanathan, and Georgia Tourassi. 2016. Multi-task
+deep neural networks for automated extraction of primary site and laterality
+information from cancer pathology reports. In INNS Conference on Big Data.
+Springer, 195–204.
+[82] Ming Zhang, Subhasish Mitra, TM Mak, Norbert Seifert, Nicholas J Wang, Quan
+Shi, Kee Sup Kim, Naresh R Shanbhag, and Sanjay J Patel. 2006. Sequential
+element design with built-in soft error resilience. IEEE Transactions on Very Large
+Scale Integration (VLSI) Systems 14, 12 (2006), 1368–1378.
+
+
+--- Page 16 ---
+Appendix: Artifact Description/Artifact Evaluation
+SUMMARY OF THE EXPERIMENTS REPORTED
+For the experiments in this paper, we modified the pub-
+licly available TensorFI tool developed in our group (available
+at https://github.com/DependableSystemsLab/TensorFI). We call
+the new version of the tool TensorFI-BinaryFI (available at
+https://github.com/DependableSystemsLab/TensorFI-BinaryFI).
+We use TensorFI-BinaryFI to perform fault injection (FI) in the
+following ML models: (1) 2-layer neural network; (2) LeNet-4; (3)
+k-nearest neighbour model; (4) AlexNet; (5) VGG11; (6) VGG16;
+(7)Nvidia Dave steering model; and (8) Comma.ai’s steering model.
+The details of these models are provided in our paper.
+We also performed exhaustive FI and random FI separately. We
+compare the results (e.g., number of critical bits, overhead, etc) with
+that by exhaustive FI (ground truth) as described in the paper.
+ARTIFACT AVAILABILITY
+Software Artifact Availability: All author-created software arti-
+facts are maintained in a public repository under an OSI-approved
+license.
+Hardware Artifact Availability: There are no author-created hard-
+ware artifacts.
+Data Artifact Availability: There are no author-created data
+artifacts.
+Proprietary Artifacts: None of the associated artifacts, author-
+created or otherwise, are proprietary.
+List of URLs and/or DOIs where artifacts are available:
+We provide the software artifact in https://github.c ⌋
+om/DependableSystemsLab/TensorFI-BinaryFI.
+Sources of the ML models and datasets we used in
+the paper are also provided within the
+TensorFI-BinaryFI repository.
+→
+→
+→
+→
+BASELINE EXPERIMENTAL SETUP, AND
+MODIFICATIONS MADE FOR THE PAPER
+Relevant hardware details: CPU cluster nodes with Intel Xeon
+2.50GHz processors with 12 cores, 64GB memory. A Linux desktop
+with one Intel i7-4930K 3.40GHz processor with 6 cores, 16GB
+memory and Nvidia GeForce GT610
+Operating systems and versions: CPU cluster nodes are running
+Red Hat Enterprise Linux Server 6.4. Linux desktop is running
+ubuntu 16.04
+Applications and versions: We use TensorFI as fault injection tool.
+Libraries and versions: Belows are the libraries required by Ten-
+sorFI tool: (1) TensorFlow Framework (v 1.0 or greater); (2) Python
+(v2.7 or greater, but not Python 3) (3) PyYaml (v3 or greater); (4)
+SciKit module in Python; (5) Sklearn module in Python; (6) enum
+module in Python; (7) numpy package (part of TensorFlow). For
+some ML benchmarks to read original image input (e.g., the driving
+frame dataset), it also requires libraries for image processing, we
+use both scipy.misc and cv2.
+Key algorithms: Binary fault injection.
+Input datasets and versions: 1. Mnist dataset. 2. Survival dataset.
+3. Cifar-10 dataset. 4. ImageNet (wordnet n04388372). 5. German
+traffic sign dataset. 6. Real-world driving frame dataset.
+Paper Modifications: We make the following modification to the
+existing TensorFI tool:
+(1) Provide support for complex models such as DNNs, as the
+current version of TensorFI does not support FI on complex models
+such as VGGNet due to two reasons:
+(1.a) The customized operator (for fault injection) cannot fully
+realize the functionality as provided by the standard TensorFlow
+operators (or some operators like LRN in DNNs have not been
+provided). For example, the conv2d.py module is meant to sub-
+stitute tf.nn.conv2d operator, but this module has some issues in
+implementation. Our investigation into the tool found that all the
+customized operators were implemented without using the Ten-
+sorFlow operator (e.g., instead, using numpy library to implement
+ReLu operation to substitute tf.nn.relu). We resolved it by using
+the standard TensorFlow operator within the customized operators,
+as we found the TensorFlow graph in the main program will not
+interfere with those in the fault injection module.
+(1.b) The second issue encountered in existing TensorFI tool is
+that it is not able to fully parse the parameters from the original
+operator to the customized parameters. For example, some impor-
+tant parameters (e.g., strides and padding parameters in MaxPool
+operator) are not considered because these parameters have not
+been read from the original operator to the customized operator.
+This is because the original TensorFI has not been tested in complex
+models; We found this issue and resolved it by modifying the modi-
+fyGraph.py module in TensorFI tool. We studied the TensorFlow
+manual and learned how to extract these important attributes from
+the operator object, which would be used as the parameters in the
+customized operator.
+With the above two major modification, we are able to run fault
+injection in complex models, such as DNNs. These modifications
+have also been integrated into TensorFI subsequently.
+(2) Support BinFI’s approach for injecting faults. We provide
+new support to the following injection modes: 1) single bit-flip
+random fault injection (FI); 2) Binary FI (the approach presented
+in the paper); and 3) Exhaustive FI. These functionalities are not
+available in the current TensorFI tool.
+Output from scripts that gathers execution environment informa-
+tion.
+=========================================
+2. Output from CPU nodes:
+=========================================
++ lsb_release -a
+./env.sh: line 3: lsb_release: command not found
+
+
+--- Page 17 ---
+Chen, et al.
++ uname -a
+Linux localhost.localdomain 2.6.32-358.el6.x86_64 #1
+SMP Tue Jan 29 11:47:41 EST 2013 x86_64 x86_64
+x86_64 GNU/Linux
+→
+→
++ lscpu
+Architecture:
+x86_64
+CPU op-mode(s):
+32-bit, 64-bit
+Byte Order:
+Little Endian
+CPU(s):
+24
+On-line CPU(s) list:
+0-23
+Thread(s) per core:
+2
+Core(s) per socket:
+6
+Socket(s):
+2
+NUMA node(s):
+2
+Vendor ID:
+GenuineIntel
+CPU family:
+6
+Model:
+45
+Stepping:
+7
+CPU MHz:
+1200.000
+BogoMIPS:
+4987.33
+Virtualization:
+VT-x
+L1d cache:
+32K
+L1i cache:
+32K
+L2 cache:
+256K
+L3 cache:
+15360K
+NUMA node0 CPU(s):
+0-5,12-17
+NUMA node1 CPU(s):
+6-11,18-23
++ cat /proc/meminfo
+MemTotal:
+65932056 kB
+MemFree:
+56758228 kB
+Buffers:
+265224 kB
+Cached:
+6965404 kB
+SwapCached:
+10432 kB
+Active:
+3728592 kB
+Inactive:
+3540684 kB
+Active(anon):
+24320 kB
+Inactive(anon):
+14376 kB
+Active(file):
+3704272 kB
+Inactive(file):
+3526308 kB
+Unevictable:
+0 kB
+Mlocked:
+0 kB
+SwapTotal:
+33038328 kB
+SwapFree:
+33013508 kB
+Dirty:
+84 kB
+Writeback:
+0 kB
+AnonPages:
+35800 kB
+Mapped:
+8824 kB
+Shmem:
+4 kB
+Slab:
+1442720 kB
+SReclaimable:
+1393480 kB
+SUnreclaim:
+49240 kB
+KernelStack:
+4144 kB
+PageTables:
+2632 kB
+NFS_Unstable:
+0 kB
+Bounce:
+0 kB
+WritebackTmp:
+0 kB
+CommitLimit:
+66004356 kB
+Committed_AS:
+212528 kB
+VmallocTotal:
+34359738367 kB
+VmallocUsed:
+393732 kB
+VmallocChunk:
+34325413372 kB
+HardwareCorrupted:
+0 kB
+AnonHugePages:
+4096 kB
+HugePages_Total:
+0
+HugePages_Free:
+0
+HugePages_Rsvd:
+0
+HugePages_Surp:
+0
+Hugepagesize:
+2048 kB
+DirectMap4k:
+7852 kB
+DirectMap2M:
+3102720 kB
+DirectMap1G:
+63963136 kB
++ env
+HOSTNAME=localhost.localdomain
+SHELL=/bin/bash
+TERM=xterm-256color
+HISTSIZE=1000
+SSH_CLIENT= **Identity masked**
+SSH_TTY=/dev/pts/0
+USER=root
+LS_COLORS=rs=0:di=38;5;27:ln=38;5;51:mh=44;38;5;15:p ⌋
+i=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38 ⌋
+;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=0 ⌋
+5;48;5;232;38;5;15:su=48;5;196;38;5;15:sg=48;5;1 ⌋
+1;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;1 ⌋
+6:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5; ⌋
+34:*.tar=38;5;9:*.tgz=38;5;9:*.arj=38;5;9:*.taz= ⌋
+38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:* ⌋
+.txz=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.Z=38;5;9:* ⌋
+.dz=38;5;9:*.gz=38;5;9:*.lz=38;5;9:*.xz=38;5;9:* ⌋
+.bz2=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.bz=38;5 ⌋
+;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=3 ⌋
+8;5;9:*.rar=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.c ⌋
+pio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.jpg=38;5;13 ⌋
+:*.jpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pb ⌋
+m=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5 ⌋
+;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*. ⌋
+tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz= ⌋
+38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;1 ⌋
+3:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.m ⌋
+kv=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38; ⌋
+5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:* ⌋
+.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38 ⌋
+;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13 ⌋
+:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=3 ⌋
+8;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13 ⌋
+:*.cgm=38;5;13:*.emf=38;5;13:*.axv=38;5;13:*.anx ⌋
+=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5; ⌋
+45:*.au=38;5;45:*.flac=38;5;45:*.mid=38;5;45:*.m ⌋
+idi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38 ⌋
+;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:* ⌋
+.axa=38;5;45:*.oga=38;5;45:*.spx=38;5;45:*.xspf= ⌋
+38;5;45:
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+SSH_AUTH_SOCK=/tmp/ssh-TsjZR29232/agent.29232
+
+
+--- Page 18 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+PATH=~/anaconda/bin:~/anaconda/bin:/usr/local/sbin:/ ⌋
+usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/roo ⌋
+t/bin
+→
+→
+MAIL=/var/spool/mail/root
+PWD=/root
+LANG=en_CA.UTF-8
+HISTCONTROL=ignoredups
+HOME=/root
+SHLVL=2
+LOGNAME=root
+LC_CTYPE=en_CA.UTF-8
+SSH_CONNECTION=
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+G_BROKEN_FILENAMES=1
+_=/bin/env
++ inxi -F -c0
+./env.sh: line 8: inxi: command not found
++ lsblk -a
+NAME
+MAJ:MIN RM
+SIZE RO TYPE
+MOUNTPOINT
+→
+loop0
+7:0
+0
+0 loop
+loop1
+7:1
+0
+0 loop
+loop2
+7:2
+0
+0 loop
+loop3
+7:3
+0
+0 loop
+loop4
+7:4
+0
+0 loop
+loop5
+7:5
+0
+0 loop
+loop6
+7:6
+0
+0 loop
+loop7
+7:7
+0
+0 loop
+sda
+8:0
+0 931.5G
+0 disk
+sda1
+8:1
+0
+500M
+0 part
+/boot
+→
+sda2
+8:2
+0
+931G
+0 part
+VolGroup-lv_root (dm-0) 253:0
+0
+50G
+0 lvm
+/
+VolGroup-lv_swap (dm-1) 253:1
+0
+31.5G
+0 lvm
+[SWAP]
+→
+VolGroup-lv_home (dm-2) 253:2
+0 849.5G
+0 lvm
+/home
+→
++ lsscsi -s
+./env.sh: line 10: lsscsi: command not found
++ module list
+./env.sh: line 11: module: command not found
++ nvidia-smi
+./env.sh: line 12: nvidia-smi: command not found
++ lshw -short -quiet -sanitize
++ cat
+./env.sh: line 13: lshw: command not found
++ lspci
+00:00.0 Host bridge: Intel Corporation Xeon E5/Core
+i7 DMI2 (rev 07)
+→
+00:01.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 1a (rev 07)
+→
+00:01.1 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 1b (rev 07)
+→
+00:02.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2a (rev 07)
+→
+00:02.1 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2b (rev 07)
+→
+00:02.2 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2c (rev 07)
+→
+00:02.3 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2d (rev 07)
+→
+00:03.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3a in PCI Express Mode
+(rev 07)
+→
+→
+00:03.1 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3b (rev 07)
+→
+00:03.2 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3c (rev 07)
+→
+00:03.3 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3d (rev 07)
+→
+00:04.0 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 0 (rev 07)
+→
+00:04.1 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 1 (rev 07)
+→
+00:04.2 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 2 (rev 07)
+→
+00:04.3 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 3 (rev 07)
+→
+00:04.4 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 4 (rev 07)
+→
+00:04.5 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 5 (rev 07)
+→
+00:04.6 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 6 (rev 07)
+→
+00:04.7 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 7 (rev 07)
+→
+00:05.0 System peripheral: Intel Corporation Xeon
+E5/Core i7 Address Map, VTd_Misc, System
+Management (rev 07)
+→
+→
+00:05.2 System peripheral: Intel Corporation Xeon
+E5/Core i7 Control Status and Global Errors (rev
+07)
+→
+→
+00:05.4 PIC: Intel Corporation Xeon E5/Core i7 I/O
+APIC (rev 07)
+→
+00:11.0 PCI bridge: Intel Corporation C600/X79 series
+chipset PCI Express Virtual Root Port (rev 05)
+→
+00:1a.0 USB controller: Intel Corporation C600/X79
+series chipset USB2 Enhanced Host Controller #2
+(rev 05)
+→
+→
+00:1c.0 PCI bridge: Intel Corporation C600/X79 series
+chipset PCI Express Root Port 1 (rev b5)
+→
+00:1c.7 PCI bridge: Intel Corporation C600/X79 series
+chipset PCI Express Root Port 8 (rev b5)
+→
+00:1d.0 USB controller: Intel Corporation C600/X79
+series chipset USB2 Enhanced Host Controller #1
+(rev 05)
+→
+→
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI
+Bridge (rev a5)
+→
+00:1f.0 ISA bridge: Intel Corporation C600/X79 series
+chipset LPC Controller (rev 05)
+→
+
+
+--- Page 19 ---
+Chen, et al.
+00:1f.2 SATA controller: Intel Corporation C600/X79
+series chipset 6-Port SATA AHCI Controller (rev
+05)
+→
+→
+01:00.0 System peripheral: Hewlett-Packard Company
+Integrated Lights-Out Standard Slave
+Instrumentation & System Support (rev 05)
+→
+→
+01:00.1 VGA compatible controller: Matrox Electronics
+Systems Ltd. MGA G200EH
+→
+01:00.2 System peripheral: Hewlett-Packard Company
+Integrated Lights-Out Standard Management
+Processor Support and Messaging (rev 05)
+→
+→
+01:00.4 USB controller: Hewlett-Packard Company
+Integrated Lights-Out Standard Virtual USB
+Controller (rev 02)
+→
+→
+02:00.0 Ethernet controller: Intel Corporation I350
+Gigabit Network Connection (rev 01)
+→
+02:00.1 Ethernet controller: Intel Corporation I350
+Gigabit Network Connection (rev 01)
+→
+05:00.0 Serial Attached SCSI controller: LSI Logic /
+Symbios Logic SAS2308 PCI-Express Fusion-MPT
+SAS-2 (rev 01)
+→
+→
+20:00.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+DMI2 in PCI Express Mode (rev 07)
+→
+20:01.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 1a (rev 07)
+→
+20:01.1 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 1b (rev 07)
+→
+20:02.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2a (rev 07)
+→
+20:02.1 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2b (rev 07)
+→
+20:02.2 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2c (rev 07)
+→
+20:02.3 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 2d (rev 07)
+→
+20:03.0 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3a in PCI Express Mode
+(rev 07)
+→
+→
+20:03.1 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3b (rev 07)
+→
+20:03.2 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3c (rev 07)
+→
+20:03.3 PCI bridge: Intel Corporation Xeon E5/Core i7
+IIO PCI Express Root Port 3d (rev 07)
+→
+20:04.0 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 0 (rev 07)
+→
+20:04.1 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 1 (rev 07)
+→
+20:04.2 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 2 (rev 07)
+→
+20:04.3 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 3 (rev 07)
+→
+20:04.4 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 4 (rev 07)
+→
+20:04.5 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 5 (rev 07)
+→
+20:04.6 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 6 (rev 07)
+→
+20:04.7 System peripheral: Intel Corporation Xeon
+E5/Core i7 DMA Channel 7 (rev 07)
+→
+20:05.0 System peripheral: Intel Corporation Xeon
+E5/Core i7 Address Map, VTd_Misc, System
+Management (rev 07)
+→
+→
+20:05.2 System peripheral: Intel Corporation Xeon
+E5/Core i7 Control Status and Global Errors (rev
+07)
+→
+→
+20:05.4 PIC: Intel Corporation Xeon E5/Core i7 I/O
+APIC (rev 07)
+→
+=========================================
+2. Output from Linux desktop:
+=========================================
++ lsb_release -a
+LSB Version:
+core-9.20160110ubuntu0.2-amd64:c ⌋
+ore-9.20160110ubuntu0.2-noarch:security-9.201601 ⌋
+10ubuntu0.2-amd64:security-9.20160110ubuntu0.2-n ⌋
+oarch
+→
+→
+→
+Distributor ID:
+Ubuntu
+Description:
+Ubuntu 16.04.5 LTS
+Release:
+16.04
+Codename:
+xenial
++ uname -a
+Linux 4.4.0-142-generic #168-Ubuntu SMP Wed Jan 16
+21:00:45 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+→
++ lscpu
+Architecture:
+x86_64
+CPU op-mode(s):
+32-bit, 64-bit
+Byte Order:
+Little Endian
+CPU(s):
+12
+On-line CPU(s) list:
+0-11
+Thread(s) per core:
+2
+Core(s) per socket:
+6
+Socket(s):
+1
+NUMA node(s):
+1
+Vendor ID:
+GenuineIntel
+CPU family:
+6
+Model:
+62
+Model name:
+Intel(R) Core(TM) i7-4930K CPU
+@ 3.40GHz
+→
+Stepping:
+4
+CPU MHz:
+3599.882
+CPU max MHz:
+3900.0000
+CPU min MHz:
+1200.0000
+BogoMIPS:
+6804.12
+Virtualization:
+VT-x
+L1d cache:
+32K
+L1i cache:
+32K
+L2 cache:
+256K
+L3 cache:
+12288K
+
+
+--- Page 20 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+NUMA node0 CPU(s):
+0-11
+Flags:
+fpu vme de pse tsc msr pae mce
+cx8 apic sep mtrr pge mca cmov pat pse36 clflush
+dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
+pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs
+bts rep_good nopl xtopology nonstop_tsc
+aperfmperf pni pclmulqdq dtes64 monitor ds_cpl
+vmx est tm2 ssse3 cx16 xtpr pdcm pcid dca sse4_1
+sse4_2 x2apic popcnt tsc_deadline_timer aes xsave
+avx f16c rdrand lahf_lm epb ssbd ibrs ibpb stibp
+kaiser tpr_shadow vnmi flexpriority ept vpid
+fsgsbase smep erms xsaveopt dtherm ida arat pln
+pts flush_l1d
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
++ cat /proc/meminfo
+MemTotal:
+16368348 kB
+MemFree:
+234396 kB
+MemAvailable:
+3299380 kB
+Buffers:
+133208 kB
+Cached:
+9581316 kB
+SwapCached:
+24544 kB
+Active:
+4969468 kB
+Inactive:
+9173376 kB
+Active(anon):
+4055896 kB
+Inactive(anon):
+8209880 kB
+Active(file):
+913572 kB
+Inactive(file):
+963496 kB
+Unevictable:
+60 kB
+Mlocked:
+60 kB
+SwapTotal:
+8388604 kB
+SwapFree:
+7612780 kB
+Dirty:
+52 kB
+Writeback:
+0 kB
+AnonPages:
+4424800 kB
+Mapped:
+347928 kB
+Shmem:
+7837456 kB
+Slab:
+1659676 kB
+SReclaimable:
+1525216 kB
+SUnreclaim:
+134460 kB
+KernelStack:
+13632 kB
+PageTables:
+45380 kB
+NFS_Unstable:
+0 kB
+Bounce:
+0 kB
+WritebackTmp:
+0 kB
+CommitLimit:
+16572776 kB
+Committed_AS:
+15199216 kB
+VmallocTotal:
+34359738367 kB
+VmallocUsed:
+0 kB
+VmallocChunk:
+0 kB
+HardwareCorrupted:
+0 kB
+AnonHugePages:
+0 kB
+CmaTotal:
+0 kB
+CmaFree:
+0 kB
+HugePages_Total:
+0
+HugePages_Free:
+0
+HugePages_Rsvd:
+0
+HugePages_Surp:
+0
+Hugepagesize:
+2048 kB
+DirectMap4k:
+4751888 kB
+DirectMap2M:
+11962368 kB
+DirectMap1G:
+0 kB
++ env
+XDG_VTNR=7
+XDG_SESSION_ID=c2
+XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/
+CLUTTER_IM_MODULE=xim
+SESSION=gnome-classic
+GPG_AGENT_INFO=.gnupg/S.gpg-agent:0:1
+VTE_VERSION=4205
+XDG_MENU_PREFIX=gnome-
+SHELL=/bin/bash
+TERM=xterm-256color
+HOST=**Identity masked**
+QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+GJS_DEBUG_OUTPUT=stderr
+WINDOWID=53925613
+GNOME_KEYRING_CONTROL=
+UPSTART_SESSION=unix:abstract=/com/ubuntu/upstart-se ⌋
+ssion/18616/2772
+→
+GJS_DEBUG_TOPICS=JS ERROR;JS LOG
+GTK_MODULES=gail:atk-bridge
+USER= **Identity masked**
+GROUP=**Identity masked**
+QT_ACCESSIBILITY=1
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=0 ⌋
+1;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;0 ⌋
+1:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=3 ⌋
+4;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:* ⌋
+.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:* ⌋
+.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31: ⌋
+*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31: ⌋
+*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz= ⌋
+01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01 ⌋
+;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01; ⌋
+31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01; ⌋
+31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01; ⌋
+31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01; ⌋
+31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01; ⌋
+35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01; ⌋
+35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01; ⌋
+35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01 ⌋
+;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=0 ⌋
+1;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv= ⌋
+01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v ⌋
+=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv ⌋
+=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb ⌋
+=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv ⌋
+=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=0 ⌋
+1;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=0 ⌋
+1;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=0 ⌋
+0;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka= ⌋
+00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=0 ⌋
+0;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx= ⌋
+00;36:*.xspf=00;36:
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+→
+
+
+--- Page 21 ---
+Chen, et al.
+XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Ses ⌋
+sion0
+→
+XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+SSH_AUTH_SOCK=/run/user/18616/keyring/ssh
+HOSTTYPE=x86_64-linux
+DEFAULTS_PATH=/usr/share/gconf/gnome-classic.default ⌋
+.path
+→
+SESSION_MANAGER=**Identity masked**
+XDG_CONFIG_DIRS=/etc/xdg/xdg-gnome-classic:/usr/shar ⌋
+e/upstart/xdg:/etc/xdg
+→
+GNOME_SHELL_SESSION_MODE=classic
+DESKTOP_SESSION=gnome-classic
+PATH=**Identity masked**
+QT_QPA_PLATFORMTHEME=appmenu-qt5
+QT_IM_MODULE=ibus
+PWD=**Identity masked**
+JOB=dbus
+XDG_SESSION_TYPE=x11
+XMODIFIERS=@im=ibus
+LANG=en_CA.UTF-8
+GNOME_KEYRING_PID=
+MANDATORY_PATH=/usr/share/gconf/gnome-classic.mandat ⌋
+ory.path
+→
+IM_CONFIG_PHASE=1
+GDMSESSION=gnome-classic
+GTK2_MODULES=overlay-scrollbar
+SESSIONTYPE=gnome-session
+HOME=
+XDG_SEAT=seat0
+SHLVL=2
+OSTYPE=linux
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+VENDOR=unknown
+LOGNAME=
+XDG_SESSION_DESKTOP=gnome-classic
+MACHTYPE=x86_64
+DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Mfm ⌋
+D0CoUGu
+→
+QT4_IM_MODULE=xim
+XDG_DATA_DIRS=/usr/share/gnome-classic:/usr/share/gn ⌋
+ome:/usr/local/share:/usr/share:/var/lib/snapd/d ⌋
+esktop
+→
+→
+INSTANCE=
+DISPLAY=:0
+XDG_RUNTIME_DIR=/run/user/18616
+GTK_IM_MODULE=ibus
+XDG_CURRENT_DESKTOP=GNOME-Classic:GNOME
+XAUTHORITY= .Xauthority
+_=/usr/bin/env
++ inxi -F -c0
+System:
+Host: **Identity masked** Kernel:
+4.4.0-142-generic x86_64 (64 bit)
+→
+Desktop: Gnome 3.18.5 Distro: Ubuntu 16.04
+xenial
+→
+Machine:
+Mobo: ASUSTeK model: P9X79 LE v: Rev 1.xx
+Bios: American Megatrends v: 4608 date:
+12/24/2013
+→
+CPU:
+Hexa core Intel Core i7-4930K (-HT-MCP-)
+cache: 12288 KB
+→
+clock speeds: max: 3900 MHz 1: 3600 MHz 2:
+3666 MHz 3: 3678 MHz
+→
+4: 3645 MHz 5: 3606 MHz 6: 3621 MHz 7: 3613
+MHz 8: 3599 MHz
+→
+9: 3642 MHz 10: 3599 MHz 11: 3643 MHz 12:
+3600 MHz
+→
+Graphics:
+Card: NVIDIA GF119 [GeForce GT 610]
+Display Server: X.Org 1.18.4 drivers:
+nvidia (unloaded: fbdev,vesa,nouveau)
+→
+Resolution: 1920x1080@60.00hz
+GLX Renderer: GeForce GT 610/PCIe/SSE2
+GLX Version: 4.5.0 NVIDIA 384.130
+Audio:
+Card-1 NVIDIA GF119 HDMI Audio Controller
+driver: snd_hda_intel
+→
+Card-2 Intel C600/X79 series High
+Definition Audio Controller
+→
+driver: snd_hda_intel
+Sound: Advanced Linux Sound Architecture v:
+k4.4.0-142-generic
+→
+Network:
+Card: Realtek RTL8111/8168/8411 PCI
+Express Gigabit Ethernet Controller
+→
+driver: r8169
+IF: eth0 state: up speed: 1000 Mbps duplex:
+full
+→
+mac: **Identity masked**
+Drives:
+HDD Total Size: 1000.2GB (77.8% used)
+ID-1: /dev/sda model: WDC_WD1003FZEX size:
+1000.2GB
+→
+Partition: ID-1: / size: 83G used: 32G (41%) fs: ext4
+dev: /dev/dm-0
+→
+ID-2: /var size: 7.5G used: 1.4G (20%) fs:
+ext4 dev: /dev/dm-1
+→
+ID-3: swap-1 size: 8.59GB used: 0.79GB (9%)
+fs: swap dev: /dev/sda2
+→
+RAID:
+No RAID devices: /proc/mdstat, md_mod
+kernel module present
+→
+Sensors:
+System Temperatures: cpu: 47.0C mobo: N/A
+gpu: 33C
+→
+Fan Speeds (in rpm): cpu: 0
+Info:
+Processes: 357 Uptime: 24 days Memory:
+6280.5/15984.7MB
+→
+Client: Shell (env.sh) inxi: 2.2.35
++ lsblk -a
+NAME
+MAJ:MIN RM
+SIZE RO TYPE MOUNTPOINT
+sda
+8:0
+0 931.5G
+0 disk
+sda1
+8:1
+0 199.5M
+0 part /boot/efi
+sda2
+8:2
+0
+8G
+0 part [SWAP]
+sda3
+8:3
+0 923.3G
+0 part
+vg-root1 252:0
+0
+84G
+0 lvm
+/
+vg-var1
+252:1
+0
+7.6G
+0 lvm
+/var
+
+
+--- Page 22 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+vg-root2 252:2
+0
+84G
+0 lvm
+/altroot
+vg-var2
+252:3
+0
+7.6G
+0 lvm
+/altroot/var
+vg-data
+252:4
+0
+730G
+0 lvm
+/data
+sda4
+8:4
+0
+1M
+0 part
+sr0
+11:0
+1
+1024M
+0 rom
+loop0
+7:0
+0
+0 loop
+loop1
+7:1
+0
+0 loop
+loop2
+7:2
+0
+0 loop
+loop3
+7:3
+0
+0 loop
+loop4
+7:4
+0
+0 loop
+loop5
+7:5
+0
+0 loop
+loop6
+7:6
+0
+0 loop
+loop7
+7:7
+0
+0 loop
++ lsscsi -s
+./env.sh: line 10: lsscsi: command not found
++ module list
+./env.sh: line 11: module: command not found
++ nvidia-smi
+Thu Apr
+4 18:33:40 2019
++--------------------------------------------------- ⌋
+--------------------------+
+→
+| NVIDIA-SMI 384.130
+Driver Version:
+384.130
+|
+→
+|-------------------------------+------------------- ⌋
+---+----------------------+
+→
+| GPU
+Name
+Persistence-M| Bus-Id
+Disp.A
+| Volatile Uncorr. ECC |
+→
+| Fan
+Temp
+Perf
+Pwr:Usage/Cap|
+Memory-Usage
+| GPU-Util
+Compute M. |
+→
+|===============================+=================== ⌋
+===+======================|
+→
+|
+0
+GeForce GT 610
+Off
+| 00000000:01:00.0 N/A
+|
+N/A |
+→
+| N/A
+33C
+P0
+N/A /
+N/A |
+283MiB /
+962MiB
+|
+N/A
+Default |
+→
++-------------------------------+------------------- ⌋
+---+----------------------+
+→
++--------------------------------------------------- ⌋
+--------------------------+
+→
+| Processes:
+GPU Memory |
+→
+|
+GPU
+PID
+Type
+Process name
+Usage
+|
+→
+|=================================================== ⌋
+==========================|
+→
+|
+0
+Not Supported
+|
+→
++--------------------------------------------------- ⌋
+--------------------------+
+→
++ lshw -short -quiet -sanitize
++ cat
+WARNING: you should run this program as super-user.
+H/W path
+Device
+Class
+Description
+=====================================================
+system
+Computer
+/0
+bus
+Motherboard
+/0/0
+memory
+15GiB System
+memory
+→
+/0/1
+processor
+Intel(R)
+Core(TM) i7-4930K CPU @ 3.40GHz
+→
+/0/100
+bridge
+Xeon E7
+v2/Xeon E5 v2/Core i7 DMI2
+→
+/0/100/1
+bridge
+Xeon E7
+v2/Xeon E5 v2/Core i7 PCI Express Root Port 1a
+→
+/0/100/2
+bridge
+Xeon E7
+v2/Xeon E5 v2/Core i7 PCI Express Root Port 2a
+→
+/0/100/2/0
+display
+GF119
+[GeForce GT 610]
+→
+/0/100/2/0.1
+multimedia
+GF119 HDMI
+Audio Controller
+→
+/0/100/3
+bridge
+Xeon E7
+v2/Xeon E5 v2/Core i7 PCI Express Root Port 3a
+→
+/0/100/5
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 VTd/Memory Map/Misc
+→
+/0/100/5.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 IIO RAS
+→
+/0/100/5.4
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 IOAPIC
+→
+/0/100/11
+bridge
+C600/X79
+series chipset PCI Express Virtual Root Port
+→
+/0/100/16
+communication
+C600/X79
+series chipset MEI Controller #1
+→
+/0/100/1a
+bus
+C600/X79
+series chipset USB2 Enhanced Host Controller #2
+→
+/0/100/1b
+multimedia
+C600/X79
+series chipset High Definition Audio Controller
+→
+/0/100/1c
+bridge
+C600/X79
+series chipset PCI Express Root Port 1
+→
+/0/100/1c.2
+bridge
+C600/X79
+series chipset PCI Express Root Port 3
+→
+/0/100/1c.2/0
+bus
+ASM1042A USB
+3.0 Host Controller
+→
+/0/100/1c.3
+bridge
+C600/X79
+series chipset PCI Express Root Port 4
+→
+/0/100/1c.3/0
+bus
+ASM1042A USB
+3.0 Host Controller
+→
+/0/100/1c.4
+bridge
+C600/X79
+series chipset PCI Express Root Port 5
+→
+/0/100/1c.4/0
+storage
+ASM1062
+Serial ATA Controller
+→
+/0/100/1c.5
+bridge
+C600/X79
+series chipset PCI Express Root Port 6
+→
+/0/100/1c.5/0
+eth0
+network
+RTL8111/8168/8411 PCI Express Gigabit Ethernet
+Controller
+→
+→
+/0/100/1d
+bus
+C600/X79
+series chipset USB2 Enhanced Host Controller #1
+→
+
+
+--- Page 23 ---
+Chen, et al.
+/0/100/1e
+bridge
+82801 PCI
+Bridge
+→
+/0/100/1f
+bridge
+C600/X79
+series chipset LPC Controller
+→
+/0/100/1f.2
+storage
+C600/X79
+series chipset 6-Port SATA AHCI Controller
+→
+/0/100/1f.3
+bus
+C600/X79
+series chipset SMBus Host Controller
+→
+/0/8
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 QPI Link 0
+→
+/0/9
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 QPI Link 1
+→
+/0/a
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Power Control Unit 0
+→
+/0/a.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Power Control Unit 1
+→
+/0/a.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Power Control Unit 2
+→
+/0/a.3
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Power Control Unit 3
+→
+/0/b
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 UBOX Registers
+→
+/0/b.3
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 UBOX Registers
+→
+/0/c
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Unicast Registers
+→
+/0/c.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Unicast Registers
+→
+/0/c.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Unicast Registers
+→
+/0/d
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Unicast Registers
+→
+/0/d.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Unicast Registers
+→
+/0/d.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Unicast Registers
+→
+/0/e
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Home Agent 0
+→
+/0/e.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Home Agent 0
+→
+/0/f
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 0 Target Address/Thermal Registers
+→
+→
+/0/f.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 0 RAS Registers
+→
+→
+/0/f.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory Controller
+0 Channel Target Address Decoder Registers
+→
+→
+/0/f.3
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory Controller
+0 Channel Target Address Decoder Registers
+→
+→
+/0/f.4
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory Controller
+0 Channel Target Address Decoder Registers
+→
+→
+/0/f.5
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory Controller
+0 Channel Target Address Decoder Registers
+→
+→
+/0/10
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 Thermal Control 0
+→
+→
+/0/10.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 Thermal Control 1
+→
+→
+/0/10.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 ERROR Registers 0
+→
+→
+/0/10.3
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 ERROR Registers 1
+→
+→
+/0/10.4
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 Thermal Control 2
+→
+→
+/0/10.5
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 Thermal Control 3
+→
+→
+/0/10.6
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 ERROR Registers 2
+→
+→
+/0/10.7
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Integrated Memory
+Controller 1 Channel 0-3 ERROR Registers 3
+→
+→
+/0/13
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 R2PCIe
+→
+/0/13.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 R2PCIe
+→
+/0/13.4
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 QPI Ring Registers
+→
+/0/13.5
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 QPI Ring Performance Ring
+Monitoring
+→
+→
+/0/16
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 System Address Decoder
+→
+/0/16.1
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Broadcast Registers
+→
+WARNING: output may be incomplete or inaccurate, you
+should run this program as super-user.
+→
+/0/16.2
+generic
+Xeon E7
+v2/Xeon E5 v2/Core i7 Broadcast Registers
+→
+/0/2
+scsi1
+storage
+/0/2/0.0.0
+/dev/cdrom
+disk
+DVDRAM
+GH24NSC0
+→
+ARTIFACT EVALUATION
+Verification and validation studies: It is important that the results
+from BinFI and exhaustive FI should be obtained from the same ma-
+chine. In our experiments, we found that the recall and precision of
+BinFI were lower when we ran BinFI and exhaustive FI on different
+machines (e.g., one on the cpu cluster node and one on the Linux
+desktop). Therefore, the results in the paper were collected from
+running BinFI and exhaustive FI on the same machine. For random
+
+
+--- Page 24 ---
+BinFI: An Efficient Fault Injector for Safety-Critical Machine Learning Systems
+FI however, there was much less variability, as we calculated the
+error bars at the 95% confidence interval.
+Inaccuracies in our experiments could also come from other
+sources, including the dataset, ML benchmark and the hyper-
+parameters of the network. In our experiments, we evaluate a total
+of 6 datasets, which are common datasets in related studies. Due to
+the time-consuming nature of FI experiments (especially consider-
+ing that we need to perform exhaustive FI for obtaining the ground
+truth), we were only able to use 10 inputs per benchmark. Our
+results were averaged across the 10 inputs, and they all exhibited
+high recall and precision values.
+The performance of our approach might also vary across dif-
+ferent ML models, and hence we evaluate our approach on a total
+of 8 ML benchmarks. As shown in our paper, the performance
+of our approach maintains consistently high recall and precision
+values across different the benchmarks. The hyper-parameters of
+the network (e.g., the weights of the convolution kernels) can also
+affect the resilience of the network. Therefore, our results in Table
+3 (number of critical bits found in each benchmark) in Section 4.2
+in the paper might vary. However, the results on the recall and
+precision values (Figure 6 and Table 4) for BinFI to identify critical
+bits were consistently high across the benchmarks.
+Accuracy and precision of timings: In our experiments, we found
+the overhead of FI varied according to the states of different ma-
+chines (e.g., how many jobs the machine was running). Thus we
+decided to report the FI trials, which are machine-independent.
+Quantified the sensitivity of results to initial conditions and/or
+parameters of the computational environment: We quantified the
+sensitivity of our results to different computational environments
+in different machines. There are two aspects:
+1. For BinFI and exhaustiveFI on the same operator, we found
+that the results were sensitive to different machines. Therefore, we
+re-conducted the experiments of BinFI and exhaustive FI on the
+same machine, the results of which are reported in the paper.
+2. For BinFI and exhaustiveFI on different operators, we con-
+ducted the experiments over different operators on different ma-
+chines (10 cpu cluster nodes and 1 Linux desktop, in total), we found
+that our results did not show sensitivity to different computational
+environment. Further, they showed consistent trend across all the
+benchmark in all the evaluated metrics.
+Controls, statistics, or other steps taken to make the measurements
+and analyses robust to variability and unknowns in the system. In
+our experiments, we used a total of 10 cpu cluster nodes and 1
+Linux desktop. For BinFI and exhaustive FI on one operator, we
+always confined these two experiments on the same machine. But
+for different operators in the same ML algorithm, we assigned
+different machines to perform the experiments. The results from
+one ML benchmark were collected from experiments over different
+operators, which were evaluated on different machines. This helps
+us to ensure the robustness of our results to the variability in the
+system (or different hardware configuration).

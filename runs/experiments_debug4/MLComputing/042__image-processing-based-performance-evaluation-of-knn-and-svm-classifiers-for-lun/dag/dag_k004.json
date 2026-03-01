@@ -1,0 +1,191 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning classifiers (KNN, Random Forest, SVM) can improve early detection of lung cancer from CT images",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Early detection of lung cancer is critical because late-stage diagnosis has low cure rates and high mortality",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Training and evaluation used the LIDC-IDRI CT image dataset plus validation samples from AHRC and AIMS hospitals",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Image preprocessing included resizing, normalization and filters such as CLAHE, Wiener, adaptive Gaussian, Gaussian and Gabor to reduce noise and standardize inputs",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Classifiers evaluated were K-Nearest Neighbors (KNN), Support Vector Machine (SVM), and Random Forest",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Training procedure: dataset of 500 images, 70% training 30% testing split, feature extraction from downscaled images, and 5-fold cross-validation used for performance estimation",
+      "role": "Method",
+      "parents": [
+        0,
+        2,
+        3
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "SVM classifier achieved average accuracy 95.06% across 5-fold cross-validation with high precision, recall and F1 scores reported per fold",
+      "role": "Result",
+      "parents": [
+        0,
+        2,
+        3,
+        4,
+        5
+      ],
+      "children": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "KNN classifier achieved average accuracy 86.89% across 5 folds with reported precision, recall and F1 metrics",
+      "role": "Result",
+      "parents": [
+        0,
+        2,
+        3,
+        4,
+        5
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Random Forest classifier achieved average accuracy 81.96% across 5 folds with reported precision, recall and F1 metrics",
+      "role": "Result",
+      "parents": [
+        0,
+        2,
+        3,
+        4,
+        5
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Performance tables show per-fold TPR, FPR, precision, recall, F1-score and accuracy for each classifier and report ROC-AUC values above 0.99 per class",
+      "role": "Evidence",
+      "parents": [
+        6,
+        7,
+        8,
+        5,
+        4
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "SVM outperforms KNN and Random Forest on this task, attributed to its ability to handle high-dimensional features and complex decision boundaries",
+      "role": "Claim",
+      "parents": [
+        6,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "The proposed image-processing and machine-learning pipeline can provide accurate and timely lung cancer diagnosis, potentially aiding clinicians",
+      "role": "Conclusion",
+      "parents": [
+        1,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Study limitations include a relatively small sample of 500 images and limited demographic diversity; future work will expand dataset size and diversity to improve reliability",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": null
+    }
+  ]
+}

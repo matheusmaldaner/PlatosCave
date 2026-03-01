@@ -1,0 +1,215 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A systematic empirical comparison of commonly used feature selection methods will identify which methods produce better text classification accuracy and provide practical guidelines for selecting methods in academic and real-world text classification",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "High-dimensional text contains many noisy terms that negatively affect text classification performance, and feature selection (FS) reduces noisy terms and increases informative terms to improve accuracy",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Few recent studies perform wide, systematic comparisons of many typical FS methods across diverse text domains, motivating a comprehensive comparative study",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We summarize 20 typical supervised and unsupervised FS methods from prior work and conduct comparative experiments to evaluate their effectiveness for text classification",
+      "role": "Method",
+      "parents": [
+        0,
+        1,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Four benchmark datasets from the UCI repository were used: CARR (car reviews), COMD (Brazilian company descriptions, 9 classes), IMDB (binary movie reviews), and KDCN (Turkish news); datasets cover diverse domains and have been used in prior text mining work",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Experimental protocol: decision tree classifier, classification accuracy as metric, 10-fold cross validation, vary number of selected features to report accuracies",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "MOR and MC-OR achieve the highest classification accuracies among the 20 FS methods across the evaluated datasets",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Improved Gini index (IGI) attains strong performance close to MOR and MC-OR while having a simpler and more convenient formula to implement",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Unsupervised frequency-based methods term variance (TV), term variance quality (TVQ), term frequency (TF), and document frequency (DF) achieve relatively good accuracy and are computationally efficient; TVQ performed best on IMDB",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "The three versions of chi-square (CHI) show relatively good and similar performance across datasets",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Expected cross entropy (ECE) generally performs well but yields poor accuracies when the number of selected features is small (e.g., 20 or 50)",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Information gain (IG), Gini index (GI), and mutual information (MI) achieve the worst classification accuracies among the evaluated methods, with MI max-version better than MI average-version",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Supervised methods like MOR, MC-OR and IGI require computing term-class probability distributions, increasing computational cost compared with unsupervised methods such as TV, TVQ, TF and DF",
+      "role": "Claim",
+      "parents": [
+        7,
+        8,
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Recommendation: use MOR or MC-OR when highest accuracy is required; use IGI when a balance of strong accuracy and implementation simplicity is desired; use TV, TVQ, TF or DF when computational efficiency is the priority and acceptable accuracy is sufficient",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: experiments are limited to four UCI datasets and a decision tree classifier, so results may not generalize to all text domains, datasets, or classifiers",
+      "role": "Limitation",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

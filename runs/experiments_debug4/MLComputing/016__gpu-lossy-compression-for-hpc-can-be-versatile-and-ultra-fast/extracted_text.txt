@@ -1,0 +1,2947 @@
+--- Page 1 ---
+.
+.
+Latest updates: hps://dl.acm.org/doi/10.1145/3712285.3759817
+.
+.
+RESEARCH-ARTICLE
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+YAFAN HUANG, University of Iowa, Iowa City, IA, United States
+.
+SHENG DI, Argonne National Laboratory, Lemont, IL, United States
+.
+GUANPENG LI, University of Florida, Gainesville, FL, United States
+.
+FRANCK CAPPELLO, Argonne National Laboratory, Lemont, IL, United States
+.
+.
+.
+Open Access Support provided by:
+.
+University of Iowa
+.
+Argonne National Laboratory
+.
+University of Florida
+.
+PDF Download
+3712285.3759817.pdf
+29 December 2025
+Total Citations: 1
+Total Downloads: 1756
+.
+.
+.
+.
+Published: 16 November 2025
+.
+.
+Citation in BibTeX format
+.
+.
+SC '25: The International Conference
+for High Performance Computing,
+Networking, Storage and Analysis
+November 16 - 21, 2025
+MO, St. Louis, USA
+.
+.
+Conference Sponsors:
+SIGHPC
+SC '25: Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis (November 2025)
+hps://doi.org/10.1145/3712285.3759817
+ISBN: 9798400714665
+.
+
+
+--- Page 2 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+Yafan Huang
+University of Iowa
+Iowa City, USA
+yafan-huang@uiowa.edu
+Sheng Di∗
+Argonne National Laboratory (ANL)
+Lemont, USA
+sdi1@anl.gov
+Guanpeng Li∗
+University of Florida
+Gainesville, USA
+liguanpeng@ufl.edu
+Franck Cappello
+Argonne National Laboratory (ANL)
+Lemont, USA
+cappello@mcs.anl.gov
+Abstract
+This work proposes VGC, a versatile and ultra-fast GPU lossy com-
+pression framework designed to address the growing data chal-
+lenges in high-performance computing (HPC). VGC captures di-
+mension information in scientific data and supports three compres-
+sion algorithms, achieving high compression ratios across diverse
+HPC domains. Built with a highly optimized GPU kernel, VGC
+delivers state-of-the-art throughput with error control. In addi-
+tion to compression ratio and speed, VGC supports two distinctive
+modes that enhance its versatility. Memory-efficient Compression
+uses a kernel fission design to compute compressed size, allocate
+only the required GPU memory, and compress data without waste,
+effectively reducing memory footprint. Selective Decompression
+introduces an early stopping mechanism that enables direct access
+to regions of interest without decompressing the entire dataset.
+CCS Concepts
+• Theory of computation →Data compression; • Computing
+methodologies →Parallel algorithms; • Computer systems
+→High-performance computing.
+Keywords
+Lossy Compression, Parallel Computing, GPU, High-performance
+Computing, Massive Parallelism, Scientific Computing, CUDA.
+ACM Reference Format:
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello. 2025. GPU
+Lossy Compression for HPC Can Be Versatile and Ultra-Fast. In The Inter-
+national Conference for High Performance Computing, Networking, Storage
+and Analysis (SC ’25), November 16–21, 2025, St Louis, MO, USA. ACM, New
+York, NY, USA, 20 pages. https://doi.org/10.1145/3712285.3759817
+1
+Introduction
+Modern high-performance computing (HPC) systems generate vast
+amounts of data at unprecedented speed [17, 25, 72, 74]. For sci-
+entific instruments and simulations, light sources at the Stanford
+Linear Accelerator Center (SLAC) currently produce raw data at
+∗Co-corresponding authors
+This work is licensed under a Creative Commons Attribution 4.0 International License.
+SC ’25, St Louis, MO, USA
+© 2025 Copyright held by the owner/author(s).
+ACM ISBN 979-8-4007-1466-5/25/11
+https://doi.org/10.1145/3712285.3759817
+approximately 250 GB/s, a rate expected to quadruple by the end of
+this decade [80]. Among large-scale machine learning workloads,
+GPT-4 [5], an advanced large language model (LLM) released by
+OpenAI, is trained using 1.7 trillion parameters and 1 PB of training
+data to enhance response accuracy [3]. Efficiently managing and
+reducing such extreme data volumes is recognized as one of the
+top ten research challenges in the era of exascale computing [60].
+Why GPU Lossy Compression? Among existing data reduction
+techniques [16, 21, 25, 56], GPU lossy compression [26, 39, 41, 54,
+94], by putting entire compression computations into GPU, has
+emerged as a promising solution for two key reasons. (1) High Com-
+pression Ratio and Tunable Data Quality: Unlike lossless compres-
+sion [10, 49], which preserves all original data, lossy compression
+drastically improves compression ratios by allowing certain data
+losses. In error-bounded lossy compressors [24, 26], such losses
+are strictly confined within a user-defined threshold, ensuring tun-
+able data quality and making it suitable for various HPC appli-
+cations [30, 42, 88]. (2) Fast Compression Throughput via Massive
+Parallelism: While state-of-the-art parallel CPU lossy compressors
+yield throughput of around 5-10 GB/s with one CPU [26, 91], their
+GPU counterparts leverage massive parallelism to deliver signif-
+icantly higher performance, reaching 300-500 GB/s [39]. Further-
+more, since many modern HPC workloads rely on GPUs for core
+computation [29, 36], large volumes of data are often generated
+directly on the GPU memory [15, 44, 75], further underscoring the
+importance of GPU lossy compression in situ.
+Understanding How GPU Lossy Compression is Used in HPC.
+Over the past decade, GPU lossy compression has been applied
+across various HPC domains, including deep learning recommenda-
+tion models [30, 85], collective communication [37, 96], and quan-
+tum simulations [73, 92]. Based on their underlying principles, these
+applications can be broadly classified into two major patterns 1.
+Pattern-1: Reducing Real-Time Memory Footprint. In some HPC
+applications, due to algorithm constraints, real-time data must
+be retained for later use, requiring it to be buffered in memory
+pools [63, 92]. Compared to CPU memory, GPU memory is more lim-
+ited [65] and subject to stricter capacity and allocation constraints,
+making GPU compression techniques in situ essential for mini-
+mizing memory footprint. For example, in quantum simulations,
+1There is no universally accepted classification. We acknowledge overlaps and omis-
+sions (e.g. visualization [71]) exist. These two patterns are identified based on common
+HPC bottlenecks: memory-bound workloads benefit from reduced memory footprint,
+while bandwidth-bound workloads gain from reduced data movement overhead.
+1
+2056
+
+
+--- Page 3 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+each quantum gate operation updates the state vector for all qubits,
+necessitating that these state vectors remain in memory. However,
+memory consumption grows exponentially with the number of
+qubits – 48 qubits can occupy up to 4.6 PB of memory – highlight-
+ing the need for data reduction [92]. Such memory-bound issues
+exist in other scenarios, such as seismic imaging checkpoints [63]
+and LLM inference [66]. Memory footprint reduction requires GPU
+lossy compression to compress with extreme memory efficiency.
+Pattern-2: Reducing Data Movement Overhead. HPC workloads
+routinely involve multiple computation units to orchestrate syn-
+ergistically, leading to frequent data exchanges [17, 84, 96]. Due
+to limited bandwidth, transferring data back and forth across dif-
+ferent units, such as node-to-node and GPU-to-CPU, can cause
+bottlenecks and drastically reduce end-to-end performance in re-
+turn. For instance, in a GPU-based cluster with 16 nodes and 64
+NVIDIA A100 GPUs, data movement overhead accounts for around
+50% of the runtime in a Reduce and Broadcast computation [37].
+Applying GPU lossy compression before transmitting data to other
+units can effectively reduce data size, thereby lowering network
+traffic and benefiting HPC execution. In addition, since the received
+data remains compressed, users typically need to decompress the
+entire array before further computation. However, when only small
+portions require processing, full decompression becomes unneces-
+sary [54, 78]. This highlights the need for GPU lossy compression
+to support direct operations on compressed data.
+Meanwhile, across both patterns, high throughput and high com-
+pression ratios are consistently essential. While high compression
+ratios provide the primary benefit of adopting GPU lossy com-
+pression, high throughput helps mitigate the additional overhead
+oriented from compression and decompression stages, which are
+extra steps beyond the original HPC workload.
+Limitations of Existing GPU Lossy Compressors. Although ex-
+isting GPU lossy compressors can deliver fast throughput [39] and
+promising compression ratios [26], they have several critical limi-
+tations in two aforementioned patterns, restricting their practical
+use in HPC. We summarize these limitations in the following.
+High-dimensional 
+Mesh Data
+2D Slice 
+Mesh Data
+Unstructured 
+Particle Data
+0.794
+0.286
+0.833
+1.011
+-0.925
+1.371
+0.234
+-1.262
+1.627
+0.127
+Machine Learning 
+Weights/Embeddings
+Figure 1: Illustrating diverse data features in HPC.
+Limitation-1: Limited Generalization across Diverse Data Features.
+As shown in Figure 1, HPC datasets from various domains exhibit
+drastically different characteristics. For example, NYX [8], a cosmol-
+ogy simulation dataset, consists of high-dimensional mesh data with
+large value ranges. CESM-ATM [45], a standard climate simulation
+dataset, contains 2D slice mesh data with smooth variations. In con-
+trast, particle data such as HACC [35] is extremely sparse in space,
+typically stored as separate arrays for positions and values, forming
+a long 1D structure. Machine learning weights [30, 65] exhibit yet
+another distinct feature, typically consisting of small floating-point
+values that follow learned distributions, often with limited spatial
+correlation. To effectively handle this diversity, a versatile GPU
+lossy compressor should include dimension information and sup-
+port multiple compression algorithms for different data structures
+adaptively. However, existing compressors rely on fixed algorithms,
+from lightweight bit manipulations [41, 94] to transform-based ap-
+proaches [54], or neglect dimension information [26, 41], making
+them inefficient for datasets with highly varying features.
+// Original data to be compressed
+float* oriData;
+// Initializing compressed data
+unsigned char* cmpData;
+cudaMalloc(cmpData, maxCmpSize);
+// Calling CUDA compression API
+compression(oriData, cmpData, cmpSize);
+// Original data to be compressed
+float* oriData;
+// Initializing compressed data
+unsigned char* cmpData;
+cudaMalloc(cmpData, cmpSize);
+// Calling CUDA compression API
+compression(oriData, cmpData, cmpSize);
+Existing GPU Lossy Compressor: 
+Pre-allocate maximum possible 
+compressed data size before compression.
+An Ideal GPU Lossy Compressor: 
+Allocate only the actual compressed 
+data size before compression.
+Figure 2: Explaining why existing GPU lossy compressors
+compress data but does not reduce GPU memory footprint.
+Limitation-2: Compression Shrinks Data, But Not GPU Memory.
+To compress data in GPU memory, existing GPU lossy compressors
+must pre-allocate memory for the compressed byte array before
+invoking the compression API. Figure 2 shows an example using
+NVIDIA GPU APIs. In practice, existing compressors [26, 39, 94]
+pre-allocate the maximum possible compressed size (routinely the
+padding size of original data) using cudaMalloc(), as the com-
+pressed size can only be known after the compression process
+completes. While this approach successfully reduces data size, it
+does not effectively reduce GPU memory footprint, which is one
+primary motivation for adopting GPU lossy compression in HPC
+(see Pattern-1). Additionally, most modern GPU infrastructures do
+not support in-place memory reallocation, meaning that releasing
+unused memory requires allocating a new buffer, copying data,
+and freeing the old buffer. Such a process can introduce significant
+performance overhead at runtime. Fixed-ratio compressors like
+cuZFP [54] avoid this issue by deterministically allocating memory,
+but they lack error control, limiting both data quality and com-
+pression ratios. Ideally, in memory-constraint scenarios, a GPU
+lossy compressor should precisely know compressed size without
+compression, but no existing solution has achieved this.
+Original Data
+Region of 
+Interest (ROI)
+Compressed Data
+compression
+Without Random Access
+With Random Access
+decompress entire 
+compressed data 
+before extracting ROI
+selectively 
+decompress ROI in 
+compressed data
+Figure 3: Explaining random access on a 2D slice mesh data.
+Limitation-3: Lack of Effective Random Access Capability. As stated
+in Pattern-2, directly operating on compressed data is an important
+use case. We illustrate this in Figure 3. Given a compressed 2D slice
+from a climate model [45], domain scientists often need to analyze
+a region of interest (ROI). With random access capability, a com-
+pressor can locate and selectively decompress the ROI, reducing
+unnecessary computation and accelerating workflow. However, ran-
+dom access introduces additional challenges. One key requirement
+is preserving spatial locality – ROI in the original domain should
+2
+2057
+
+
+--- Page 4 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+remain spatially coherent in the compressed format. Existing GPU
+lossy compressors [39] support random access but treat data as a
+flat 1D array, disregarding its original structure. While these val-
+ues are stored consecutively in memory, they are scattered across
+different regions in the original dataset, losing spatial information
+and making localized retrieval difficult. Beyond spatial locality,
+the compression algorithm must also maintain high data fidelity.
+Fixed-ratio compressors [54], while supporting random access, lack
+error control, leading to potential quality degradation. This lim-
+itation makes them unsuitable for post-hoc analysis in scientific
+applications where preserving numerical accuracy is critical [42].
+Our Versatile Solution – VGC2. In this work, we propose VGC, a
+Versatile GPU lossy Compression framework to address big data
+issues for diverse data patterns and various HPC scenarios. In
+short, VGC has several key features. Feature-1: Multiple Compres-
+sion Algorithms. VGC provides three algorithms — No-delta for
+highly random data (e.g. machine learning weights), Delta for sparse
+or locally smooth data, and Outlier for globally smooth datasets.
+Feature-2: Dimension-aware Support. VGC supports 1D, 2D, and
+3D processing methods, enabling it to capture spatial locality and
+adapt to diverse HPC datasets across domains. Feature-3: Memory-
+efficient Compression. Through a kernel-fission design, VGC can
+precisely know the compressed size before actual compression. This
+allows dynamic memory allocation and real-time reduction of GPU
+memory footprint. Feature-4: Selective Decompression. With an
+early stopping mechanism, VGC can directly access and decom-
+press one or several ROIs without processing the entire dataset.
+It also supports writing back to the compressed array, enabling
+plug-and-play homomorphic operations. Feature-5: Ultra-fast
+Throughput. All compression and decompression steps (except
+memory-efficient mode) are fused into a single, highly optimized
+GPU kernel with no CPU involvement, ensuring high throughput.
+Key results from our evaluation on 13 HPC datasets and two use
+cases, performed on an NVIDIA A100 GPU, are summarized below.
+• On average, VGC achieves approximately 320 GB/s for com-
+pression and 470 GB/s for decompression on single-precision
+datasets, and around 600 GB/s for compression and 1000 GB/s
+for decompression on double-precision datasets.
+• With comparable or higher throughput, VGC consistently
+achieves better (up to 86.34% higher) compression ratios than
+cuSZp2. Compared to PFPL, VGC delivers comparable com-
+pression ratios while offering ∼2× throughput.
+• Memory-efficient Compression in VGC, despite using two
+kernels, effectively reduces GPU memory footprint while still
+maintaining ∼70% throughput of VGC normal compression.
+• To access a dimension-aware data block, VGC Selective De-
+compression achieves an average throughput of ∼1 TB/s for
+single-precision and ∼2 TB/s for double-precision datasets.
+• Two HPC use cases, LLM inference and inter-node data trans-
+fer, demonstrate VGC’s versatility in effectively reducing
+memory footprint and data movement overhead, aligning
+with the two Patterns identified earlier in this section.
+2The source code of the VGC compression framework, as part of the cuSZp project, is
+publicly available at https://github.com/szcompressor/cuSZp.
+2
+VGC: A Fast and Versatile GPU Lossy
+Compression Framework
+In this section, we first introduce the VGC framework and present
+its compression algorithm. We then detail three key components
+that enable VGC high performance and adaptability across diverse
+HPC scenarios: (1) Dimension-aware Delta Encoding, which captures
+spatial locality and optimizes compression ratios while maintain-
+ing ultra-fast throughput; (2) Memory-efficient Compression, which
+obtains the actual compressed size without compressing the data
+upfront; and (3) Selective Decompression, which enables direct access
+and processing on compressed data without full decompression.
+Finally, we briefly describe several implementation details.
+2.1
+VGC: Framework Overview
+Compressed 
+Data
+VGC Compression
+VGC Decompression
+Original 
+Data
+Reconstructed 
+Data
+Reconstructed 
+ROI
+Memory-efﬁcient 
+Compression
+Standard 
+Compression
+OR
+Selective 
+Decompression
+Standard 
+Decompression
+OR
+Figure 4: Overview of VGC compression framework.
+Figure 4 illustrates the overall compression framework of VGC.
+Given an original dataset, users determine the compression mode
+based on HPC scenarios. If the target workload has memory con-
+straints (i.e. Pattern-1), the Memory-efficient Compression can be
+selected; otherwise, VGC defaults to Standard Compression. Regard-
+less of the selected mode, both paths produce identical compressed
+data that are compatible with downstream decompression. During
+decompression, the user can again select the appropriate mode
+based on use cases: either apply Standard Decompression on the en-
+tire compressed data or Selective Decompression for ROI, leveraging
+dimension-aware metadata. Except for the memory-efficient mode,
+which uses a kernel fission design and thus involves two GPU ker-
+nels3 (details in Section 2.4), all other modes are implemented as a
+single GPU kernel with no CPU intervention, ensuring ultra-fast
+throughput suitable for inline HPC scenarios.
+2.2
+VGC: Compression Algorithm
+Figure 5 illustrates the compression pipeline in VGC’s Standard
+Compression kernel. While the memory-efficient mode follows
+a different kernel execution pipeline, the compression algorithm
+remains the same. Starting with the original input data, VGC first
+applies Data Blocking, dividing the data into equally sized blocks.
+Each block is then processed independently through Blockwise
+Compression, which is executed in parallel across GPU threads to
+maximize throughput. Next, VGC performs a Global Prefix-Sum on
+the lengths of the compressed blocks to determine their offsets in
+the final compressed output. Finally, during the Compressed Block
+Concatenation stage, the compressed blocks are assembled into a
+single contiguous byte array, producing the final output.
+For each data block, the compression algorithm consists of four
+stages. Integer Quantization (➊): Each floating-point value is inde-
+pendently quantized into an integer based on a user-defined error
+3In GPU programming, a kernel is defined as a function that gets executed on GPU.
+3
+2058
+
+
+--- Page 5 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+Integer 
+Quantization
+Delta 
+Encoding
+Data Blocking
+Fixed-length 
+Encoding
+Outlier 
+Preservation
+Global 
+Preﬁx-sum
+Cmp. Block 
+Concatenation
+Blockwise 
+Compression
+Original 
+Data
+Compressed
+Data
+Original 
+Block
+Compressed
+Block
+1
+2
+3
+4
+Figure 5: Kernel Pipeline of VGC Standard Compression.
+Memory-efficient Compression follows the same algorithms,
+but the pipeline is different (details see Section 2.4).
+bound. This step ensures that VGC provides error-bound lossy
+compression with guaranteed data quality and transforms the data
+into a more compressible form. Delta Encoding (➋): Redundant bit
+patterns are removed by encoding only the differences between
+consecutive integers. VGC introduces a novel Dimension-aware
+Delta Encoding technique that preserves spatial locality in HPC
+data without sacrificing compression throughput. Fixed-length En-
+coding (➌): This stage eliminates unnecessary leading zero bits from
+the delta-encoded integers using a compact fixed-length represen-
+tation. Outlier Preservation (➍): In cases where ➋disrupts global
+smoothness across data block boundaries, VGC can optionally en-
+able this stage to preserve the first value of each block separately,
+further improving compression ratios. Except ➊is a lossy step and
+introduces controllable errors, ➋, ➌, and ➍are all lossless steps.
+To ensure a broader applicability, VGC supports 1D, 2D, and
+3D processing methods, and for each dimensionality, it pro-
+vides three compression algorithms, including No-delta, Delta,
+and Outlier. No-delta applies the pipeline ➊→➌, skipping delta
+operations. This algorithm is well-suited for datasets with high ran-
+domness, such as machine learning weights, where recording delta
+provides limited benefit. Delta follows the pipeline ➊→➋→➌. It is
+designed for sparse HPC data or datasets with limited smoothness,
+where encoded differences help capture local variation. Outlier ex-
+ecutes the full pipeline ➊→➋→➌→➍. This mode is effective for
+highly smooth datasets, where preserving the first value separately
+helps maintain global trends across spatially adjacent data blocks.
+For decompression, VGC first reads the block metadata and per-
+forms a Global Prefix-Sum to compute the offsets of each block in the
+compressed array. Note that this step is different in VGC Selective
+Decompression with an early stop design (details see Section 2.5).
+It then retrieves the compressed blocks and decompresses them in
+parallel, leveraging the GPU’s massive parallelism. The decompres-
+sion algorithm follows the exact reverse order of operations used
+during compression, as shown in Figure 5. For example, in Out-
+lier, decompression applies the stages in the order ➍→➌→➋→➊.
+This reverse execution order is applied consistently across all sup-
+ported data dimensions – 1D, 2D, and 3D. All reconstructed blocks
+are reassembled into the full output dataset, matching the original
+dimensions and maintaining the user-specified error bound.
+2.3
+VGC: Dimension-aware Delta Encoding
+Delta encoding is a widely used technique in data compression
+that improves compressibility by storing differences between con-
+secutive values rather than the original values themselves [39,
+48, 49, 52, 79]. This transformation reduces value ranges, often
+resulting in more zero bits and smaller encoded representations
+without introducing any information loss. For example, given the
+original sequence {10, 20, 30, 40}, delta encoding transforms it into
+{10, 20−10, 30−20, 40−30} = {10, 10, 10, 10}. While the binary rep-
+resentation of 40 is 101000, that of 10 is only 1010, demonstrating
+how delta encoding can lead to more compact representations.
++
+–
+Addition
+Minus
+Predicted
+Data Point
+Required
+Data Points
++
++
+–
+–
++
+–
++
+–
+  Pred[i][j][k]
+= Ori[i][j][k]   - Ori[i][j-1][k]
+- Ori[i-1][j][k] + Ori[i-1][j-1][k] 
+- Ori[i][j][k-1] + Ori[i-1][j][k-1]
++ Ori[i][j-1][k] - Ori[i-1][j-1][k-1]
+Figure 6: The computation for a data point of Lorenzo Pre-
+diction in 3D, whereas 3 data points are needed in 2D.
+To extend delta encoding to high-dimensional HPC datasets, ex-
+isting GPU lossy compressors typically adopt one of two strategies.
+(1) High-dimensional Lorenzo Prediction [48, 49, 55, 81, 94]. As il-
+lustrated in Figure 6, this approach computes differences between
+a target value and its spatially adjacent neighbors. While effec-
+tive at capturing spatial locality, it introduces significant overhead.
+Each data point requires access to multiple neighbors (e.g. 3 in
+2D and 7 in 3D), leading to increased register pressure and ineffi-
+cient memory access. Additionally, multi-dimensional blockwise
+processing often involves frequent if-else checks at block bound-
+aries, which severely degrades GPU throughput due to branch
+divergence and reduced warp efficiency. (2) Flattening to 1D for
+Simplification [26, 39, 41]. Meanwhile, confined by difficulties in
+high-dimensional processing, some compressors ignore dimension-
+ality altogether and treat HPC data as flat 1D arrays to achieve high
+throughput. For example, cuSZp partitions data into 1D blocks of 32
+consecutive elements and processes them independently. Although
+this maintains high throughput, it sacrifices spatial structure, result-
+ing in inefficient random access and reduced compression ratios.
+Delta Encoding
+Region
+8
+12
+10
+9
+18
+16
+15
+10
+11
+10
+9
+12
+13
+14
+14
+13
+8
+12
+10
+9
+18
+16
+15
+10
+11
+10
+9
+12
+13
+14
+14
+13
+8
+4
+-2
+-1
+18
+16
+15
+10
+11
+10
+9
+12
+13
+14
+14
+13
+8
+4
+-2
+-1
+2
+1
+5
+10
+11
+10
+9
+12
+13
+14
+14
+13
+8
+4
+-2
+-1
+2
+1
+5
+10
+11
+-1
+-1
+3
+13
+14
+14
+13
+8
+4
+-2
+-1
+2
+1
+5
+10
+11
+-1
+-1
+3
+-1
+0
+1
+13
+8
+4
+-2
+-1
+2
+1
+5
+2
+1
+-1
+-1
+3
+-1
+0
+1
+2
+Original Block
+Processed Block
+(1) Row-1 Delta
+(2) Row-2 Delta
+(3) Row-3 Delta
+(4) Row-4 Delta
+(5) Column Delta
+Original Data
+Processed Data
+A 2D Data Block
+In our implementation, (5) Column Delta is fused into previous steps, 
+ensuring consistent vectorized and coalescing memory accesses.
+Figure 7: Illustrating our Dimension-aware Delta Encoding
+in VGC compression stage with a 4 × 4 2D data block. For
+delta encoding, if the input of a current region is {𝑎,𝑏,𝑐,𝑑},
+its corresponding output will be {𝑎,𝑏−𝑎,𝑐−𝑏,𝑑−𝑐}.
+In VGC, we propose Dimension-aware Delta Encoding to address
+the above challenges. The key idea is strategically using a single
+spatially adjacent data point in high-dimensional data blocks
+for delta operations, minimizing control-flow divergence and
+enabling highly optimized memory access patterns, thereby
+improving compression ratios without sacrificing throughput.
+4
+2059
+
+
+--- Page 6 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Figure 7 illustrates the algorithm in VGC’s Dimension-aware Delta
+Encoding using a 4 × 4 quantized 2D data block as an example. We
+begin with row-wise delta operations, calculating the difference
+between each element and its immediate left neighbor. For instance,
+the first row {8, 12, 10, 9} becomes {8, 4, −2, −1}. By doing so, in
+every step, VGC accesses only row-adjacent data, ensuring they
+are consecutive in GPU memory. After processing all rows in this
+manner, the first value of each row remains unchanged, as it has no
+preceding neighbor in the same row. We then apply column-wise
+delta encoding on these first values to further reduce redundancy.
+For 3D blocks (Figure 8), we extend the same strategy: each 2D
+slice is processed independently using the 2D approach, followed
+by a depth-wise delta encoding across slices. In highly smooth
+HPC data, the first value of a block can occasionally become an
+outlier since its delta is computed against zero. To address this,
+VGC selectively applies ➍to store the first value separately when
+using more aggressive compression settings. While this approach
+simplifies computation compared to Lorenzo Prediction, making it
+more GPU-friendly, it is still highly effective at capturing spatial
+locality in HPC data. We will show more results in Section 3.
+(1) Slice-1 Delta
+(2) Slice-2 Delta
+(3) Slice-3 Delta
+(4) Slice-4 Delta
+(5) Depth Delta
+Figure 8: Dimension-aware Delta Encoding for a 4 × 4 × 4 3D
+data block, where each slice works the same way as Figure 7.
+Similarly, Depth Delta is fused into previous slices.
+We incorporate two additional optimizations in VGC to sustain
+ultra-fast throughput during high-dimensional operations. From the
+computation perspective, as shown in Figure 9(a), we fuse the column-
+wise delta operation into the row-wise pass, requiring only a single
+register to buffer the previous value. In 3D processing, the depth-
+wise delta operation is similarly fused into the row-wise logic. As a
+result, the entire procedure eliminates the need for shared memory
+and operates only at register levels, preserving high throughput.
+From the memory perspective, as shown in Figure 9(b), the unique use
+of row-wise access ensures that all threads within a warp4 access
+consecutive global memory addresses, maintaining full memory
+coalescing regardless of which row is being processed. This design
+also enables vectorized memory instruction, where each row in a
+3D data block can be read or written using a single LD.E.128 or
+ST.E.128 instruction in GPU assembly (SASS for NVIDIA GPU).
+We use typecast and PTX inline to vectorize memory operations.
+These ensure VGC ’s high-dimensional operations can approach the
+global memory bandwidth limits on modern GPU infrastructures.
+2.4
+VGC: Memory-efficient Compression
+Recall that existing GPU lossy compressors compress data but do
+not reduce GPU memory usage, making them ineffective in sce-
+narios requiring rigid GPU memory footprints. In VGC, we resolve
+this issue by proposing Memory-efficient Compression. Users only
+need to provide a NULL device pointer as the destination for com-
+pressed data. Within this memory-efficient API, VGC calculates
+4A warp is a group of threads that execute instructions in a lockstep fashion.
+(a) Explaining how we fuse Column/Depth 
+Delta into Row/Slice 2 Delta.
+8
+4
+-2
+-1
+18
+16
+15
+10
+11
+10
+9
+12
+13
+14
+14
+13
+A 2D
+Block
+A 3D
+Block
+(b) Memory optimization for VGC 
+Dimension-aware Delta Encoding
+A Thread
+in Warp1
+A Thread
+in Warp2
+A Uniﬁed Memory Transaction for A Warp
+Delta Region
+A Delta Operation
+Figure 9: Optimizations in Dimension-aware Delta Encoding.
+the actual compressed size, dynamically allocates memory, and
+performs compression without wasting GPU memory, thereby re-
+ducing the real-time memory footprint. The process runs entirely
+on the GPU without CPU involvement, ensuring high through-
+put. The key design is to divide the compression pipeline into
+two GPU kernels: the first kernel calculates the actual com-
+pressed size; the second kernel reuses the synchronized offsets
+to perform compression and concatenation in an ultra-fast,
+memory-efficient manner. Figure 10 explains this kernel fission
+design in detail. In the first kernel, VGC takes the original data
+as input and reads it from global memory, forming multiple data
+blocks. Then it performs blockwise ratio profiling, generating the
+compressed size of each block with a single pass over the data. Us-
+ing these per-block size lengths, VGC performs a parallel reduction
+within each thread block, followed by a global scan (prefix-sum)
+across thread blocks to compute the starting offsets. The final ele-
+ment of the global scan array gives the total size of all compressed
+blocks. This is also the compressed size of the entire dataset. With
+this size, VGC allocates the exact amount of GPU memory required.
+The second kernel begins by re-reading and blocking the data from
+global memory. After completing blockwise compression, it reuses
+the synchronized offsets from the first kernel to write the com-
+pressed blocks directly to global memory, reducing GPU memory
+footprint. Note that this design is fully compatible with 1D, 2D, and
+3D data, and supports all three compression algorithms.
+Data Blocking
+Local Reduce
+Blockwise 
+Ratio Proﬁling
+Original 
+Data
+Global Scan
+Data Blocking
+Blockwise 
+Compression
+Local Scan
+Cmp. Block 
+Concatenation
+Compressed
+Data
+Original 
+Data
+Register Operations
+Fission Steps for
+Global Preﬁx-sum
+REG
+G.R.
+G.R.
+REG
+REG
+REG
+G.W.
+REG
+A GPU
+Kernel
+Global Variable
+Read and Write
+G.R.
+Global Variable Read
+G.W.
+Global Variable Write
+Compressed
+Size (for 
+allocation)
+G.R.W.
+G.R.W.
+Figure 10: Pipeline of Memory-efficient Compression.
+Ratio profiling for each data block is lightweight and can be done
+in a single pass. This is doable because all three algorithms rely
+on fixed-length encoding, which ensures balanced bit usage across
+data points [25]. For example, in No-delta, a single pass over a block
+with 𝐿elements is sufficient to locate the maximum quantized value
+and determine the number of effective bits 𝑁. The compressed size
+(in bytes) can be calculated by 𝑁× 𝐿/8. Delta and Outlier follow
+the same principle, and we omit details for brevity.
+Compared to Standard Compression, Memory-efficient Com-
+pression in VGC introduces additional overhead. However, this
+overhead is well controlled. Figure 10 details the workload of all
+stages. Global Scan, which involves frequent accesses to global
+memory, is reused between kernels. Most redundant computations
+5
+2060
+
+
+--- Page 7 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+utilize only registers and hence incur negligible overhead. The two
+primary sources of overhead are: (1) the internal cudaMalloc()
+used to allocate the exact compressed size, and (2) re-reading the
+original data from global memory (Data Blocking step in the sec-
+ond kernel). The internal memory allocation does not affect HPC
+end-to-end performance, as dynamic memory allocation is nec-
+essary regardless [44, 63, 92]: we simply relocate it to a different
+place. Moreover, benefiting from the efficient memory accesses
+in dimension-aware operations, global memory read during Data
+Blocking achieves 80% of theoretical bandwidth on NVIDIA A100
+GPUs (∼1200 of 1555 GB/s [2]), further mitigating the overhead. For
+example, compressing a 3D 1.4 GB seismic imaging field [13] using
+VGC’s standard mode achieves a throughput of approximately 350
+GB/s. With memory-efficient compression (including the cost of
+cudaMalloc() for compressed array), the throughput remains high
+at around 250 GB/s. We will show more results in Section 3.
+2.5
+VGC: Selective Decompression
+Selectively 
+Decompress ROI
+Original Data
+To locate ROI in compressed data, 
+we only need to know the 
+compressed size of                area
+Region of 
+Interest (ROI)
+Compressed Data 
+(with ROI highlighted)
+compression
+Early Stopping
+Global Preﬁx-sum
+Block Metadata (part of Compressed Data)
+Reconstructed ROI
+Step1: After knowing 
+the compressed size for
+              area, stop early.
+Step2: Locate and only 
+decompress ROI area in 
+compressed data, obtain 
+reconstructed ROI (can be 
+written back if needed).
+Figure 11: The key insight (left) and workflow (right) of Se-
+lective Decompression in VGC compression framework.
+VGC supports dimension-aware and efficient random accesses.
+Given a compressed array, the user only needs to specify the tar-
+get region of interest (ROI), and VGC’s Selective Decompression
+can efficiently locate and operate on the specified region without
+decompressing the entire dataset. The key insight and workflow
+behind this are illustrated in Figure 11. Specifically, by reading
+block metadata in compressed array, VGC enables an early
+stopping mechanism during Global Prefix-sum, allowing it to
+calculate only the total compressed size preceding the target
+ROI, thereby locating and operating on it directly. In the case
+of multiple discrete ROIs, VGC calculates the total compressed size
+up to the last target ROI and enables access to all specified regions.
+Selective Decompression is compatible with all compression algo-
+rithms and data dimensionalities (1D, 2D, and 3D), and also supports
+writing data back into the compressed array, enabling efficient and
+versatile random access across diverse HPC scenarios [6, 17, 38, 78].
+The overhead of selectively decompressing an ROI in VGC is
+negligible, as only a few threads are activated to access global mem-
+ory while all others remain inactive. The main source of overhead
+comes from the Global Prefix-sum, which requires synchroniza-
+tion across thread blocks and can be expensive [41, 62, 64, 89]. To
+mitigate this, VGC introduces early stopping, computing only the
+prefix sum necessary to reach the ROI. Following state-of-the-art
+practices [26, 39, 64], VGC adopts a reduce-then-scan strategy (also
+see Figure 10). It begins by reading block metadata, stored at the
+beginning of the compressed array with one byte per block, and
+performing a Local Reduce to compute total lengths within each
+thread block. During the Global Scan, synchronization stops as soon
+as the thread block immediately preceding the ROI completes its
+computation. At that point, VGC aggregates the prefix sum locally
+and directly proceeds to decompress the ROI using a Local Scan.
+2.6
+VGC: Implementations
+VGC is implemented in around 15,000 lines of CUDA code, sup-
+porting both single-precision and double-precision floating-point
+datasets, with each compression algorithm and dimensionality (ex-
+cluding memory-efficient mode, which is split into two kernels)
+highly optimized into a single fused GPU kernel, enabling extremely
+fast execution. In VGC, we set the data block size to 32 for 1D, 8×8
+for 2D, and 4×4×4 for 3D processing. These configurations balance
+achieving high compression ratios and maintaining efficient mem-
+ory access patterns. Note that the 2D and 3D block sizes (64) are
+larger than the 1D block size (32) since incorporating dimensional
+information allows the compressor to better capture smoothness
+over a broader spatial region. For 1D processing, VGC treats all data
+as a flat array, making it compatible with all HPC datasets. For 2D
+processing, VGC supports both native 2D data and 3D datasets by
+treating each depth slice as a separate 2D panel, a pattern common
+in time-series simulations and experiments [20, 45]. All VGC com-
+pression modes are designed with HPC users in mind and follow a
+strict end-to-end API design. The interface wraps all computations,
+including CUDA intrinsic operations such as cudaMalloc() and
+cudaFree() for managing intermediate buffers. Users only need
+to provide data residing in GPU memory, and the VGC API returns
+compressed or decompressed results based on the selected configu-
+ration. Additionally, VGC adopts various intra-kernel optimizations,
+aligning with prior state-of-the-art techniques in integer quantiza-
+tion [26, 41, 81, 91, 94], fixed-length encoding [39], and device-wide
+scan using decoupled lookback [11, 26, 39, 64]. These optimizations
+are not the focus of this work, so we omit further detail.
+3
+Evaluation of VGC
+In this section, we first introduce our evaluation methodology and
+then evaluate VGC from the perspectives of throughput, compres-
+sion ratio, and reconstructed data quality.
+3.1
+Evaluation Methodology
+3.1.1
+System Configuration. We evaluate VGC and other baseline
+compressors on one NVIDIA A100 GPU (40 GB) hosted on a com-
+pute node from Swing Cluster at Argonne National Laboratory.
+Each node on Argonne Swing is equipped with two high-end AMD
+EPYC CPUs and 1 TB of system memory. The software environment
+includes Ubuntu 22.04 and CUDA Toolkit version 11.8. Evaluation
+results are also verified on Polaris Cluster at Argonne.
+3.1.2
+HPC Datasets. We evaluate VGC and baseline compressors
+on 13 real-world HPC datasets from diverse domains, including
+climate simulation (CESM-ATM [45] and SCALE [53]), turbulence
+simulation (Miranda [23] and JetIn [33]), computer-aided design
+(SynTruss [47]), combustion simulation (HCCI [12] and S3D [19]),
+seismic imaging (RTM [13]), magnetic simulation (MagRec [34]),
+cosmology simulation (HACC [35] and NYX [8]), and molecular
+6
+2061
+
+
+--- Page 8 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+0
+100
+200
+300
+400
+Throughput (GB/s)
+117.6
+140.4
+114.0
+332.8
+319.4
+166.6
+324.8
+320.6
+QMCPack
+CESM-ATM
+Miranda
+SynTruss
+HCCI
+RTM
+MagRec
+HACC
+SCALE
+NYX
+JetIn
+Avg
+FZ-GPU
+cuSZp1
+cuZFP
+cuSZp2-P
+cuSZp2-O
+PFPL
+VGC-D
+VGC-O
+JetIn Throughput
+cuSZp2-P: 536.93    VGC-D: 469.14
+cuSZp2-O: 515.14    VGC-O: 526.87
+Figure 12: Compression throughput (average across REL 1E-2, 1E-3, 1E-4) for single-precision floating-point HPC datasets.
+0
+100
+200
+300
+400
+500
+Throughput (GB/s)
+133.1
+166.4
+164.1
+439.3
+410.4
+142.8
+479.9
+455.7
+QMCPack
+CESM-ATM
+Miranda
+SynTruss
+HCCI
+RTM
+MagRec
+HACC
+SCALE
+NYX
+JetIn
+Avg
+FZ-GPU
+cuSZp1
+cuZFP
+cuSZp2-P
+cuSZp2-O
+PFPL
+VGC-D
+VGC-O
+RTM Throughput
+cuSZp2-P: 681.44    VGC-D: 727.37
+cuSZp2-O: 600.05   VGC-O: 703.40
+JetIn Throughput
+cuSZp2-P: 880.79
+cuSZp2-O: 805.34
+VGC-D: 948.07
+VGC-O: 853.63
+Figure 13: Decompression throughput (average across REL 1E-2, 1E-3, 1E-4) for single-precision floating-point HPC datasets.
+simulation (QMCPack [46] and NWChem [82]). Details are shown
+in Table 1. These datasets are from two suites [1, 95] and have been
+widely adopted in recent HPC data reduction studies [24, 26, 26, 39,
+50, 52]. For S3D [19], the original dataset [95] combines 11 fields
+into one based on precision coherence. To preserve this, we treat
+the combined data as a single field with dimensions 5500×500×500.
+Table 1: Real-world HPC datasets (13 in total) for evaluating
+VGC. In Z×Y×X, X is the fastest-changing dimension.
+Datasets
+# Fields
+Dims per field
+Format
+Total Size
+QMCPack [46]
+1
+(115×69)×69×288
+Single
+0.58 GB
+CESM-ATM [45]
+33
+26×1800×3600
+Single
+20.71 GB
+Miranda [23]
+1
+1024×1024×1024
+Single
+4.00 GB
+SynTruss [47]
+1
+1200×1200×1200
+Single
+6.42 GB
+HCCI [12]
+1
+560×560×560
+Single
+0.65 GB
+RTM [13]
+3
+1008×1008×352
+Single
+3.99 GB
+MagRec [34]
+1
+512×512×512
+Single
+0.50 GB
+HACC [35]
+6
+1,073,726,487
+Single
+23.99 GB
+SCALE [53]
+12
+98×1200×1200
+Single
+6.31 GB
+NYX [8]
+6
+512×512×512
+Single
+3.00 GB
+JetIn [33]
+1
+1100×1080×1408
+Single
+6.23 GB
+S3D [19]
+55
+500×500×500
+Double
+51.22 GB
+NWChem [82]
+3
+102,953,248-801,098,891
+Double
+12.04 GB
+3.1.3
+VGC Settings and Baselines. VGC compresses datasets ac-
+cording to their dimensional structure. For example, RTM is a 3D
+dataset and is compressed using the 3D method of VGC. Some
+datasets, such as CESM-ATM and SCALE, are technically 3D but
+composed of time-series 2D slices; therefore, VGC applies the 2D
+compression method in these cases. We mainly evaluate the Delta
+and Outlier compression modes, denoted as VGC-D and VGC-O,
+respectively. The No-delta mode (VGC-N), which is better suited
+for floating-point datasets with higher randomness (e.g. machine
+learning weights), is evaluated separately in Section 4.1.
+We compare VGC with five state-of-the-art GPU lossy com-
+pressors: cuZFP [54], FZ-GPU [94], cuSZp1 [41], cuSZp2 [39], and
+PFPL [26]. Among them, cuZFP [54] is a fixed-ratio compressor
+based on orthogonal transforms, while the others are error-bounded
+compressors. For cuSZp2 [39], following its original work, we
+evaluate two encoding modes: cuSZp2-P and cuSZp2-O. All error-
+bounded compressors are tested using the value-range-based rel-
+ative error mode (REL) to ensure compatibility with various HPC
+datasets, Specifically, REL 𝜆ensures that the reconstruction error
+for every data point stays within 𝜆×|MAX−MIN|, where MAX and
+MIN are the maximum and minimum values of the input dataset.
+3.2
+Throughput
+In this section, we evaluate throughput of VGC and baseline GPU
+lossy compressors. For datasets with multiple fields, we report the
+average throughput across all fields. For error-bounded compres-
+sors, we evaluate three error bounds (REL 1E-2, REL 1E-3, and
+REL 1E-4) and report the average result. In PFPL, REL error mode
+corresponds to NOA [26]. While the value range in PFPL is calcu-
+lated using NVIDIA Thrust library, we exclude this computation
+in our throughput measurements for a fair comparison. cuZFP is
+a fixed-ratio compressor evaluated at compression rates of 4, 8,
+and 16 bits per value; we report the average throughput across
+these rates. Among VGC algorithms, VGC-N achieves the highest
+compression throughput due to its simplified algorithm, though
+it is not designed for typical HPC datasets and is therefore not
+evaluated in this section. In practice, VGC-N delivers marginally
+higher throughput than VGC-D. It is worth emphasizing that all
+throughput measurements in this section were conducted on a sin-
+gle NVIDIA A100 GPU. In typical HPC scenarios where hundreds
+or thousands of GPUs are used in parallel, the common practice is
+to split and distribute the data across devices. Therefore, as long as
+the per-GPU throughput is sustained, the overall performance is
+expected to scale accordingly in large-scale deployments.
+Overall Throughput. Figure 12 and 13 show compression and
+decompression throughput for single-precision datasets. FZ-GPU
+and PFPL do not support inputs over 2 GB, so we exclude those
+cases when reporting averages. On average, VGC-D and VGC-O
+achieve 324.76 / 320.56 GB/s (compression) and 479.94 / 455.65 GB/s
+(decompression). Taking REL 1E-3 as an example, VGC-D achieves
+compression throughput ranging from 244.91 GB/s (NYX) to 471.01
+GB/s (JetIn), and decompression throughput ranging from 307.75
+GB/s (NYX) to 894.78 GB/s (JetIn). Compared to VGC-D, VGC-O
+achieves comparable throughput. Although it employs a more com-
+plex algorithm (i.e., one more Outlier Preservation step), the reduced
+memory burden, resulting from its higher compression ratio, ef-
+fectively compensates for the additional computational cost. VGC
+7
+2062
+
+
+--- Page 9 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+throughput is comparable to cuSZp2 in compression and higher
+in decompression. Note that cuSZp2 prefers throughput without
+further optimizing compression ratios, and we will show more re-
+sults in Section 3.3. Other baselines, including FZ-GPU, cuSZp1,
+cuZFP, and PFPL, reach only 117.62, 140.38, 113.98, and 166.61 GB/s
+in compression, around 50% of VGC’s performance. Decompres-
+sion shows similar trends. For double-precision datasets, results are
+reported in Figure 14. As seen, VGC consistently outperforms all
+baselines. In particular, VGC-O achieves 618.22 GB/s (compression)
+and 1059.31 GB/s (decompression), benefiting from its highly opti-
+mized memory access and improved compression ratio that reduces
+write overhead. Additionally, in VGC, larger error bounds yield
+higher throughput, especially during decompression. For example,
+in RTM, VGC-O achieves 906.35 GB/s at REL-1E-2 and 591.28 GB/s
+at REL-1E-4. This is because looser error bounds cause more values
+to be quantized to zero, reducing computation in later stages.
+S3D
+NWChem
+Avg
+0
+150
+300
+450
+600
+750
+Throughput (GB/s)
+Compression
+571.8
+618.2
+S3D
+NWChem
+Avg
+0
+250
+500
+750
+1000
+1250
+Decompression
+931.2
+1059.3
+FZ-GPU
+cuSZp1
+cuZFP
+cuSZp2-P
+cuSZp2-O
+PFPL
+VGC-D
+VGC-O
+Figure 14: Throughput evaluation (average across REL 1E-2,
+1E-3, 1E-4) for double-precision floating-point HPC datasets.
+Memory-efficient Compression. Figure 15 shows the through-
+put of VGC ’s Memory-efficient Compression. This mode passes a
+NULL device pointer, computes compression ratios in the first kernel,
+allocates memory via cudaMalloc(), and performs compression in
+the second kernel. We measure the strict end-to-end time, averaged
+across REL-1E-2, 1E-3, and 1E-4. On average, this mode achieves
+242.80 / 244.15 GB/s for VGC-D / VGC-O (single-precision) and
+407.81 / 468.87 GB/s for VGC-D / VGC-O (double-precision). De-
+spite additional computation, it outperforms most baselines, rang-
+ing from 45.73% higher than PFPL to 113.01% higher than cuZFP,
+due to optimized memory access in dimension-aware blocking and
+delta encoding. Throughput reaches ∼70% of VGC ’s standard mode,
+while offering substantial memory savings, making it well-suited
+for memory-constrained HPC workloads [63, 66, 92].
+0
+100
+200
+300
+400
+500
+Throughput (GB/s)    
+QMCPack
+CESM-ATM
+Miranda
+SynTrussHCCI
+RTM
+MagRecHACC
+SCALE NYX
+JetIn
+S3D
+NWChem
+VGC-D
+VGC-D-ME
+VGC-O
+VGC-O-ME
+S3D Throughput
+VGC-D: 634.67
+VGC-O: 692.41
+Figure 15: Throughput between Standard Compression and
+Memory-efficient Compression in VGC. VGC-D-ME indicates
+memory efficient mode with Delta algorithm.
+Selective Decompression. Figure 16 shows the throughput of
+VGC’s Selective Decompression. We randomly select a dimension-
+aware data block (8×8 for 2D and 4×4×4 for 3D) as ROI, decompress
+it, and measure throughput. We repeat this process multiple times
+and report the average. On average, VGC reaches 1.11 TB/s for
+single-precision and 2.08 TB/s for double-precision datasets. This
+operation can be easily extended with holomorphic processing [6],
+where ROI decompression, computation (e.g. addition), and recom-
+pression are fused. Since these operate on only a few threads, the
+additional overhead is negligible, and throughput remains consis-
+tent with what we report in Figure 16. We also conduct a stress test
+by selectively decompressing 512 consecutive 3D blocks as a larger
+ROI. Even in this case, VGC maintains high performance, achiev-
+ing 1.33 TB/s on the Pressure3000 field in RTM (REL-1E-3). This
+demonstrates VGC’s ultra-fast performance in directly accessing
+compressed data without fully decompressing it.
+0
+400
+800
+1200
+1600
+2000
+Throughput (GB/s)
+QMCPack
+CESM-ATM
+Miranda
+SynTrussHCCI
+RTM
+MagRecHACC
+SCALE NYX
+JetIn
+S3D
+NWChem
+VGC-D
+VGC-O
+S3D Throughput
+VGC-D: 2357.13
+VGC-O: 2417.96
+Figure 16: Throughput of Selective Decompression in VGC.
+Summary for VGC Throughput: On average, VGC shows
+322.66 and 467.80 GB/s throughput in compression and
+decompression for single-precision datasets. These num-
+bers are 595.05 and 995.25 GB/s for double-precision
+datasets. Memory-efficient Compression in VGC delivers
+∼70% throughput of Standard Compression modes. Selec-
+tive Decompression in VGC can reach 1.11 and 2.08 TB/s for
+single- and double-precision datasets, respectively.
+3.3
+Compression Ratio and Data Quality
+We report compression ratios and data quality for error-bounded
+compressors in this section. For datasets with multiple fields, we
+calculate the overall ratio as total original size divided by total com-
+pressed size, which better reflects a compressor’s compressibility on
+an HPC domain. Unlike throughput, averaging compression ratios
+over multiple error bounds can be misleading, as stricter bounds
+dominate the average. Therefore, we report results at REL 1E-4,
+while noting that other bounds follow similar trends. For cuSZp2,
+we evaluate only its -O mode, as the -P mode yields compression
+ratios nearly identical to cuSZp1 [39]. We do not evaluate ratios for
+cuZFP here, as it is a fixed-ratio lossy compressor.
+Overall Compression Ratio. Table 2 reports compression ratios
+for all error-bounded compressors under REL-1E-4. Note that PFPL
+and FZ-GPU do not support fields larger than 2 GB due to algorith-
+mic or implementation constraints, and we mark these cases as N/A
+(not applicable). Overall, VGC-O achieves the highest compression
+ratio on 7 out of 13 datasets and ranks second on 5 others. Compared
+to cuSZp2, which has ultra-fast throughput, VGC-O delivers consis-
+tently better ratios, up to 86.34% higher on JetIn dataset and higher
+on 12 out of 13 datasets, due to the design in dimension-aware data
+blocking and delta encoding. PFPL also shows strong compressibil-
+ity through efficient shuffle-based zero elimination [26], achieving
+the highest ratio on 5 datasets. However, its advantage over VGC-O
+is sometimes marginal (e.g. 6.83 vs 6.55 on MagRec and 11.19 vs
+8
+2063
+
+
+--- Page 10 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+REL 1E-4
+FZ-GPU
+cuSZp1
+cuSZp2
+PFPL
+VGC-D
+VGC-O
+QMCPack
+6.78
+3.78
+3.79
+3.64
+4.39
+4.41
+CESM-ATM
+11.56
+5.71
+13.24
+18.60
+5.85
+13.07
+Miranda
+N/A
+2.32
+3.80
+N/A
+2.35
+4.24
+SynTruss
+N/A
+4.21
+4.24
+N/A
+4.43
+4.51
+HCCI
+10.86
+9.72
+12.73
+21.89
+10.87
+16.63
+RTM
+13.42
+11.67
+12.45
+12.21
+13.42
+14.36
+MagRec
+5.02
+5.29
+6.26
+6.83
+5.51
+6.55
+HACC
+N/A
+2.92
+4.55
+N/A
+2.93
+4.56
+SCALE
+11.97
+4.88
+10.78
+13.21
+5.00
+11.98
+NYX
+8.39
+5.69
+9.17
+11.19
+5.93
+10.34
+JetIn
+N/A
+105.58
+106.49
+N/A
+194.66
+198.43
+S3D
+N/A
+12.64
+37.48
+N/A
+13.24
+55.75
+NWChem
+N/A
+21.29
+21.30
+N/A
+21.30
+21.31
+Table 2: Compression ratio for error-bounded GPU lossy com-
+pressors under error bound REL 1E-4, where N/A indicates
+"Not Applicable". For each dataset, we highlight the highest
+and the second-highest compression ratios.
+10.34 on SCALE), while offering only about half the throughput
+and lacking support for memory-efficient compression.
+Memory Footprint Reduction. In Figure 17, we use the SCALE
+dataset to evaluate GPU memory footprint between PFPL and VGC
+’s Memory-efficient Compression. Results on other datasets show
+consistent observations. Although PFPL achieves slightly higher
+compression ratios, it does not reduce GPU memory footprint, as it
+pre-allocates the maximum possible compressed size, a limitation
+shared by all other GPU error-bounded compressors. In contrast,
+VGC allocates only the actual compressed size, enabling efficient
+memory usage (e.g. reduced from 539 MB to just 7.8–9.9 MB on the
+QG field). To our knowledge, VGC’s Memory-efficient Compression
+is the only existing method that reduces GPU memory footprint in
+real-time while maintaining ultra-fast throughput and error control.
+0
+80
+160
+240
+320
+400
+480
+560
+GPU Memory
+Footprint (MB)
+202.3
+18.6
+9.9
+22.4
+19.1
+37.8
+136.5
+178.8
+248.9
+163.7
+143.3
+110.1
+50.5
+15.4
+7.8
+13.6
+14.1
+21.2
+59.7
+78.8
+62.9
+69.2
+71.5
+74.6
+PRES
+QC
+QG
+QI
+QR
+QS
+QV
+RH
+T
+U
+V
+W
+PFPL
+VGC-D
+VGC-O
+Figure 17: GPU memory footprint in 12 SCALE fields com-
+pressed by PFPL, VGC-D, and VGC-O under REL 1E-4.
+Impact of Dimension-aware Operations. As shown in Table 3,
+we evaluate three RTM fields to show the impact of dimensional
+information. 1D ignores spatial structure, 2D processes data slice-
+wise, and 3D fully captures spatial locality in all three dimensions.
+Compression ratios consistently improve as more dimensional con-
+text is incorporated. For example, in Pressure1000, VGC-O in 3D
+achieves a 50.95% higher compression ratio than in 1D, highlighting
+the importance of leveraging dimensional structure in HPC data.
+REL 1E-4
+VGC-D
+VGC-O
+1D
+2D
+3D
+1D
+2D
+3D
+Pressure1000
+65.04
+94.52
+96.81
+67.81
+99.99
+102.36
+Pressure2000
+13.00
+15.03
+15.45
+13.76
+16.07
+16.54
+Pressure3000
+6.07
+6.61
+6.73
+6.51
+7.09
+7.21
+Table 3: Dimension impacts on compression ratios in RTM.
+Data Quality. Figure 18 evaluates data quality using the W field
+from the SCALE dataset, though the conclusions generalize to other
+fields and datasets. Existing parallel error-bounded compressors [26,
+39, 41, 81, 94] adopt similar quantization schemes, producing nearly
+identical reconstructed values under the same error bound (e.g.
+PSNR 84.778095 in PFPL vs 84.778036 in VGC). This implies that
+data quality is largely determined by quantization, and the main
+differentiator among compressors is compression ratio. Therefore,
+compressors with higher ratios yield better preservation of the
+original data per bit. As a result, both VGC and PFPL achieve top-tier
+data quality among existing GPU error-bounded lossy compressors.
+Visualization of 
+Original Data
+(Field W from 
+SCALE Dataset)
+VGC (REL 1E-4)
+PFPL (REL 1E-4)
+cuSZp2 (REL 1E-4)
+CR: 7.22
+PSNR: 84.7780 
+SSIM: 0.9983
+CR: 7.36
+PSNR: 84.7780 
+SSIM: 0.9983
+CR: 6.75
+PSNR: 84.7780 
+SSIM: 0.9983
+Figure 18: Visualization of data quality between original data
+and reconstructed data by VGC, PFPL, and cuSZp2. W field
+from SCALE is visualized with 70th 1200×1200 slice.
+Summary for VGC Compression Ratio and Data Qual-
+ity: With similar or higher throughput, VGC consistently
+achieves better compression ratios and data quality than
+cuSZp2, due to its ability to capture dimensional information
+in HPC datasets. Compared to PFPL, VGC provides compa-
+rable compression ratios and data quality while delivering
+approximately 2× throughput.
+4
+Use Cases: Adopting VGC in HPC
+To demonstrate the versatility of VGC, we present two real-world
+HPC use cases that reflect the two patterns identified in Section 1.
+The first use case targets Pattern-1: Reducing Real-Time Memory
+Footprint, using LLM inference as an example. The second focuses
+on Pattern-2: Reducing Data Movement Overhead, simulating inter-
+facility data transfers using memory-to-memory operations.
+4.1
+Case 1: Reducing Memory Footprint in LLM
+Inference by KV Cache Compression
+Large Language Models (LLMs), such as OpenAI’s GPT-4 [5], have
+transformed the way users interact with computers by enabling
+more natural, context-aware language understanding and genera-
+tion. While LLM training requires massive computational resources
+over extended periods [3], inference is comparatively lightweight
+and can often be deployed on user-side or edge environments [7, 70].
+However, LLM inference is highly memory-bound [58, 59]. As a
+conversation progresses, the context window grows, and models
+must store intermediate representations known as key-value (KV)
+caches [83]. These caches enable efficient autoregressive decoding
+by avoiding redundant computation, but they consume substantial
+GPU memory, especially when serving long prompts or maintaining
+extended dialogue histories. In addition, model weights themselves
+already occupy a large portion of the GPU memory [4, 9, 14, 32],
+9
+2064
+
+
+--- Page 11 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+Context
+Prompt1: What is 
+compression?
+Prompt2: How to 
+use compression?
+Context
+reuse context
+Context
+Prompt1: What is 
+compression?
+Prompt2: How to 
+use compression?
+Context
+VGC Compressed 
+KV cache
+compress
+decompress
+When the required context is long, 
+KV Cache can be GPU memory bottleneck.
+Compress KV Cache by VGC to reduce GPU 
+memory footprint in real-time.
+Original KV cache
+Figure 19: Illustrating how to use VGC to reduce memory
+footprint caused by KV cache in LLM inference.
+exacerbating the constraint. In this context, VGC offers an effective
+solution by compressing KV caches at high speed, significantly re-
+ducing memory footprint without compromising inference latency
+– an essential metric for real-time deployment. We illustrate how
+VGC reduce memory footprint in LLM inference in Figure 19. As
+seen, instead of preserving the original KV cache, VGC compresses
+the KV cache after Prompt1 and decompresses it before Prompt2,
+reducing memory footprint without disrupting inference flow.
+Model Name
+Publisher
+# Parameters
+Release Date
+gpt-neo-1.3B [32]
+EleutherAI
+1.37 B
+Mar. 2021
+stablelm-base-alpha-3b [9]
+Stability AI
+3.63 B
+Apr. 2023
+deepseek-llm-7b-chat [14]
+Deepseek AI
+6.91 B
+Nov. 2023
+Phi-3-mini-4k-instruct [4]
+Microsoft
+3.80 B
+Jun. 2024
+Table 4: Information for evaluated LLMs (float16 tensor).
+To evaluate VGC, we use four publicly available open-source
+LLMs from HuggingFace [87] and run inference for a 1300-token-
+long prompt locally on an NVIDIA A100 GPU. Details of the selected
+models are listed in Table 4. Since KV cache is more random and
+lacks spatial locality, we apply VGC with the No-delta algorithm
+(VGC-N) and 1D processing. We also use VGC’s Memory-efficient
+Compression to reduce memory footprint. For simplicity, we refer
+to this configuration as VGC in this section. Note that we implement
+a Python API for VGC to compress KV caches, which are stored as
+torch.Tensor objects. We measure end-to-end throughput using a
+strict Python timer (time.time()) placed immediately before and
+after the VGC API call. This ensures that all overhead is included
+and reflects VGC’s suitability for real-time LLM inference.
+0
+70
+140
+210
+280
+350
+Throughput (GB/s)
+Phi-3
+gpt-neo
+stablelm
+deepseek
+Throughput
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Normalized
+Mem. Footprint
+Phi-3
+gpt-neo
+stablelm
+deepseek
+Memory Footprint
+0.5360
+0.4879
+0.6011
+0.5341
+Compression
+Decompression
+Original KV Cache
+VGC Compressed KV Cache
+Figure 20: Evaluation of VGC throughput and memory re-
+duction efficiency for LLM KV cache compression.
+Figure 20 shows the results of applying VGC to compress KV
+caches. We use an absolute error bound of 0.01 and evaluate through-
+put and memory footprint reduction. The raw sizes of KV caches
+range from 243.75 MB (gpt-neo) to 609.84 MB (deepseek), and are
+normalized to 1 for simplicity. VGC achieves 211.34 GB/s compres-
+sion and 295.82 GB/s decompression throughput on average. While
+Python-based invocation incurs slight overhead due to dynamic
+library loading, throughput remains ultra-fast and negligible com-
+pared to overall LLM inference time. On average, VGC reduces KV
+cache memory usage by 46.03%, effectively alleviating the memory
+bottleneck in LLM inference. As a lossy method, VGC may intro-
+duce minor numerical differences, so we evaluate output fidelity
+using BLEU score [68]. Across all models, BLEU remains ∼90 (e.g.
+90.31 for Phi-3), with human evaluation confirming no change in
+response semantics. This demonstrates VGC’s ability to address
+memory-bound challenges in a real-world HPC use case.
+4.2
+Case 2: Reducing Data Transfer Overhead in
+an HPC Facility by In-situ Compression
+Modern HPC simulations often run on GPU clusters, where fre-
+quent inter-node communication is required [28, 37, 92]. This data
+exchange, especially across different nodes, can introduce signif-
+icant runtime overhead, becoming a bottleneck that slows down
+overall performance and hinders scientific productivity. To mitigate
+this, we adopt VGC to perform in-situ GPU compression, trans-
+mitting only compressed data to reduce communication cost. As
+illustrated in Figure 21, after the application generates data on the
+GPU, VGC compresses it directly before transmission. We model
+a point-to-point memory-to-memory transfer using GPUDirect
+RDMA, a widely adopted technique for efficient GPU-to-GPU com-
+munication across nodes [31, 69, 86]. Once received, the destination
+GPU uses VGC to decompress the data for subsequent computation.
+HPC Application
+VGC CMP
+VGC DEC
+HPC Application
+Transferring compressed 
+data via GPUDirect RDMA
+GPU in Node 1
+GPU in Node 2
+Figure 21: Illustrating how to reduce data transfer overhead
+in a GPU cluster using VGC, where "CMP" and "DEC" stand
+for compression and decompression, respectively.
+chunk1
+chunk2
+chunk3
+compress
+transfer
+decompress
+time
+Figure 22: Pipeline data transfer by 2 GB chunks.
+To evaluate VGC compression in reducing data movement over-
+head, we use the Forced Isotropic Turbulence dataset [90], a 256 GB
+real-world HPC dataset with dimensions 40963. We partition this
+huge field into 128 chunks of 2 GB each (shape: 32×4096×4096), en-
+abling pipeline-based transmission. As illustrated in Figure 22, com-
+pression, transmission, and decompression are overlapped across
+chunks to reduce latency. While the first chunk is being transferred,
+the second is compressed in parallel; a similar overlap applies for
+decompression. Compression is performed via an NVIDIA A100
+GPU. We use VGC with the Outlier algorithm and 3D processing,
+which delivers the highest compression ratio and fast throughput
+for this field. For simplicity, we refer to this configuration as VGC.
+Transmission bandwidth for GPUDirect RDMA is evaluated across
+10-25 GB/s, based on current hardware capabilities [22].
+Figure 23 presents the results using a fixed REL 1E-3 error bound
+for all compressors. On average, VGC reduces data transfer time
+10
+2065
+
+
+--- Page 12 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+0
+20
+40
+60
+80
+100
+120
+Chunk Index
+11
+12
+13
+14
+Compression Ratio
+Compression Ratio per Chunk
+VGC
+cuSZp2
+10
+15
+20
+25
+Bandwidth (GB/s)
+0
+10
+20
+Time (s)
+1.88
+1.25
+0.94
+0.79
+Total Transfer Time
+No CMP
+VGC CMP
+Figure 23: Compression ratio (left) and total transfer time
+(right) when using VGC to reduce data movement overhead.
+by 12.50× compared to uncompressed transmission, requiring only
+1.21 seconds to transfer the entire dataset, down to 0.79 seconds
+at 25 GB/s RDMA bandwidth. VGC achieves 327.77 GB/s compres-
+sion and 404.67 GB/s decompression throughput. We also evaluate
+Selective Decompression for randomly accessing a single 4×4×4
+3D data block from compressed data. VGC achieves 1.20–1.30 TB/s
+throughput in this setting. Compared to cuSZp2, another ultra-fast
+compressor, VGC consistently delivers higher compression ratios
+across all 128 chunks (shown in Figure 23 left). Other GPU compres-
+sors like PFPL and FZ-GPU exhibit limited throughput (roughly half
+of VGC), creating bottlenecks in the pipeline and leading to ∼2×
+end-to-end transfer times. As RDMA bandwidth continues to im-
+prove in the future, compression throughput becomes increasingly
+critical, further highlighting the value of high-speed compressors
+like VGC. Overall, these results highlight VGC’s strong capability
+in reducing data movement overhead in real HPC settings.
+5
+Related Works
+5.1
+Lossy Compression and HPC
+Lossy compression is a widely used approximation computing strat-
+egy in HPC to benefit big data issues for various scientific do-
+mains [24, 30, 40, 43, 50–52, 54, 79, 92]. Compared with lossless
+compression, it offers much higher compression ratios while intro-
+ducing user-controllable errors [17, 25]. Luo et al. [61] introduced
+zMesh, a compression-based method that leverages application
+characteristics to improve lossy compression ratios for adaptive
+mesh refinement (AMR) datasets. Huang et al. [42] accelerated re-
+verse time migration (RTM) by integrating a fast lossy compression
+scheme to reduce memory and I/O bottlenecks without signifi-
+cantly degrading the quality of seismic imaging. Zhou et al. [97]
+designed GPU-based compression schemes to reduce communica-
+tion overhead in MPI_AllReduce on large-scale GPU clusters. Song
+et al. [76, 77] proposed CereSZ, which deployed error-bounded
+lossy compression to an emerging AI chip architecture, Cerebras.
+5.2
+GPU Lossy Compression
+GPU lossy compression for HPC has been explored in the past two
+decades [18, 26, 27, 39, 54, 67, 81, 91, 93, 94]. Lindstrom et al. [54] pro-
+posed a transform-based fixed-ratio lossy compressor named cuZFP
+to compress high-dimensional scientific data. Tian et al. [57, 81]
+introduced cuSZ(-i), the first error-bounded lossy compressor that
+utilized GPUs to accelerate SZ compression workflow [24, 51, 79].
+Chen et al. [18] proposed MGARD-GPU to accelerate scientific data
+refactoring in a progressive manner. Yu et al. [91] designed cuSZx to
+compress scientific data with a constant block design and bit-level
+manipulations. Zhang et al. [94] adopted high-dimensional Lorenzo
+prediction and shuffle-based zero bits elimination for compressing
+data within GPUs. Fallin [26] developed PFPL, a fast and high-ratio
+lossy compressor with error control and full CPU/GPU compatibil-
+ity. Among the above solutions, cuSZ, cuSZx, and MGARD-GPU
+rely on CPU-side computations to achieve higher compression ra-
+tios and data quality, resulting in limited end-to-end throughput
+inevitably in return. So we exclude them from our evaluation.
+6
+Conclusion
+In this work, we identify two common patterns in how the HPC
+community adopts GPU lossy compression. We then analyze three
+key limitations in existing GPU lossy compressors that hinder their
+practical adoption. To address these challenges, we propose VGC,
+a versatile and ultra-fast GPU lossy compression framework with
+error controls. VGC incorporates three compression algorithms
+with 1D, 2D, and 3D dimension support, enabling adaptability to
+diverse data patterns. It also introduces two unique modes: Memory-
+efficient Compression, which calculates compressed size to reduce
+GPU memory footprint, and Selective Decompression, which en-
+ables direct access to compressed data regions without full decom-
+pression. Evaluations across 13 HPC datasets and two real-world
+use cases demonstrate that VGC delivers state-of-the-art through-
+put, high compression ratios, efficient memory footprint reduction,
+and fast, dimension-aware operations on compressed data.
+Acknowledgments
+An award for computer time was provided by the U.S. Department
+of Energy (DOE) Office of Science, Advanced Scientific Computing
+Research (ASCR) through the Leadership Computing Challenge
+(ALCC) Program. This research used supporting resources at the
+Argonne Leadership Computing Facility (ALCF), the National En-
+ergy Research Scientific Computing Center (NERSC), and the Oak
+Ridge Leadership Computing Facility (OLCF). The ALCF at Ar-
+gonne National Laboratory is supported under DOE Contract No.
+DE-AC02-06CH11357. This research utilized computing resources
+at NERSC through the award ALCC-ERCAP0030693. The OLCF at
+Oak Ridge National Laboratory is supported under DOE Contract
+No. DE-AC05-00OR22725. We also acknowledge the use of ALCF Po-
+laris and Argonne Laboratory Computing Resource Center (LCRC)
+Swing. This research was supported by the U.S. DOE Office of Sci-
+ence, ASCR program under Contract No. DE-SC0024559, and by
+the National Science Foundation (NSF) under grants OAC-2311875,
+OAC-2211538, OAC-2514036, and OAC-2513768.
+References
+[1] [n. d.]. Open Scientific Visualization Datasets. https://klacansky.com/open-scivis-
+datasets/.
+[2] 2020. NVIDIA A100 Tensor Core GPU Architecture. https://images.nvidia.
+com/aem-dam/en-zz/Solutions/data-center/nvidia-ampere-architecture-
+whitepaper.pdf.
+[3] 2024. Decoding the Enormous Scale of GPT-4: An In-Depth Exploration of the
+Model’s Size and Abilities. https://seifeur.com/chat-gpt-4-data-size/.
+[4] Marah Abdin, Jyoti Aneja, Hany Awadalla, Ahmed Awadallah, Ammar Ahmad
+Awan, Nguyen Bach, Amit Bahree, Arash Bakhtiari, Jianmin Bao, Harkirat Behl,
+et al. 2024. Phi-3 technical report: A highly capable language model locally on
+your phone. arXiv preprint arXiv:2404.14219 (2024).
+[5] Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Floren-
+cia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal
+Anadkat, et al. 2023. Gpt-4 technical report. arXiv preprint arXiv:2303.08774
+(2023).
+11
+2066
+
+
+--- Page 13 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+[6] Tripti Agarwal, Harvey Dam, Ponnuswamy Sadayappan, Ganesh Gopalakrish-
+nan, Dorra Ben Khalifa, and Matthieu Martel. 2023. What operations can be
+performed directly on compressed arrays, and with what error?. In Proceed-
+ings of the SC’23 Workshops of the International Conference on High Performance
+Computing, Network, Storage, and Analysis. 254–262.
+[7] Keivan Alizadeh, Seyed Iman Mirzadeh, Dmitry Belenko, S Khatamifard, Minsik
+Cho, Carlo C Del Mundo, Mohammad Rastegari, and Mehrdad Farajtabar. 2024.
+Llm in a flash: Efficient large language model inference with limited memory.
+In Proceedings of the 62nd Annual Meeting of the Association for Computational
+Linguistics (Volume 1: Long Papers). 12562–12584.
+[8] Ann S Almgren, John B Bell, Mike J Lijewski, Zarija Lukić, and Ethan Van Andel.
+2013. Nyx: A massively parallel amr code for computational cosmology. The
+Astrophysical Journal 765, 1 (2013), 39.
+[9] A Andonian, Q Anthony, S Biderman, S Black, P Gali, L Gao, E Hallahan, J
+Levy-Kramer, C Leahy, L Nestler, et al. [n. d.]. GPT-NeoX: Large Scale Au-
+toregressive Language Modeling in PyTorch, 9 2023. URL https://www. github.
+com/eleutherai/gpt-neox ([n. d.]).
+[10] Ross Arnold and Tim Bell. 1997. A corpus for the evaluation of lossless com-
+pression algorithms. In Proceedings DCC’97. Data Compression Conference. IEEE,
+201–210.
+[11] Noushin Azami, Alex Fallin, and Martin Burtscher. 2025. Efficient Lossless
+Compression of Scientific Floating-Point Data on CPUs and GPUs. In Proceedings
+of the 30th ACM International Conference on Architectural Support for Programming
+Languages and Operating Systems, Volume 1. 395–409.
+[12] Gaurav Bansal, Ajith Mascarenhas, and Jacqueline H Chen. 2015. Direct numerical
+simulations of autoignition in stratified dimethyl-ether (DME)/air turbulent
+mixtures. Combustion and Flame 162, 3 (2015), 688–702.
+[13] Edip Baysal, Dan D Kosloff, and John WC Sherwood. 1983. Reverse time migration.
+Geophysics 48, 11 (1983), 1514–1524.
+[14] Xiao Bi, Deli Chen, Guanting Chen, Shanhuang Chen, Damai Dai, Chengqi Deng,
+Honghui Ding, Kai Dong, Qiushi Du, Zhe Fu, et al. 2024. Deepseek llm: Scaling
+open-source language models with longtermism. arXiv preprint arXiv:2401.02954
+(2024).
+[15] Taisuke Boku, Masatake Sugita, Ryohei Kobayashi, Shinnosuke Furuya, Takuya
+Fujie, Masahito Ohue, and Yutaka Akiyama. 2024. Improving Performance on
+Replica-Exchange Molecular Dynamics Simulations by Optimizing GPU Core Uti-
+lization. In Proceedings of the 53rd International Conference on Parallel Processing.
+1082–1091.
+[16] Hervé Brönnimann, Bin Chen, Manoranjan Dash, Peter Haas, and Peter Scheuer-
+mann. 2003. Efficient data reduction with EASE. In Proceedings of the ninth ACM
+SIGKDD international conference on knowledge discovery and data mining. 59–68.
+[17] Franck Cappello, Sheng Di, Sihuan Li, Xin Liang, Ali Murat Gok, Dingwen Tao,
+Chun Hong Yoon, Xin-Chuan Wu, Yuri Alexeev, and Frederic T Chong. 2019.
+Use cases of lossy compression for floating-point data in scientific data sets. The
+International Journal of High Performance Computing Applications 33, 6 (2019),
+1201–1220.
+[18] Jieyang Chen, Lipeng Wan, Xin Liang, Ben Whitney, Qing Liu, David Pugmire,
+Nicholas Thompson, Jong Youl Choi, Matthew Wolf, Todd Munson, et al. 2021.
+Accelerating multigrid-based hierarchical scientific data refactoring on gpus. In
+2021 IEEE International Parallel and Distributed Processing Symposium (IPDPS).
+IEEE, 859–868.
+[19] Jacqueline H Chen, Alok Choudhary, Bronis De Supinski, Matthew DeVries,
+Evatt R Hawkes, Scott Klasky, Wei-Keng Liao, Kwan-Liu Ma, John Mellor-
+Crummey, Norbert Podhorszki, et al. 2009. Terascale direct numerical simulations
+of turbulent combustion using S3D. Computational Science & Discovery 2, 1 (2009),
+015001.
+[20] Miaoqi Chu, Jeffrey Li, Qingteng Zhang, Zhang Jiang, Eric M Dufresne, Alec
+Sandy, Suresh Narayanan, and Nicholas Schwarz. 2022. pyXPCSviewer: an open-
+source interactive tool for X-ray photon correlation spectroscopy visualization
+and analysis. Synchrotron Radiation 29, 4 (2022), 1122–1129.
+[21] Xu Chu, Ihab F Ilyas, and Paraschos Koutris. 2016. Distributed data deduplication.
+Proceedings of the VLDB Endowment 9, 11 (2016), 864–875.
+[22] NVIDIA Compnay. [n. d.]. While Paper: NVIDIA DGX-1 With Tesla V100 System
+Architecture. In NVIDIA White Paper.
+[23] Andrew W Cook, William Cabot, and Paul L Miller. 2004. The mixing transition
+in Rayleigh–Taylor instability. Journal of Fluid Mechanics 511 (2004), 333–362.
+[24] Sheng Di and Franck Cappello. 2016. Fast error-bounded lossy HPC data com-
+pression with SZ. In 2016 ieee international parallel and distributed processing
+symposium (ipdps). IEEE, 730–739.
+[25] Sheng Di, Jinyang Liu, Kai Zhao, Xin Liang, Robert Underwood, Zhaorui Zhang,
+Milan Shah, Yafan Huang, Jiajun Huang, Xiaodong Yu, et al. 2024.
+A sur-
+vey on error-bounded lossy compression for scientific datasets. arXiv preprint
+arXiv:2404.02840 (2024).
+[26] Alex Fallin, Noushin Azami, Sheng Di, Franck Cappello, and Martin Burtscher. [n.
+d.]. Fast and Effective Lossy Compression on GPUs and CPUs with Guaranteed
+Error Bounds. ([n. d.]).
+[27] Alex Fallin and Martin Burtscher. 2024. Lessons Learned on the Path to Guar-
+anteeing the Error Bound in Lossy Quantizers. arXiv preprint arXiv:2407.15037
+(2024).
+[28] Zhe Fan, Feng Qiu, Arie Kaufman, and Suzanne Yoakum-Stover. 2004. GPU cluster
+for high performance computing. In SC’04: Proceedings of the 2004 ACM/IEEE
+conference on Supercomputing. IEEE, 47–47.
+[29] Kayvon Fatahalian, Jeremy Sugerman, and Pat Hanrahan. 2004. Understanding
+the efficiency of GPU algorithms for matrix-matrix multiplication. In Proceedings
+of the ACM SIGGRAPH/EUROGRAPHICS conference on Graphics hardware. 133–
+137.
+[30] Hao Feng, Boyuan Zhang, Fanjiang Ye, Min Si, Ching-Hsiang Chu, Jiannan Tian,
+Chunxing Yin, Summer Deng, Yuchen Hao, Pavan Balaji, et al. 2024. Accelerating
+Communication in Deep Learning Recommendation Model Training with Dual-
+Level Adaptive Lossy Compression. In SC24: International Conference for High
+Performance Computing, Networking, Storage and Analysis. IEEE, 1–16.
+[31] Adithya Gangidi, Rui Miao, Shengbao Zheng, Sai Jayesh Bondu, Guilherme Goes,
+Hany Morsy, Rohit Puri, Mohammad Riftadi, Ashmitha Jeevaraj Shetty, Jingyi
+Yang, et al. 2024. Rdma over ethernet for distributed training at meta scale. In
+Proceedings of the ACM SIGCOMM 2024 Conference. 57–70.
+[32] Leo Gao, Stella Biderman, Sid Black, Laurence Golding, Travis Hoppe, Charles
+Foster, Jason Phang, Horace He, Anish Thite, Noa Nabeshima, et al. 2020. The
+Pile: An 800GB Dataset of Diverse Text for Language Modeling. arXiv preprint
+arXiv:2101.00027 (2020).
+[33] Ray W Grout, A Gruber, H Kolla, P-T Bremer, JC Bennett, A Gyulassy, and JH
+Chen. 2012. A direct numerical simulation study of turbulence and flame structure
+in transverse jets analysed in jet-trajectory based coordinates. Journal of Fluid
+Mechanics 706 (2012), 351–383.
+[34] Fan Guo, Hui Li, William Daughton, and Yi-Hsin Liu. 2014. Formation of hard
+power laws in the energetic particle spectra resulting from relativistic magnetic
+reconnection. Physical Review Letters 113, 15 (2014), 155005.
+[35] Salman Habib, Vitali Morozov, Nicholas Frontiere, Hal Finkel, Adrian Pope, and
+Katrin Heitmann. 2013. HACC: Extreme scaling and performance across diverse
+architectures. In Proceedings of the International Conference on High Performance
+Computing, Networking, Storage and Analysis. 1–10.
+[36] Justin Holewinski, Louis-Noël Pouchet, and Ponnuswamy Sadayappan. 2012.
+High-performance code generation for stencil computations on GPU architec-
+tures. In Proceedings of the 26th ACM international conference on Supercomputing.
+311–320.
+[37] Jiajun Huang, Sheng Di, Xiaodong Yu, Yujia Zhai, Jinyang Liu, Yafan Huang,
+Ken Raffenetti, Hui Zhou, Kai Zhao, Xiaoyi Lu, et al. 2024. gzccl: Compression-
+accelerated collective communication framework for gpu clusters. In Proceedings
+of the 38th ACM International Conference on Supercomputing. 437–448.
+[38] Jiajun Huang, Sheng Di, Xiaodong Yu, Yujia Zhai, Jinyang Liu, Zizhe Jian, Xin
+Liang, Kai Zhao, Xiaoyi Lu, Zizhong Chen, et al. 2024. hZCCL: Accelerating
+Collective Communication with Co-Designed Homomorphic Compression. In
+SC24: International Conference for High Performance Computing, Networking,
+Storage and Analysis. IEEE, 1–15.
+[39] Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello. 2024. cuSZp2: A GPU
+Lossy Compressor with Extreme Throughput and Optimized Compression Ratio.
+In SC24: International Conference for High Performance Computing, Networking,
+Storage and Analysis. IEEE, 1–18.
+[40] Yafan Huang, Sheng Di, Robert Underwood, Peco Myint, Miaoqi Chu, Guanpeng
+Li, Nicholas Schwarz, and Franck Cappello. 2025. lsCOMP: Efficient Light Source
+Compression. In Proceedings of the International Conference for High Performance
+Computing, Networking, Storage and Analysis.
+[41] Yafan Huang, Sheng Di, Xiaodong Yu, Guanpeng Li, and Franck Cappello. 2023.
+cuszp: An ultra-fast gpu error-bounded lossy compression framework with opti-
+mized end-to-end performance. In Proceedings of the International Conference for
+High Performance Computing, Networking, Storage and Analysis. 1–13.
+[42] Yafan Huang, Kai Zhao, Sheng Di, Guanpeng Li, Maxim Dmitriev, Thierry-
+Laurent D Tonellot, and Franck Cappello. 2023. Towards improving reverse
+time migration performance by high-speed lossy compression. In 2023 IEEE/ACM
+23rd International Symposium on Cluster, Cloud and Internet Computing (CCGrid).
+IEEE, 651–661.
+[43] Zizhe Jian, Sheng Di, Jinyang Liu, Kai Zhao, Xin Liang, Haiying Xu, Robert
+Underwood, Shixun Wu, Jiajun Huang, Zizhong Chen, et al. 2024. Cliz: Optimizing
+lossy compression for climate datasets with adaptive fine-tuned data prediction.
+In 2024 IEEE International Parallel and Distributed Processing Symposium (IPDPS).
+IEEE, 417–429.
+[44] Sian Jin, Pascal Grosset, Christopher M Biwer, Jesus Pulido, Jiannan Tian, Ding-
+wen Tao, and James Ahrens. 2020. Understanding GPU-based lossy compression
+for extreme-scale cosmological simulations. In 2020 IEEE International Parallel
+and Distributed Processing Symposium (IPDPS). IEEE, 105–115.
+[45] Jennifer E Kay, Clara Deser, A Phillips, A Mai, Cecile Hannay, Gary Strand,
+Julie Michelle Arblaster, SC Bates, Gokhan Danabasoglu, James Edwards, et al.
+2015. The Community Earth System Model (CESM) large ensemble project: A
+community resource for studying climate change in the presence of internal
+climate variability. Bulletin of the American Meteorological Society 96, 8 (2015),
+1333–1349.
+12
+2067
+
+
+--- Page 14 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+[46] Jeongnim Kim, Andrew D Baczewski, Todd D Beaudet, Anouar Benali, M Chan-
+dler Bennett, Mark A Berrill, Nick S Blunt, Edgar Josué Landinez Borda, Michele
+Casula, David M Ceperley, et al. 2018. QMCPACK: an open source ab initio
+quantum Monte Carlo package for the electronic structure of atoms, molecules
+and solids. Journal of Physics: Condensed Matter 30, 19 (2018), 195901.
+[47] Pavol Klacansky, Haichao Miao, Attila Gyulassy, Andrew Townsend, Kyle Cham-
+pley, Joseph Tringe, Valerio Pascucci, and Peer-Timo Bremer. 2022. Virtual in-
+spection of additively manufactured parts. In 2022 IEEE 15th Pacific Visualization
+Symposium (PacificVis). IEEE, 81–90.
+[48] Fabian Knorr, Peter Thoman, and Thomas Fahringer. 2021.
+ndzip: A high-
+throughput parallel lossless compressor for scientific data. In 2021 Data Compres-
+sion Conference (DCC). IEEE, 103–112.
+[49] Fabian Knorr, Peter Thoman, and Thomas Fahringer. 2021. Ndzip-gpu: Efficient
+lossless compression of scientific floating-point data on gpus. In Proceedings of
+the International Conference for High Performance Computing, Networking, Storage
+and Analysis. 1–14.
+[50] Shaomeng Li, Peter Lindstrom, and John Clyne. 2023. Lossy scientific data com-
+pression with sperr. In 2023 IEEE International Parallel and Distributed Processing
+Symposium (IPDPS). IEEE, 1007–1017.
+[51] Xin Liang, Sheng Di, Dingwen Tao, Sihuan Li, Shaomeng Li, Hanqi Guo, Zizhong
+Chen, and Franck Cappello. 2018. Error-controlled lossy compression optimized
+for high compression ratios of scientific datasets. In 2018 IEEE International
+Conference on Big Data (Big Data). IEEE, 438–447.
+[52] Xin Liang, Ben Whitney, Jieyang Chen, Lipeng Wan, Qing Liu, Dingwen Tao,
+James Kress, David Pugmire, Matthew Wolf, Norbert Podhorszki, et al. 2021.
+Mgard+: Optimizing multilevel methods for error-bounded scientific data reduc-
+tion. IEEE Trans. Comput. 71, 7 (2021), 1522–1536.
+[53] Guo-Yuan Lien, Takemasa Miyoshi, Seiya Nishizawa, Ryuji Yoshida, Hisashi
+Yashiro, Sachiho A Adachi, Tsuyoshi Yamaura, and Hirofumi Tomita. 2017. The
+near-real-time SCALE-LETKF system: A case of the September 2015 Kanto-
+Tohoku heavy rainfall. Sola 13 (2017), 1–6.
+[54] Peter Lindstrom. 2014. Fixed-rate compressed floating-point arrays. IEEE trans-
+actions on visualization and computer graphics 20, 12 (2014), 2674–2683.
+[55] Peter Lindstrom, L Ibarria, and J Rossignac. 2006. Spectral predictors. Citeseer.
+[56] Jinming Liu, Heming Sun, and Jiro Katto. 2023. Learned image compression with
+mixed transformer-cnn architectures. In Proceedings of the IEEE/CVF conference
+on computer vision and pattern recognition. 14388–14397.
+[57] Jinyang Liu, Jiannan Tian, Shixun Wu, Sheng Di, Boyuan Zhang, Robert Under-
+wood, Yafan Huang, Jiajun Huang, Kai Zhao, Guanpeng Li, et al. 2024. CUSZ-i:
+High-Ratio Scientific Lossy Compression on GPUs with Optimized Multi-Level
+Interpolation. In SC24: International Conference for High Performance Computing,
+Networking, Storage and Analysis. IEEE, 1–15.
+[58] Yuhan Liu, Hanchen Li, Yihua Cheng, Siddhant Ray, Yuyang Huang, Qizheng
+Zhang, Kuntai Du, Jiayi Yao, Shan Lu, Ganesh Ananthanarayanan, et al. 2024.
+Cachegen: Kv cache compression and streaming for fast large language model
+serving. In Proceedings of the ACM SIGCOMM 2024 Conference. 38–56.
+[59] Zichang Liu, Aditya Desai, Fangshuo Liao, Weitao Wang, Victor Xie, Zhaozhuo
+Xu, Anastasios Kyrillidis, and Anshumali Shrivastava. 2023. Scissorhands: Exploit-
+ing the persistence of importance hypothesis for llm kv cache compression at test
+time. Advances in Neural Information Processing Systems 36 (2023), 52342–52364.
+[60] Robert Lucas, James Ang, Keren Bergman, Shekhar Borkar, William Carlson,
+Laura Carrington, George Chiu, Robert Colwell, William Dally, Jack Dongarra,
+et al. 2014. Doe advanced scientific computing advisory subcommittee (ascac) report:
+top ten exascale research challenges. Technical Report. USDOE Office of Science
+(SC)(United States).
+[61] Huizhang Luo, Junqi Wang, Qing Liu, Jieyang Chen, Scott Klasky, and Norbert
+Podhorszki. 2022. Zmesh: theories and methods to exploring application charac-
+teristics to improve lossy compression ratio for adaptive mesh refinement. IEEE
+Transactions on Parallel and Distributed Systems 33, 12 (2022), 3702–3717.
+[62] Sepideh Maleki and Martin Burtscher. 2018. Automatic hierarchical parallelization
+of linear recurrences. ACM SIGPLAN Notices 53, 2 (2018), 128–138.
+[63] Thiago Maltempi, Sandro Rigo, Marcio Pereira, Hervé Yviquel, Jessé Costa, and
+Guido Araujo. 2024. Combining Compression and Prefetching to Improve Check-
+pointing for Inverse Seismic Problems in GPUs. In European Conference on Parallel
+Processing. Springer, 167–181.
+[64] Duane Merrill and Michael Garland. 2016. Single-pass parallel prefix scan with
+decoupled look-back. NVIDIA, Tech. Rep. NVR-2016-002 (2016).
+[65] Deepak Narayanan, Amar Phanishayee, Kaiyu Shi, Xie Chen, and Matei Zaharia.
+2021. Memory-efficient pipeline-parallel dnn training. In International Conference
+on Machine Learning. PMLR, 7937–7947.
+[66] Piotr Nawrot, Adrian Łańcucki, Marcin Chochowski, David Tarjan, and
+Edoardo M Ponti. 2024. Dynamic memory compression: Retrofitting llms for
+accelerated inference. arXiv preprint arXiv:2403.09636 (2024).
+[67] Molly A O’Neil and Martin Burtscher. 2011. Floating-point data compression
+at 75 Gb/s on a GPU. In Proceedings of the Fourth Workshop on General Purpose
+Processing on Graphics Processing Units. 1–7.
+[68] Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002. Bleu: a
+method for automatic evaluation of machine translation. In Proceedings of the
+40th annual meeting of the Association for Computational Linguistics. 311–318.
+[69] Sreeram Potluri, Khaled Hamidouche, Akshay Venkatesh, Devendar Bureddy,
+and Dhabaleswar K Panda. 2013. Efficient inter-node MPI communication using
+GPUDirect RDMA for InfiniBand clusters with NVIDIA GPUs. In 2013 42nd
+International Conference on Parallel Processing. IEEE, 80–89.
+[70] Guanqiao Qu, Qiyuan Chen, Wei Wei, Zheng Lin, Xianhao Chen, and Kaibin
+Huang. 2025. Mobile edge intelligence for large language models: A contemporary
+survey. IEEE Communications Surveys & Tutorials (2025).
+[71] Marcos Balsa Rodríguez, Enrico Gobbetti, José Antonio Iglesias Guitián, Maxim
+Makhinya, Fabio Marton, Renato Pajarola, and Susanne K Suter. 2013. A Survey
+of Compressed GPU-Based Direct Volume Rendering.. In Eurographics (State of
+the Art Reports). 117–136.
+[72] Robert Ross, Lee Ward, Philip Carns, Gary Grider, Scott Klasky, Quincey Koziol,
+Glenn K Lockwood, Kathryn Mohror, Bradley Settlemyer, and Matthew Wolf. 2019.
+Storage systems and i/o: Organizing, storing, and accessing data for scientific
+discovery. Department of Energy, Office of Science, Tech. Rep (2019).
+[73] Milan Shah, Xiaodong Yu, Sheng Di, Danylo Lykov, Yuri Alexeev, Michela Bec-
+chi, and Franck Cappello. 2023. Gpu-accelerated error-bounded compression
+framework for quantum circuit simulations. In 2023 IEEE International Parallel
+and Distributed Processing Symposium (IPDPS). IEEE, 757–767.
+[74] Arman Shehabi, Alex Hubbard, Alex Newkirk, Nuoa Lei, Md Abu Bakkar Siddik,
+Billie Holecek, Jonathan Koomey, Eric Masanet, Dale Sartor, et al. 2024. 2024
+United States Data Center Energy Usage Report. (2024).
+[75] Siddharth Singh, Prajwal Singhania, Aditya Ranjan, John Kirchenbauer, Jonas
+Geiping, Yuxin Wen, Neel Jain, Abhimanyu Hans, Manli Shu, Aditya Tomar,
+et al. 2024. Democratizing AI: Open-source Scalable LLM Training on GPU-
+based Supercomputers. In SC24: International Conference for High Performance
+Computing, Networking, Storage and Analysis. IEEE, 1–14.
+[76] Shihui Song, Yafan Huang, Peng Jiang, Xiaodong Yu, Weijian Zheng, Sheng Di,
+Qinglei Cao, Yunhe Feng, Zhen Xie, and Franck Cappello. 2024. Ceresz: Enabling
+and scaling error-bounded lossy compression on cerebras cs-2. In Proceedings of
+the 33rd International Symposium on High-Performance Parallel and Distributed
+Computing. 309–321.
+[77] Shihui Song, Robert Underwood, Sheng Di, Yafan Huang, Peng Jiang, and Franck
+Cappello. 2025. A Memory-Efficient and Computation-Balanced Lossy Compres-
+sor on Wafer-Scale Engine. In 2025 IEEE International Parallel and Distributed
+Processing Symposium (IPDPS). IEEE, 1–13.
+[78] Sebastian Strempfer, Zichao Wendy Di, Kazutomo Yoshii, Yue Cao, Qingteng
+Zhang, Eric M Dufresne, Mathew Cherukara, Suresh Narayanan, Martin V Holt,
+Antonino Miceli, et al. 2025. Homomorphic data compression for real time photon
+correlation analysis. Optics Express 33, 5 (2025), 12059–12070.
+[79] Dingwen Tao, Sheng Di, Zizhong Chen, and Franck Cappello. 2017. Significantly
+improving lossy compression for scientific data sets based on multidimensional
+prediction and error-controlled quantization. In 2017 IEEE International Parallel
+and Distributed Processing Symposium (IPDPS). IEEE, 1129–1139.
+[80] Jana Thayer, Zhantao Chen, Richard Claus, Daniel Damiani, Christopher Ford,
+Mikhail Dubrovin, Victor Elmir, Wilko Kroeger, Xiang Li, Stefano Marchesini,
+et al. 2024. Massive Scale Data Analytics at LCLS-II. In EPJ Web of Conferences,
+Vol. 295. EDP Sciences, 13002.
+[81] Jiannan Tian, Sheng Di, Kai Zhao, Cody Rivera, Megan Hickman Fulp, Robert
+Underwood, Sian Jin, Xin Liang, Jon Calhoun, Dingwen Tao, et al. 2020. Cusz: An
+efficient gpu-based error-bounded lossy compression framework for scientific
+data. In Proceedings of the ACM International Conference on Parallel Architectures
+and Compilation Techniques. 3–15.
+[82] Marat Valiev, Eric J Bylaska, Niranjan Govind, Karol Kowalski, Tjerk P Straatsma,
+Hubertus Johannes Jacobus Van Dam, Dunyou Wang, Jarek Nieplocha, Edoardo
+Aprà, Theresa L Windus, et al. 2010. NWChem: A comprehensive and scalable
+open-source solution for large scale molecular simulations. Computer Physics
+Communications 181, 9 (2010), 1477–1489.
+[83] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. Attention is all
+you need. Advances in neural information processing systems 30 (2017).
+[84] Shucheng Wang, Qiang Cao, Kaiye Zhou, Jun Xu, Zhandong Guo, and Jiannan
+Guo. 2024. ParaCkpt: Heterogeneous Multi-Path Checkpointing Mechanism for
+Training Deep Learning Models. In 2024 IEEE 42nd International Conference on
+Computer Design (ICCD). IEEE, 183–190.
+[85] Weihu Wang, Yaqi Xia, Donglin Yang, Xiaobo Zhou, and Dazhao Cheng. 2024.
+Accelerating Distributed DLRM Training with Optimized TT Decomposition
+and Micro-Batching. In SC24: International Conference for High Performance
+Computing, Networking, Storage and Analysis. IEEE, 1–15.
+[86] Adam Weingram, Yuke Li, Hao Qi, Darren Ng, Liuyao Dai, and Xiaoyi Lu. 2023.
+xCCL: A survey of industry-led collective communication libraries for deep
+learning. Journal of Computer Science and Technology 38, 1 (2023), 166–195.
+[87] Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue,
+Anthony Moi, Pierric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz, et al.
+2019. Huggingface’s transformers: State-of-the-art natural language processing.
+arXiv preprint arXiv:1910.03771 (2019).
+13
+2068
+
+
+--- Page 15 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+[88] Xin-Chuan Wu, Sheng Di, Emma Maitreyee Dasgupta, Franck Cappello, Hal
+Finkel, Yuri Alexeev, and Frederic T Chong. 2019. Full-state quantum circuit sim-
+ulation by using data compression. In Proceedings of the International Conference
+for High Performance Computing, Networking, Storage and Analysis. 1–24.
+[89] Shengen Yan, Guoping Long, and Yunquan Zhang. 2013. StreamScan: fast scan
+algorithms for GPUs without global barrier synchronization. In Proceedings of the
+18th ACM SIGPLAN symposium on Principles and practice of parallel programming.
+229–238.
+[90] PK Yeung, DA Donzis, and KR Sreenivasan. 2012. Dissipation, enstrophy and
+pressure statistics in turbulence simulations at high Reynolds numbers. Journal
+of Fluid Mechanics 700 (2012), 5–15.
+[91] Xiaodong Yu, Sheng Di, Kai Zhao, Jiannan Tian, Dingwen Tao, Xin Liang, and
+Franck Cappello. 2022. Ultrafast error-bounded lossy compression for scientific
+datasets. In Proceedings of the 31st International Symposium on High-Performance
+Parallel and Distributed Computing. 159–171.
+[92] Boyuan Zhang, Bo Fang, Fanjiang Ye, Yida Gu, Nathan Tallent, Guangming
+Tan, and Dingwen Tao. 2024. Overcoming memory constraints in quantum
+circuit simulation with a high-fidelity compression framework. arXiv preprint
+arXiv:2410.14088 (2024).
+[93] Boyuan Zhang, Yafan Huang, Sheng Di, Fengguang Song, Guanpeng Li, and
+Franck Cappello. 2025. Pushing the Limits of GPU Lossy Compression: A Hierar-
+chical Delta Approach. (2025).
+[94] Boyuan Zhang, Jiannan Tian, Sheng Di, Xiaodong Yu, Yunhe Feng, Xin Liang,
+Dingwen Tao, and Franck Cappello. 2023. Fz-gpu: A fast and high-ratio lossy
+compressor for scientific computing applications on gpus. In Proceedings of
+the 32nd International Symposium on High-Performance Parallel and Distributed
+Computing. 129–142.
+[95] Kai Zhao, Sheng Di, Xin Lian, Sihuan Li, Dingwen Tao, Julie Bessac, Zizhong
+Chen, and Franck Cappello. 2020. SDRBench: Scientific data reduction benchmark
+for lossy compressors. In 2020 IEEE international conference on big data (Big Data).
+IEEE, 2716–2724.
+[96] Qinghua Zhou, Pouya Kousha, Quentin Anthony, Kawthar Shafie Khorassani,
+Aamir Shafi, Hari Subramoni, and Dhabaleswar K Panda. 2022. Accelerating mpi
+all-to-all communication with online compression on modern gpu clusters. In
+International Conference on High Performance Computing. Springer, 3–25.
+[97] Qinghua Zhou, Bharath Ramesh, Aamir Shafi, Mustafa Abduljabbar, Hari Subra-
+moni, and Dhabaleswar K Panda. 2024. Accelerating MPI AllReduce Communica-
+tion with Efficient GPU-Based Compression Schemes on Modern GPU Clusters.
+In ISC High Performance 2024 Research Paper Proceedings (39th International Con-
+ference). Prometeus GmbH, 1–12.
+14
+2069
+
+
+--- Page 16 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Appendix: Artifact Description/Artifact Evaluation
+Artifact Description (AD)
+A
+Overview of Contributions and Artifacts
+A.1
+Paper’s Main Contributions
+This work summarizes use cases for existing GPU lossy compres-
+sors and analyzes their limitations. To solve those limitations, this
+work proposes VGC, a versatile and ultra-fast GPU error-bounded
+lossy compression framework. The key contributions of VGC com-
+pression framework can be summarized below:
+C1 VGC features three compression algorithms (No-delta, Delta,
+and Outlier), dimension-aware support, and compatibility
+with both f32 and f64 HPC datasets.
+C2 VGC achieves high compression ratios and ultra-fast compres-
+sion and decompression throughput.
+C3 VGC has a unique compression mode: Memory-efficient Com-
+pression, which can allocate GPU memory with the exact
+compressed size without waste, reducing real-time GPU
+memory footprint.
+C4 VGC has a unique decompression mode: Selective Decompres-
+sion, which can directly operate on compressed data without
+decompressing the entire datasets.
+C5 We evaluate VGC with 13 real-world HPC datasets to show
+its ultra-fast throughput, high compression ratio, memory-
+footprint reduction effectiveness, and high data quality.
+C6 To evaluate VGC’s GPU memory footprint reduction, we use 4
+large language models (LLMs) and compress their KV Cache
+in inference.
+C7 To evaluate VGC’s data movement overhead reduction, we use
+a 256 GB HPC field and simulate a GPUDirect memory-to-
+memory data transfer scenario.
+A.2
+Computational Artifacts
+This work proposes VGC compression framework, which is a soft-
+ware. So only one artifact 𝐴1 is included. Different (de)compression
+modes and HPC scenarios in 𝐴1 are separated into different folders
+to simplify the AD/AE review process, whereas the final released
+software will be a single unified compression framework.
+A1 DOI: https://doi.org/10.6084/m9.figshare.29662967
+A1 GitHub: https://github.com/hyfshishen/SC25-VGC
+We provide detailed instructions in the README of this
+repository to simplify this AD/AE process.
+Artifact ID
+Contributions
+Related
+Supported
+Paper Elements
+𝐴1
+𝐶1
+Section 2.1 and 2.2
+𝐴1
+𝐶2
+Section 2.3 and 2.6
+𝐴1
+𝐶3
+Section 2.4
+𝐴1
+𝐶4
+Section 2.5
+𝐴1
+𝐶5
+Section 3
+𝐴1
+𝐶6
+Section 4.1
+𝐴1
+𝐶7
+Section 4.2
+B
+Artifact Identification
+B.1
+Computational Artifact 𝐴1
+Relation To Contributions
+This artifact (𝐴1) contains the source code of VGC, which can be
+built and executed on an NVIDIA GPU to compress HPC data at
+ultra-fast speed and high compression ratio. Its relation to the seven
+aforementioned contributions can be explained below.
+A1-C1 This artifact is the source code of VGC including all men-
+tioned supports (algorithm, dimension, and f32/f64).
+A1-C2 All optimizations (for compression ratios and throughput)
+can be found in the 𝐴1 source code.
+A1-C3 Memory-efficient Compression can be found in 𝐴1.
+A1-C4 Selective Decompression can be found in 𝐴1.
+A1-C5 Evaluations are based on this source code.
+A1-C6 Discussion for LLM KV cache compression can be found in
+the source code of 𝐴1.
+A1-C7 Discussion for data transfer reduction can be found in the
+source code of 𝐴1.
+All contents in this paper can be found as source code in 𝐴1.
+Expected Results
+After compiling VGC into executable binaries, users can use it to
+compress HPC data on an NVIDIA GPU (e.g., an A100 GPU (40 GB)
+used in this work). We integrate two key evaluation metrics into
+the compiled binaries. As a result, after compression is finished, the
+compression ratios and throughput will be printed on the command
+line screen. While the compression ratios should remain consistent,
+the throughput may exhibit slight fluctuations even on the same
+type of hardware due to factors such as system variability and
+runtime conditions. For throughput, we use a strict end-to-end
+measurement. This can be explained in the code fragment below.
+[fontsize=\small]
+timer_GPU.StartCounter(); // set timer
+// VGC compression
+VGC_compress_3D_outlier_f32(d_oriData, d_cmpBytes,\
+nbEle, &cmpSize, dims, errorBound, stream);
+float cmpTime = timer_GPU.GetCounter();
+// Print results.
+printf("VGC compression end-to-end throughput: %f GB/s\n",\
+(nbEle*sizeof(float)/1024.0/1024.0)/cmpTime);
+printf("VGC compression ratio: %f\n\n",\
+(nbEle*sizeof(float)/1024.0/1024.0)/(cmpSize/1024.0/1024.0));
+Given the original data on the GPU, we include whole compu-
+tations to generate the compressed data, still on the same GPU.
+The same for decompression. Such rigorous measurements make
+throughput meaningful for real-world scenarios. The results of 𝐴1
+should overall satisfy.
+• Comparable or higher throughput than state-of-the-art GPU
+error-bounded lossy compressor cuSZp2.
+15
+2070
+
+
+--- Page 17 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+• Comparable or higher compression ratios than state-of-the-
+art GPU error-bounded lossy compressors PFPL and cuSZp2
+(specifically cuSZp2-O algorithm).
+• In Memory-efficient Compression, VGC should be able to
+pass a NULL device pointer for compression.
+• In Selective Decompression, VGC should be able to operate
+on a randomly selected data block directly.
+• Efficient Python API for VGC.
+For simplicity, the expected results should be consistent with what is
+reported in the original paper.
+Expected Reproduction Time (in Minutes)
+The entire execution for all evaluations on a single NVIDIA A100
+GPU can be within 2 hours, including throughput, compression ra-
+tio, data quality, and two HPC use cases. The total kernel execution
+is actually very fast (only several seconds), and most of the runtime
+for the AE process is for HPC dataset preparation and Python-based
+wrap-up scripts.
+• Compilation: Within one minute.
+• Dataset Preparation: Maybe several hours for downloading
+all HPC datasets, depending on network bandwidth.
+• Throughput: 30 minutes.
+• Compression Ratio: 30 minutes. This can be obtained along
+with throughput evaluation.
+• Use Cases: 20 minutes for execution, but dataset preparation
+can take a long time.
+Artifact Setup (incl. Inputs)
+Hardware. : All evaluations are conducted on a single NVIDIA A100
+Ampere A100 GPU (40 GB) on a Linux machine.
+Software. : The related software is listed as below.
+• Git 2.15 or newer.
+• CMake 3.21 or newer.
+• CUDA Toolkit 11.0 or newer.
+• No requirements for GCC, better with 7.0 or newer.
+• Python3 for automation scripts.
+The environments configurations for visualization tools and use
+cases will be provided in later sections.
+Datasets / Inputs. : We will provide detailed datasets download links
+(also four LLMs) later. We will also automate this process.
+Installation and Deployment. : A sample installation and deploy-
+ment of VGC can be found as the code block below.
+[fontsize=\small]
+# Step 1: Download VGC.
+$ git clone https://github.com/hyfshishen/SC25-VGC.git
+$
+# Step 2: Go to target building directory.
+$ cd SC25-VGC/vgc/vgc-compression/ && mkdir build && cd build
+$
+# Step 3: Prepare makefile using CMake.
+$ cmake -DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_INSTALL_PREFIX=../install/ ..
+$
+# Step 4: Compile source code to executable binary.
+$ make -j && make install
+The generated executable binary for VGC compressor can be found
+in path ./vgc/vgc-compression/install/bin/.
+Artifact Execution
+Artifact execution (AE) for this paper will be discussed step by
+step in AE section. Here, we just quickly show how to use VGC to
+compress a HPC dataset. To compress an HPC dataset using VGC,
+the required commands are shown as the code block below. We
+here use VGC 3D mode to compress a 3D f32 HPC field.
+[fontsize=\small]
+$ ./VGC_3D_float
+Usage: ./VGC_3D_float -i [input_file_path] \
+-d [dim_z] [dim_y] [dim_x] -eb [error_mode] \
+[error_bound] [-x cmpFilePath] [-o decFilePath]
+-i
+: Input file path (required)
+-d : Dimensions (required, order: dim_z dim_y dim_x, \
+dim_x is the fastest dim)
+-eb : Error bound mode ("rel" or "abs") followed by \
+error bound value (required)
+-x
+: Compressed file path (optional)
+-o
+: Decompressed file path (optional)
+$ ./VGC_3D_float -i pressure_2000 -d 1008 1008 352 \
+-eb rel 1e-4
+VGC finished! (3D implementation)
+VGC compression
+end-to-end speed: 361.319847 GB/s
+VGC decompression end-to-end speed: 445.347033 GB/s
+VGC compression ratio: 16.541965
+Pass error check!
+Artifact Evaluation (AE)
+In this section, we provide detailed scripts and step-by-step in-
+structions for setting up the environment and executing the artifacts
+to reproduce the paper results of VGC. Note that all content in this
+section can also be found in the README section of repository:
+https://github.com/hyfshishen/SC25-VGC.
+C.1
+Computational Artifact 𝐴1
+Artifact Setup (incl. Inputs)
+Before getting started, the following software/hardware dependen-
+cies are necessary to compile and execute VGC.
+• A Linux Machine (we use Ubuntu 20.04, others also work)
+• Git >= 2.15, CMake >= 3.21, CUDA >= 11.0
+• One NVIDIA A100 GPU (either 40 or 80 GB vmem works)
+• Python 3 (this is for executing the wrapped-up scripts)
+After installing all dependencies, VGC can be compiled and in-
+stalled from source code using the following commands.
+[fontsize=\small]
+# First, git clone this repository.
+$ git clone https://github.com/hyfshishen/SC25-VGC.git
+16
+2071
+
+
+--- Page 18 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+# Then, change directory to this repository.
+$ cd SC25-VGC
+# Finally, compile VGC via following commands.
+$ python3 0-compile-vgc.py
+All compiled executable binaries used to evaluate this work can
+be found in folder ./vgc/vgc-compression/install/bin/. To
+verify whether installation is successful, you can execute the com-
+mand ./vgc/vgc-compression/install/bin/cuSZp\_test\_f32.
+If results are shown like the text block below, that means VGC in-
+stallation is successful.
+[fontsize=\small]
+$ ./vgc/vgc-compression/install/bin/cuSZp_test_f32
+Generating test data...
+=================================================
+=========Testing cuSZp-p-f32 on REL 1E-2=========
+=================================================
+cuSZp-p finished!
+cuSZp-p compression
+end-to-end speed: 348.937382 GB/s
+cuSZp-p decompression end-to-end speed: 362.122041 GB/s
+cuSZp-p compression ratio: 6.286837
+Pass error check!
+Done with testing cuSZp-p on REL 1E-2!
+=================================================
+=========Testing cuSZp-o-f32 on REL 1E-2=========
+=================================================
+cuSZp-o finished!
+cuSZp-o compression
+end-to-end speed: 315.854401 GB/s
+cuSZp-o decompression end-to-end speed: 304.921636 GB/s
+cuSZp-o compression ratio: 11.985018
+Pass error check!
+Done with testing cuSZp-o on REL 1E-2!
+After compilation, reviewer needs to setup the HPC datasets used
+to evaluate VGC. There are 13 HPC datasets (11 single-precision
+and 2 double-precision) in total that are used to evaluate VGC. The
+total size for those datasets requires 100 GB storage space. 12
+of them (except RTM) can be automatially downloaded via the fol-
+lowing script. And these datasets will be downloaded into different
+folders under ./datasets/.
+[fontsize=\small]
+$ python3 1-download-datasets.py
+# This command helps you download and arrange 12/13 HPC \
+datasets (except RTM, RTM requires manual download from \
+Google shared link).
+# Download may take around 1 hour dependending on network \
+bandwidth.
+RTM dataset, which has three fields pressure_1000, pressure_2000,
+and pressure_3000, cannot be downloaded through direct link ac-
+cess using wget. We apologize for any inconvenience this may cause.
+As a result, we uploaded RTM in Google Drive. The download links
+are: pressure_10005, pressure_20006, and pressure_30007. After you
+finish downloading them, please create a new folder rtm under
+./datasets/ and move all three RTM fields inside this folder.
+After this step, your local repository should have the following
+structure.
+[fontsize=\small]
+-- vgc
+-- vgc-compression/
+-- # ... (other code base for optional evaluations)
+-- datasets
+-- cesm_atm/
+-- # ... (all cesm_atm fields)
+-- hacc/
+-- # ... (all hacc fields)
+-- hcci/
+-- # ... (all hcci fields)
+-- jetin/
+-- # ... (all jetin fields)
+-- magrec/
+-- # ... (all magrec fields)
+-- miranda/
+-- # ... (all miranda fields)
+-- nwchem/
+-- # ... (all newchem fields)
+-- nyx/
+-- # ... (all nyx fields)
+-- qmcpack/
+-- # ... (all qmcpack fields)
+-- rtm/
+-- pressure_1000
+-- pressure_2000
+-- pressure_3000
+-- s3d/
+-- # ... (all s3d fields)
+-- scale/
+-- # ... (all scale fields)
+-- syntruss/
+-- # ... (all syntruss fields)
+-- README.md
+-- 0-compile-vgc.py
+-- 1-download-datasets.py
+- # ... (other Python scripts)
+To double-check downloaded datasets, you can try the following
+command.
+[fontsize=\small]
+5pressure_1000: https://drive.google.com/file/d/1EyhvfKHlLlJiDwqQ28XXn5Dbqiz8Zn3M/
+view?usp=sharing
+6pressure_2000:
+https://drive.google.com/file/d/1StITO-BxW4JHocx9-
+Pwe6jUy12j68Tva/view?usp=sharing
+7pressure_3000:
+https://drive.google.com/file/d/1FlKKw5HJQIi64vgeQ47GQWi-
+4BrlWRAJ/view?usp=sharing
+17
+2072
+
+
+--- Page 19 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+$ du -sh ./datasets/*
+21G
+./datasets/cesm_atm
+24G
+./datasets/hacc
+670M
+./datasets/hcci
+6.3G
+./datasets/jetin
+513M
+./datasets/magrec
+4.1G
+./datasets/miranda
+13G
+./datasets/nwchem
+3.1G
+./datasets/nyx
+1.2G
+./datasets/qmcpack
+4.0G
+./datasets/rtm
+52G
+./datasets/s3d
+6.4G
+./datasets/scale
+6.5G
+./datasets/syntruss
+That means dataset preparation is successful. Please proceed to
+the next step (i.e., reproducing results).
+Artifact Execution
+VGC is a GPU error-bounded lossy compressor for HPC datasets.
+We wrap up compression or decompression kernels and API within
+an executable binary for simplicity. So all evaluations in this paper
+for VGC can be performed by executing this binary with differ-
+ent command line inputs. For each figure/table, we implement a
+Python-based script to reproduce the paper results within a sin-
+gle command line, to further simplify AE process. Since VGC
+is a GPU lossy compressor for single-precision and double-
+precision HPC datasets, the main evaluation for VGC is the
+compression/decompression throughput and compression
+ratios. The step-by-step instructions are as follows. Before getting
+started, please make sure VGC is compiled and you are currently
+under this repository directory SC25-VGC.
+================================================
+Single-precision Throughput (Figure 12, Figure 13)
+[fontsize=\small]
+$ python3 2-main-throughput-single.py
+Running VGC on QMCPack...
+QMCPack VGC_D compression throughput: 246.54 GB/s
+QMCPack VGC_D decompression throughput: 313.39 GB/s
+QMCPack VGC_O compression throughput: 225.11 GB/s
+QMCPack VGC_O decompression throughput: 254.06 GB/s
+Running VGC on CESM_ATM...
+CESM_ATM VGC_D compression throughput: 248.62 GB/s
+CESM_ATM VGC_D decompression throughput: 402.17 GB/s
+CESM_ATM VGC_O compression throughput: 269.78 GB/s
+CESM_ATM VGC_O decompression throughput: 389.63 GB/s
+Running VGC on Miranda...
+Miranda VGC_D compression throughput: 302.02 GB/s
+Miranda VGC_D decompression throughput: 582.03 GB/s
+Miranda VGC_O compression throughput: 300.22 GB/s
+Miranda VGC_O decompression throughput: 378.78 GB/s
+Running VGC on SynTruss...
+SynTruss VGC_D compression throughput: 385.66 GB/s
+SynTruss VGC_D decompression throughput: 854.16 GB/s
+SynTruss VGC_O compression throughput: 341.13 GB/s
+SynTruss VGC_O decompression throughput: 499.50 GB/s
+Running VGC on HCCI...
+HCCI VGC_D compression throughput: 266.39 GB/s
+HCCI VGC_D decompression throughput: 595.74 GB/s
+HCCI VGC_O compression throughput: 204.99 GB/s
+HCCI VGC_O decompression throughput: 484.10 GB/s
+Running VGC on RTM...
+RTM VGC_D compression throughput: 380.41 GB/s
+RTM VGC_D decompression throughput: 818.64 GB/s
+RTM VGC_O compression throughput: 332.31 GB/s
+RTM VGC_O decompression throughput: 603.31 GB/s
+Running VGC on MagRec...
+MagRec VGC_D compression throughput: 206.54 GB/s
+MagRec VGC_D decompression throughput: 158.93 GB/s
+MagRec VGC_O compression throughput: 165.64 GB/s
+MagRec VGC_O decompression throughput: 308.57 GB/s
+Running VGC on HACC...
+HACC VGC_D compression throughput: 310.88 GB/s
+HACC VGC_D decompression throughput: 393.34 GB/s
+HACC VGC_O compression throughput:
+333.08 GB/s
+HACC VGC_O decompression throughput: 395.94 GB/s
+Running VGC on Scale...
+Scale VGC_D compression throughput: 212.66 GB/s
+Scale VGC_D decompression throughput: 400.93 GB/s
+Scale VGC_O compression throughput: 212.81 GB/s
+Scale VGC_O decompression throughput: 354.12 GB/s
+Running VGC on Nyx...
+Nyx VGC_D compression throughput: 240.59 GB/s
+Nyx VGC_D decompression throughput: 303.34 GB/s
+Nyx VGC_O compression throughput: 206.04 GB/s
+Nyx VGC_O decompression throughput: 291.93 GB/s
+Running VGC on JetIn...
+JetIn VGC_D compression throughput: 523.29 GB/s
+JetIn VGC_D decompression throughput: 2011.71 GB/s
+JetIn VGC_O compression throughput: 551.28 GB/s
+JetIn VGC_O decompression throughput: 1726.97 GB/s
+All single-precision throughput tests completed.
+Average VGC_D compression throughput: 302.14 GB/s
+Average VGC_D decompression throughput: 621.31 GB/s
+Average VGC_O compression throughput: 286.58 GB/s
+Average VGC_O decompression throughput: 516.99 GB/s
+The throughput results should match or be close to what is
+reported in Figure 12 (single-precision compression throughput)
+18
+2073
+
+
+--- Page 20 ---
+GPU Lossy Compression for HPC Can Be Versatile and Ultra-Fast
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+and Figure 13 (single-precision decompression throughput). Note
+that throughput may vary due to several physical factors in GPU
+(Dynamic Frequency Scaling, Thermal Throttling, etc); reviewers
+can re-run this script to obtain consistent results.
+================================================
+Double-precision Throughput (Figure 14)
+[fontsize=\small]
+$ python3 2-main-throughput-double.py
+Running VGC on S3D...
+S3D VGC_D compression throughput: 606.34 GB/s
+S3D VGC_D decompression throughput: 1485.90 GB/s
+S3D VGC_O compression throughput: 662.89 GB/s
+S3D VGC_O decompression throughput: 1502.96 GB/s
+Running VGC on NWChem...
+NWChem VGC_D compression throughput: 530.62 GB/s
+NWChem VGC_D decompression throughput: 1142.95 GB/s
+NWChem VGC_O compression throughput: 506.43 GB/s
+NWChem VGC_O decompression throughput: 999.34 GB/s
+All double-precision throughput tests completed.
+Average VGC_D compression throughput: 568.48 GB/s
+Average VGC_D decompression throughput: 1314.42 GB/s
+Average VGC_O compression throughput: 584.66 GB/s
+Average VGC_O decompression throughput: 1251.15 GB/s
+The throughput results should match or be close to what is
+reported in Figure 14 (left for compression, right for decompression).
+Note that throughput may vary due to several physical factors
+in GPU (Dynamic Frequency Scaling, Thermal Throttling, etc);
+reviewers can re-run this script to obtain consistent results.
+================================================
+Compression Ratios (Table 2)
+[fontsize=\small]
+$ python3 2-main-compression-ratio.py
+Running VGC on QMCPack with error bound 0.0001...
+QMCPack compression ratio testing completed:
+VGC_D: 4.39780037913534
+VGC_O: 4.410282750659778
+Running VGC on CESM_ATM with error bound 0.0001...
+CESM_ATM compression ratio testing completed:
+VGC_D: 5.853428092435023
+VGC_O: 13.078436499408149
+Running VGC on Miranda with error bound 0.0001...
+Miranda compression ratio testing completed:
+VGC_D: 2.3453982191692035
+VGC_O: 4.246087390984657
+Running VGC on SynTruss with error bound 0.0001...
+SynTruss compression ratio testing completed:
+VGC_D: 4.431762081837473
+VGC_O: 4.514645277080295
+Running VGC on HCCI with error bound 0.0001...
+HCCI compression ratio testing completed:
+VGC_D: 10.87289236173368
+VGC_O: 16.638339773825884
+Running VGC on RTM with error bound 0.0001...
+RTM compression ratio testing completed:
+VGC_D: 13.421132248645558
+VGC_O: 14.367026386659173
+Running VGC on MagRec with error bound 0.0001...
+MagRec compression ratio testing completed:
+VGC_D: 5.505416992148885
+VGC_O: 6.557747022515887
+Running VGC on HACC with error bound 0.0001...
+HACC compression ratio testing completed:
+VGC_D: 2.925713818243781
+VGC_O: 4.56036599655104
+Running VGC on SCALE with error bound 0.0001...
+SCALE compression ratio testing completed:
+VGC_D: 5.001284668377916
+VGC_O: 11.975460446868524
+Running VGC on NYX with error bound 0.0001...
+NYX compression ratio testing completed:
+VGC_D: 5.928949381249487
+VGC_O: 10.342027929977576
+Running VGC on JetIn with error bound 0.0001...
+JetIn compression ratio testing completed:
+VGC_D: 194.6607659935775
+VGC_O: 198.43005510018264
+Running VGC on S3D with error bound 0.0001...
+S3D compression ratio testing completed:
+VGC_D: 13.238351677437644
+VGC_O: 55.75890665478384
+Running VGC on NWChem with error bound 0.0001...
+NWChem compression ratio testing completed:
+VGC_D: 21.29462197891387
+VGC_O: 21.304424613043153
+All compression ratio tests completed.
+Compression results reported in command line environment
+should match what is reported in Table-2.
+================================================
+Optional instructions will be updated if needed.
+================================================
+19
+2074
+
+
+--- Page 21 ---
+SC ’25, November 16–21, 2025, St Louis, MO, USA
+Yafan Huang, Sheng Di, Guanpeng Li, and Franck Cappello
+Artifact Analysis (incl. Outputs)
+All output from Python scripts is printed in the command line
+interface with explanations. The numbers should be consistent
+with VGC performance in the corresponding figures or tables.
+20
+2075

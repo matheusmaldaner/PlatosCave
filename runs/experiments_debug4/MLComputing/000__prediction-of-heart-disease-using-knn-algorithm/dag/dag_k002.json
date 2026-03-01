@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "K-nearest neighbors (KNN) can be used to predict heart disease accurately from clinical and demographic features",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The study implements a KNN-based predictive model using clinical and demographic attributes (age, sex, chest pain type, resting blood pressure, cholesterol, fasting blood sugar, restecg, max heart rate, exercise-induced angina, oldpeak, slope, ca, thal) to predict heart disease",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data preprocessing steps include feature selection, handling imbalanced data via weighting strategies, scaling and repeated trials (repeats = 3) with K set to 10 and averaging results",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Model evaluation uses cross-validation, confusion matrix metrics (TP, TN, FP, FN), sensitivity, specificity, accuracy, and AUC-ROC to assess performance",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "KNN prediction relies on Euclidean distance to find K nearest neighbors and majority voting for class assignment; choice of K affects bias-variance tradeoff",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The dataset includes 303 individuals identified as having heart disease (target variable coded 1=no, 0=yes) with attribute distributions visualized by histograms and gender counts",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Feature importance analysis was used to improve interpretability and identify key factors contributing to heart disease risk",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The KNN implementation repeated experiments three times with K=10 and averaged the trials to obtain stable performance estimates",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Confusion matrix computed from predictions yielded counts used to calculate accuracy as (TP+TN)/(TP+TN+FP+FN)",
+      "role": "Method",
+      "parents": [
+        3,
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "The KNN classifier achieved 83% accuracy on the evaluated dataset based on confusion matrix (38 TP, 45 TN, 10 FP, 7 FN used in calculation)",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Gender differences observed: males had a higher count of diagnosed heart disease cases than females, associated with higher cholesterol and resting blood pressure",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Observed high accuracy and AUC-ROC values and feature importance insights indicate KNN provides promising predictive performance and interpretability for heart disease risk",
+      "role": "Claim",
+      "parents": [
+        6,
+        9,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Visualization (histograms) helped understand numerical feature distributions and supported preprocessing decisions",
+      "role": "Evidence",
+      "parents": [
+        5,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: KNN is a simple, adaptable, non-parametric approach that can aid risk assessment and early detection of heart disease when integrated with appropriate medical datasets",
+      "role": "Conclusion",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: KNN is computationally expensive at classification time, sensitive to choice of K, and requires careful preprocessing; results are dataset-dependent and medical diagnosis should involve clinicians",
+      "role": "Limitation",
+      "parents": [
+        13,
+        4
+      ],
+      "children": null
+    }
+  ]
+}

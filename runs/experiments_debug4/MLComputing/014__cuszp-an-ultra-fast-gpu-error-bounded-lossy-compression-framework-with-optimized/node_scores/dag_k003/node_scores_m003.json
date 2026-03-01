@@ -1,0 +1,189 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, it asserts a single kernel implementation with block wise pipeline to handle both compression and decompression without CPU data movement, but no external evidence is provided.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.56,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text; no external sources checked; unknown whether the four steps per block correspond to cuSZp in practice",
+    "confidence_level": "low"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines GPU-oriented encoding design choices that are plausible and align with common GPU optimization practices, but there is no empirical data or cited evidence to confirm their effectiveness or novelty.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.7,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general background, the assertion appears plausible though specifics about the exact datasets and metrics are not verifiable without external sources.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that experimental evidence exists with A100, six datasets, and REL bounds comparing cuSZp to other methods, but no external sources are provided in this context.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible in principle since eliminating CPU involvement and host-device memcpy can reduce overhead, but its universality depends on implementation specifics and may not hold in all prior GPU compressors.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that a fixed length per-block encoding with bit shuffle yields high compression and GPU friendliness due to spatial smoothness in blocks; without empirical data or references, the assertion is plausible but unverified and would require experiments to substantiate.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes two techniques: pre quantization mapping floats to integers with a guaranteed max absolute error within a user specified bound, and a Lorenzo style prediction that stores per block differences to reduce bits; with only the claim text and general knowledge, it is plausible but not verifiable here due to lack of details or context.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Evaluating a per block fixed width encoding where F_k is determined by the maximum absolute quantized value in the non zero block, a sign map is stored, and the compressed block size is computed as (F_k plus one) times the block length L divided by eight bytes; without additional context, exact correctness cannot be confirmed.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a GPU based global synchronization approach using exclusive prefix sum of per block compressed sizes with a hierarchical thread to warp to global scheme and a chained scan to obtain start offsets for concatenation entirely on the GPU.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a block bit-shuffle technique that realigns bits across block elements to align into bytes for regular parallel stores; without external evidence, assessment focuses on plausibility and potential usefulness.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Claim asserts end-to-end throughput from GPU memory data to compressed GPU memory, implying single kernel handles both kernel and end-to-end throughput; without specifics, evidence is not established.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states exact throughput values for cuSZp on A100 and comparisons to cuSZ and cuSZx, but no independent verification data is provided in this context.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.6,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the result asserts cuSZp achieves highest average compression ratio in 16 of 24 cases and block smoothness CDFs support fixed length block encoding effectiveness.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that reconstructed data quality favors cuSZp over cuZFP with higher PSNR and SSIM at similar bit rates and avoids artifacts seen in some fixed-rate methods across RTM, CESM-ATM, and HACC, which is plausible but not independently verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "16": {
+    "credibility": 0.56,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text and general knowledge; no external sources consulted, likelihood remains plausible but uncertainty about specifics.",
+    "confidence_level": "medium"
+  }
+}

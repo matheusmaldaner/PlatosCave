@@ -1,0 +1,210 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests constructed by averaging independently grown randomized trees produce accurate classification and regression predictors that do not overfit as trees are added and can match or exceed adaptive boosting methods while being robust and computationally efficient",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Random forests converge almost surely to a limiting generalization error as the number of trees goes to infinity, so adding trees does not cause overfitting",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "An upper bound for classification generalization error depends on two quantities: the strength s (expected margin) of individual trees and the mean correlation rho-bar between trees, approximately PE* <= rho-bar*(1 - s^2)/s^2, highlighting a tradeoff between strength and inter-tree correlation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Random feature strategies minimize correlation while maintaining strength: Forest-RI selects a random subset of input variables at each node; Forest-RC uses random linear combinations of inputs at nodes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Forest-RI: at each node choose F input variables at random, grow unpruned CART trees on bootstrap samples, and aggregate by majority vote; common choices include F=1 or F=int(log2 M +1)",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Forest-RC: at each node generate F candidate features as random linear combinations of L randomly chosen inputs (coefficients uniform on [-1,1]) and split on best of those features; typical L=3, small F",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Out-of-bag (OOB) estimation using bootstrap left-out examples provides internal unbiased estimates of generalization error, strength, correlation, and variable importance without a separate test set",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical classification results on multiple UCI and synthetic data sets show random forests with random features achieve test error rates comparable to or better than Adaboost, often with much faster training (e.g., Forest-RI F=1 can be ~40x faster on high-dimensional data)",
+      "role": "Evidence",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Random forests are substantially more robust to label noise than Adaboost: with 5% random output noise, Adaboost error increases dramatically on many data sets while Forest-RI and Forest-RC show small or negligible increases",
+      "role": "Result",
+      "parents": [
+        0,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Permutation-based internal variable importance: permuting a variable's values in OOB data and measuring increase in misclassification quantifies variable importance and can guide verification via focused reruns",
+      "role": "Method",
+      "parents": [
+        0,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Theorem (convergence): by the Strong Law of Large Numbers, for random vectors governing tree construction the empirical vote proportions converge a.s. to their expectations, yielding the limiting error expression PX,Y(P_phi(h(X,phi)=Y) - max_j P_phi(h(X,phi)=j) < 0)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Derivation: express margin variance in terms of raw-margin correlations and standard deviations across random vectors, leading to var(mr) <= rho-bar * E_phi var_phi <= rho-bar*(1 - s^2) and hence the stated upper bound for PE*",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Implication of c/s^2 ratio: minimizing mean correlation rho-bar while maintaining or increasing strength s lowers the upper bound on generalization error and guides design of randomization",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        3,
+        7
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Empirical behavior of strength and correlation: in small datasets strength often plateaus for small F (e.g., F ~4) while correlation keeps rising, making small F near-optimal; in larger datasets both strength and correlation can grow and larger F may reduce error",
+      "role": "Result",
+      "parents": [
+        4,
+        5,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "OOB estimates are asymptotically unbiased and practically accurate for monitoring forest error, strength and correlation, and are computed by aggregating votes from classifiers whose bootstrap samples exclude the instance",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Additional empirical findings: random forests can handle many weak inputs (simulated 1000-input problem reached near-Bayes error with appropriate F), random linear combinations (Forest-RC) often outperform Forest-RI, and adding output randomization can improve regression performance",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Conjecture: Adaboost behaves like a random forest in the limit because its iterative weight-update operator may be ergodic with an invariant measure, implying Adaboost asymptotically samples weight configurations and effectively forms a randomized ensemble",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 17,
+      "text": "Regression bound: for regression forests the asymptotic forest MSE equals EX,Y(Y - E_phi h(X,phi))^2 and satisfies PE*(forest) <= rho-bar * PE*(tree), where rho-bar is the weighted correlation between tree residuals, emphasizing the same tradeoff of residual correlation and individual-tree error",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 18,
+      "text": "Limitations and caveats: the theoretical bounds are likely loose, strength estimates depend on forest decisions (multi-class ˆj), choice of F influences tradeoffs and may need tuning per data set, and certain adaptive bagging or boosting variants can reduce bias differently",
+      "role": "Limitation",
+      "parents": [
+        0,
+        2
+      ],
+      "children": null
+    }
+  ]
+}

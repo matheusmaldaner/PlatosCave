@@ -1,0 +1,185 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "LLVM-based selective instruction duplication may overestimate protection because faults occur at lower assembly level; evaluating and mitigating cross-layer deficiencies can improve real SDC coverage",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Soft errors (datapath single-bit flips) cause silent data corruption (SDC) in HPC; instruction duplication at compiler IR level is widely used to detect SDCs by duplicating computations and checking results",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We evaluate LLVM IR-level and assembly-level effectiveness of instruction duplication by injecting single-bit flips into destination registers of executed dynamic instructions using LLFI for IR and PIN for assembly across 16 benchmarks",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We design and implement Flowery, a set of LLVM-level compiler passes (eager-store, postponed-branch check, anti-comparison duplication optimization) applied after IR duplication to mitigate cross-layer deficiencies",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Experimental setup: 16 HPC benchmarks from Rodinia, NPB, MiBench; protection levels 30%, 50%, 70%, 100%; 3000 random injection campaigns per benchmark per level; X86 Intel platform",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Observation: SDC coverage and trade-offs between coverage and overhead are highly application-specific across benchmarks and protection levels",
+      "role": "Result",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: There is a substantial gap between SDC coverage measured at LLVM IR level and at assembly level; average coverage gap is 31.21% and the maximum observed gap reaches 82% (Stringsearch)",
+      "role": "Result",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: Instruction duplication at LLVM IR often fails to reach 100% SDC coverage at assembly level even under full (100%) IR protection, indicating unprotected assembly instructions remain after backend compilation",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Analysis claim: Root causes of cross-layer protection deficiency cluster into five categories: store penetration, branch penetration, comparison penetration, call penetration, and mapping penetration",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence: Distribution of deficiency cases across benchmarks: store penetration 39.1%, branch penetration 35.7%, comparison penetration 19.7%, call penetration 3.1%, mapping penetration 2.5%; store/branch/comparison account for ~94.5% of penetrations",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Flowery patch - eager store: move store operations before checker to force use of value in-register and avoid register spilling that introduces additional unprotected assembly moves",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Flowery patch - postponed branch condition check: record branch decision into a global variable and perform checks in each target basic block after the branch to detect flips that affect FLAGS and conditional jumps",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Flowery patch - anti-comparison optimization: isolate comparison instructions into separate basic blocks and add reachability checks to prevent compiler optimizations that remove duplicated comparison checks",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Evaluation result: Flowery measured at assembly level increases average SDC coverage substantially compared with original IR duplication evaluated at assembly level and closes most of the IR/assembly gap; average full-protection coverage increased from 76.74% (ID-Assembly) to 93.72% (Flowery)",
+      "role": "Result",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Overhead and cost: Flowery incurs small additional runtime overhead over original instruction duplication (average additional overheads reported ~2.71% overall; measured per-level averages range ~1.6% to 3.7%); compile-time transformation cost is negligible (~0.12s average)",
+      "role": "Result",
+      "parents": [
+        3,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Cross-layer evaluation reveals IR-level instruction duplication can be over-optimistic; Flowery (IR-level compiler patches) effectively mitigates most assembly-level protection deficiencies with low runtime and compile-time overheads, though call and some mapping penetrations remain less addressable at IR level",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        9,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

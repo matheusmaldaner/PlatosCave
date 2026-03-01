@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree classifier (J48/C4.5) can effectively predict diabetes status from the Pima Indian dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We applied the J48 decision tree implementation in WEKA to build a predictive model for diabetes",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        6,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dataset: Pima Indian Diabetes dataset of 768 female patients with 8 predictor variables and a binary class (tested_positive or tested_negative)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        14,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "WEKA J48 method: builds C4.5-style decision trees using normalized information gain, handles continuous and discrete attributes, missing values, and offers pruning",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Entropy of class distribution computed as 0.9328 (entropy(class) = 0.9328)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Information gain for Plasma glucose attribute = 0.1332, the highest gain reported and selected as root split",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Model evaluation (confusion-matrix-based): overall accuracy = 84.1146%",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Confusion matrix counts: True Positive = 468, True Negative = 178, False Positive = 32, False Negative = 90",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Compared to an existing method, the proposed method improved accuracy by 0.48 percentage points but increased model build time by 0.02 seconds",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Computed information gains for other attributes: BMI gain = 0.0724, Pregnancy gain = 0.0366 (lower than Plasma)",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Dataset limitation: several attributes contain zero values interpreted as missing (e.g., glucose=0 for 5 patients, BMI=0 for 11, blood pressure=0 for 28, skin fold=0 for 192, insulin=0 for 140)",
+      "role": "Limitation",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Removing records with missing values reduced the dataset to 392 cases (103 positive, 262 negative), altering class counts and available training data",
+      "role": "Result",
+      "parents": [
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Decision tree induction principle used: at each node the attribute with highest information gain is chosen to partition instances",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Context: Classification and prediction are common data mining tasks used to build models that predict disease status from medical diagnostic features",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Assumption: the first eight variables are sufficient predictors to infer the ninth class variable (diabetes test outcome)",
+      "role": "Assumption",
+      "parents": [
+        2,
+        11
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: J48 in WEKA yields a reasonably accurate diabetes prediction model (84.11%) but handling missing values is necessary to improve exactness and reliability",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

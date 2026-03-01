@@ -1,0 +1,156 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Given the claim asserts a design goal for a single kernel compressor to remove data movement overhead and equate end-to-end throughput with kernel throughput, but there is no external evidence or context provided about cuSZp; the evaluation relies on general GPU data movement and kernel launch overhead considerations.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a four stage per-block pipeline to improve parallelism and compression, which is plausible as a design pattern in block-based compressors, but no specifics or empirical evidence are provided.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim posits a specific lossy compression pipeline combining pre-quantization to integers with a single layer Lorenzo predictor per block as the sole lossy step.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.7,
+    "relevance": 0.7,
+    "evidence_strength": 0.0,
+    "method_rigor": 0.0,
+    "reproducibility": 0.0,
+    "citation_support": 0.0,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a fixed length per block encoding using a sign map, a per block maximum absolute quantized integer to decide a fixed bit width F_k, and storage of (F_k plus one) times block length divided by eight bytes, replacing variable length codes with a uniform block encoding scheme.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a GPU only hierarchical synchronization approach using exclusive prefix sums to compute per block offsets and final size without CPU involvement; while conceptually plausible within GPU synchronization literature, the statement lacks concrete evidence or established references in the provided claim context.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a technique to rearrange bits of fixed-length encoded integers into aligned bytes across block elements to enable efficient parallel memory writes and avoid irregular bit shifting.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.95,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No external verification performed; claims are taken at face value from the provided text.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that the cuSZp kernel delivers throughput around one hundred gigabytes per second or higher, is inline or comparable with state of the art lossy compressors like cuZFP and cuSZx, and that a single kernel design makes kernel throughput equal to end to end throughput.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, cuSZp is reported to achieve the top compression ratio in most cases among a set of 24, outperforming cuSZ and cuSZx in many instances while staying within a single kernel constraint.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim alone, the reported data quality and visualization advantages refer to comparisons among cuSZp, cuZFP, and cuSZx under similar compression settings, without external validation.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.52,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim provides precise throughput figures for a Global Synchronization microbenchmark on an A100 that purportedly validate a hierarchical in-kernel prefix-sum, but no sources or context are provided.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim plausibly reflects that local regions in scientific data can be smooth, which can make fixed length blocks effective and reduce gains from variable length encoding, though the degree of smoothness and the actual gains depend on data modality and encoding scheme.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes limitations related to hardware specificity and future expansion; plausibility is moderate given typical research practice, but cannot be verified from the provided text alone.",
+    "confidence_level": "medium"
+  }
+}

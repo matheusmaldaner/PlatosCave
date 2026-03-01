@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning classifiers (KNN, Random Forest, SVM) can be used to detect lung cancer from CT images and comparing their performance will identify the best model for early-stage lung cancer diagnosis",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset for training and testing was built primarily from the LIDC-IDRI lung CT scan collection (NIH-NCI) and augmented/validated with samples from AHRC and AIMS hospitals",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Image preprocessing applied included CLAHE, Wiener filtering, Adaptive Gaussian filtering, Gaussian and Gabor filtering, resizing from 512x512x3 to 256x, normalization and noise reduction",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Models trained: K-Nearest Neighbors (Euclidean distance, K neighbors), Support Vector Machine (max-margin hyperplane), and Random Forest (ensemble of decision trees with bootstrap and feature randomness)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Experimental protocol: 500 images sampled, two labels (NSCLC abnormal vs normal), 70% train / 30% test split, feature extraction and 5-fold cross-validation used for evaluation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "A small independent clinical validation set was obtained from AHRC and AIMS and evaluated under radiologist supervision to verify model findings",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Performance metrics computed included accuracy, precision, recall, F1-score, true positive rate, false positive rate, sensitivity, specificity, AUC, FAR and FRR",
+      "role": "Method",
+      "parents": [
+        2,
+        3,
+        4
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "SVM achieved the highest average accuracy of 95.06% across 5-fold cross-validation with average precision 0.95, recall 0.99, F1-score 0.98 and average FPR 0.26",
+      "role": "Result",
+      "parents": [
+        4,
+        6
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "KNN achieved average accuracy 86.89% across 5 folds with average precision 0.84, recall 0.98, F1-score 0.91 and average FPR 0.38",
+      "role": "Result",
+      "parents": [
+        6,
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Random Forest achieved average accuracy 81.96% across 5 folds with average precision 0.78, recall 0.98, F1-score 0.87 and average FPR 0.48",
+      "role": "Result",
+      "parents": [
+        6,
+        3,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "ROC-AUC values exceeded 0.99 for every class indicating strong class separability in the trained model",
+      "role": "Result",
+      "parents": [
+        7,
+        8,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Comparative evaluation indicates SVM outperforms KNN and Random Forest on this dataset and experimental setup due to better handling of complex, high-dimensional decision boundaries",
+      "role": "Claim",
+      "parents": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "The proposed SVM-based system attained higher accuracy (95.05%) than several prior published models (examples: Murphy et al. 84.00%, Messay et al. 82.66%, Gomathi et al. 76.90%, Kumer et al. 86.00%)",
+      "role": "Evidence",
+      "parents": [
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Clinical validation with hospital samples and radiologist oversight supports the claim that the diagnostic system can provide accurate and quick diagnosis for physicians",
+      "role": "Evidence",
+      "parents": [
+        5,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: SVM is the most accurate of the evaluated classifiers for early-stage lung cancer detection on the tested dataset; future work should expand and diversify the dataset to improve performance and reliability",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

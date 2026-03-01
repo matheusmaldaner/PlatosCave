@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network trained on ImageNet substantially improves object classification accuracy over previous methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We trained an 8-layer CNN (5 convolutional, 3 fully-connected) with 60 million parameters and 650,000 neurons on the 1.2 million image ILSVRC subset",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Using rectified linear units (ReLUs) accelerates training several times compared to saturating nonlinearities",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "A multi-GPU parallelization that partitions kernels across two GPUs with selective cross-GPU communication enables training larger networks that do not fit on one GPU",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Local response normalization (LRN) implementing lateral inhibition reduces top-1 error by 1.4 percent and top-5 error by 1.2 percent",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Overlapping pooling with stride 2 and window 3 reduces top-1 error by 0.4 percent and top-5 error by 0.3 percent compared to non-overlapping pooling",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Data augmentation using random 224 by 224 crops and horizontal reflections and PCA-based RGB lighting jitter reduces overfitting and lowers error (RGB augmentation reduces top-1 by over 1 percent)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Dropout applied to the first two fully-connected layers prevents co-adaptation, substantially reduces overfitting, and approximately doubles the iterations required to converge",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Network architecture details: input 224x224x3, conv1 96 11x11 stride 4, conv2 256 5x5, conv3 384 3x3, conv4 384 3x3, conv5 256 3x3, two 4096-unit fully-connected layers, final 1000-way softmax",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        4,
+        5,
+        7
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Training procedure: stochastic gradient descent with batch size 128, momentum 0.9, weight decay 0.0005, learning rate initialized 0.01 and reduced three times, trained for about 90 epochs on two GTX 580 GPUs taking five to six days",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Empirical evidence on CIFAR-10 shows a ReLU four-layer CNN reached 25 percent training error six times faster than an equivalent tanh network, enabling practical training of very large networks",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "The two-GPU scheme reduced top-1 and top-5 error rates by 1.7 percent and 1.2 percent respectively compared to a smaller single-GPU net",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "At test time we average softmax predictions over ten patches per image (five crops and their reflections) to improve accuracy",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "On ILSVRC-2010 test set the single network achieved top-1 error 37.5 percent and top-5 error 17.0 percent, substantially better than prior state of the art",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        6,
+        7,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "On ILSVRC-2012 ensembles and pretraining achieved further improvements: single net top-5 val 18.2 percent, five-net average 16.4 percent, ensemble of seven nets including pretraining achieved top-5 test 15.3 percent beating second-best 26.2 percent",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        3,
+        6,
+        7
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Depth, architectural choices (ReLUs, LRN, overlapping pooling), data augmentation, dropout, and GPU implementation together enable state of the art large-scale image classification and further gains are expected with larger models and more compute",
+      "role": "Conclusion",
+      "parents": [
+        13,
+        14,
+        2,
+        4,
+        5,
+        6,
+        7,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

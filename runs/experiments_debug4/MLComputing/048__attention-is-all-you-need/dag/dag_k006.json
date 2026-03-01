@@ -1,0 +1,183 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A sequence transduction model based solely on attention mechanisms (the Transformer) can match or exceed state-of-the-art translation quality while being more parallelizable and requiring significantly less training time than recurrent or convolutional architectures",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        7,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The Transformer architecture dispenses with recurrence and convolution, relying entirely on self-attention for computing input and output representations",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Encoder and decoder are stacks of N=6 identical layers; each encoder layer: multi-head self-attention then position-wise feed-forward; each decoder layer adds encoder-decoder multi-head attention; residual connections and layer normalization are applied around sub-layers",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Attention implementation uses scaled dot-product attention Attention(Q,K,V)=softmax(QK^T/sqrt(dk))V and multi-head attention with h parallel learned projections (h=8, dk=dv=64, dmodel=512) concatenated and linearly projected",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        10,
+        13,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Positional information is injected by adding sinusoidal positional encodings (sines and cosines of different frequencies) to input embeddings, matching embedding dimension so they can be summed",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Training regime: WMT datasets (EN-DE 4.5M pairs, EN-FR 36M pairs) with byte-pair/word-piece tokens, batching by token count, Adam optimizer with warmup learning rate schedule, dropout and label smoothing; trained on 8 P100 GPUs (base: 100k steps ~12h, big: 300k steps ~3.5 days)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Empirical results: Transformer (big) achieved 28.4 BLEU on WMT14 English-to-German and 41.0 BLEU on WMT14 English-to-French; base model also outperforms previous published single models and ensembles at lower training cost",
+      "role": "Result",
+      "parents": [
+        0,
+        5
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Transformer enables significantly more parallelization within training examples compared to recurrent models, reducing minimum sequential operations and training time",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Theoretical comparison: self-attention layers have per-layer complexity O(n^2*d) but require O(1) sequential operations and maximum path length O(1), whereas recurrent layers require O(n) sequential operations and path length O(n); convolutions require multiple layers to connect distant positions",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Transformer achieves these quality gains at a fraction of the estimated FLOPs/training cost of prior state-of-the-art models (reported comparisons across ByteNet, GNMT, ConvS2S, etc.)",
+      "role": "Evidence",
+      "parents": [
+        6,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Multi-head attention allows the model to attend jointly to information from different representation subspaces and mitigates averaging effects of single-head attention",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Ablation results: performance degrades when using single attention head or extreme numbers of heads; reducing attention key dimension dk hurts BLEU, indicating head count and dk matter for quality",
+      "role": "Evidence",
+      "parents": [
+        10,
+        3,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Replacing sinusoidal positional encodings with learned positional embeddings yields nearly identical development performance, but sinusoids may aid extrapolation to longer sequences",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Self-attention reduces effective resolution due to averaging attention-weighted positions, a potential limitation addressed by multi-head attention which provides multiple representation subspaces",
+      "role": "Limitation",
+      "parents": [
+        3,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: The Transformer is the first practical sequence transduction model relying entirely on self-attention, producing state-of-the-art translation quality while improving parallelizability and training efficiency",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        9
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Future directions: apply attention-only architectures to other modalities (images, audio, video), investigate local/restricted attention for very long inputs, and reduce sequentiality in generation",
+      "role": "Claim",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

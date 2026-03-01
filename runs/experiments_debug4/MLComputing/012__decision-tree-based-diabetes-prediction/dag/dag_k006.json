@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree classifier (J48/C4.5) can be used to predict diabetes status from the Pima Indian dataset with high accuracy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Data mining classification techniques are appropriate for medical disease prediction tasks such as diabetes detection",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We used the Pima Indian Diabetes dataset (768 female subjects, 8 input numeric attributes, binary class) as the data source",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We used the J48 implementation of C4.5 in the WEKA environment to build a decision tree model using entropy and information gain for attribute selection",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model evaluation used a confusion matrix reporting true positives, true negatives, false positives, false negatives and overall accuracy",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Classification aims to build a predictive model from labeled examples to assign class labels to unseen instances",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Dataset details: 768 records, attributes include pregnancy count, plasma glucose, diastolic BP, skinfold thickness, serum insulin, BMI, diabetes pedigree, age; class has 268 positives and 500 negatives",
+      "role": "Context",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "J48 builds a top-down decision tree using normalized information gain (difference in entropy) to choose split attributes and can prune after creation",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "WEKA Explorer GUI was used to load the ARFF dataset, select the J48 tree, run training and testing, and visualize the resulting tree",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Entropy for the class distribution was computed as 0.9328 and attribute information gains were computed to select the root attribute",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "A decision tree model was generated and visualized in WEKA for the diabetes prediction task",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Experimental evaluation produced overall accuracy 84.1146%, with TP=468, TN=178, FP=32, FN=90, and error rate 15.8854%",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Sample preprocessing note: dataset contains zero values indicating missing measurements (e.g., 5 glucose=0, 11 BMI=0, 28 diastolic BP=0, 192 skinfold=0, 140 insulin=0)",
+      "role": "Limitation",
+      "parents": [
+        6
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Calculated attribute gains: plasma glucose gain 0.1332, BMI gain 0.0724, pregnancy gain 0.0366, leading to selection of plasma glucose as a strong splitting attribute",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Compared to a referenced existing method, the proposed J48 model increased accuracy by 0.48% (from 83.63% to 84.1146%) while increasing model build time by 0.02 seconds",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "After deleting records with missing values, only 392 complete cases remain (103 positive, 262 negative), so missing value handling is necessary for exact prediction and future work",
+      "role": "Conclusion",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

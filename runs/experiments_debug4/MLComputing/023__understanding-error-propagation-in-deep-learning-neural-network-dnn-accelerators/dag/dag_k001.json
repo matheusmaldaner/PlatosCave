@@ -1,0 +1,196 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Characterize how transient soft errors propagate from DNN accelerator hardware to application outputs and develop cost-effective protection techniques for DNN systems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Modified a Tiny-CNN based DNN simulator to inject transient single-bit faults mapped to accelerator microarchitectural components and ran large-scale fault injection across four convolutional DNNs (AlexNet, CaffeNet, NiN, ConvNet)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Studied datapath latches across canonical PE ALU model and buffer components using Eyeriss microarchitecture projected to 16nm; injected 3,000 faults per latch/component and measured Silent Data Corruption (SDC) using four DNN-specific SDC definitions",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Result: SDC probability depends strongly on data type, network topology, layer type/position, bit position of fault, and data reuse in accelerator buffers",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Result: Datapath per-bit sensitivity — for floating point types high-order exponent bits dominate SDCs; for fixed-point types integer bits (high-order) dominate SDCs; mantissa and sign bits are much less sensitive",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        8,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Value deviation effect — faults that produce large numeric deviations from the normal small-magnitude clustered activations are far more likely to cause SDCs than small deviations",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: Buffer faults (case study Eyeriss) can produce FIT rates orders of magnitude higher than datapath faults because of buffer size and reuse; some buffers (global buffer, filter SRAM) can push accelerator FIT above safety limits",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Claim: Choosing data types with just-enough dynamic range reduces SDC vulnerability and can lower datapath FIT by more than an order of magnitude compared to overly wide formats",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Claim: SDC sensitivity is asymmetric across bits enabling selective protection of the small set of high-impact bits/latches to achieve large FIT reductions with modest area overhead",
+      "role": "Claim",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Claim: Normalization layers (e.g., LRN) and pooling/ReLU provide masking that reduces error propagation and SDC probability, so layer type and position affect resilience",
+      "role": "Claim",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Claim: Dataflow and added buffer structures to exploit reuse increase vulnerability; accelerator designers must consider reliability when adding buffers and novel dataflows",
+      "role": "Claim",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Method/Technique: Symptom-based Error Detector (SED): learn per-layer activation value ranges from representative fault-free runs (with 10% cushion) and asynchronously check global buffer activations at layer boundaries to detect SDC-causing faults",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Technique/Claim: Selective Latch Hardening (SLH): prioritize hardening of the most SDC-sensitive latches/bits and combine complementary hardened-latch designs to achieve large FIT reductions with modest area overhead",
+      "role": "Claim",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Result: SED evaluation across FLOAT and FLOAT16 and 32b fixed point on three ImageNet networks yields average precision ~90.2% and recall ~92.5%, reducing Eyeriss FIT from 8.55 to 0.35 (FLOAT) and 2.63 to 0.79 (FLOAT16)",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Result: SLH evaluation shows protecting a small fraction of most-sensitive latches can reduce latch FIT by 100x with ~20-25% latch area overhead using mixed hardening; combined with buffer protections SDC rates can be brought within ISO 26262 targets",
+      "role": "Result",
+      "parents": [
+        12,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Error resilience in DNN systems can be substantially improved at practical cost by (1) using appropriate data types, (2) leveraging layer masking and symptom detection, and (3) selectively hardening sensitive datapath latches and protecting critical buffers",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        9,
+        10,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

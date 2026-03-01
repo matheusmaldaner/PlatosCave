@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large-scale empirical comparison of ten supervised learning algorithms and calibration methods will reveal their relative performance across multiple performance metrics and data sets",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We evaluate ten supervised learning methods (SVMs, neural nets, logistic regression, naive bayes, memory-based learning, random forests, decision trees, bagged trees, boosted trees, boosted stumps) across eleven binary classification problems",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "For each algorithm we thoroughly explore parameter and variation spaces (many kernels and regularization for SVMs, many hidden unit/momentum/epochs for ANNs, tree types and pruning for DTs, bagging/boosting steps, K values for KNN, 1024-tree random forests, ~2000 models per trial)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Experimental procedure: on each problem use 5-fold CV on 5000 randomly chosen training cases (4000 train, 1000 validation for calibration/selection), report performance on large held-out test sets, average over five trials",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "We use eight performance metrics grouped as threshold metrics (accuracy, F-score, lift), ordering/rank metrics (ROC area, average precision, precision/recall break-even), and probability metrics (squared error, cross-entropy); normalize scores per problem/metric to [0,1] using baseline and best observed",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "We evaluate calibration methods (Platt Scaling sigmoid and Isotonic Regression using PAV) by calibrating model outputs on the 1k validation set before final testing",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Pre-calibration average results: bagged trees, random forests, and neural nets give the best average performance across all eight metrics and eleven problems",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Calibration behavior: Platt Scaling and Isotonic Regression change probability metrics; Platt preserves ordering, Isotonic can introduce ties and change ordering metrics",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Post-calibration results: after Platt scaling boosted trees predict better probabilities than all other methods and are first overall; calibrated random forests and bagged trees also perform well",
+      "role": "Result",
+      "parents": [
+        6,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Calibration effects on specific methods: calibration dramatically improves probability metrics for boosted trees, SVMs, boosted stumps, and naive bayes; neural nets are already well calibrated and can be slightly hurt by calibration; KNN is largely unaffected",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Ordering and threshold metric patterns: boosted trees, random forests, and bagged trees excel on ordering metrics (ROC/AP/BEP); calibrated boosted trees dominate probability metrics; ensembles outperform single decision trees and boosted stumps on average",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Per-problem variability: no universal best algorithm - top methods perform poorly on some problems and weaker-average methods can be best on particular metrics or datasets (e.g., boosted stumps or logistic regression best on some metrics for two datasets)",
+      "role": "Claim",
+      "parents": [
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Bootstrap robustness analysis: resampling problems and metrics 1000 times shows boosted decision trees rank 1st about 58% of the time and random forests 1st about 39% of the time, indicating ensembles of trees dominate rankings under sampling variability",
+      "role": "Evidence",
+      "parents": [
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Model selection sensitivity: selecting models using 1k validation sets yields average drop in normalized score (~0.023) compared to optimal selection on the test set; high-variance models (neural nets, boosted trees) suffer larger drops than low-variance models (random forests)",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Final conclusions: calibrated boosted trees are best overall on these problems and metrics, followed by random forests and bagged trees; neural nets remain competitive especially without calibration; naive bayes, logistic regression, single trees, and boosted stumps perform worst on average; calibration is an effective way to obtain good probability estimates from ordering-strong models",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        10,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

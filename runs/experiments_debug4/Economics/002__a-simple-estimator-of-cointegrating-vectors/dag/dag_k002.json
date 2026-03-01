@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Simple dynamic OLS/GLS estimators (DOLS/DGLS) can efficiently estimate cointegrating vectors in systems with deterministic components and variables of differing integration orders and thereby be used to identify long-run economic relations (e.g., money demand)",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Triangular representation of multivariate I(d) processes is derived and used to motivate regression-based estimators that include leads and lags of first differences and deterministic terms",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Define dynamic OLS (DOLS) as OLS of cointegrating residual regression including contemporaneous levels, leads/lags of first differences and constant; dynamic GLS (DGLS) feasible GLS analog using estimated serial-correlation filter",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Assumptions: Errors Et are martingale differences with finite moments; lag polynomials and filters are summable; model permits general I(d) with polynomial deterministic trends and at least one cointegrating relation",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Theory/Result: Under assumptions the DOLS and feasible DGLS estimators are asymptotically efficient, asymptotically mixed normal for coefficients on integrated regressors, and Wald tests of restrictions on cointegrating vectors have asymptotic chi-squared distributions",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: Factorize Gaussian conditional likelihood using two-sided triangular representation and condition on leads/lags to obtain Gaussian MLE motivation for DOLS/DGLS",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Claim: The triangular two-sided representation yields regression equations where errors are orthogonal to regressors at all leads and lags, justifying OLS/GLS estimation and conditional inference",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Monte Carlo evidence: In many designs DOLS and DGLS are unbiased in cases where SOLS is biased, but in designs mimicking U.S. money dynamics DOLS often has lower RMSE and better finite-sample performance than other efficient estimators; performance sensitive to truncation of leads/lags and serial-correlation correction",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Monte Carlo result: Wald/t-statistic distributions can have heavier tails and asymptotic chi-square/normal approximations understate finite-sample dispersion; autoregressive spectral estimators for covariance (used in DOLS2) performed better than kernel estimators in some highly autocorrelated designs",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Application: Use DOLS/DGLS and other estimators to estimate long-run U.S. nominal Ml demand relation over 1900-1989 and postwar subsamples, relating log M1 to log price, log income and short-term interest rate",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Claim: Finite-sample bias in DOLS/DGLS arises when the true filter d(L) is high-order and only a truncated number of leads/lags are used; increasing leads/lags reduces bias but can increase dispersion",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Limitation: Estimators require prior or tested knowledge of integration orders and which variables cointegrate; pretesting and estimation of many nuisance parameters can introduce additional finite-sample uncertainty",
+      "role": "Limitation",
+      "parents": [
+        4,
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical result (full sample 1900-1989): DOLS full-sample 95% confidence intervals for income elasticity = (0.88, 1.06) and for interest rate semielasticity = (-0.127, -0.075); estimates consistent with stable long-run Ml demand",
+      "role": "Evidence",
+      "parents": [
+        9,
+        4
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Empirical result (postwar instability): Estimates based on postwar data alone are unstable and imprecise because postwar series dominated by a single low-frequency trend (income and interest rise, real balances roughly flat), yielding strong multicollinearity and large sampling uncertainty",
+      "role": "Evidence",
+      "parents": [
+        9,
+        12,
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion and recommendation: Over long spans (1900-1989) evidence supports a stable long-run Ml demand with income elasticity near one and interest semielasticity near -0.10; researchers should use long samples when possible and consider multiple asymptotically efficient estimators (DOLS favored in the paper) and cautious inference due to finite-sample distortions",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13,
+        8,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

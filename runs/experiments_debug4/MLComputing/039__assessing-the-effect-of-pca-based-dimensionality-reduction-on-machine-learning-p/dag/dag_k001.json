@@ -1,0 +1,186 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "PCA-based dimensionality reduction improves machine learning performance and efficiency for estimating soil moisture from hyperspectral optical imaging data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Hyperspectral optical imaging produces high-dimensional, strongly correlated spectral data that hinder model training and generalization (curse of dimensionality)",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Principal Component Analysis (PCA) is a simple, interpretable, and computationally efficient linear method to transform correlated spectral features into uncorrelated components ordered by explained variance",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "A Random Forest regression model can be used to quantify predictive performance for estimating continuous soil moisture from hyperspectral features",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The dataset contains 679 samples, each with soil moisture target and 125 hyperspectral bands recorded from 450 to 950 nm, collected from a bare-soil field campaign with reference moisture measured by a TRIME-PICO sensor",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "PCA was applied after standardizing spectral features with StandardScaler and implemented with sklearn.decomposition.PCA; components were selected to retain more than 99 percent of total variance",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Data were split into training and test sets with test size 0.3 and fixed random state 42 to ensure reproducibility",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Exploratory analysis showed soil moisture values ranged approximately 25 to 43 percent and were concentrated near 32 percent, indicating a moderately narrow target distribution",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "RandomForestRegressor was trained with 100 trees, random state 42, and performance measured by coefficient of determination R2",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Covariance matrix analysis, eigenvalue distribution, and a scree plot all indicate that the first two principal components capture the dominant variance in the data",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Standardization and PCA projection enable lower-dimensional visualization that can reveal structure and separation related to soil moisture",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Variance ratios: PC1 = 0.9889, PC2 = 0.0064; cumulative variance after PC2 = 0.9953 (> 99 percent), while PC3 and higher contribute negligible variance",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Projection onto PC1 and PC2 shows clearer clustering of samples by soil moisture than higher-component projections (e.g., PC2 vs PC3), indicating improved separability in two-component space",
+      "role": "Evidence",
+      "parents": [
+        7,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "The Random Forest trained on PCA-transformed features achieved R2 = 0.947, explaining approximately 94.7 percent of soil moisture variance",
+      "role": "Result",
+      "parents": [
+        8,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: PCA reducing 125 bands to two components retained over 99 percent variance, reduced redundancy, improved visualization and computational efficiency, and preserved strong predictive accuracy for soil moisture estimation",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation and future work: Results are demonstrated on a single ground dataset and baseline PCA; evaluation of alternative feature extraction methods and across diverse sensors and scenarios is needed",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

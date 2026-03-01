@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Automatically identifying and prioritizing input-sensitive \"incubative\" instructions for selective instruction duplication (SID) improves SDC coverage of HPC applications when they run with multiple program inputs",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing SID methods evaluate protection effectiveness using a single reference input and assume program error-resilience is similar across inputs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "A small subset of instructions, called incubative instructions, exhibit drastically different error-propagation behaviors across inputs and cause large losses in SDC coverage when inputs change",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "MINPSID, an automated framework, identifies incubative instructions via static analysis plus guided input search and re-prioritizes them in SID instruction selection to improve multi-input SDC coverage",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "We model transient hardware faults as single-bit flips injected to LLVM IR instruction return values and measure per-instruction SDC probabilities and program-level SDC coverage via LLVM-level fault injection (LLFI)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "We evaluate with 11 CPU benchmarks (Rodinia, FFT, HPCCG, Xsbench), 50 random valid inputs per benchmark (with filters), and protection budgets of 30%, 50%, 70% using Knapsack-based SID selection",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        9,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Fault-injection experiments show existing SID's expected SDC coverage (measured on reference input) can drop drastically across inputs, e.g., average coverage falls from 96.12% to 58.76% over 11 benchmarks",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Observed behavior: in some benchmarks increasing SID protection level can paradoxically decrease minimum measured SDC coverage across inputs",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Analysis shows incubative instructions have near-zero measured benefit (SDC probability times cost) on reference input but much higher SDC probability on other inputs, so they are not selected by SID yet cause most coverage loss",
+      "role": "Evidence",
+      "parents": [
+        2,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Quantitative incubative-instruction statistics: incubatives range from 6.20% to 32.09% of static instructions (average 15.79%) and are responsible for at least 97% of SDC coverage loss",
+      "role": "Result",
+      "parents": [
+        2,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "MINPSID input-search engine uses a genetic algorithm that mutates/crosses inputs and compares dynamically weighted CFGs (basic-block execution counts) to prioritize inputs that exercise different control flows",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "MINPSID identifies incubative instructions by running per-instruction FI on the generated inputs and comparing per-instruction SDC probabilities to prior inputs, then updates incubatives' benefits to observed upper bounds before running Knapsack",
+      "role": "Method",
+      "parents": [
+        3,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Evaluation results: MINPSID reduces SDC coverage loss substantially (mitigates 97% of baseline loss on average), narrows coverage variance across inputs, and provides more conservative expected coverage",
+      "role": "Evidence",
+      "parents": [
+        3,
+        11,
+        5
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "MINPSID finds 45.60% more incubative instructions than a random input-search baseline within the same time budget, improving identification efficiency and reducing required FIs",
+      "role": "Result",
+      "parents": [
+        3,
+        10,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Overhead: MINPSID incurs a one-time analysis cost (average 63.71 minutes per benchmark on the authors' machines) dominated by per-instruction FIs and input search; existing SID preparation is ~3.87 minutes",
+      "role": "Result",
+      "parents": [
+        11,
+        5
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Re-prioritizing incubative instructions identified by guided input search effectively hardens SID against multi-input SDC-coverage loss, with acceptable one-time analysis cost and potential for parallelization and future extension to accelerators",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

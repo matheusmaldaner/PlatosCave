@@ -1,0 +1,900 @@
+--- Page 1 ---
+Expected Growth Criterion: An Axiomatization
+Joshua Lawson
+December 20, 2022
+Abstract
+I provide necessary and suﬃcient conditions for an agent’s preferences to be represented by a
+unique ergodic transformation. Put diﬀerently, if an agent seeks to maximize the time average
+growth of their wealth, what axioms must their preferences obey? By answering this, I provide
+economic theorists a clear view of where ”Ergodicity Economics” deviates from established models.
+JEL CLassiﬁcation: C02, C46, D81, G00, G11
+Keywords: Intertemporal Choice, Kelly Criterion, Growth Optimal, Dynamics, Ergodicity
+1
+Introduction
+In Meder et al. (2021), neurobiologist Oliver Hulme and his colleagues reported strong evidence that
+agents dynamically adapt their utility functions such that changes in wealth are rendered ergodic.
+When facing a multiplicative dynamic process, the subjects’ implied utility functions were approxi-
+mately logarithmic. When faced with an additive process, their utility equalled their wealth. In the
+language of economics, it was as if the agents suddenly changed from being risk averse to risk neutral.1
+Proponents of a new entrant to decision theory, Ergodicity Economics (EE), claimed these results as
+proof positive that agents prefer to maximize the time-average growth rate of their wealth and that
+the predictions of their null model far outperform those of classical expected utility theory (EUT).
+This assertion has been met with strong criticism. Skeptics have argued that the predictions of EE
+have been unfairly compared to those of static EUT. Notably, Doctor, Wakker, and Wang (2020a) and
+1Appendix A provides a very succinct description of the experiment. Ideally, one would be more familiar with the
+experiment before proceeding.
+1
+arXiv:2212.09617v1  [econ.TH]  19 Dec 2022
+
+
+--- Page 2 ---
+Doctor, Wakker, and Wang (2020b) posit that the results should be compared normatively to those of
+multi-period expected utility and descriptively to those of dynamic ambiguity aversion. This raises two
+fundamental questions, (1) axiomatically, what does EE require and (2) to which theory of decision
+making should it be compared? Therefore, my primary contribution is to axiomatize ergodicity eco-
+nomics as described in Peters and Adamou (2021) and applied in the Copenhagen Experiment (CE),
+thus supplying terra ﬁrma to future criticisms. Additionally, appendix B takes the advice of Doctor,
+Wakker, and Wang (2020a) and compares the foregoing experiment to multi-period EUT.
+1.1
+Ergodicity Economics
+Starting in 2012, German Physicist Ole Peters and his colleagues at the London Mathematical Labo-
+ratory (LML) began publishing a collection of articles with an ambitious goal: ”a re-write of economic
+theory.”2 Their project obtains its moniker from the center piece of its purported insights, ergodicity
+- a characteristic of dynamic processes they claim is untreated in the history of decision theory. In
+Peters (2019), the author deﬁnes an ergodic process f as one where
+lim
+t→∞
+1
+T
+Z T
+0
+f(t)dt =
+Z
+Ω
+f(ω)dµ,
+(1)
+i.e., a process where the time average converges to it’s expected value. Beginning with this deﬁnition
+and a seemingly innocuous assumption that agents seek to maximize the time average growth rate
+of their wealth, they argue that expected utility theory as a whole is nonsensical and therefore so is
+anything built on top of it. Unsurprisingly, this has been met with incredulity from most economists.
+While most of the arguments in Peters (2019) are of a philosophical nature, a set of more technical
+arguments can be found in Peters and Adamou (2021). In that article, the authors assume an agent’s
+wealth evolves temporally according to an exogenously deﬁned stochastic process and that agents have
+the same objective: maximize the time average growth rate of their wealth. They go on to show how
+one can map between utility functions and stochastic processes.
+Doctor, Wakker, and Wang (2020a) and its supplementary appendix retort that at best, the claims
+by Peters and company are well known across decision theory and that at worst, they stem from
+confusion about what EUT does and does not require. A staunch advocate of EE might quip that
+their paradigm makes any extension of utility theory beyond the 18th century unnecessary. Indeed,
+this is even alluded to in Peters and Adamou (2021). Alternatively, one could take the position that
+2https://ergodicityeconomics.com/
+2
+
+
+--- Page 3 ---
+they wish to minimize arguments that rely heavily on psychology and stretch the boundaries of what
+can be done with observable data. And yet others will be curious how after we have shifted to this new
+paradigm, how can we reincorporate the notions of risk aversion, impatience, and other psychological
+factors to obtain sharper predictions?
+This new framework oﬀers tantalizing opportunities, a full
+exposition of which is beyond the scope of this manuscript.
+2
+Mathematical Preliminaries
+2.1
+Preference Relations
+Given a nonempty set X with elements x, y, let ⪰be a binary relation on X representing the statement
+”is at least as preferred as”. Let ∼denote indiﬀerence, that is, the symmetric part of ⪰, where x ∼y
+if x ⪰y and y ⪰x. I will say ⪰is degenerate if x ∼y∀x, y ∈X. I will call ⪰a complete preorder if it
+satisﬁes the usual properties of reﬂexivity, transitivity, and completeness. For any x, y, z ∈X :
+1. Reﬂexive: x ⪰x
+2. Transitive: x ⪰y and y ⪰z =⇒x ⪰z.
+3. Complete: Either x ⪰y, y ⪰x, or both.
+Additionally, I will say a function u cardinally represents ⪰if it is unique up to a positive aﬃne
+transformation and x ⪰y ⇐⇒u(x) ≥u(y)∀x, y ∈X.
+2.2
+Stochastic Wealth Processes
+In this paper I will suppose time is inﬁnite but discrete, t ∈T := [0, 1, ...] and I assume the state space
+Ωadmits a ﬁltration F := {Ft}t, where F0 := {Ω, ∅} and F0 ⊂F1 ⊂... ⊂F. Let us denote the agent’s
+initial endowment as x0 ∈X ⊆R and suppose her wealth at time t is an Ft measurable random variable
+xt : Ω→R. Then deﬁne the F-adapted stochastic wealth process (SWP), x := {x0, x1, ...} = {xt}t and
+let X denote the space of all stochastic wealth processes. Finally, I suppose each agent has preferences
+⪰deﬁned on X.
+3
+
+
+--- Page 4 ---
+2.3
+Growth Rates
+For an SWP, deﬁne the rate of change,
+˜r(t) := xt −x0
+t
+(2)
+Deﬁne the sample average rate of change,
+ˆr(t, N) := 1
+N
+N
+X
+i=1
+xt(ωi) −x0
+t
+,
+(3)
+where xt(ωi) denotes a particular realization of the random variable xt. Additionally, deﬁne the time-
+average rate of change,
+¯r := lim
+t→∞ˆr(t, N)
+(4)
+and the expected rate of change,
+E[r(t)] := lim
+N→∞ˆr(t, N).
+(5)
+Neither limit in the preceding equations is guaranteed to exist, however, for the moment we will pretend
+they do. As a speciﬁc example to illustrate both ergodicity and our deﬁnition of growth rates, suppose
+xt = egt+σϵ where g, σ ∈R and ϵ ∼N(0, 1). Then ˜r = egt+σϵ−x0
+t
+and
+E[r(t)] = 1
+t
+lim
+N→∞
+1
+N
+N
+X
+i=1
+egt+σϵ −x0
+(6)
+= 1
+t E[egt+σϵ −x0]
+(7)
+= 1
+t [egt+ σ2
+2 −x0]
+(8)
+4
+
+
+--- Page 5 ---
+Furthermore,
+¯r = lim
+t→∞
+egt+ σ2
+2 −x0
+t
+→∞
+(9)
+Therefore ¯r ̸= E[r(t)] and the transformation g(xt) := xt is not ergodic. In contrast, suppose f(xt) :=
+ln(xt). Then f(xt) = gt + σϵ =⇒˜r = gt + σϵ −ln(x0) and
+E[˜r] = 1
+t E[gt + σϵ −ln(x0)]
+(10)
+= g
+(11)
+Moreover,
+¯r = lim
+t→∞
+gt + σϵ −ln(x0)
+t
+(12)
+= g
+(13)
+=⇒¯r = E[r(t)].
+(14)
+Thus, the function f is an ergodic transformation of the underlying process. If f(xt) = ln(xt) then
+maximizing either the time average or expected rate of change will produce the same optimal strategy.
+One can think of an ergodic transformation as the special function that isolates the coeﬃcient of
+time for a certain stochastic process. If you remove the concept of ergodicity, the previous example
+is well known and spawned a contentious literature. In Markowitz (1976), the author suggested that
+portfolio analysts not present to investors the portion of the mean-variance eﬃcient frontier that lay
+above the approximate maximum geometric growth rate because these portfolios have greater short-
+term volatility and less long-run return. At the time, many used log-wealth maximization to claim
+that only the log transformation was a rational utility function.
+This argument was a variant of
+Samuelson’s ”fallacy of large numbers” (Samuelson (1963)) and was strongly refuted in Samuelson
+5
+
+
+--- Page 6 ---
+(1971) and Samuelson (1979). Some interpreted Samuelson’s fallacy to mean that if an agent’s utility
+function for a single period game was not logarithmic then it could not be for a repeated game, e.g.
+Pratt and Zeckhauser (1987) and Kimball (1993). Ross (1999) then showed how rejecting a single bet
+but accepting a sequence of bets can be perfectly rational in EUT, while Benartzi and Thaler (1999)
+argued that the irrationality of Samuelson’s colleague is not attributable to a fallacious use of the law
+of large numbers but myopic loss aversion and explainable using the prospect theory of Kahneman and
+Tversky. Regardless, log-wealth maximization became synonymous with growth optimal. Long (1990)
+showed how in the absence of arbitrage, the growth optimal portfolio (GOP) has the special property
+of being the numeraire that turns the prices of risky assets into martingales with respect to historical
+probability measures. Attempting to reconcile the works of Kelly and Samuelson, Carr and Cherubini
+(2020) generalized growth optimality beyond maximizing expected log of wealth. They showed that
+under suitable dynamics, maximizing the power and square-root utility functions can also correspond
+to growth optimality. However, until Peters and his colleagues, no one had pointed out the key feature
+that all of these transformations share - they are ergodic transformations of the underlying process.
+3
+Axiomatization
+As a reminder, agents have preferences denoted by ⪰and deﬁned on X, the space of all SWPs. Al-
+though the agent is considering dynamic processes, I am not assuming she is making multiple decisions.
+This is in contrast to the classical representations of Koopmans, Samuelson (discounted utility), and
+Kreps & Porteus (temporal vNM) where agents have preferences for intertemporal consumption and
+timing of uncertainty resolution. An outline of the road ahead is the following: I assume that all un-
+certainty is objective and resolves at an unknown point in the future. Placing minimal restrictions on
+the agents preference relation, I arrive at a representation similar to vNM. Finally, I impose what I call
+the ergodicity axiom (EA), which delivers the desired result. There is almost certainly a relationship
+between the EA and the temporal consistency axiom of Kreps and Porteus (1978), which should be
+explored in the future.
+The ﬁrst axiom I impose on preferences is a standard consistency axiom,
+Axiom 3.1 (Consistency). ⪰satisﬁes completeness, transitivity, and reﬂexivity on X.
+Next, deﬁne the mixture operator h : X × X × (0, 1) →X as h(x, x′; α) := {(αxt + (1 −α)x′
+t)t}t. The
+next axiom is critical to ensure continuity of our functional. That is,
+6
+
+
+--- Page 7 ---
+Axiom 3.2 (Archimedian). Suppose x ≻x′ ≻x′′. Then ∃α, β ∈(0, 1] such that h(x, x′′, α) ≻x′ ≻
+h(x, x′′, β).
+This is a restriction on how ”good” or ”bad” a SWP can be. To highlight it’s features, it is helpful to
+think of the extreme case where α is some tiny ϵ and β as being 1 −ϵ. Then x′ ≻h(x, x′′, β) says that
+when considering three processes ranked sequentially, the inferior SWP cannot be so bad that mixing
+a tiny amount of it with the superior SWP makes the combination less preferred than the intermediate
+process. A similar logic applies to mixing a tiny amount of the superior with the inferior. Viewing this
+another way, it is as if no matter what process you give me, I can ﬁnd two other ones ”close enough”
+such that axiom 3.2 holds. The next axiom restricts the impact of mixing on the ranking of processes,
+Axiom 3.3 (Independence). x ⪰x′ =⇒h(x, x′′; α) ⪰h(x′, x′′; α).
+This seems to restrict how diversiﬁcation can impact the agents preferences. To see this, suppose
+there are three assets A, B and C, whose changes over time are encoded by the stochastic processes
+xA, xB, xC ∈X. Then the axiom says that if you prefer asset A to B then you must also prefer the
+portfolio of A and C to the portfolio of B and C. Whatever beneﬁt you received from mixing asset C
+with asset A must be at least as great as the beneﬁt you receive from mixing it with B. Now we can
+state a helpful lemma.
+Lemma 3.1. ⪰on X satisﬁes axioms 3.1 - 3.3 ⇐⇒
+1. x ≻x′ and 0 ≤α < β ≤1 =⇒h(x, x′; β) ≻h(x, x′; α)
+2. x ⪰x′ ⪰x′′ and x ≻x′′ =⇒∃unique α∗∈[0, 1] such that x′ ∼h(x, x′′, α∗)
+Proof. See Appendix C.
+The previous lemma is critical in proving the following,
+Theorem 3.2 (Mixture Space Theorem). The complete preorder ⪰on mixture space, X satisﬁes
+axioms 3.1 and 3.3 ⇐⇒∃linear functional L : X →R such that x ⪰x′ ≡L(x) ≥L(x′).
+Proof. See Appendix D.
+7
+
+
+--- Page 8 ---
+From the proof of Lemma 3.1 and Theorem 3.2 we ﬁnd that
+L(x′′) =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+α,
+x′′ ≻x ≻x′
+α,
+x ≻x′′ ≻x′
+α
+α−1, x ≻x′ ≻x′′
+(15)
+where α = sup{α0 ∈[0, 1] : x′ ≻h(x, x′′; α0)}. If we can show that L(x) = E[x], then we have
+a representation similar to that of vNM. However, E[x] =
+R
+supp(Φ)
+xdΦ is not presently well deﬁned.
+For one, we would need to take the expectation with respect to some point in time. Then we would
+need to show Lt(x) = Et[x], and consequently, we would need to deﬁne Lt. This can be done in
+the following manner.
+For each time t ∈T , and each x ∈X, deﬁne the ﬁnite stochastic wealth
+process xt := {x0, x1, ..., xt}. Let X t denote the collection of all SWPs truncated at time t and suppose
+X t ⊂X. Now, we can retain the consistency axiom but strengthen axioms 3.2 and 3.3 such that
+they hold for all t. Then the mixture space theorem still applies and we could deﬁne Lt analogously
+to equation 15.
+These ﬁnite SWPs have associated joint probability distributions Φt and now we
+could try and show that Lt(x) =
+R
+supp(Φt)
+xdΦt, where, abusing notation, x is taken to be a t period
+process. But we come to another roadblock. We have made no restrictions on how our SWPs behave,
+therefore just as in equations 4 and 5, neither limit is guaranteed to exist. To overcome this, deﬁne
+L2(Ω) := {f :
+R
+Ft
+f 2(xt)dΦt < ∞∀t} to be the set of all Lebesgue square-integrable and monotonic
+functions f. Now our expectation operator is well deﬁned and if we can show that Lt ≡Et then we
+have a form similar to vNM. Next I impose the following,
+Axiom 3.4 (Monotonicity). For any x, x′ ∈X, if xt(ω) ≥x′
+t(ω)∀ω ∈Ft, t ∈T then x ⪰x′.
+In the context of wealth, this seems rather intuitive and nonrestrictive; I am assuming that an
+agent would prefer more money to less. Suppose y := f(x) = {f(x0), f(x1), ...} and y′ := f(x′) =
+{f(x′
+0), f(x′
+1), ...}. Then by axiom 3.2, y, y′ ∈X and by monotonicity, x ⪰x′ ⇐⇒y ⪰y′. Combining
+the previous axioms, our current setup would be nearly identical to EUT. Our agent would be able to
+pick from any number of monotonic functions and then left searching for her risk preferences. However,
+the next postulate ensures this is not the case.
+Axiom 3.5 (Ergodicity). x ≻x′ ⇐⇒
+lim
+t→∞
+f(xt(ω))−f(x0)
+t
+> lim
+t→∞
+f(x∗
+t (ω))−f(x0)
+t
+This axiom states that when ranking two processes, the agent considers how her wealth will grow over
+the long run. She considers how her wealth is expected to change over time and ranks stochastic wealth
+8
+
+
+--- Page 9 ---
+processes according to the time average growth rate of some transformation of the SWP. Currently, it
+may seem that f is arbitrary, and that we have done no better than the expected utility paradigm.
+But as the next section illustrates, this is not the case. Now we can state the main theorem,
+Theorem 3.3 (Ergodic vNM). ⪰on X satisﬁes axioms 3.1 - 3.5 ⇐⇒
+1. x ⪰x′ ⇐⇒E[f(xt)] ≥E[f(x′
+t)]
+2. E[f(xt)] = lim
+t→∞
+f(xt)−f(x0)
+t
+Proof. See Appendix E
+Denoting the transformation as f instead of u is not coincidental. As formulated, the function says
+nothing about an agent’s risk preferences and it is silent as to whether or not the agent prefers early
+resolution of uncertainty to later. Therefore calling it a utility function does not seem to be in keeping
+with the spirit of what a utility function encapsulates. Normatively, it’s use is easily justiﬁed - I assume
+all agents want to maximize the time average growth of their wealth. Whether or not it is descriptive
+is an empirical question, but one with a major advantage: changes in the ergodic transformation of
+wealth are observable, changes in risk aversion are not.
+4
+Ergodic Transformation from SWP
+In the new set-up, agents begin with a model of how their will will evolve. Knowing that for some ﬁnite
+t their expected growth rate is not necessarily equivalent to the time average growth rate, they seek
+an appropriate ergodic transformation of the process. If chosen correctly, maximizing the expected
+value of this process is equivalent to maximizing the time average growth rate of their wealth. To gain
+some intuition of how one can determine such a transformation in practice, let’s consider an example.
+Suppose changes in wealth follow an arbitrary Ito process,
+dx = a(x)dt + b(x)dW,
+(16)
+where a and b are potentially functions of x.3 Then our problem is to ﬁnd a transformation f, such
+that
+3Full transparency, an additional assumption is now present - I am assuming that the random variables are identically
+distributed.
+9
+
+
+--- Page 10 ---
+df(x) = αdt + βdW,
+(17)
+where α and β are constants deﬁned as
+α := a(x)∂f
+∂x + b2(x)
+2
+∂2f
+∂x2
+(18)
+and
+β := b(x)∂f
+∂x.
+(19)
+That is, our transformed stochastic process is a Levy process (stationary and independent increments).
+By application of Ito’s Lemma, Peters and Gell-Mann (2016) showed that for a general dynamic to
+have an associated ergodic transformation,
+a(x) = α
+β b(x) + b(x)b′(x)
+2
+(20)
+As a concrete (but intentionally contrived) example, suppose the stochastic wealth process is governed
+by the dynamic
+dx = xγ[1 + γ
+2 xγ−1dt + dW]
+(21)
+To economize notation, I will informally write f ′ for ∂f
+∂x. Then
+a(x) = xγ γ
+2 x2γ−1
+(22)
+and
+b(x) = xγ.
+(23)
+10
+
+
+--- Page 11 ---
+Substituting these expressions into equation 20 yields,
+b(x) + 1
+2b(x)b′(x)
+(24)
+= xγ + γ
+2 x2γ−1
+(25)
+= a(x),
+(26)
+therefore there exists an ergodic transformation. Then substituting the expression for b(x) from equa-
+tion 19 into equation 18 yields a diﬀerential equation,
+f ′ =
+1
+b(x)
+(27)
+= x−γ
+(28)
+⇐⇒f(x) = x1−γ
+1 −γ + C,
+γ ̸= 1
+(29)
+This should be a very familiar representation and highlights why I have chosen f instead of u to
+represent the transformation. In economics, an agent with a utility function u(x) = x1−γ
+1−γ is said to be
+risk averse. More speciﬁcally, they are said to exhibit constant relative risk aversion, the level of which
+is captured by the size of γ. However, here it does not seem fair to call an agent risk averse. They are
+neither optimistic nor pessimistic about the state of nature tomorrow, they simply want to maximize
+the growth rate of their wealth.
+5
+Revisiting Discounted Utility
+The following section loosely describes how once we have an ergodic transformation, we can revive
+a formulation mathematically equivalent to discounted utility. Consider a ﬁnite but continuous time
+11
+
+
+--- Page 12 ---
+model where t ∈[0, T]. Let V (f(xt0+∆t)) denote the value of an asset after time ∆t has elapsed. Assume
+that the function f is the transformation that renders the the dynamic wealth process (the asset)
+ergodic. Now consider the value at some point s > t, i.e. V (f(xt0+∆s)). Since the transformed process
+is ergodic, it has independent increments and V (f(xt0+∆s)) only depends on ∆s. Then V (f(xt0+∆s))
+V (f(xt0+∆t))
+doesn’t depend on t0. Now, letting t2 = t1 + δ, we seek a measurable function Ψ satisfying
+Ψ(f(xt1))
+Ψ(f(xt0)) = Ψ(f(xt1+δ))
+Ψ(f(xtδ))
+(30)
+⇐⇒Ψ(f(xtδ))Ψ(f(xt1)) = Ψ(f(xt1+δ))Ψ(f(xt0))
+(31)
+⇐⇒Ψ(f(xt2−1))Ψ(f(xt1)) = Ψ(f(xt1+δ))Ψ(f(xt0))
+(32)
+Then letting Ψ(f(xt0) := β,
+Ψ(f(xt1)) = β Ψ(f(xt1+δ))
+Ψ(f(xtδ)) .
+(33)
+This is a Cauchy exponential functional equation, having the well known solution,
+Ψ(f(xt0+∆t)) = βe−α∆t
+(34)
+for some constant α, which depends on the function f. Generalizing, we have an equation for the value
+of an asset after time ∆t has passed,
+V (f(xt0+∆t)) = βe−α∆t.
+(35)
+12
+
+
+--- Page 13 ---
+6
+Conclusion
+The new framework is not without criticism. For example, we are taking the limit as t →∞, but
+life is pre-asymptotic. Additionally, have left out any notion that an agent might have preferences for
+early resolution of uncertainty. One way to proceed is given two dynamics with the same time average
+growth rate, follow Peters (2011) and determine the characteristic time scale of each. Then we could
+suppose an agent prefers the SWP with the shorter time to convergence. In the preceding arguments,
+I have assumed that the agent knows perfectly well the dynamics of the stochastic wealth process.
+Interpreting this in the form of vNM, we would say that uncertainty is purely objective. However, it
+might be the case that agents are concerned about model misspeciﬁcation. Such a scenario is precisely
+what is considered in Hansen and Sargent (2001) and future work should consider extending the current
+framework in the direction of ambiguity aversion and robust preferences. Notwithstanding, the new
+paradigm does not leave any room for interpreting γ as a coeﬃcient of risk aversion. Applied economists
+might lament that they have lost a degree of freedom, but this can be rectiﬁed. Suppose the agent has
+determined that the appropriate ergodic transformation is f(x) = x1−γ
+1−γ . Suppose lim
+T →∞ET [f(x)] = c
+and there is a constant process xc where your wealth grows by
+c
+T each period. Then an agent is
+risk averse if xc ⪰x and one agent is more risk averse than another if they would accept a smaller
+amount, say c′. Their utility functions then would be something like u(x) = x1−λγ
+1−λγ . However, I want
+to emphasize that this is if and only if f(x) = x1−γ
+1−γ . If the ergodic transformation was something else,
+say f(x) = 1 −exp−αx then the utility function would need to be redeﬁned analogously.
+13
+
+
+--- Page 14 ---
+References
+[1]
+Shlomo Benartzi and Richard H. Thaler. “Risk Aversion or Myopia? Choices in Repeated Gam-
+bles and Retirement Investments”. In: Management Science 45.3 (1999), pp. 364–381. issn:
+0025-1909.
+[2]
+Peter Carr and Umberto Cherubini. “Generalized Compounding and Growth Optimal Portfolios:
+Reconciling Kelly and Samuelson”. In: SSRN Electronic Journal (2020). issn: 1556-5068. doi:
+10.2139/ssrn.3529729.
+[3]
+Jason N. Doctor, Peter P. Wakker, and Tong V. Wang. “Economists’ Views on the Ergodicity
+Problem”. In: Nature Physics 16.12 (Dec. 2020), pp. 1168–1168. issn: 1745-2481. doi: 10.1038/
+s41567-020-01106-x.
+[4]
+Jason N. Doctor, Peter P. Wakker, and Tong V. Wang. “Economists’ Views on the Ergodicity
+Problem”. In: Nature Physics 16.12 (Dec. 2020), pp. 1168–1168. issn: 1745-2473, 1745-2481. doi:
+10.1038/s41567-020-01106-x.
+[5]
+Jacques H Dr`eze and Franco Modigliani. “Consumption Decisions under Uncertainty”. In: Jour-
+nal of Economic Theory 5.3 (Dec. 1972), pp. 308–335. issn: 00220531. doi: 10.1016/0022-
+0531(72)90044-0.
+[6]
+Lars Peter Hansen and Thomas J Sargent. “Robust Control and Model Uncertainty”. In: Ameri-
+can Economic Review 91.2 (May 2001), pp. 60–66. issn: 0002-8282. doi: 10.1257/aer.91.2.60.
+[7]
+Miles S. Kimball. “Standard Risk Aversion”. In: Econometrica 61.3 (1993), pp. 589–611. issn:
+0012-9682. doi: 10.2307/2951719.
+[8]
+David Kreps. Notes On The Theory Of Choice. Zeroth. Routledge, May 2018. isbn: 978-0-429-
+49861-9. doi: 10.4324/9780429498619.
+[9]
+David Kreps and Evan Porteus. “Temporal Resolution of Uncertainty and Dynamic Choice
+Theory”. In: Econometrica 46.1 (Jan. 1978), p. 185. issn: 00129682. doi: 10.2307/1913656.
+[10]
+David Kreps and Evan Porteus. “Temporal von Neumann-Morgenstern and Induced Prefer-
+ences”. In: Journal of Economic Theory 20.1 (Feb. 1979), pp. 81–109. issn: 00220531. doi:
+10.1016/0022-0531(79)90063-2.
+[11]
+J Long. “The Numeraire Portfolio”. In: Journal of Financial Economics 26.1 (July 1990), pp. 29–
+69. issn: 0304405X. doi: 10.1016/0304-405X(90)90012-O.
+[12]
+Harry M. Markowitz. “Investment for the Long Run: New Evidence for an Old Rule”. In: The
+Journal of Finance 31.5 (1976), pp. 1273–1286. issn: 0022-1082. doi: 10.2307/2326680.
+14
+
+
+--- Page 15 ---
+[13]
+David Meder et al. “Ergodicity-Breaking Reveals Time Optimal Decision Making in Humans”.
+In: PLOS Computational Biology 17.9 (Sept. 2021), e1009217. issn: 1553-7358. doi: 10.1371/
+journal.pcbi.1009217.
+[14]
+Jan Mossin. “A Note on Uncertainty and Preferences in a Temporal Context”. In: The American
+Economic Review 59.1 (1969), pp. 172–174. issn: 0002-8282.
+[15]
+Ole Peters. “Optimal Leverage from Non-Ergodicity”. In: Quantitative Finance 11.11 (Nov.
+2011), pp. 1593–1602. issn: 1469-7688, 1469-7696. doi: 10.1080/14697688.2010.513338.
+[16]
+Ole Peters. “The Ergodicity Problem in Economics”. In: Nature Physics 15.12 (Dec. 2019),
+pp. 1216–1221. issn: 1745-2473, 1745-2481. doi: 10.1038/s41567-019-0732-0.
+[17]
+Ole Peters and Alexander Adamou. “The Time Interpretation of Expected Utility Theory”. In:
+arXiv:1801.03680 [q-ﬁn] (Feb. 2021). arXiv: 1801.03680 [q-fin].
+[18]
+Ole Peters and Murray Gell-Mann. “Evaluating Gambles Using Dynamics”. In: Chaos: An Inter-
+disciplinary Journal of Nonlinear Science 26.2 (Feb. 2016), p. 023103. issn: 1054-1500, 1089-7682.
+doi: 10.1063/1.4940236. arXiv: 1405.0585.
+[19]
+John Pratt and Richard Zeckhauser. “Proper Risk Aversion”. In: Econometrica 55.1 (Jan. 1987),
+p. 143. issn: 00129682. doi: 10.2307/1911160.
+[20]
+Stephen A. Ross. “Adding Risks: Samuelson’s Fallacy of Large Numbers Revisited”. In: The
+Journal of Financial and Quantitative Analysis 34.3 (1999), pp. 323–339. issn: 0022-1090. doi:
+10.2307/2676262.
+[21]
+Paul Samuelson. “Risk and Uncertainty: A Fallacy of Large Numbers”. In: Scientia 57.98 (1963),
+p. 108.
+[22]
+Paul Samuelson. “The “Fallacy” of Maximizing the Geometric Mean in Long Sequences of In-
+vesting or Gambling”. In: Proceedings of the National Academy of Sciences 68.10 (Oct. 1971),
+pp. 2493–2496. issn: 0027-8424, 1091-6490. doi: 10.1073/pnas.68.10.2493.
+[23]
+Paul Samuelson. “Why We Should Not Make Mean Log of Wealth Big Though Years to Act Are
+Long”. In: Journal of Banking & Finance 3.4 (Dec. 1979), pp. 305–307. issn: 03784266. doi:
+10.1016/0378-4266(79)90023-2.
+[24]
+Michael Spence and Richard Zeckhauser. “The Eﬀect of the Timing of Consumption Decisions
+and the Resolution of Lotteries on the Choice of Lotteries”. In: Econometrica 40.2 (Mar. 1972),
+p. 401. issn: 00129682. doi: 10.2307/1909418.
+15
+
+
+--- Page 16 ---
+Appendices
+A
+Copehnagen Experiment
+To describe their experiment, let us adopt the following deﬁnitions. A gamble is a pair of diﬀerent
+images. In the Copenhagen Experiment (CE), there are 18 distinct images, each corresponding to
+a unique change in wealth.
+A trial is a pair of gambles.
+A game is characterized as additive or
+multiplicative and consists of a passive and active phase. In the Copenhagen Experiment, each subject
+played two games - one multiplicative and one additive. During the passive phase, the agent is shown
+a sequence of 9 images 37 times. As each image appears on the screen, the agent observes her wealth
+increase or decrease. The experiment administrators stress to the subject the importance of learning the
+relationship between the images and changes in wealth. During the active phase, the agent participates
+in 312 trials where he or she is shown two unique gambles and chooses one or the other. With equal
+probability, one of the images comprising the selected gamble will be assigned to her, however, she
+does not know which one. Afterwards, 10 of the assigned images are randomly selected and their
+corresponding wealth changes are applied to the subjects endowment to calculate terminal wealth.
+Figure 1: Example of ’additive’ fractal
+B
+Comparison Models
+Taking the advice of Doctor, Wakker, and Wang (2020a), in this section I will compare the setting
+of the Copenhagen Experiment (CE) to those of classical utility models. The purpose is to elucidate
+the workﬂow of decision making in these models and highlight the additional assumptions/restriction
+needed to map CE into existing theories. Throughout, I will assume there exists only a single con-
+sumption good and that the agent has a known initial endowment. I assume that the problem the
+agent faces is one of selecting an optimal strategy, before the resolution of any uncertainty. The ﬁrst
+16
+
+
+--- Page 17 ---
+model I consider, vNM in a single period setting, is obviously not suitable to dynamic or intertemporal
+decisions, but lays the foundation for future comparisons.
+B.1
+Static vNM
+B.1.1
+Description
+The agent must take some action today that impacts ˜cT , her consumption tomorrow, a random variable.
+Suppose that the agent has primitive preferences over consumption levels, cT ∈C ⊆R, and the
+preference relation ⪯on C satisﬁes
+Axiom B.1 (Consistency). ⪯is a complete preorder on C.
+Axiom B.2 (Continuity). The sets {c′ ∈C|c ⪯c′} and {c′ ∈C|c′ ⪯c ∈C} are closed.
+Axiom B.3 (Independence). Deﬁne h(c, c′) := αc + (1 −α)c′, α ∈(0, 1). Then c ⪯c′ =⇒h(c, c′′) ⪯
+h(c′, c′′).
+therefore the function u cardinally represents the relation ⪯. However, since consumption tomorrow
+is a random variable, the agent considers utility of ﬁnal consumption with respect to each lottery that
+would be induced by her action today, and selects the one yielding the maximum utility of consumption
+in expectation. This ranking of actions induces a preference relation over lotteries,
+l ⪰′ l′ ⇐⇒U(l) := El[u(c)] ≥El′[u(c)] =: U(l′),
+(36)
+where ⪰′ again obeys the axioms above (suitably adapted). Then the agents decision at t = 0 is the
+one which induces the most preferred lottery. Substituting in the constraint that ﬁnal consumption
+cannot exceed terminal wealth and assuming that u is strictly increasing and concave, equation 36
+indirectly deﬁnes a preference relation over terminal wealth levels. Note, this ﬁnal assumption is often
+attached to notion of risk aversion. An agent is deﬁned to be risk averse if and only if u is strictly
+increasing and concave.
+B.1.2
+Adaptation
+Adapting this method to CE will require a number of simpliﬁcations. Suppose the subjects only make
+a single decision at the very beginning and then their endowment increases/decreases by a stochastic
+17
+
+
+--- Page 18 ---
+amount to arrive at terminal wealth levels. We would need to assume the agent makes a single choice
+between gambles at initiation, which then leads to a sequence of stochastic changes in wealth, which
+we need to collapse into a single terminal change. One possibility is that the agent’s choice between
+the left or right gamble is seen as triggering the spin of roulette wheel one or roulette wheel two. If
+we imagine that an agent agreed to simply ﬂip a coin at each decision, we could obtain the induced
+lotteries associated with choosing left or right at initiation and then ﬂipping a coin the remaining
+number of trials. A shortcoming of this model that will be repeated throughout is that the agent does
+not know the exact form of u. The axioms of vNM, while seemingly too stringent, do not have enough
+bite to yield a particular function.
+However, Kreps (2018) provides a heuristic simpliﬁcation. If the agent can answer in the aﬃrmative
+to the following three questions:
+1. Do I like more money to less?
+2. Am I risk averse to changes in consumption along some range?
+3. Do I have slight decreasing absolute risk aversion over this same range?
+then their utility function belongs to a class of exponential functions parameterized by λ, their level
+of risk aversion. That is, u(z) := −e−λz, and their level of risk aversion can be obtained via repeated
+introspection. For example, ﬁrst ﬁnd your certainty equivalent for a simple gamble and then repeat
+this process over and over, each time obtaining closer approximations to your level of risk aversion.
+B.2
+PayoﬀVector Approach
+B.2.1
+Description
+This method supposes an agent has primitive preferences over deterministic payoﬀvectors z ∈RT ,
+where each zt denotes a deterministic payoﬀat time t. Her preferences obey the classical axioms of
+vNM therefore they are representable by a cardinal utility function u : RT →R. In a dynamic decision
+problem, the agent chooses a strategy, or sequence of actions, which restricts the space of potential
+payoﬀvectors. In other words, any strategy induces a joint probability distribution over the space
+of payoﬀvectors. Then she ranks each strategy according to its corresponding expected utility of
+consumption given the induced measure, µ. That is she considers,
+18
+
+
+--- Page 19 ---
+U(z, s) :=
+Z
+supp(µ)
+u(z)dµ
+(37)
+where supp(µ) is the set of payoﬀvectors possible given the sequence of actions speciﬁed by strategy
+s.
+B.2.2
+Adaptation
+Adapting this to the CE requires us to assume that each agent has preferences over payoﬀvectors
+satisfying vNM. Then at each point in time the agent’s decision is to select the left gamble or the
+right gamble. Culling these selections together would represent a single strategy which then induces a
+probability distribution over payoﬀvectors. Our agent would then select the strategy yielding the most
+favorable outcome in expectation. However, there are three problems. (1) In the CE, the agent does
+not know how many trials she will play. This is important because in general, the joint distribution
+of an N-period stochastic process is not equivalent to that of an N+1 period process. But suppose we
+altered the experiment so that the decision maker knew the number of trials. (2) The uncertainty for
+each gamble does not resolve until t = T, whereas the payoﬀvector approach assumes that uncertainty
+resolves in the same period. We could augment the experiment once more and ask what if they subject
+learned their outcome after each selection? In this case the agent, normatively at least, would be able
+to solve for the optimal strategy via backward induction. Descriptively however, the complexity of
+the branching process in the Copenhagen Experiment makes backward induction impossible, even for
+most supercomputers. (4) And ﬁnally, the agent would know their exists a utility function representing
+her preferences, but she is left wondering what the form of this function is, and if found, then what is
+her level of risk aversion? The simpliﬁcation provided above does not carry over as neatly as before,
+however it would still be theoretically possible to approximate ones level of risk aversion.
+There are additional well-known problems with this approach that apply more broadly. The works
+of Mossin (1969), Dr`eze and Modigliani (1972) and Spence and Zeckhauser (1972) (and many others)
+pointed out two stylized facts about atemporal expected utility models. (1) They obscure the impor-
+tance of timing of resolution of uncertainty and (2) the induced preference relation does not satisfy the
+axioms of vNM. As for (2), note that as was the case with the single-period model, we could substitute
+in ﬁnal wealth as the sum of the payoﬀs to arrive at an implied preference relation over lotteries of
+terminal wealth. However, this implied preference relation does not in general satisfy the independence
+axiom of vNM, as cogently pointed out in Mossin (1969). Additionally, Kreps and Porteus (1979) gives
+19
+
+
+--- Page 20 ---
+an example of why it is doubly wrong to use atemporal vNM in any dynamic model, which led them
+to formulate the following model of decision making.
+B.3
+Temporal vonNeumann-Mergernstern
+B.3.1
+Description
+Doctor, Wakker, and Wang (2020a) posit that the Copenhagen Experiment and EE should be compared
+(normatively) to the predictions of temporal vNM. To describe this model we will need to adopt a bit
+of notation. Denote the set of possible payoﬀs at time t ∈[0, T] as Zt, a complete separable metric
+space. Beginning at time T, denote the set of Borel probability measures on ZT as m(ZT ). Deﬁne
+DT := m(ZT ) to be the set of actions at time T and endow this set with the Prokhorov metric (i.e.
+the metric of weak convergence). Note, this set is a mixture space. Then take this set and generate
+XT , the class of all non-empty closed subsets of DT and endow it with the Hausdorﬀmetric. Then
+∀t < T recursively deﬁne Dt := m(Zt−1 × Xt). Suppose we are standing at t = 1. Then we can think
+of Xt+1 as the σ-ring generated by all one-step-ahead probability measures induced by our previous
+actions. Our agent keeps track of where he is at in time by referencing her realized payoﬀhistory,
+yt := {z0, z1, ..., zt−1}. I denote the collection of potential histories up to time t as Yt. Think about it
+as if the agent is able to pause time at t−ϵ, look at the payoﬀs he has received, plus consider potential
+payoﬀs that he is about to receive. Then ﬁxing t, the authors consider ⪯yt, an agent’s preferences
+conditional on realized payoﬀs and possible current payoﬀs. In this sense, yt can be thought of as
+representing the information known by the agent.
+The authors assume that agents have primitive preferences over temporal lotteries of payoﬀs and
+impose the axioms of vNM on each temporal preference relation. For any t and yt,
+Axiom B.4 (Static Consistency). ⪯yt is a complete preorder on Dt.
+Axiom B.5 (Continuity). The sets {d′
+t ∈Dt|dt ⪯yt d′
+t} and {d′
+t ∈Dt|d′
+t ⪯yt dt} are closed in the
+weak topology.
+Axiom B.6 (Independence). Deﬁne h(d, d′) := αd + (1 −α)d′, α ∈(0, 1).
+Then d ⪯yt d′
+=⇒
+h(d, d′′) ⪯yt h(d′, d′′).
+Notice the subscript on the preference relation. If each temporal preference relation obeys the above
+axioms, then each can be represented by an expected utility formulation. Then to knit together these
+preference relations across time they impose the following:
+20
+
+
+--- Page 21 ---
+Axiom B.7 (Temporal Consistency). ∀t, y ∈Yt, z ∈Z and x, x′ ∈Xt+1, (z, x) ⪰y (z, x′) at time
+t ⇐⇒x ⪰y,z x′ at time t + 1
+With preferences satisfying the above axioms, the dynamic choice problem can be solved by backward
+induction. Essentially, the agent would compute their utility for each terminal node and then their
+expected utility at all penultimate nodes. From this calculation they would select the time T −1 action
+that induces the maximum expected utility at each possible state. Then treating the time T −1 nodes
+as the terminal nodes they would repeat the process until they arrive at t = 0, at which point they
+will have collected the conditionally optimal decisions at each point in time. Culling these together,
+the agent obtains the set of all optimal strategies for any contingency.
+In ﬁgure *** below, I have reproduced the example from Kreps and Porteus (1979), highlighting the
+optimal strategy. As a comparison, ﬁgure *** depicts the Copenhagen Experiment in the language of
+Kreps and Porteus (1978).
+[Insert Figure *** here.]
+B.3.2
+Adaptation
+As evident from ﬁgure ***, if we again assumed that the agent’s know how many decisions they
+will be making, the CE ﬁts nicely into this framework. We would also need to assume that agents
+prefer early resolution to later, but this does not seem prohibitive. Normatively, this framework is
+sure to produce the optimal strategy. Objections on descriptive grounds remain, as well as the usual
+objection that an agent is left searching for a particular utility function and for her level of risk
+aversion. It bears emphasis that the primary motivation for Kreps and Porteus (1978) was the notion
+that agents typically prefer earlier resolution of uncertainty to later and that this possibility is not
+captured by the payoﬀvector approach. That induced preferences did not satisfy independence was an
+ancillary consideration and one that their axiomatization explicity precludes. Roughly, the required
+condition was that preferences be time separable and therefore the agent’s utility function have the
+form U(c0, c1) = f(c0) + g(c0)h(c0 + c1). This is in spite of the fact that Mossin (1969) provides an
+example of how it can be perfectly rational for ones induced preferences over wealth distributions to
+not have an expected utility representation.
+21
+
+
+--- Page 22 ---
+B.4
+Conclusion
+Note that in the example from section B.3.1, we are assuming without justiﬁcation that the agent
+has the utility function, U(z0, z1) := √z0 + z1. The hope then is that an axiomatization of EE will
+give conditions that prescribe a speciﬁc functional form, i.e., pin down exactly when an agent should
+have square root utility, log utility, etc. This entails a signiﬁcant loss of generality. Indeed, some may
+object on the grounds that there will appear to no longer be any room for idiosyncratic risk aversion,
+while countless experiments have reported strong evidence that this is an important factor in decision
+making. This is an objection that can be remedied, but only after we have determined exactly what
+is required.
+C
+Proof of Lemma 3.1
+All we need to verify is that h(x, h(x′, x′′; β); α) = h(h(x, x′;
+α
+α+β−αβ , x′′)), which should be easy to
+see since our random variables are mapping to real numbers and addition over the reals is associative.
+Once veriﬁed, the proof of the lemma is nearly identical to that found on p.47 of Kreps (2018). Part
+(1) of the lemma implies that if α∗exists then it is unique. Part (2) is a proof by construction where
+ultimately we ﬁnd that α∗= sup{α ∈[0, 1] : x′ ≻h(x, x′′; α)}.
+D
+Proof of Theorem 3.2
+With Lemma 3.1 in hand, the proof again follows closely to that outlined in Kreps (2018). I only
+provide a sketch.
+1. Non-degenerate =⇒∃x, x′ ∈X such that x ≻x′.
+2. Deﬁne L(x) := 1, L(x′) := 0.
+3. Then for any other x′′ ∈X we have three cases to consider:
+(a) x′′ ≻x ≻x′. Then by Lemma 3.1, ∃unique α such that h(x′′, x; α) ∼x. So deﬁne L(x′′) := 1
+α
+(b) x ≻x′ ≻x′′. Then by Lemma 3.1, ∃unique α such that h(x′′, x) ∼x′. So deﬁne L(x′′) :=
+α
+α−1
+22
+
+
+--- Page 23 ---
+(c) x ≻x′′ ≻x′. Again, by Lemma 3.1, ∃unique α such that h(x, x′; α) ∼x′′. Therefore, deﬁne
+L(x′′) := α.
+E
+Proof of Theorem 3.3
+I have only worked out a sketch of the proof, which I provide.
+Proof. First, ﬁx t and recall that extending vNM to the space of non-simple distributions requires
+a suitable topology. This is not an innocuous decision, as the topology will dictate continuity and
+convergence - the harder it is to converge, the weaker our continuity axiom becomes. However, here we
+have deﬁned preferences on SWPs and by monotonicity have restricted the relation to L2(Ω), which
+is already a topological vector space (Hilbert space). Then by axioms 3.1 - 3.4, ∃f ∈L2(Ω) such
+that x ≻x′
+⇐⇒L(f(xt)) = α = E[f(xt)] > E[f(x′
+t)] = α′ = L(f(x′
+t)) (this is almost equivalent
+to vNM). But by the EA, x > x′
+⇐⇒
+lim
+t→∞
+f(xt)f(x0)
+t
+:= g > g′ =: lim
+t→∞
+f(x′
+t)−f(x0)
+t
+Therefore
+g = α =⇒E[f(xt)] = lim
+t→∞
+f(xt)−f(x0)
+t
+. Thus, f is an ergodic transformation of x.
+Axiom 3.5 begs for comparison to the dynamic consistency axiom of Kreps and Porteus (1978). There,
+although the axioms are able to equate the linear functional to the expectation operator, the form of
+u remains a free parameter. The representation holds for any measurable u. Here, axiom 3.5 ensures
+that f is the ergodic transformation, i.e. the one that pulls out the growth rate from the dynamic
+process.
+As an aside, the following deﬁnition of an ergodic transformation will be useful in formalizing the
+proof. Let (Ω, A, µ) and (Ω′, A′, µ′) be two probability spaces. Then I will say the transformation
+T : Ω→Ω′ is measurable if it is invertible and if
+T −1(A′) ⊂A.
+(38)
+I will call a transformation measure preserving if it is measurable and if
+µ(T −1(A′)) = µ′(A′)∀A′ ∈A′.
+(39)
+23
+
+
+--- Page 24 ---
+And ﬁnally, I deﬁne an ergodic transformation as any measure preserving morphism T : Ω→Ω
+satisfying
+T −1A = A ⇐⇒µ(A) = 0 or 1,
+(40)
+for any A ∈A. In words, T is an ergodic transformation if the only corresponding inverse-invariant
+sets are those assigned measures 0 or 1. Comparing this formulation to that of equation (1) highlights
+how the property of ergodicity is dependent on the measure, the Borel σ-algebra, and the state space.
+As a concrete example, the identity transformation is obviously measure preserving. It is then ergodic
+if and only if every Borel-measurable subset is assigned a measure of zero or one. This is quite a
+strong requirement and foreshadows complications that will arise when considering joint distributions
+associated with a sequence of random variables.
+24

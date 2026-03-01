@@ -1,0 +1,144 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree classifier (J48/C4.5) can be used to predict diabetes status from the Pima Indian diabetes dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Use the Pima Indian diabetes dataset of 768 female patients with eight predictor attributes to predict a binary class (tested positive or negative)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Implement J48 (C4.5) decision tree in WEKA, using information entropy and normalized information gain to select split attributes, handling continuous attributes, missing values, and optional pruning",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Evaluate model performance using confusion matrix metrics (accuracy, true positive, true negative, false positive, false negative) and compare to an existing method",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Context: Dataset details - 768 records, 8 numeric input attributes (pregnancies, plasma glucose, diastolic BP, triceps thickness, serum insulin, BMI, diabetes pedigree, age) and class with 268 positives and 500 negatives",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Assumption: Use of the first eight variables allows prediction of the ninth (class) and that training/test split in WEKA is appropriate for evaluating generalization",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Result: WEKA J48 was run on the dataset to build a decision tree; entropy and information gain were computed per attribute to select splits",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: Entropy of class is 0.9328 and attribute-level gains computed show plasma glucose produced the highest information gain (gain 0.1332) compared to BMI (0.0724) and pregnancy (0.0366)",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Evidence: Confusion matrix results from WEKA J48: accuracy 84.1146%, correctly classified 84.1146%, incorrectly 15.8854%, true positives 468, true negatives 178, false positives 32, false negatives 90",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence: Comparison to an existing method shows proposed method accuracy improved by 0.48 percentage points (from 83.63% to 84.1146%) while model build time increased by 0.02 seconds (from 0.03s to 0.05s)",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Limitation: The Pima dataset contains missing or zero values in several attributes (glucose, BMI, blood pressure, skin thickness, serum insulin); removing these reduces usable cases to 392 (103 positive, 262 negative)",
+      "role": "Limitation",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Claim: The decision tree model built with J48 and entropy-based splits produces a human-interpretable classification tree for diabetes prediction",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: Decision tree classification using J48 in WEKA yields a reasonably accurate model (84.11%) for predicting diabetes on the Pima dataset, with plasma glucose identified as the most informative attribute, but missing data in the dataset limits exactness and should be addressed",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        10,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

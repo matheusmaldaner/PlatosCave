@@ -1,0 +1,134 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with common HPC observations that workloads generate large diverse datasets and that memory and bandwidth constraints drive two broad needs: reducing in memory footprint for memory bound tasks and reducing data movement while enabling operations on compressed data for bandwidth bound tasks",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim identifies three limitations: limited generalization due to single fixed algorithm and lack of dimension awareness, inability to reduce actual GPU memory footprint because of pre allocating maximum compressed size, and lack of effective random access due to dimension unaware flattening or fixed ratio methods lacking error control; without external evidence this remains a plausibility assessment.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.45,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text without external validation; assigns moderate plausibility but no corroborating sources or experimental details.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible compression pipeline where error bounded lossy quantization is followed by lossless stages and reversible decompression; without paper specifics, exact implementation details are uncertain.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that HPC data variety requires adaptive compression that captures dimension information and selects algorithms based on data structure, which aligns with general intuition about data adaptive compression.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.4,
+    "reproducibility": 0.25,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible set of techniques for dimension aware delta encoding with register level fused deltas and locality benefits, but there is insufficient evidence within the claim text to confirm implementation details or general applicability; overall this appears plausible but not strongly supported by provided information.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, a two kernel approach with per block profiling and a global prefix sum to determine exact memory allocation, followed by a second kernel to perform blockwise compression and concatenate using computed offsets, is plausible for memory efficient GPU compression but remains unverified without external sources.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim describes a selective decompression technique using block metadata and an early stopping prefix sum to locate and decompress regions of interest without full decompression and to support writing back to the compressed array; without external sources its plausibility is moderate.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a specific optimization strategy for VGC involving fusing compression and decompression into a single GPU kernel with intra-kernel optimizations; without external data, its plausibility depends on whether such architecture-level fusion is standard practice, which is not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts VGC achieves state of the art throughput and competitive compression across thirteen real world HPC datasets with specific throughput figures and comparisons to cuSZp2 and PFPL; without external data the claim cannot be independently verified.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Without external sources, the claim appears plausible but not verifiable; it cites specific performance numbers that would require experimental validation and paper details to confirm.",
+    "confidence_level": "medium"
+  }
+}

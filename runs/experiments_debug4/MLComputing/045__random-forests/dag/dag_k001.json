@@ -1,0 +1,200 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests formed by averaging many randomized decision trees produce accurate classification and regression predictors that do not overfit as the number of trees increases, provided randomness maintains individual tree strength while reducing correlation between trees",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Context: ensemble methods (bagging, random split selection, random subspace, boosting) grow many trees using randomization and vote or average to form predictors; random forests formalize this as trees built using iid random vectors",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Definition and method: A random forest is a collection of tree classifiers h(x, theta_k) where theta_k are iid random vectors and each tree casts one vote for the most popular class at input x; trees are grown unpruned using CART with injected randomness (bagging plus random feature or random linear combination selection)",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Out-of-bag estimation: use bootstrap samples so that for each training case votes from trees that did not include that case estimate generalization error, strength and correlation without a separate test set",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Theoretical convergence (Theorem 1.2): by the Strong Law of Large Numbers the generalization error of a random forest converges almost surely to a limit as number of trees goes to infinity, explaining lack of overfitting with many trees",
+      "role": "Result",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Strength-correlation characterization (Theorem 2.3): an upper bound for generalization error is proportional to mean correlation over square strength, PE* <= rho_bar(1 - s^2)/s^2, implying error decreases when individual tree strength s is high and inter-tree correlation rho_bar is low",
+      "role": "Claim",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        6,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Practical random feature methods: Forest-RI selects F random original input variables at each node (F typically 1 or int(log2 M +1)); Forest-RC forms F random linear combinations of L inputs (e.g., L=3) and selects splits among them",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical classification results: random forests with random feature selection achieve test errors comparable to or better than Adaboost across many UCI and synthetic data sets, while typically being faster and robust; results insensitive to F over a broad range",
+      "role": "Result",
+      "parents": [
+        6,
+        3,
+        5
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Robustness to label noise: in experiments with 5% randomly flipped labels Adaboost error increased markedly while random forest variants (Forest-RI, Forest-RC) showed much smaller degradation, attributed to Adaboost concentrating weight on noisy instances",
+      "role": "Evidence",
+      "parents": [
+        6,
+        3,
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Behavior of strength and correlation empirically: increasing number of candidate features F initially can increase strength until a plateau while correlation tends to increase with F; optimal F balances higher strength and lower correlation (often small F like 1-4 works for many smaller data sets)",
+      "role": "Result",
+      "parents": [
+        6,
+        3,
+        5
+      ],
+      "children": [
+        7,
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Many weak inputs case: on simulated data with 1000 weak binary inputs, Forest-RI with modest F (e.g., 10 or 25) achieved test errors near Bayes rate by increasing strength while keeping correlation low, showing ensembles can exploit many weak predictors",
+      "role": "Evidence",
+      "parents": [
+        6,
+        7,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Variable importance method: permute an input's values in out-of-bag examples and measure increase in misclassification to estimate each variable's importance; rerun experiments with selected variables to verify predictive contributions and interactions",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Regression theory and result (Theorem 11.2): for regression forests PE*(forest) <= rho_bar * PE*(tree), where rho_bar is weighted correlation between residuals and PE*(tree) is average tree mean squared error, so low residual correlation and accurate trees reduce forest MSE",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Regression empirical findings: random feature forests improve over bagging on many regression tasks; using random linear combinations and balancing number of features reduces tree MSE while trading off correlation; injected output noise can further help in some regression settings",
+      "role": "Result",
+      "parents": [
+        12,
+        6,
+        3
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusions and implications: random forests are effective, do not overfit with many trees, and performance is governed by a tradeoff between individual tree strength and inter-tree correlation; out-of-bag estimates enable monitoring and tuning; combining random features with other randomness or boosting may yield further gains",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        5,
+        7,
+        12,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A single-kernel, pure-GPU error-bounded lossy compressor can achieve extreme end-to-end throughput and optimized compression ratio for HPC workloads by eliminating CPU-GPU overheads, optimizing memory accesses, and minimizing synchronization latency",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing GPU lossy compressors suffer limited end-to-end throughput due to CPU computations or CPU-GPU data movement, underutilized memory bandwidth, inefficient memory access patterns, and high device-level synchronization latency",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "End-to-end throughput (including all GPU API calls and any device-level memory operations) is a more appropriate metric than kernel-only throughput for evaluating GPU compressors in practical HPC and ML scenarios",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Design and implement CUSZP2: a pure-GPU, single-kernel, blockwise, error-bounded lossy compressor that (a) converts floats to quantization integers, (b) applies lossless encoding per block, (c) computes block offsets via device-level prefix-sum, and (d) concatenates blocks into one compressed byte array entirely on GPU",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Outlier Fixed-Length Encoding (Outlier-FLE): novel lossless encoding that stores per-integer sign bits, a small fixed-length field for most integers, and adaptively preserves outliers in 1-4 bytes with a mode flag in block offset; selection of Outlier-FLE per block when beneficial",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        8,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Vectorized memory accesses: within-block vectorization (e.g., float4) to reduce memory instructions and at-block-level coalesced accesses across warp threads to maximize global memory bandwidth utilization",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        8,
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Global prefix-sum via decoupled lookback: compression-aware adaptive lookback strategy that lets thread blocks aggregate predecessors' reductions while waiting, decoupling the chained serial scan to hide device-level synchronization latency",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        8,
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Single-kernel pure-GPU implementation and blockwise workflow (lossy conversion -> lossless encoding -> prefix-sum -> concat) to avoid CPU involvement and minimize CPU-GPU transfers",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "End-to-end throughput results on NVIDIA A100 (9 HPC datasets): average compression 332.42 GB/s and decompression 513.04 GB/s, approximately 2x of state-of-the-art pure-GPU compressors and ~200x of CPU-GPU hybrid compressors",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Compression ratio results: CUSZP2 with Outlier-FLE (CUSZP2-O) achieves higher compression ratios than competing GPU error-bounded compressors in 24 of 27 tested cases; Outlier-FLE especially improves ratios on globally smooth datasets",
+      "role": "Result",
+      "parents": [
+        4,
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Reconstructed data quality: for the same error bound, CUSZP2 preserves data fidelity (rate-distortion) at least as well as other error-bounded compressors and better preserves isosurface visualization than transform-based cuZFP at aggressive compression ratios",
+      "role": "Result",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Fine-grained selection strategy makes Outlier-FLE computationally cheap: the fixed-length choice can be determined by scanning absolute integer values in a block, avoiding expensive recomputation",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Vectorized memory design yields near-hardware memory throughput: measured global memory throughput for CUSZP2 approaches A100 limit (e.g., 1100-1330 GB/s profiling) versus 134-410 GB/s for prior pure-GPU compressors",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Decoupled lookback reduces synchronization latency: device-level prefix-sum throughput with decoupled lookback measured at 846.85 GB/s on representative datasets, about 2.41x of plain chained-scan baseline",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusions: CUSZP2 demonstrates that a pure-GPU single-kernel compressor combining outlier-FLE, vectorized coalesced memory access, and decoupled lookback can achieve extreme end-to-end throughput, improved compression ratios, high reconstructed quality, double-precision support, random access, and GPU portability",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

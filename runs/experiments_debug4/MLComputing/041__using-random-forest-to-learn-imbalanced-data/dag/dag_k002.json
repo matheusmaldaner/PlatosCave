@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Modifying random forest via class weighting or balanced down-sampling improves prediction of the minority class in extremely imbalanced classification problems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Random forest as standard ensemble tends to minimize overall error and thus underperforms on minority class in extremely imbalanced data",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Balanced Random Forest (BRF): for each tree draw a bootstrap sample of minority cases and an equal-size bootstrap sample of majority cases, grow unpruned CART trees with random mtry splits, aggregate by majority vote",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Weighted Random Forest (WRF): assign larger misclassification weight to minority class, incorporate weights in Gini split criterion and in terminal node weighted majority vote, tune weights via out-of-bag accuracy",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Experimental protocol: evaluated BRF and WRF on six highly imbalanced datasets using ten-fold cross validation and multiple metrics including true positive rate, true negative rate, precision, recall, F-measure, G-mean, weighted accuracy and ROC",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Datasets used include oil spill, mammography, satimage, hypothyroid, euthyroid, and KDD thrombin, with minority class proportions ranging roughly 2 to 10 percent",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 6,
+      "text": "On the oil spill data BRF and WRF with tuned parameters substantially improved minority-class performance compared to One-sided Sampling, SHRINK and SMOTE variants (e.g., WRF weight proportional to class yields high recall and improved G-mean and weighted accuracy)",
+      "role": "Result",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "On mammography and satimage datasets WRF and BRF achieved generally higher F-measure, G-mean and weighted accuracy than SMOTE and SMOTEBoost in many parameter settings, though performance tradeoffs between minority and majority accuracy occur",
+      "role": "Result",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "On hypothyroid and euthyroid datasets both BRF and WRF outperformed SHRINK, C4.5 and 1-NN by G-mean, with BRF slightly better in G-mean and weighted accuracy and WRF slightly better in F-measure in reported experiments",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "ROC analyses across datasets show BRF and WRF produce very similar ROC curves with no consistent winner; WRF slightly superior on some datasets and BRF on others",
+      "role": "Evidence",
+      "parents": [
+        6,
+        7,
+        8,
+        3,
+        2
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "BRF is computationally more efficient on large imbalanced data because each tree uses a small balanced subsample, reducing per-tree training cost",
+      "role": "Claim",
+      "parents": [
+        2,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "WRF may be more vulnerable to label noise because assigning large weight to minority class amplifies effects of mislabeled majority cases treated as minority",
+      "role": "Claim",
+      "parents": [
+        3,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Overall conclusion: both Balanced Random Forest and Weighted Random Forest improve minority-class prediction and outperform many existing techniques on tested datasets, but no clear universally superior method is identified",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation: inability to declare a clear winner between BRF and WRF and need for further study of robustness under label noise and other practical constraints",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

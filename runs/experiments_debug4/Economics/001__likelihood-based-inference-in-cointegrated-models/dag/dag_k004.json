@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A likelihood-based vector autoregressive (VAR) framework can model and provide inference for cointegration among nonstationary economic time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The cointegrated VAR model formulation is Δx_t = αβ' x_{t-1} + sum_{i=1}^{k-1} Γ_i Δx_{t-i} + deterministic terms + ε_t with rank(αβ') = r describing r cointegration relations and p−r stochastic trends",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Granger Representation Theorem: under the I(1) condition the VAR solution has moving average representation with C = β_⊥(α_⊥' Γ β_⊥)^{-1}α_⊥' and xt decomposes into r stationary relations β' x_t and p−r common stochastic trends α_⊥' sum ε_i",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Reduced rank regression (RRR) provides ML estimates in the cointegrated VAR by solving an eigenvalue problem on residual cross moments and yields estimators for β, α and Ω and the maximized likelihood |Omega_hat| = |S00| prod_{i=1}^r(1−λ_i)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Likelihood ratio test for cointegration rank r versus p uses −2 log LR = −T sum_{i=r+1}^p log(1−λ_i) and its asymptotic distribution depends on number of common trends p−r and deterministic terms (Dickey-Fuller type limits)",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Estimator properties: β-hat (properly normalized) has mixed Gaussian limit while α-hat and short-run parameters are asymptotically Gaussian and asymptotically independent of β-hat, enabling χ2 inference for many hypotheses on β",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Examples motivate cointegration: purchasing power parity (PPP) implies a stationary linear combination of exchange rate and price levels; present value models imply cointegration between stock price and dividend",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Definition and I(1) condition: xt is I(1) if Δx_t is a linear process with C(1) ≠ 0; cointegration exists when nonzero β makes β' x_t stationary; I(1) condition includes |α_⊥' Γ β_⊥| ≠ 0 to avoid I(2) behavior",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "RRR algorithm: compute residuals correcting for lags and deterministics, form moment matrices S_ij, solve eigenproblem |λ S_ww.z − S_wu.z S_uu.z^{-1} S_uw.z|=0, then β_hat = eigenvectors and α_hat = S_uw.z β_hat",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Likelihood maximization under linear restrictions on β (including many economically motivated restrictions) can be implemented by modified RRR or a switching RRR algorithm when constraints are more complex",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Asymptotic distribution of rank test with linear trend: limit involves functionals of Brownian motion F(u) = [B(u); u] and depends only on p−r and deterministic trend specification, requiring simulation or tabulated critical values",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Interpretation of cointegrating coefficients: they represent long-run equilibrium relations and can be interpreted as the effect of a long-run change in one variable on another when other long-run values are held fixed via the mapping k = C xi and the attractor set {x: β' x = 0}",
+      "role": "Claim",
+      "parents": [
+        2,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Asymptotic inference: Wald and likelihood ratio tests on β are asymptotically χ2 under suitable identification and normalization; finite-sample corrections and bootstrap are important because small samples can distort size",
+      "role": "Conclusion",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Extensions: rational expectations impose testable linear restrictions linking cointegration and short-run dynamics; I(2) models require alternative parametrizations allowing cointegration between levels and differences and yield more complex limit distributions",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "I(2) modeling result: when α_⊥' Γ β_⊥ has reduced rank the system can be parametrized to identify τ such that τ' Δx_t are I(1) and β' x_t + ψ' Δx_{t-1} are stationary, enabling ML estimation via switching parametrizations but producing new Dickey-Fuller type limits",
+      "role": "Method",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Limitations and open problems: small sample corrections, nonlinear cointegration theory, and integration of empirical cointegration findings into economic theory remain important unresolved issues",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

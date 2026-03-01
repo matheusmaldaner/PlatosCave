@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Dropout reduces overfitting in large neural networks by randomly dropping units during training and approximating averaging over an exponential number of thinned models",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Mechanism: randomly removing units (and their connections) during training prevents units from forming complex co-adaptations and forces units to learn useful features independently",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dropout training samples a different thinned sub-network on each presentation, effectively training a collection of exponentially many models with extensive weight sharing",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: during training sample Bernoulli masks r(l) per layer (retain probability p) multiply layer outputs element-wise by r(l), backpropagate gradients through the sampled thinned network",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Test-time approximation: use a single unthinned network with outgoing weights multiplied by p (or equivalently scale activations at train time) to approximate the average prediction of all thinned networks",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Monte-Carlo averaging of k sampled thinned networks approaches the weight-scaling approximation; k approx 50 matches the approximation on MNIST",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Training practices: stochastic gradient descent with sampled thinned networks, use high learning rates and momentum, and optional max-norm constraint on incoming weight vectors (||w||2 <= c) to stabilize training",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence: dropout yields sparser, more interpretable first-layer features and reduces co-adaptations compared to training without dropout (shown on MNIST and RBM features)",
+      "role": "Evidence",
+      "parents": [
+        1,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Result: dropout applied to Restricted Boltzmann Machines (Dropout RBMs) produces sparser hidden activations and coarser but less co-adapted features compared to standard RBMs",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Claim: dropout can be interpreted as stochastic regularization (noise on unit states) and in some cases can be marginalized to obtain deterministic regularizers",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical evidence: dropout substantially improves generalization across domains and datasets (examples: MNIST error reduced from ~1.6% to 0.95% with large nets and max-norm; SVHN error down to 2.55%; CIFAR improvements; ImageNet top-5 error reduced markedly; TIMIT phone error reduced; Alternative splicing improved over standard NN)",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Limitation: dropout increases training time (roughly 2-3x) and introduces noisy parameter updates, creating a trade-off between reduced overfitting and slower convergence",
+      "role": "Limitation",
+      "parents": [
+        6,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Result / Claim: for linear regression marginalizing Bernoulli input dropout yields an expected objective equivalent to ridge regression with data-dependent scaling (||y - pXw||^2 + p(1-p)||Gamma w||^2) showing dropout acts as an adaptive L2 regularizer",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Claim: multiplicative Gaussian noise (set variance to match Bernoulli mean/variance) is an effective alternative to Bernoulli dropout and may perform slightly better in practice",
+      "role": "Claim",
+      "parents": [
+        3,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: Dropout is a general, effective regularization and model-combination technique for neural networks and related models, providing state-of-the-art gains in diverse tasks but with higher training cost",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        10,
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

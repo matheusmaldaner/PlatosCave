@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "PCA-based dimensionality reduction improves machine learning performance and efficiency for estimating soil moisture from hyperspectral optical imaging",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Hyperspectral optical imaging produces high-dimensional, strongly correlated spectral data that exacerbate the curse of dimensionality for regression tasks",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Principal Component Analysis (PCA) can reduce redundant information by projecting spectral features into uncorrelated principal components ordered by explained variance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "A Random Forest regression trained on PCA-transformed hyperspectral data preserves predictive capability while improving computational efficiency",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Correlation analysis and a heatmap show strong interband correlations (e.g., near 642 nm and 742 nm), indicating spectral redundancy in the measured wavelength interval",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Dataset description: 679 samples collected in May 2017 from an undisturbed bare-soil sample using a Cubert UHD 285 camera producing 125 spectral bands from 450 nm to 950 nm and reference soil moisture via TRIME-PICO TDR",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Data preparation: features standardized with StandardScaler, dataset split with test size 0.3 and fixed random state 42, and reproducibility ensured via numpy.random.seed(42)",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "PCA component selection: examination of the covariance matrix, eigenvalue distribution, and a scree plot indicated that retaining the first two principal components captures more than 99 percent of total variance",
+      "role": "Evidence",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result: PC1 variance ratio = 0.9889 and PC2 variance ratio = 0.0064 giving cumulative variance > 0.995, so PC1 and PC2 suffice to represent dominant data structure",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Visualization: projection onto PC1 and PC2 shows clearer separation and clustering of samples by soil moisture, while PC2 vs PC3 shows stronger overlap consistent with low variance in PC3",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Random Forest baseline: model implemented with sklearn.ensemble.RandomForestRegressor, 100 trees, test size 0.3, random state 42, performance quantified by R2",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Result: Random Forest trained on PCA-transformed data achieved coefficient of determination R2 = 0.947, explaining approximately 94.7 percent of soil moisture variation",
+      "role": "Result",
+      "parents": [
+        10,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: PCA compressed 125 spectral bands into two components while retaining over 99 percent variance, reducing redundancy and enabling efficient models without compromising predictive accuracy",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Claim: PCA serves as an effective baseline dimensionality reduction approach for hyperspectral regression workflows and facilitates interpretability and scalability",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation and future work: the study is a single-dataset baseline; further evaluation on alternative feature extraction methods, diverse imaging scenarios, and different sensors is recommended",
+      "role": "Limitation",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

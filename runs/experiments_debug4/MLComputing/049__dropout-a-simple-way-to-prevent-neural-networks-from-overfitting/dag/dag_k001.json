@@ -1,0 +1,153 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Dropout reduces overfitting in large neural networks by randomly removing units during training, approximating model averaging over many sub-networks and improving generalization across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        4,
+        5,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dropout prevents complex co-adaptations of feature detectors by making the presence of other units unreliable, forcing units to learn useful features independently",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dropout procedure: at each training case sample independent Bernoulli masks per layer, train the resulting thinned network with standard backpropagation; at test time use the full network with outgoing weights scaled by retention probability p",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Learning details: use stochastic gradient descent on sampled thinned nets, average gradients in minibatches, optionally apply max-norm constraint on incoming weight vectors, use high learning rates and momentum with decays",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Dropout can be interpreted as approximately averaging an exponential number of parameter-sharing 'thinned' networks; weight scaling at test time is an efficient approximation to this averaging",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Empirical claim: training with dropout consistently lowers generalization error and yields state-of-the-art or substantially improved results across vision, speech, text and computational biology benchmarks",
+      "role": "Claim",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "MNIST results: dropout reduced test error from ~1.60% (standard nets) to 1.35% (dropout), further gains with ReLU, max-norm and larger networks reached 0.95% and pretrained dropout nets reached 0.79%",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "ImageNet/ILSVRC results: convolutional nets trained with dropout achieved large improvements (top-5 error ~16% in 2012 submission) and won ILSVRC-2012 when combined and ensembled",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "SVHN and CIFAR results: applying dropout in fully connected and convolutional layers reduced SVHN error from 3.95% to 2.55% (further improved with maxout); CIFAR-10 error reduced from ~15.6% to 12.61% without data augmentation",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "TIMIT speech results: dropout reduced phone error rates, e.g., a 6-layer net from 23.4% to 21.8%, and DBN-pretrained nets improved from ~22.7% to 19.7% with dropout",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Alternative splicing (computational biology) results: dropout nets outperformed standard neural nets and other non-Bayesian methods on a small RNA data set but performed slightly worse than Bayesian neural networks which remain strongest on very small-data tasks",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Observed effects: dropout produces sparser hidden activations and qualitatively cleaner first-layer features compared to non-dropout training, correlating with reduced co-adaptation and better generalization",
+      "role": "Result",
+      "parents": [
+        1,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Limitation: dropout increases training time and noise in parameter updates, typically taking 2-3 times longer to train the same architecture due to high gradient variance",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Practical recommendation: combine dropout with max-norm regularization, large decaying learning rates and high momentum to stabilize training and improve final performance",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    }
+  ]
+}

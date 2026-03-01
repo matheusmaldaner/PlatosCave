@@ -1,0 +1,160 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Assuring the use of machine learning in safety-critical systems requires end-to-end generation of evidence across the machine learning lifecycle that ML components are fit for purpose and safely integrated",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Machine learning is widely deployed in consumer and commercial applications and stakeholders expect its use to expand into safety-critical domains such as healthcare, transportation and defence",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "This paper surveys assurance for ML by defining a four-stage machine learning lifecycle, stating assurance desiderata for each stage, reviewing methods that address them, and identifying open research challenges",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The machine learning lifecycle consists of four stages: Data Management (collection, preprocessing, augmentation, analysis), Model Learning (model selection, training, hyperparameter selection, transfer learning), Model Verification (test-based and formal verification), and Model Deployment (integration, monitoring, updating)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Safety-critical applications require assurance evidence that ML components are fit for purpose, their errors are tolerated by the system, and they are adequately integrated so failures do not cause unacceptable harm",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Data Management must produce training and independent verification data sets exhibiting four desiderata: Relevant, Complete, Balanced, and Accurate; activities are collection, preprocessing, augmentation, and analysis",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Model Learning must produce models that are Performant, Robust, Reusable, and Interpretable using activities such as model selection, training, hyperparameter selection, and transfer learning",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Model Verification must produce auditable evidence that a trained model satisfies requirements on unseen inputs by requirement encoding, test-based verification, and formal verification while ensuring results are comprehensive, contextually relevant and comprehensible",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Model Deployment must integrate verified models within systems using monitoring and updating so deployed models are Fit-for-Purpose in context, Tolerated by system architectures, and Adaptable through controlled updates",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Data Management methods include using trusted data sources, experimental design, simulation verification, exploratory data analysis, augmentation (including GANs), class balancing and configuration management; open challenges include detecting backdoors, demonstrating synthetic data validity, data leakage, measuring completeness for operational/failure/adversarial domains, finding small disjuncts, correcting feature imbalance, and verifying complex simulations",
+      "role": "Method",
+      "parents": [
+        5,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Model Learning methods include performance metrics and statistical tests, ensemble learning, hyperparameter optimization, batch normalization, regularization and transfer learning; open challenges include selecting operationally relevant measures, run-time multiobjective evaluation, hyperparameter impact and tuning, decoupling perturbation effects, robustness metrics, similarity measures for transfer, and ensuring transferred models are fault free and interpretable globally",
+      "role": "Method",
+      "parents": [
+        6,
+        3
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Model Verification methods include requirement encoding, test generation (including simulation, guided fuzzing, metamorphic testing), coverage metrics for data and model structure, formal methods (SMT, abstract interpretation for neural nets), adversarial analysis and counterexample-guided augmentation; open challenges include coverage justification, formal methods beyond neural nets, mapping requirements to model features and contexts, generating contextually relevant synthetic tests, and producing comprehensible counterexamples that guide fixes",
+      "role": "Method",
+      "parents": [
+        7,
+        10,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Comprehensive assurance requires coordinated methods across the four lifecycle stages; while many methods exist for parts of the lifecycle, significant open challenges remain in data integrity and representativeness, contextual evaluation and interpretability of complex models, verification coverage and comprehension, distribution shift detection, monitoring, and controlled fleet-level updates needed to safely deploy ML in safety-critical systems",
+      "role": "Conclusion",
+      "parents": [
+        3,
+        4,
+        9,
+        8,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

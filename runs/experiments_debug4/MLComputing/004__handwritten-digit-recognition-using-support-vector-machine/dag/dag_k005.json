@@ -1,0 +1,172 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Using support vector machines at the segment classification level will improve handwritten numeral recognition accuracy and can enhance hybrid SVM/HMM word recognition compared to existing NN/HMM or HMM systems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Support Vector Machine offers better discrimination and generalization via structural risk minimization and large margin principles compared to neural networks relying on empirical risk minimization",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "SVM can be applied to multiclass handwritten numeral recognition using one-versus-rest decomposition and kernel mapping such as RBF",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Integrating SVM character classifiers with HMM for word recognition can improve hybrid word recognizer performance because SVM yields higher isolated character recognition",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Statistical Learning Theory motivates SVM by minimizing an upper bound on true risk using VC dimension and margin, reducing overfitting compared to ERM-based methods",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Feature extraction used moment invariants, thinned moment invariants, and affine moment invariants producing an 18 feature set and in another experiment 350 input features from 7 local features sampled spatially",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "SVM training used RBF kernel with grid search for hyperparameters yielding C = 8 and selected gamma, and employed one-versus-rest for multi class",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Preprocessing included filtration, normalization, thinning and spatial resampling of online signals to produce fixed-length feature vectors for SVM",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experiments used publicly available datasets including UCI Optdigits preprocessed 8x8 representations and a collected Assamese character dataset of 8235 samples from 45 writers",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Experimental evaluation of the SVM-based system on isolated character tests shows high recognition performance, with an application test reporting 98% correct identification on a testing set disjoint from training",
+      "role": "Result",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Comparative results reported that SVM outperforms Hidden Markov Model across three databases for isolated character recognition",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Because SVM yields higher isolated-character recognition rates, the authors are implementing and expect a hybrid SVM/HMM word recognizer to achieve better word recognition than a NN/HMM or HMM hybrid",
+      "role": "Result",
+      "parents": [
+        3,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "SVM models require substantially more storage because memory is proportional to number of support vectors times feature dimension, whereas HMM uses weight sharing and needs less storage",
+      "role": "Limitation",
+      "parents": [
+        9,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Space reduction strategies for SVM include finer grid search for C and gamma to reduce support vectors, reduced set selection, and storing compact original online signals with pen-up/pen-down to expand models dynamically",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: SVM is a promising alternative to NN/HMM or HMM for handwritten digit recognition; further work is required to integrate SVM into HMM-based word recognition and to mitigate SVM storage costs",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

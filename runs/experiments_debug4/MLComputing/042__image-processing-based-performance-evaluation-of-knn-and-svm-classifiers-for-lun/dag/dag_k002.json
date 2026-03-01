@@ -1,0 +1,191 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning classifiers (KNN, Random Forest, SVM) can be used to detect lung cancer from CT images and improve early diagnosis",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The study implements an image-processing based multi-stage classification pipeline in MATLAB that performs enhancement, segmentation, and classification to detect and stage lung cancer",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dataset: 500 CT images sampled from LIDC-IDRI (NIH-NCI) were used, with additional small validation sets from AHRC and AIMS hospitals; images downsampled from 512x512x3 to 256x and split 70% train / 30% test",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Image pre-processing applied included CLAHE, Wiener, adaptive Gaussian, Gaussian and Gabor filtering, plus contrast enhancement, color space modification, scaling, thresholding and marker-controlled watershed segmentation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model training: KNN uses Euclidean distance with parameter K; SVM constructs maximal margin hyperplane; Random Forest ensembles many decision trees with bootstrap sampling and majority voting; 5-fold cross-validation was used for evaluation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Performance metrics computed include accuracy, precision, recall, F1-score, true positive rate, false positive rate, sensitivity, specificity, FAR and FRR",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The processing pipeline first detects presence of cancerous regions, then classifies malignancy into early, intermediate and advanced stages through sequential segmentation and classification steps",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Experimental workflow and system diagram outline sequential stages: image acquisition, preprocessing, segmentation, feature extraction, classifier training and staging",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Clinical validation: small sample sets from AHRC and AIMS were used and supervised by an AIMS radiologist to confirm model outputs",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Assumption: Early detection of lung cancer via imaging and computational methods can improve treatment outcomes and survival",
+      "role": "Assumption",
+      "parents": [
+        2
+      ],
+      "children": [
+        0
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: SVM achieved average accuracy 95.06% across 5-fold cross-validation with average precision 0.95, recall 0.99 and average F1 around 0.98 (AUC > 0.99 reported per class)",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Result: KNN achieved average accuracy 86.89% across 5 folds with average precision 0.84 and average F1 about 0.91",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result: Random Forest achieved average accuracy 81.96% across 5 folds with average precision 0.78 and average F1 about 0.87",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: SVM outperforms KNN and Random Forest on this dataset for lung cancer detection and staging, suggesting SVM is most suitable among tested methods for this task",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        8,
+        10,
+        11,
+        12
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: Study used a relatively small sample of 500 images and limited external validation samples which may limit generalizability and robustness across diverse populations and imaging conditions",
+      "role": "Limitation",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Future work: Authors propose to collect larger, more diverse datasets spanning different demographics and cancer stages to improve model reliability and performance",
+      "role": "Claim",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

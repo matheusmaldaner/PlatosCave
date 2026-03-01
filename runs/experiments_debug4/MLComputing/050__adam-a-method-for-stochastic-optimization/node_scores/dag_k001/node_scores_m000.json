@@ -1,0 +1,156 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.7,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the core Adam update mechanism: per-parameter exponential moving averages of gradients and squared gradients with bias correction to produce adaptive stepsizes.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.9,
+    "relevance": 0.8,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the standard bias correction in Adam where m and v are divided by 1 minus beta1 raised to t and 1 minus beta2 raised to t to obtain bias corrected estimates.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with known properties of Adam-style adaptive moment estimates that bound the effective step by alpha and are invariant to positive diagonal rescaling of gradients, yielding automatic annealing and a trust-region like behavior.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.35,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based on general knowledge, Adam with online convex optimization assumptions does not universally guarantee sqrt(T) regret; known convergence issues for Adam mean results depend on specific variants and conditions, so claim is not universally reliable.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No sources checked; claim asserts empirical comparisons show Adam converges as fast or faster across logistic regression, multilayer nets, and convolutional nets compared to SGD with momentum, AdaGrad, RMSProp and others.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that Adam matched or exceeded AdaGrad on sparse problems in MNIST logistic regression and IMDB bag of words logistic regression, and beat SGD with Nesterov momentum; no external sources are consulted in this verification.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.7,
+    "relevance": 0.75,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Bias correction in optimizer bias terms is commonly cited as stabilizing early steps when beta2 approaches one, reducing risk of divergence; claim aligns with standard optimization intuition but exact empirical conditions may vary.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Adam uses per parameter learning rates and often converges faster than AdaGrad and can outperform SGD with momentum, with epsilon sometimes dominating v_t in CNN settings.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on standard Adam-type convergence conditions in optimization theory, the claimed assumptions are plausible for ensuring convergence, though exact requirements vary by paper.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.75,
+    "relevance": 0.7,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.6,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Adam combines adaptive learning rate mechanism like AdaGrad with momentum and running averages similar to RMSProp, yielding good performance on sparse gradients and non stationary objectives while remaining simple to implement and memory efficient.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "AdaMax uses u_t as the infinity norm estimate with u_t = max(beta2 times u_{t-1}, abs(g_t)) and is claimed to yield a numerically stable update with delta magnitude bounded by alpha and not require bias correction for u_t",
+    "confidence_level": "high"
+  },
+  "12": {
+    "credibility": 0.72,
+    "relevance": 0.85,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Exponential moving average of parameters is a plausible technique that can reduce noise and may improve generalization when applied to Adam or AdaMax, though the degree of benefit is not universally established and depends on implementation details.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.75,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with widely used defaults for the Adam optimizer and general practice, though specific problem domains may benefit from tuning.",
+    "confidence_level": "medium"
+  }
+}

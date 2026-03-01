@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A comprehensive survey of bias mitigation methods for ML classifiers that describes methods, datasets, metrics, and benchmarking practices will help practitioners make informed choices when developing and evaluating new bias mitigation methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        5,
+        6,
+        7,
+        9,
+        11,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We collected and analysed 341 publications on bias mitigation for ML classifiers",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Survey taxonomy and method counts: methods were categorized by intervention stage (pre-processing, in-processing, post-processing) and technique into 13 categories; of 341 publications 123 used pre-processing, 212 used in-processing, 56 used post-processing (publications may appear in multiple categories)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        4,
+        11,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Datasets used in evaluations: 81 unique real datasets identified; most-used datasets are Adult (used in 249 publications) and COMPAS (used in 166); average number of datasets per empirical paper is 2.7 and 90% used four or fewer datasets",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Metrics used in evaluations: 109 unique fairness metrics found, organized into six categories (dataset-label, predicted outcome, predicted+actual outcome, predicted probability+actual, similarity, causal); most frequent metrics include Statistical Parity Difference (136 uses) and Equality of Opportunity (91 uses)",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Benchmarking practice claims: most studies benchmark against baselines and other bias mitigation methods; the original, fairness-agnostic model is used as a baseline in the majority of experiments",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Evidence on reproducibility resources: 192 of 341 publications (56%) provide publicly available source code; some frameworks implement multiple methods (AIF360 implements 13 methods, Fairlearn and Themis-ML fewer)",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Key limitations and challenges identified: lack of consensus on fairness definitions and metrics, dataset limitations (protected attributes missing or unreliable), uncertainty transferring results to real-world applications, and the need for fairness guarantees and broader experimental evaluation",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Practical recommendations distilled from the survey: test on at least three diverse datasets, state protected attributes, evaluate with at least two fairness metrics plus a performance metric, benchmark against original model and similar methods, run multiple repetitions (recommend 10), evaluate on multiple classifiers for pre/post approaches, and share code and numeric results",
+      "role": "Recommendation",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Conclusion on method distribution and opportunities: in-processing methods are the most common (212 publications), pre-processing and post-processing are less common, and post-processing input-correction is particularly underexplored (only 2 publications), indicating research opportunities in post-processing and combined-stage approaches",
+      "role": "Conclusion",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Experimental design results: among empirical studies (324 papers), 232 report data-split sizes and 143 report number of repeated runs; common splits include 80/20 and 70/30, k-fold cross validation is used (10-fold and 5-fold most common), and average experiment repetition is often 5 or 10 runs",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Combined approaches and usage patterns: 70 publications applied multiple mitigation techniques (e.g., pre+in+post or multiple in-processing methods), showing that methods are frequently combined and hybrid strategies are viable",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A sequence transduction model based solely on attention mechanisms (the Transformer) can replace recurrent and convolutional layers and achieve superior translation quality while being more parallelizable and faster to train",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The Transformer architecture is composed of encoder and decoder stacks built from multi-head self-attention and position-wise feed-forward networks, with residual connections and layer normalization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Scaled dot-product attention and multi-head attention are used: attention(Q,K,V)=softmax(QK^T / sqrt(dk))V and multiple parallel heads allow attending to different representation subspaces",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Positional encodings (sinusoidal) are added to embeddings to give the model token order information in absence of recurrence or convolution",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The Transformer enables greater parallelization and reduces maximum path length between positions compared to recurrent and convolutional layers, improving learning of long-range dependencies",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Encoder and decoder each use N=6 identical layers (encoder: multi-head self-attention + feed-forward; decoder: masked self-attention, encoder-decoder attention, feed-forward) with outputs of dimension dmodel=512 in base model",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Position-wise feed-forward networks apply two linear transforms with ReLU between, with inner dimension dff=2048 in base model; embeddings and pre-softmax weights are shared and scaled by sqrt(dmodel)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Using h=8 heads with dk=dv=64 (for dmodel=512) keeps computational cost similar to single-head full-dimension attention while allowing diverse attention patterns",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Sinusoidal positional encodings with different frequencies were chosen so relative positions can be represented and to enable potential extrapolation to longer sequences; learned positional embeddings produced similar results",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Compared to recurrent layers (O(n) sequential operations) and convolutions (longer maximum path lengths), self-attention layers have O(1) minimum sequential operations and constant maximum path length, reducing signal path length between distant positions",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Self-attention has per-layer complexity O(n^2 * d) and is faster than recurrent layers when sequence length n is less than representation dimension d; restricted attention can reduce complexity for very long sequences",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirically, multi-head attention yields better translation quality than single-head or extreme head counts, and reducing attention key size dk degrades performance",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Training setup: byte-pair or word-piece tokenization, batching by approximate sequence length ~25k source and target tokens per batch, Adam optimizer with custom learning-rate schedule and warmup=4000, dropout and label smoothing used for regularization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Models were trained on 8 P100 GPUs; base model trained 100k steps (~12 hours), big model trained 300k steps (~3.5 days)",
+      "role": "Method",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "On WMT 2014 English-German the big Transformer achieved 28.4 BLEU (new state-of-the-art, outperforming previous best including ensembles by >2 BLEU); base Transformer also surpassed prior models",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "On WMT 2014 English-French the big Transformer achieved 41.0 BLEU, establishing a new single-model state-of-the-art while using a fraction of prior models' training cost",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Conclusion: The Transformer replaces recurrence and convolution with multi-headed self-attention to obtain faster training, better parallelization, and superior translation performance; code released for reproducibility",
+      "role": "Conclusion",
+      "parents": [
+        14,
+        15,
+        4,
+        2
+      ],
+      "children": null
+    }
+  ]
+}

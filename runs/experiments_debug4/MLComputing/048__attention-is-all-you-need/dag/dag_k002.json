@@ -1,0 +1,148 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A sequence transduction model based solely on attention mechanisms (the Transformer) can replace recurrent and convolutional layers to achieve superior translation quality, greater parallelizability, and substantially reduced training time and cost",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The Transformer architecture dispenses with recurrence and convolution and uses stacked self-attention and position-wise feed-forward networks in encoder and decoder stacks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Using only attention allows significantly more parallelization and reduces sequential operations per layer to constant time compared to recurrent layers which require operations proportional to sequence length",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The Transformer achieves state-of-the-art translation results and training efficiency on WMT 2014 English-to-German and English-to-French tasks, outperforming prior single and ensemble models in BLEU and using less training FLOPs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Self-attention has tradeoffs: it reduces maximum path length between positions to constant but can reduce effective resolution through weighted averaging, which is mitigated by multi-head attention; restricted local attention can be used for very long sequences",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Encoder and decoder are stacks of N=6 identical layers; each encoder layer has multi-head self-attention and a position-wise feed-forward sub-layer with residual connections and layer normalization; decoder layers add encoder-decoder attention and masking to preserve autoregressiveness",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Scaled dot-product attention computes attention as softmax of Q K transpose divided by square root of key dimension times V, providing efficient batched computation",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Multi-head attention linearly projects queries, keys and values h times to lower-dimensional subspaces, performs attention in parallel, concatenates outputs and projects to final dimension to allow attending to information from different representation subspaces",
+      "role": "Method",
+      "parents": [
+        6,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Compared to recurrent and convolutional layers, self-attention layers have per-layer complexity O(n^2 * d), minimum sequential operations O(1), and maximum path length O(1), improving the ability to learn long-range dependencies for typical sentence lengths",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "On WMT 2014 English-to-German the big Transformer model achieved 28.4 BLEU, exceeding previous best results including ensembles by over 2 BLEU while training in 3.5 days on eight P100 GPUs",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "On WMT 2014 English-to-French the big Transformer achieved 41.0 BLEU as a single model after 3.5 days on eight P100 GPUs, establishing a new single-model state of the art at under one quarter of prior training cost",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Training regimen: byte-pair or word-piece tokenization, batching by approximate sequence length with batches of ~25000 source and target tokens, trained on 8 P100 GPUs using Adam with a warmup learning rate schedule and label smoothing and dropout regularization",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Regularization details: residual dropout rate 0.1 for base model and 0.3 for big English-French run, label smoothing epsilon 0.1, checkpoint averaging for final models, beam search with beam size 4 and length penalty 0.6 at inference",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Ablations: multiple heads improve quality versus single head; reducing attention key size dk degrades quality; larger model dimensions and higher dropout improve performance; learned positional embeddings perform similarly to sinusoidal encodings",
+      "role": "Evidence",
+      "parents": [
+        1,
+        7
+      ],
+      "children": null
+    }
+  ]
+}

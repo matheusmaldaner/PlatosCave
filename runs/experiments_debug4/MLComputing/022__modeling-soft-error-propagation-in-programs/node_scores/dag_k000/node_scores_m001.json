@@ -1,0 +1,167 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.8,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general understanding that technology scaling increases soft error rates and SDC risks, and that hardware-only mitigation can be costly, creating motivation for software-based protection strategies, though exact magnitudes and cost tradeoffs are not specified here.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a plausible tri level sub model approach with static, control flow, and memory abstractions and probabilistic aggregation to propagate errors to outputs, but without external evidence its exact adoption in a TRIDENT framework is uncertain.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a two phase TRIDENT workflow using an LLVM IR program, a profiling input, and user specified output instructions, with a profiling phase followed by a static inferencing phase to compute per instruction and overall SDC probabilities.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.5,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes TRIDENT as an LLVM module using dynamic profiling to obtain execution counts, branch probabilities and memory dependency information, then applying fs, fc and fm to compute SDC probabilities without injecting faults.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.75,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible approach where an fs system computes propagation, masking, and crash probabilities from static data dependent instruction sequences by deriving instruction level tuples from semantics and profiled operand distributions, but no evidence or methodology is provided for verification.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.35,
+    "relevance": 0.6,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a specific fault model in which a corrupted conditional branch probabilistically controls whether stores are executed or skipped, distinguishing non loop terminating and loop terminating cases and yielding probabilities for contaminated stores; without additional evidence or context, its credibility and general applicability remain uncertain.",
+    "confidence_level": "low"
+  },
+  "7": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a technique for tracing propagation of corrupted store instructions through program outputs using a pruned memory dependence graph, with aggregation of symmetric loop iterations and memoization of store results to reduce computation cost.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.7,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "TRIDENT predictions for overall program SDC probability across eleven benchmarks closely match fault injection results with a mean absolute error of four point seven five percent and a paired t test p value of zero point seven six four, indicating no significant difference",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that TRIDENT per-instruction SDC probability predictions are statistically indistinguishable from FI in eight of eleven benchmarks using paired t tests, and that TRIDENT outperforms simpler models lacking control-flow or memory modeling.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts substantial speedup of TRIDENT over FI in SDC estimation with a fixed profiling cost followed by per-instruction cost, citing 6.7x faster at three thousand samples and 15.1x faster at seven thousand samples.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim asserts that using TRIDENT to guide selective instruction duplication yields larger SDC reductions at given overheads; no external verification performed within this task.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim lists common simplifying assumptions in fault models such as ignoring memory and control logic faults and assuming single bit flips and protected control flows.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that simpler models lacking control flow or memory greatly overpredict SDCs, underscoring the importance of the three level decomposition.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that TRIDENT is a practical, accurate, scalable alternative to fault injection for estimating SDC probabilities and guiding selective protection, with future work on multiple inputs and non CPU platforms.",
+    "confidence_level": "medium"
+  }
+}

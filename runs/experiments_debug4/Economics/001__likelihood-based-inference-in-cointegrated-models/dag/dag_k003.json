@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A likelihood-based vector autoregressive error correction framework provides a unified, testable parametric approach to model cointegration among nonstationary economic time series and to conduct inference on long-run relations and adjustment dynamics",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Definition: A p-dimensional process x_t is integrated of order one, I(1), if its differences are stationary linear processes with nonzero sum of MA coefficients, and x_t is cointegrated if there exists nonzero beta such that beta' x_t is stationary",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Granger Representation Theorem (applied to VAR error correction form): under the I(1) condition the solution of the VAR error correction model decomposes into r stationary cointegration relations beta' x_t and p-r common stochastic trends C sum_{i=1}^t epsilon_i with explicit moving average representation C and C*",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Three parametric formulations of cointegration: (a) regression residual approach (Engle-Granger), (b) autoregressive error correction VAR formulation Delta x_t = alpha beta' x_{t-1} + short-run terms, (c) unobserved components formulation with stochastic trends linked to alpha and beta",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model analyzed: VAR error correction model Delta x_t = alpha(beta' x_{t-1} + Upsilon D_t) + sum_{i=1}^{k-1} Gamma_i Delta x_{t-i} + Phi d_t + epsilon_t, with alpha and beta p x r matrices, deterministic terms parametrized to control trending behavior",
+      "role": "Method",
+      "parents": [
+        0,
+        3,
+        2
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Economic examples illustrating cointegration: (a) Purchasing Power Parity as stationary linear combination e_t - p_us_t + p_au_t, (b) present value relation implies cointegration between stock price and dividends with cointegrating vector (1,-theta,0,...,0)",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "I(1) condition for the VAR: characteristic polynomial Psi(z) has unit root at z=1 and the rank condition |alpha_perp Gamma beta_perp| != 0 ensures only order one pole so xt is cointegrated I(1) and avoids I(2) or higher integration",
+      "role": "Assumption",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Likelihood estimation and testing: Gaussian maximum likelihood estimation of model (2) reduces to reduced rank regression (RRR) of Delta x_t on lagged levels and deterministic terms, producing eigenvalue problem and ML estimates alpha, beta, Gamma and Omega",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Rank test and test statistic: likelihood ratio test for cointegration rank r versus p is -T sum_{i=r+1}^p log(1 - lambda_hat_i) where lambda_hat_i are eigenvalues from RRR; maximized likelihood relates to product of (1 - lambda_i)",
+      "role": "Result",
+      "parents": [
+        7,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Granger representation implications for deterministic terms: deterministic dt cumulates via C Phi sum dt producing trends in levels, while D_t multipliers proportional to alpha do not cumulate because C alpha Upsilon = 0; choice of deterministic terms affects asymptotic distributions",
+      "role": "Claim",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Asymptotic distributions: (a) rank test has nonstandard Dickey-Fuller type limit distributions depending on p-r and deterministic specification (Brownian motion functionals), (b) estimator of beta is mixed Gaussian with conditional Gaussian limit given common trends, while estimators of alpha and short-run parameters are asymptotically Gaussian and asymptotically independent of beta",
+      "role": "Result",
+      "parents": [
+        8,
+        7,
+        6
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Inference procedures: given mixed Gaussian limit for beta, Wald and likelihood ratio tests on cointegration coefficients are asymptotically chi-square under appropriate normalization and identification restrictions; rank selection uses simulated critical values or small-sample corrections/bootstrap",
+      "role": "Claim",
+      "parents": [
+        10,
+        8,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Extensions and applications: rational expectations impose testable restrictions on cointegration and short-run parameters in VAR; model extends to I(2) processes with parametrizations yielding cointegration between levels and differences and to nonlinear, seasonal, explosive or fractional integration cases",
+      "role": "Claim",
+      "parents": [
+        2,
+        4,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitations and open problems: (a) small sample bias and need for small-sample corrections and bootstrap methods, (b) underdeveloped statistical theory and methods for nonlinear cointegration, (c) need for economic theory to incorporate empirical findings on nonstationarity and cointegration",
+      "role": "Limitation",
+      "parents": [
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

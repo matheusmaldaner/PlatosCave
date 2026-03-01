@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large empirical evaluation of ten supervised learning algorithms across multiple datasets and performance metrics will reveal their relative strengths and how probability calibration affects their performance",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We compare ten algorithms (SVMs, neural nets, logistic regression, naive bayes, memory-based learning, random forests, decision trees, bagged trees, boosted trees, boosted stumps) on 11 binary classification problems",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We evaluate models using eight performance criteria grouped as threshold metrics (accuracy, F-score, lift), ordering/rank metrics (ROC area, average precision, precision/recall break-even), and probability metrics (squared error, cross-entropy); performances are normalized per problem to [0,1] using baseline and best observed",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Experimental procedure: for each problem use 5000 randomly selected training cases with 5-fold CV (4000 train, 1000 validation for model selection/calibration) and a large held-out test set; explore many parameter settings and variations (~2000 models per trial)",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "We calibrate model outputs post training using Platt Scaling (sigmoid) and Isotonic Regression (PAV algorithm) to produce better probability estimates for algorithms not designed to output probabilities",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Before calibration, ensembles of trees (bagged trees and random forests) and neural nets give the best average performance across the eight metrics and eleven problems",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "We varied algorithm hyperparameters thoroughly: many SVM kernels and C values, multiple neural net sizes and momenta with early stopping, many tree types and boosting steps, K in KNN up to |trainset|, and both transformed and original attribute encodings",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Calibration markedly improves probability metrics for some algorithms (boosted trees, SVMs, boosted stumps, naive bayes) and can move an algorithm to first place overall when probability metrics are included",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "After Platt calibration, boosted full decision trees predict the best probabilities and become the top-performing method overall across the eight metrics; neural nets are well calibrated initially and are slightly harmed by calibration",
+      "role": "Result",
+      "parents": [
+        5,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Ensembles of full trees (boosted trees, random forests, bagged trees) and neural nets also achieve excellent ordering metrics (ROC, average precision, BEP); Platt calibration preserves ordering while Isotonic can introduce ties",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Boosting full decision trees substantially outperforms boosting single-level stumps on most problems and metrics, though boosted stumps sometimes excel on specific problems",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "On threshold metrics (accuracy, F-score, Lift) the best models are calibrated or uncalibrated random forests, calibrated boosted trees, and bagged trees; isotonic calibration unexpectedly improved F-score broadly",
+      "role": "Claim",
+      "parents": [
+        8,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Some algorithms consistently underperform on average: naive bayes, logistic regression, single decision trees, boosted stumps, and memory-based learning show mediocre or poor average performance across problems and metrics",
+      "role": "Result",
+      "parents": [
+        3,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Bootstrap analysis (resampling problems and metrics 1000 times) shows ensembles of trees dominate rankings: boosted trees, random forests, and bagged trees most frequently occupy the top three positions, indicating robustness of the ensemble advantage",
+      "role": "Evidence",
+      "parents": [
+        5,
+        8,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusions: calibrated boosted trees are the best overall, random forests and bagged trees are close seconds, calibrated SVMs and neural nets follow; calibration is an effective general tool for improving probabilistic predictions for many methods",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        13,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Limitation: results depend on the choice of 11 datasets, 8 metrics, and training size (5k); model selection noise from 1k validation sets reduces achievable performance and some findings vary by problem",
+      "role": "Limitation",
+      "parents": [
+        3,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

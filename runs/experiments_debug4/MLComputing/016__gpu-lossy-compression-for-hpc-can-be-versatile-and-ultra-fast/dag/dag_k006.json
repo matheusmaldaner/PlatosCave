@@ -1,0 +1,179 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A versatile GPU lossy compression framework (VGC) can address diverse HPC data patterns while delivering ultra-fast, error-bounded compression and decompression on GPUs",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "HPC workflows produce extreme data volumes and benefit from GPU-side lossy compression to reduce memory footprint and data movement while retaining user-controlled error bounds",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Existing GPU lossy compressors have three key limitations: limited generalization across diverse data features, inability to reduce GPU memory footprint due to pre-allocating worst-case compressed buffers, and poor or inefficient random access to regions of interest",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "VGC design combines multiple algorithms, dimension-aware processing, memory-efficient compression, selective decompression, and a highly optimized single-kernel implementation to overcome these limitations",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Compression algorithm pipeline: per-block integer quantization (lossy, error-bounded) -> dimension-aware delta encoding (lossless) -> fixed-length encoding (lossless) -> optional outlier preservation (lossless), with blockwise processing and global prefix-sum for concatenation",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "VGC supports three algorithmic modes per dimension: No-delta (for random data), Delta (for sparse/locally smooth data), and Outlier (for globally smooth data), and supports 1D, 2D, 3D blocking",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Dimension-aware Delta Encoding: perform row-wise (and fused column/depth) delta within blocks to preserve spatial locality while retaining vectorized, coalesced GPU memory access and low register/shared-memory usage",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Memory-efficient Compression uses kernel fission: first kernel profiles per-block compressed sizes and global scan to compute exact total compressed size, then cudaMalloc exact buffer and second kernel writes compressed blocks using computed offsets, enabling allocation of only actual compressed bytes",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Selective Decompression implements early-stopping during global prefix-sum over block metadata to locate and decompress only the blocks covering a region of interest, supporting writes back into compressed array for homomorphic operations",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "On a single NVIDIA A100 GPU, VGC achieves average single-precision throughput ~320 GB/s compression and ~470 GB/s decompression, and double-precision ~600 GB/s compression and ~1000 GB/s decompression (reported averages across 13 datasets and REL error bounds)",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "VGC outperforms or matches state-of-the-art GPU compressors in throughput: roughly 2x higher than many baselines (FZ-GPU, cuSZp1, cuZFP, PFPL) and comparable compression throughput and higher decompression throughput than cuSZp2",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "VGC-O (Outlier) achieves highest or near-highest compression ratios across 13 HPC datasets at REL=1E-4, outperforming cuSZp2 on 12 of 13 datasets and achieving up to 86% higher ratio on some datasets",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Incorporating dimensional information (1D->2D->3D) increases compression ratio; example RTM fields show 3D VGC-O ratio up to ~51% higher than 1D, demonstrating benefit of dimension-aware blocking and delta",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Memory-efficient Compression reduces real GPU memory footprint by allocating only actual compressed size (example: SCALE fields reduced from hundreds of MB to single-digit MB) while retaining ~70% of standard-mode throughput",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Selective Decompression delivers ultra-fast ROI access: measured average throughput ~1.11 TB/s (single-precision) and ~2.08 TB/s (double-precision) for accessing a dimension-aware block, enabling efficient partial decompression and homomorphic operations",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Two real-world use-case evaluations: (a) compressing LLM KV caches with VGC-N 1D memory-efficient mode reduced KV memory by 46% on average while maintaining BLEU ~90 and delivering compression/decompression throughput ~211/296 GB/s; (b) in-situ compression for inter-node transfer of a 256 GB turbulence field reduced end-to-end transfer time up to 12.5x by reducing transferred bytes and sustaining high pipeline throughput",
+      "role": "Evidence",
+      "parents": [
+        3,
+        7,
+        8,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

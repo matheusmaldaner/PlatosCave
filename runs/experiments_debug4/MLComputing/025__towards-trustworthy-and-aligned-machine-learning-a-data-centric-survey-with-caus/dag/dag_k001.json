@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A data-centric, causality-informed view unifies trustworthy machine learning across robustness, adversarial robustness, interpretability, and fairness and guides principled method design for standalone and large pretrained models",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many disparate trustworthy-ML methods converge to two core optimization templates plus optional sample weighting: (a) invariance via adversarial domain-style objectives (DANN form), (b) worst-case data augmentation / adversarial training (minimax), and (c) sample reweighting plugged into ERM",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Spurious or non-causal features in collected datasets (e.g., background correlated with label in sea-turtle vs tortoise images) cause models trained by ERM to rely on undesired signals and generalize poorly under distribution shifts",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Pearl's causal hierarchy (L1 associational, L2 interventional, L3 counterfactual) provides a unifying framework to categorize and interpret trustworthy-ML techniques and their capabilities",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Causality methods map to practical ML procedures: randomized controlled trials ~ data augmentation breaking confounders, backdoor adjustment ~ conditioning/stratifying or NWGM feature fusion, front-door ~ using mediators (intermediate representations), instrumental variables ~ proxy perturbations, counterfactuals ~ generative/latent augmentation and treatment-effect analyses",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Large pretrained model techniques (fine-tuning, parameter-efficient fine-tuning, prompting, RLHF) can be expressed as constrained ERM variants and thus can adopt the master equations and causal interventions developed for standalone models",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Limitations and practical challenges: unobserved/confounded variables, entanglement of causal and non-causal features, difficulty of exact interventions and counterfactual estimation in high-dimensional data",
+      "role": "Limitation",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "DANN-style training: minimize task loss while minimizing a domain/confounder discriminator loss to learn invariant representations (invariance master equation)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Worst-case data augmentation (adversarial training): train on maximally harmful perturbations within a constraint to enforce robustness (minimax master equation), with embedding-consistency regularizers (e.g., TRADES)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Sample reweighting / group-DRO / inverse-propensity approaches: assign higher weight to bias-conflicting or underrepresented examples to reduce confounder influence (weighted ERM plug-in)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical and conceptual evidence: examples and literature show augmentation, invariance, adversarial training, causal adjustment, and weighting reduce reliance on spurious features and improve robustness, interpretability alignment, or fairness in vision, language, and vision-language tasks",
+      "role": "Evidence",
+      "parents": [
+        2,
+        4,
+        7,
+        8,
+        9
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Application to large pretrained models: (a) fine-tuning/PEFT/prompting are ERM variants so DANN/minimax/weighting and causal interventions can be applied; (b) RLHF addresses human-value alignment orthogonally and can be combined with causal/data-centric methods",
+      "role": "Claim",
+      "parents": [
+        5,
+        10,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: A principled, causality-grounded, data-centric master-equation view explains many prior methods, guides transferring defenses to pretrained models, predicts new trustworthy interventions, but requires advances to handle unobserved confounders and feature entanglement",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        11,
+        6,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

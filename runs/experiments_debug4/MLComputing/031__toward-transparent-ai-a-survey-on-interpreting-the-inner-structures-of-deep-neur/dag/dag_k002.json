@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods that analyze internal components of deep neural networks (weights, neurons, subnetworks, latent representations) are necessary to build more trustworthy, debuggable, and safe AI systems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "A taxonomy classifies inner interpretability methods by the part of the computational graph they target (weights, neurons, subnetworks, representations) and whether methods are intrinsic (during training) or post hoc (after training)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Interpreting weights: intrinsic continual learning makes weights specialize by task, while post hoc weight-masking identifies essential weights and corresponding subnetworks; many weights can be frivolous and prunable",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Interpreting individual neurons: intrinsic neuron-specialization techniques (e.g., adding new neurons for new tasks) and post hoc methods (dataset-based dissection, feature synthesis, perturbation/ablation, gradient attribution, probing) provide candidate explanations but have limitations",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Interpreting subnetworks: intrinsic sparsity and modularity can simplify analysis; post hoc modular partitioning and circuits analysis aim to identify functional subnetworks but often require heavy expert effort",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Interpreting latent representations: approaches include self-explaining models, adversarial training, disentanglement, analysis of tokens and attention in transformers, concept vectors, probing, and representation comparison",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Method: The survey reviews over 300 works, structures methods into the taxonomy, and separates intrinsic from post hoc techniques to provide a focused resource on inner interpretability",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Claim: Some methods blur categories (e.g., continual learning applies to both weights and neurons) but organizing by network target is more useful for engineering goals",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Evidence/Result: Weight-masking can identify subnetworks that causally specialize on subtasks; pruning results show networks can be heavily reduced without large performance loss, revealing frivolous weights",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Evidence/Result: Dataset-based dissection, feature synthesis, ablation, and gradient methods identify neuron behaviors, find bias and exploitable features, but are limited by dataset coverage, local linearity of gradients, context dependence, and polysemantic or frivolous neurons",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Hazard/Claim: Polysemantic neurons (responding to multiple unrelated features) and frivolous neurons (redundant or prunable) make single-neuron explanations unreliable and can be exploited adversarially",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Evidence/Result: Sparse and modular architectures or pruning can aid interpretability and editing (e.g., debiasing) but sparsity does not always increase single-neuron interpretability and circuits analysis has mainly succeeded on small models with expert effort",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Claim: Adversarial training often improves robustness and some interpretability properties, but robustness may trade off with accuracy and explanations can still be unfaithful or unstable",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation/Claim: Many interpretability outputs are hypotheses rather than validated conclusions; methods often lack rigorous evaluation, suffer from cherry-picking, scale poorly, and produce uncertain or unfaithful explanations",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion/Recommendation: Future work should emphasize diagnostics, debugging, adversarial tests, benchmarking, scalable human-in-the-loop methods, combining techniques, and rigorous evaluation protocols that measure usefulness to engineers",
+      "role": "Conclusion",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Claim/Future direction: Mechanistic interpretability, detecting deception and latent knowledge, understanding connections to robustness, modularity, continual learning, compression, and human vision, and creating rigorous benchmarks are high-priority research directions",
+      "role": "Claim",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

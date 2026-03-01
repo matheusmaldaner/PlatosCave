@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A comprehensive survey of bias mitigation methods for machine learning classifiers can identify common practices (datasets, metrics, benchmarks), categorize methods by intervention stage and technique, and produce actionable recommendations to help practitioners develop and evaluate new bias mitigation methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We conducted a systematic literature search and snowballing, combining preliminary collection from prior surveys, repository searches across six sources, manual screening of title/abstract/body, backward snowballing, and author feedback",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The search procedure gathered 341 publications addressing bias mitigation for ML classifiers on tabular data",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Bias mitigation methods were categorized by intervention stage (pre-processing, in-processing, post-processing) and by 13 technique categories (e.g., relabelling, sampling, representation, regularization, constraints, adversarial learning, compositional, adjusted learning, input/output correction)",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Distribution of method types: among 341 publications, 123 used pre-processing, 212 used in-processing, and 56 used post-processing; many works combine multiple stages",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Pre-processing approaches include relabelling/perturbation, sampling/reweighing/SMOTE, latent variable augmentation, and representation learning (e.g., LFR, adversarial, VAE), while in-processing focuses on modifying learning (regularizers, constraints, adversarial training, compositional/ensemble, adjusted algorithms), and post-processing includes input correction, classifier correction, and output correction",
+      "role": "Context",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Empirical evaluation practices: we extracted datasets (81 unique datasets used), fairness metrics (109 unique metrics grouped into six categories), benchmarking practices (baselines, comparisons to prior bias-mitigation and non-fairness methods), and code-sharing rates",
+      "role": "Claim",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Dataset findings: 81 unique datasets were used; most experiments use few datasets (mean 2.7, 90% use four or fewer); Adult and COMPAS are the most used (Adult in 77% of empirical papers, COMPAS in 51%)",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Metrics findings: 109 distinct fairness metrics were observed, grouped into six categories (dataset-label definitions, predicted-outcome parity, predicted vs actual outcomes, predicted probabilities, similarity/individual fairness, causal metrics); Equality of Opportunity and Demographic Parity variants are among the most used",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Benchmarking and reproducibility: common baseline is the original (unmitigated) model (used by 82% of methods); publications benchmark against prior pre/in/post-processing methods (many popular methods repeatedly used as benchmarks) and 56% of surveyed publications shared source code",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Observed empirical patterns: Logistic regression and neural networks are the most frequently evaluated classifiers; 70% of studies evaluate a single classifier; post-processing input correction is rarely explored (only two papers)",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Challenges identified: proliferation of metrics without consensus, dataset limitations (few benchmarks, protected-attribute availability, external validity), need for fairness guarantees and interpretability, and limited exploration of some method combinations and post-processing variants",
+      "role": "Claim",
+      "parents": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Recommendations and best practices: check existing methods; evaluate on at least three diverse datasets; report protected attributes; use at least two fairness metrics plus a performance metric; benchmark against original model and similar methods; evaluate on multiple classifiers when method-agnostic; repeat experiments (recommend ~10 runs); and share code and numerical artifacts",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Opportunities: underexplored areas include post-processing input correction, more combinations of pre/in/post methods, fairness for multi-class and non-binary sensitive attributes, and methods providing provable fairness guarantees or practical transfer to real-world evolving data distributions",
+      "role": "Claim",
+      "parents": [
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

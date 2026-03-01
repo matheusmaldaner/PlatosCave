@@ -1,0 +1,152 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree classifier (J48/C4.5) applied to the Pima Indian diabetes dataset can predict diabetes status with high accuracy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        8,
+        3,
+        7,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: The Pima Indian diabetes dataset (768 records, 8 predictive numeric attributes, binary class) was used as the data source",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: The J48 implementation of C4.5 in WEKA was used to build decision trees using entropy and information gain to choose split attributes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Result: The J48 model achieved 84.1146% correctly classified instances; confusion matrix: TP=468, TN=178, FP=32, FN=90 (accuracy 84.1146%, error 15.8854%)",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Evidence: Entropy and information gain were computed for attributes; plasma glucose produced the largest information gain (gain = 0.1332) relative to class entropy",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: J48 handles continuous and discrete attributes, missing values, and can produce pruned or unpruned decision trees",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Context / Result: Dataset class distribution is imbalanced with 268 positive and 500 negative cases",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Claim: The proposed method improves accuracy by 0.48 percentage points over a referenced existing method but increases model build time by 0.02 seconds",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Method: Model evaluation used confusion matrix measures (true positive, true negative, false positive, false negative), precision, recall, and accuracy",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Assumption / Context: The dataset records are from Pima Indian women aged 21 or older and the class label indicates tested positive or negative for diabetes by WHO criteria",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Claim: Attributes with higher information gain (e.g., plasma glucose) should be selected as root or high-level split nodes in the decision tree",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Decision tree (J48) in WEKA yields a reasonably accurate diabetes prediction model on the Pima dataset, but missing or zero-valued measurements in the dataset reduce reliability and should be addressed for exact prediction",
+      "role": "Conclusion",
+      "parents": [
+        3,
+        6,
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: The Pima dataset contains many zero or missing values (e.g., glucose=0 for 5 patients, BMI=0 for 11, blood pressure=0 for 28, skin fold thickness=0 for 192, insulin=0 for 140); removing those cases reduces the usable sample to 392 records",
+      "role": "Limitation",
+      "parents": [
+        11,
+        1
+      ],
+      "children": null
+    }
+  ]
+}

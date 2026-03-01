@@ -1,0 +1,174 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forest can be adapted to improve classification performance on extremely imbalanced data sets",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        4,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We propose two adaptations of random forest for imbalanced classification: Balanced Random Forest (BRF) and Weighted Random Forest (WRF)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Balanced Random Forest (BRF): for each tree draw a bootstrap sample from the minority class and draw an equal number (with replacement) from the majority class, then grow an unpruned CART tree with random feature selection and aggregate by majority vote",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Weighted Random Forest (WRF): incorporate class weights into RF by weighting the Gini split criterion and using weighted majority vote in terminal nodes; tune class weights (e.g., via out-of-bag estimates)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        11,
+        14
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Both BRF and WRF improve prediction accuracy for the minority class and compare favorably to existing imbalance methods",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "We evaluated BRF and WRF on six highly imbalanced data sets (oil spill, mammography, satimage, hypothyroid, euthyroid, KDD thrombin) using ten-fold cross validation",
+      "role": "Method",
+      "parents": [
+        1,
+        10
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Oil spill results: BRF and WRF with appropriate parameters outperform published methods (One-sided sampling, SHRINK, SMOTE variants) on G-mean, weighted accuracy and F-measure",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Mammography results: WRF improves over SMOTE and SMOTEBoost on F-measure, G-mean and weighted accuracy; BRF improves over SMOTE and has mixed comparison with SMOTEBoost",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Satimage results: BRF and WRF are superior to SMOTE and standard RIPPER in F-measure and G-mean, and better than SMOTEBoost in G-mean but worse in F-measure",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Hypothyroid and Euthyroid results: BRF and WRF outperform SHRINK, C4.5 and 1-NN in G-mean; BRF slightly better in G-mean and weighted accuracy but worse in F-measure compared to WRF in some settings",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Performance was measured with true positive rate (recall), true negative rate, precision, F-measure, G-mean, weighted accuracy and ROC analysis using varying vote cutoffs or class weights; ten-fold cross validation and out-of-bag estimates used for tuning",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 11,
+      "text": "WRF places larger penalty on minority misclassification by weighting and thus can be tuned to increase true positive rate but may be more vulnerable to label noise and mislabelled majority cases",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: Both BRF and WRF provide superior performance to many existing techniques on multiple imbalanced data sets, but there is no clear universal winner between them",
+      "role": "Conclusion",
+      "parents": [
+        4,
+        11,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation of BRF: down-sampling majority class can discard information and may lose majority-class examples, though ensemble compensates by using different subsets per tree",
+      "role": "Limitation",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Assumption: the application interest prioritizes correct classification of the minority class and class weights or sampling should be tuned accordingly (e.g., equal weighting beta=0.5 used for some comparisons)",
+      "role": "Assumption",
+      "parents": [
+        3
+      ],
+      "children": null
+    }
+  ]
+}

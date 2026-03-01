@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim and general background knowledge; no external sources consulted.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.45,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible four stage block wise encoding pipeline with known components such as Lorenzo prediction and bit shuffle, consistent with compression literature, but no independent verification is provided.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a design choice favoring fixed length per block plus sign map over variable length encoders due to spatial smoothness enabling parallelism; without empirical evidence or references, assessment is speculative.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.45,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible in setups with kernel fusion reducing CPU and data movement, but equating kernel throughput to end-to-end throughput is strong and requires careful evidence; overall uncertain.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Plausible method: hierarchical synchronization to compute exclusive prefix sums of per-block compressed sizes for per-block start indices within a single kernel; cannot verify without sources",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible technique where quantization bounds floating point values to integers and uses a one dimensional one layer Lorenzo predictor to record deltas within each block to reduce effective bits, but no empirical or methodological details are provided to verify efficacy.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a fixed length encoding that records a sign map and uses the position of the most-significant nonzero bit of the block maximum to determine Fk, resulting in a compressed block size of CmpLk equals (Fk plus one) times the block length L divided by eight bytes.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.62,
+    "relevance": 0.72,
+    "evidence_strength": 0.42,
+    "method_rigor": 0.34,
+    "reproducibility": 0.4,
+    "citation_support": 0.32,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a block bit shuffle that aligns bit offsets to bytes to support parallel writes and avoids irregular shifts when Fk is not divisible by eight, which is plausible as a hardware or software data layout optimization but not standard across all contexts.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No external verification performed; assessment based solely on the provided claim text and general background knowledge.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts empirical intra block smoothness with most blocks showing small relative value range, such as hurricane blocks with relative range below a small threshold for L equals eight, which would support fixed length per block; without access to the underlying data or methods, the strength is plausible but remains uncertain without details on data, measurement of relative range, and sample size.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.7,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim argues fixed-length encoding is preferable when per-block symbol frequencies are low due to overhead of constructing and storing Huffman trees, which could reduce throughput; this aligns with general understanding that compression benefits depend on symbol distribution and that adaptive or per-block Huffman can incur overhead.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the provided claim text, no external data were consulted to verify the reported throughputs.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that cuSZp achieves kernel throughput around 100 GB/s comparable to top single kernel compressors by avoiding extra launches and CPU heavy steps; without data or benchmarks, its credibility is moderate.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.4,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment limited to the provided claim text; without external data the accuracy of performance claims across benchmarks cannot be verified here.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.54,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment restricted to the provided claim and general knowledge; no external sources available to confirm the claim.",
+    "confidence_level": "medium"
+  }
+}

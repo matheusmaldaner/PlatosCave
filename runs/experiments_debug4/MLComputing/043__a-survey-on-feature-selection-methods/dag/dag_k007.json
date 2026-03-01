@@ -1,0 +1,152 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Feature selection (variable elimination) improves machine learning by reducing computation, alleviating the curse of dimensionality, improving prediction performance, and providing better understanding of data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Feature selection methods are broadly classified into Filter, Wrapper and Embedded approaches",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Filter methods rank features using criteria (e.g., correlation, mutual information) as a preprocessing step and select top features using thresholds",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        6,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Wrapper methods use a predictor as a black box and search algorithms to evaluate feature subsets by predictor performance (subject to high computational cost)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Embedded methods integrate feature selection into the training process (e.g., mRMR, SVM-RFE, neural network pruning) to reduce re-training cost and account for inter-feature redundancy",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Advantages of filter methods: computationally light, avoid overfitting from predictor bias, and work well for certain datasets",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Drawbacks of filter methods: ignore inter-feature redundancy and feature interactions, may discard features that are informative only in combination, and provide no guidance on chosen classifier",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Wrappers can find subsets tailored to a specific classifier and often yield higher predictive performance but are computationally expensive and prone to overfitting without careful validation",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Embedded approaches (e.g., mRMR, SVM-RFE, network pruning) balance relevance and redundancy during model training and can be more computationally efficient than wrappers",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Common ranking criteria in filters include Pearson correlation (detects linear dependency) and mutual information (measures dependency but requires PDF estimation and may be inaccurate with limited samples)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Search algorithms used in wrappers include sequential methods (SFS, SBS, SFFS, ASFFS, Plus-L-Minus-r) and heuristic/evolutionary methods (Genetic Algorithms, CHCGA, Particle Swarm Optimization)",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Stability of feature selection is a major concern; ensemble feature selection and stability measures (bootstrapping, aggregation) improve robustness of selected subsets",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Empirical evaluation on seven datasets (including UCI datasets and RF generator fault data) showed wrapper-based SFFS and evolutionary CHCGA with SVM often produced the highest test accuracy and compact feature subsets",
+      "role": "Result",
+      "parents": [
+        3,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: applying appropriate feature selection yields insight into data, reduces dimensionality and computation, and can improve generalization; choice of method should consider simplicity, stability, number of features, accuracy, storage and computation",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        5,
+        7,
+        8,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

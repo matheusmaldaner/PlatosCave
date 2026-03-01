@@ -1,0 +1,148 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "CONDA can provide versatile datapath soft error detection for HPC applications with low runtime and memory overhead while preserving detection effectiveness",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        13,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing datapath detection techniques incur high overhead because they introduce extra branches that complicate control-flow and require frequent global memory accesses that break memory access patterns",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "CONDA is a compiler-level, static code-transformation technique composed of three major steps: lazy checking motion, domination propagation, and adaptive detection placement",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "CONDA was evaluated on 38 benchmarks and an OpenMP parallel HPC simulation and achieves substantial runtime and latency improvements while retaining fault detection effectiveness",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Empirical result: CONDA incurs 57.79% average runtime overhead across 38 benchmarks",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Empirical result: CONDA is on average 41.84% faster (lower runtime overhead) than the combined EDDI+CFCSS baseline across evaluated benchmarks",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Measurement: CONDA simplifies program control-flow (dynamic basic block execution) by about 2.64x compared with state-of-the-art combined methods",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Fault coverage: CONDA achieves equivalent data-flow and control-flow detection effectiveness compared to EDDI and CFCSS (similar SDC reduction in fault injection campaigns)",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Detection latency: CONDA reduces detection latency by 16.28x compared with a placement-at-exit design while incurring only 4.65% additional runtime overhead for adaptive placement",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Parallel compatibility: CONDA is compatible with OpenMP parallel programs; measured runtime overhead on a water reactor simulation ranges from 46.23% to 64.23% depending on thread count",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Lazy Checking Motion: duplicate instructions and software signatures in basic blocks, buffer per-DDS and per-predecessor comparison results into registers and combine them with AND/OR to avoid introducing extra basic-block-level branches",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Domination Propagation: use domination-tree/register-level propagation to aggregate buffered checking results across basic blocks inside a function without global memory loads/stores to preserve memory access patterns",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Adaptive Detection Placement: statically analyze loops and function CFGs and place detection branches at function exits, loop backedges, or loop exits depending on outermost loop count to balance detection latency and control-flow complexity",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Root-cause analysis: high overheads primarily arise from (1) per-DDS or per-basic-block reporting branches increasing dynamic basic block count and blocking optimizations, and (2) global-memory-based aggregation breaking coalesced/streaming memory access",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        1,
+        2
+      ]
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network trained on ImageNet can substantially outperform previous state-of-the-art image classification methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We designed an eight-layer CNN with five convolutional layers followed by three fully-connected layers and a 1000-way softmax, totaling about 60 million parameters and 650,000 neurons",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Key architectural choices include ReLU nonlinearities, local response normalization after some conv layers, overlapping max-pooling (z=3, s=2), and restricted cross-GPU connectivity for some conv layers",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "To train this large model within GPU memory limits and reasonable time, the network was split across two GPUs with selective inter-GPU communication and a highly-optimized GPU implementation of 2D convolution",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "We trained on the ILSVRC subset of ImageNet: 1.2 million training images, 50,000 validation, 150,000 testing; inputs were center-cropped 256x256 images and mean-subtracted, with training on random 224x224 patches",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Training used stochastic gradient descent with batch size 128, momentum 0.9, weight decay 0.0005, learning rate initialized at 0.01 and reduced three times; training took about 5-6 days on two GTX 580 GPUs",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "We applied several regularization and data-augmentation techniques to reduce overfitting: heavy random cropping and horizontal flips, color PCA-based lighting noise, and dropout in the first two fully-connected layers",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 7,
+      "text": "ReLU nonlinearity (f(x)=max(0,x)) accelerates training several times compared to saturating nonlinearities like tanh, enabling practical training of very deep models",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Local response normalization, implemented across adjacent kernel maps with hyperparameters k=2, n=5, alpha=1e-4, beta=0.75, implements lateral inhibition and reduced top-1 and top-5 errors by about 1.4% and 1.2% respectively",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Overlapping pooling (window 3x3 with stride 2) reduced top-1 and top-5 errors by about 0.4% and 0.3% and slightly reduced overfitting compared to non-overlapping pooling",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Splitting the model over two GPUs with partial connectivity lowered top-1 and top-5 errors by 1.7% and 1.2% relative to a comparable one-GPU smaller-kernel net and reduced training time slightly",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "On ILSVRC-2010 test set the single trained CNN achieved top-1 error 37.5% and top-5 error 17.0%, substantially better than prior methods (best previously reported top-5 25.7%-28.2%)",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "On ILSVRC-2012, a single CNN gave top-5 validation error 18.2%; averaging five similar CNNs gave 16.4%; ensembles including models pre-trained on the full 15M ImageNet reduced top-5 test error to 15.3% (winning entry)",
+      "role": "Result",
+      "parents": [
+        3,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Random cropping and horizontal reflection data augmentation (extracting random 224x224 patches from 256x256 images and using ten-crop test averaging) effectively increases training variability and prevented substantial overfitting",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Color PCA-based augmentation adds multiples of principal components of RGB covariance to images (scaled by eigenvalues and Gaussian noise) and reduced top-1 error by over 1%",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Dropout (zeroing hidden neuron outputs with probability 0.5 in the first two fully-connected layers) reduced overfitting and acted as an efficient model combination technique, though it roughly doubled convergence iterations",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Qualitative inspection shows learned first-layer filters selective for oriented edges and color blobs with specialization between the two GPUs, and nearest-neighbor search in the last hidden layer retrieves semantically similar images",
+      "role": "Evidence",
+      "parents": [
+        1,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 17,
+      "text": "The depth of the network is important: removing any convolutional layer (each containing <=1% of parameters) degraded top-1 performance by about 2%",
+      "role": "Result",
+      "parents": [
+        1,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 18,
+      "text": "Primary practical limitations are GPU memory and training time: model size limited by 3GB GPUs and training took 5-6 days; further improvements expected with faster GPUs and larger datasets",
+      "role": "Limitation",
+      "parents": [
+        1,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 19,
+      "text": "Conclusion: Large, deep CNNs trained with ReLUs, aggressive data augmentation, dropout, and optimized GPU implementations can achieve state-of-the-art large-scale image classification and benefit from ensembling and pretraining on larger unlabeled corpora",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        7,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "children": null
+    }
+  ]
+}

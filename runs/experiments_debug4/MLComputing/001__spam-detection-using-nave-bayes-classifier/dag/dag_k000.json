@@ -1,0 +1,138 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The Naive Bayes classifier is an effective and reliable method for detecting spam emails on a combined dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Spam email detection is an important problem because unsolicited emails are prevalent and pose security and usability risks",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "This study applies the Naive Bayes algorithm, leveraging its conditional independence assumption and efficiency for large text datasets",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The dataset is a combined collection from the 2007 TREC Public Spam Corpus and the Enron-Spam Dataset with 83,446 emails (43,910 spam, 39,538 ham) split 80/20 into training and test sets",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model evaluation used 5-fold cross-validation to select the best model and then evaluated it on the held-out test subset",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Conclusion: Naive Bayes achieved high overall accuracy and class-level metrics, making it suitable for practical spam filtering and a basis for future hybrid or semantic enhancements",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Text preprocessing included cleaning (remove punctuation, HTML, stop words, lowercase), tokenization, and Bag of Words feature extraction to form word-frequency vectors",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Model training used Bayes theorem with class priors from class proportions, word likelihoods computed from term frequencies with Laplace smoothing, and class prediction by maximum posterior probability",
+      "role": "Method",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "The training set contained 66,756 emails (35,128 spam, 31,630 ham) and the test set contained 16,690 emails (8,782 spam, 7,908 ham)",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Cross-validation fold accuracies: 0.9733, 0.9766, 0.9762, 0.9759, 0.9755 with mean approximately 0.9751; Fold 2 model selected for final evaluation",
+      "role": "Result",
+      "parents": [
+        4,
+        7,
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Test results for selected model: overall accuracy 97.82%; ham accuracy 98.64% (7800/7908); spam accuracy 97.08% (8526/8782); precision, recall, F1 approximately 0.98 for both classes",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Limitation and future work: combining Naive Bayes with other algorithms or adding contextual and semantic analysis may further improve accuracy and interpretability",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    }
+  ]
+}

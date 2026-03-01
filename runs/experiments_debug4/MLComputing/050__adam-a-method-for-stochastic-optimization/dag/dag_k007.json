@@ -1,0 +1,165 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Adam is a first-order stochastic optimization algorithm that uses adaptive estimates of first and second moments of gradients to improve optimization for large-scale high-dimensional and noisy problems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Algorithm computes exponential moving averages of gradients mt and squared gradients vt, applies bias correction to obtain bmt and bvt, and updates parameters with theta <- theta - alpha * bmt / (sqrt(bvt) + epsilon)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Adam has practical properties: computationally efficient, little memory, invariant to diagonal rescaling of gradients, suitable for non-stationary objectives, noisy and sparse gradients, and approximately bounds effective step magnitude by alpha",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Initialization bias of moving averages (mt and vt started at zero) is corrected by dividing by (1 - beta1^t) and (1 - beta2^t) respectively to avoid large early step sizes",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Default hyperparameter settings found effective in experiments: alpha=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8; hyperparameters have intuitive interpretations and require little tuning",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Adam combines advantages of AdaGrad (works well with sparse gradients) and RMSProp (works well with online and non-stationary settings) and naturally performs a form of step size annealing",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "The effective per-parameter step Delta_t = alpha * bmt / sqrt(bvt) is approximately bounded by alpha, invariant to gradient rescaling, and its magnitude decreases when signal-to-noise ratio is small, providing automatic annealing",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Practical update pseudocode (Algorithm 1): initialize m0=0, v0=0, iterate gt = grad, mt = beta1 mt-1 + (1-beta1) gt, vt = beta2 vt-1 + (1-beta2) gt^2, compute bias-corrected bmt and bvt, update parameters",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Empirical claim: Adam consistently performs equal or better than other stochastic optimizers (SGD with momentum, AdaGrad, RMSProp, SFO) across tasks including logistic regression, multilayer neural nets, and convolutional nets",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical and theoretical importance of bias correction: without correction and with beta2 close to 1 initial steps can be excessively large causing instability, especially with sparse gradients",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Logistic regression experiments: on MNIST Adam converged similarly to SGD with Nesterov momentum and faster than AdaGrad; on sparse IMDB bag-of-words features Adam matched AdaGrad and outperformed SGD",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Neural network experiments: on multilayer nets Adam made faster progress than several methods including SFO (when accounting for wall-clock time and memory) and showed better convergence with dropout regularization",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Convolutional network experiments: Adam and SGD achieved faster final convergence than AdaGrad; Adam adapts per-layer learning rates reducing need for manual tuning though gains over tuned SGD momentum were modest",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Theoretical result: under online convex optimization assumptions and bounded gradients and parameters, Adam achieves O(sqrt(T)) regret and average regret converges to zero as T grows",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Convergence theorem conditions and bound: requires beta1, beta2 in [0,1) with beta1^2 / sqrt(beta2) < 1, learning rate alpha_t proportional to 1/sqrt(t), optionally decaying beta1,t, and yields explicit regret bound comparable to best known online convex results",
+      "role": "Claim",
+      "parents": [
+        13
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Extensions and variants: AdaMax, a stable infinity-norm variant with update u_t = max(beta2 u_{t-1}, |g_t|) and parameter update using m_t/u_t; temporal averaging of parameters can improve generalization",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    }
+  ]
+}

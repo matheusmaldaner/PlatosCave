@@ -1,0 +1,161 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU and Arduino can provide integrated smart security and smart home automation with remote control over Wi-Fi or cellular networks, overcoming short-range limitations of existing wireless methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Design claim: The proposed system integrates sensors (IR, MQ135, DHT11), relays, OV7670 camera, Node MCU and Arduino UNO to provide security alerts, appliance control and environment monitoring",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Node MCU is used as the central IoT controller for sensors and appliance control; the OV7670 camera is connected to Arduino UNO because Node MCU has only one analog pin",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Context and motivation: Existing wireless home automation methods (Bluetooth, voice recognition over Bluetooth, ZigBee, GSM) suffer from limited range, sensitivity to noise, and message delivery unreliability",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Result claim: The prototype sends captured images to the owner via email when IR detects motion, displays sensor values on a smartphone app every second, and allows remote switching of lights and fans",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Conclusion: The implemented IoT system provides low cost, remote controllability, and dual-functionality for home security and automation and is helpful for handicapped and elderly users",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Component specification: Sensors include IR for motion detection, MQ135 for air purity, DHT11 for temperature and humidity; actuators include 5V 4-channel relay board to switch appliances",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Operational claim: When IR sensor detects motion the microcontroller triggers the camera, stores captured images on a PC folder, and emails the images to a predefined owner address",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Implementation detail: Node MCU handles Wi-Fi communication and sensor reading; Arduino UNO handles camera interfacing and image capture due to analog pin requirements",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Evidence about existing methods: Bluetooth range is limited to about 10 meters; ZigBee typical range 10-20 meters or up to 150 meters with DSSS; GSM text delivery is not always reliable; voice systems fail with low SNR",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Result evidence: Prototype sensor values and alerts are viewable in the Blink smartphone app and captured OV7670 images are stored and emailed to the user",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "User action claim: The remote user can turn on lights and fans from their mobile device (pressing a key) after receiving an image to warn an intruder or welcome a guest",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Advantages claim: The system is low cost, time saving, provides long distance control, and enhances accessibility for handicapped and aged people",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation: The IoT home automation system requires internet connectivity to operate remotely, though 3G or 4G can substitute for Wi-Fi",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Future scope claim: The project can be reimplemented using alternative hardware such as Raspberry Pi to extend capabilities",
+      "role": "Claim",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

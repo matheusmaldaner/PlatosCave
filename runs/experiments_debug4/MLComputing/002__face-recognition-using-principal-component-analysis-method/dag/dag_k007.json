@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A face recognition system based on Principal Component Analysis and the eigenface approach can provide an efficient, practical solution for recognizing human faces in constrained environments",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Eigenface approach represents each training image as a linear combination of eigenvectors (eigenfaces) obtained from the covariance matrix of the training set and reduces dimensionality",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Recognition is performed by projecting a test image into the eigenface subspace, computing weights, and classifying by minimum Euclidean distance between weight vectors",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Computational optimization: instead of computing eigenvectors of the large covariance matrix C, compute eigenvectors of the M by M matrix L=A^T A to obtain the top M eigenvectors for the eigenface basis",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The implemented system was developed in MATLAB and tested on the ETE-07 series RUET student image database (36 images of 18 persons) using image sizes including 200 by 149 pixels and multiple formats (BMP, PNG, JPEG)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Preprocessing steps: center and resize face images, convert each M by N image into an MN by 1 vector, compute mean face, subtract mean to obtain centered vectors",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Select only K eigenvectors corresponding to the largest K eigenvalues to form the face space because low-eigenvalue eigenfaces contribute little to characteristic features",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Compute feature weights for a face by projecting the mean-subtracted image onto each of the K eigenfaces producing a K-dimensional weight vector",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Classification uses Euclidean distance between the test image weight vector and training weight vectors; the class with minimum distance is selected and thresholding distinguishes unknown faces",
+      "role": "Claim",
+      "parents": [
+        2,
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Experimental tests included cases where test and stored images had the same pose and cases with pose variation; results are shown for both types",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "The implementation cached initialization outputs (eigenfaces and training projections) to avoid reinitializing and to improve execution time and system performance",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Experimental results: the system successfully recognized human faces, performed well under different face orientations, and gave good classification on tested bitmap, PNG, and JPEG images though size variation remains a limitation",
+      "role": "Result",
+      "parents": [
+        8,
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: The eigenface PCA method is fast, relatively simple, and works well in constrained environments providing a practical face recognition solution",
+      "role": "Conclusion",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation: The method has limitations with variations in image size and was tested on a small dataset of 36 images from 18 persons, limiting generalizability",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Future work proposed: extend to real-time video-based recognition, use a much larger database, handle different image sizes, and compare PCA performance with other face recognition methods",
+      "role": "Claim",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Decisions that maximize time-average growth of wealth (growth optimality) are equivalent to maximizing expected changes in a utility function when that utility function is the ergodicity transformation of the underlying wealth dynamics, so wealth dynamics determine apparent risk preferences",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics (EE) models wealth as a stochastic process and prescribes agents maximize the time-average growth rate of wealth, in contrast to expected utility theory (EUT) which maximizes expectation values of transformed wealth",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "There exists a correspondence: the ergodicity transformation that produces a time-average growth rate can be identified with the utility function in EUT, making expected-utility maximization equivalent to time-average growth maximization for a class of wealth dynamics",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "To make time and ensemble averages equal for the rate r = Delta u / Delta t, the process u(t) must have stationary, independent additive increments and continuous paths, implying u(t) is a Brownian motion with drift du = a_u dt + b_u dW",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Theorem: For any invertible utility function u(x) (with inverse x(u) twice differentiable) a corresponding wealth stochastic differential equation dx can be derived via Ito calculus such that maximizing expected changes in u equals maximizing time-average growth under that dx",
+      "role": "Result",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method: Apply Ito's lemma to invertible u(x) with du = a_u dt + b_u dW to obtain dx = a_x(x) dt + b_x(x) dW with a_x(x) = (a_u/b_u) b_x(x) + 1/2 b_x(x) b_x'(x) and b_u = b_x(x) u'(x)",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Example: Linear utility u(x)=x corresponds to additive Brownian-motion wealth dynamics dx = a_u dt + b_u dW (additive dynamics)",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Example: Logarithmic utility u(x)=ln x corresponds to multiplicative (geometric Brownian) wealth dynamics dx = x[(a_u + 1/2 b_u^2) dt + b_u dW] (multiplicative dynamics)",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Example: Square-root utility u(x)=sqrt(x) yields a mixed dynamic dx = (2 a_u sqrt(x) + b_u^2) dt + 2 b_u sqrt(x) dW, intermediate between additive and multiplicative dynamics",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Given a general Ito process dx = a_x(x) dt + b_x(x) dW, a corresponding utility u(x) exists only if the drift and noise satisfy the consistency relation a_x(x) = (a_u/b_u) b_x(x) + 1/2 b_x(x) b_x'(x) for some constants a_u,b_u, and then u'(x)=b_u/b_x(x)",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Wealth distributions follow from the Brownian distribution of u(t): Pu(u,t) = Normal(a_u t, b_u^2 t) and Px(x,t) = Pu(u(x),t) du/dx, enabling closed-form population wealth distributions from u(x)",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Empirical support: recent experiments with controllable wealth dynamics find results consistent with EE predictions that dynamics strongly determine preferences, contrasting with EUT with fixed preferences",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: Because wealth dynamics are exogenous, the ergodicity-based correspondence provides a theoretical basis for selecting utility functions in EUT and predicts that changes in dynamics imply changes in apparent preferences",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        3,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Assumptions and limitations: analysis requires invertible utility functions, continuous paths (no jumps), stationarity and independence of increments for u(t), knowledge of dynamics or probabilities, and excludes pathological processes where limits fail",
+      "role": "Limitation",
+      "parents": [
+        3,
+        9
+      ],
+      "children": null
+    }
+  ]
+}

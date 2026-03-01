@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A novel three-dimensional taxonomy (passive vs active; type/format of explanations; local-semi-local-global) organizes neural network interpretability research and reveals gaps and research directions",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Interpretability is the ability to provide explanations in understandable terms to a human; explanations should ideally be logical decision rules or elements convertible to such rules, and understandable terms should come from domain knowledge",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Interpretability is important for three main reasons: high reliability requirements, ethical and legal requirements, and enabling scientific knowledge discovery",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The proposed taxonomy comprises three dimensions: passive vs active approaches, the format of produced explanations (rules, hidden semantics, attribution, examples), and local to global interpretability (including semi-local)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Interpretability evaluation approaches fall into application-grounded, human-grounded, and functionally-grounded categories, and metrics differ by explanation type (e.g., rule size, unit-concept alignment, fidelity, sparsity, stability)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Open directions include underexplored active interpretability interventions and better incorporation of domain knowledge/terms into explanations",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Evidence/examples supporting importance: unexpected DNN failures (adversarial examples, misclassifications), regulatory requirements like GDPR right to explanation, and DNN use in science demanding interpretable discoveries",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Dimension 1: Passive methods are post-hoc analyses of trained networks; active methods modify architecture or training (regularizers, architectural additions) to improve interpretability",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Dimension 2: Explanation formats vary in explicitness and explanatory power: logical rules (most explicit), hidden semantics, attribution (feature importance/saliency), and exemplars/prototypes (most implicit)",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Dimension 3: Interpretability ranges from local (individual prediction) through semi-local (groups/neighborhoods) to global (model-level explanations); methods can target different levels and sometimes compose local explanations into global ones",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Active (training-time) interpretability methods use interpretability regularizers or architectural components, e.g., tree regularization to favor shallow decision-tree approximations, prototype layers for case-based explanations, and filter losses to encourage single-concept filters",
+      "role": "Method",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Passive (post-hoc) methods extract explanations from trained networks and are categorized according to explanation type and interpretability level",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Rule-extraction approaches produce logic rules or decision trees as explanations; methods include local counterfactual/perturbation-based rules (e.g., pertinent negatives), anchors for high-precision local rules, and global decompositional or pedagogical extraction (KT, M-of-N, NeuroRule, Trepan)",
+      "role": "Evidence",
+      "parents": [
+        8,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Hidden-semantics methods interpret neurons or filters via visualization and concept alignment; examples include activation maximization with priors, Network Dissection, Net2Vec and techniques that encourage disentangled single-concept filters",
+      "role": "Evidence",
+      "parents": [
+        8,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Attribution methods assign importance scores to input features or concepts; representative methods include gradient-based saliency, Guided Backprop/Grad-CAM, Integrated Gradients, DeepLIFT, LRP, LIME (model-agnostic), Shapley-value approximations and TCAV for concept attribution",
+      "role": "Evidence",
+      "parents": [
+        8,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Example-based explanations identify influential or representative training examples or prototypes; examples include influence functions, representer point selection, and prototype networks (ProtoPNet) for case-based reasoning",
+      "role": "Evidence",
+      "parents": [
+        8,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

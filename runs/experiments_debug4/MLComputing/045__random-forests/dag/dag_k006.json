@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests, ensembles of tree predictors built from independent identically distributed random vectors, produce accurate, robust predictors that do not overfit as the number of trees grows",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "The random forest generalization error converges almost surely to a limit as the number of trees tends to infinity (no overfitting with more trees)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Theorem (classification): As number of trees increases, generalization error PE* converges to PX,Y(P_delta(h(X, delta)=Y) - max_{j != Y} P_delta(h(X, delta)=j) < 0)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Generalization error of random forests is upper-bounded by mean correlation divided by strength squared: PE* <= rho_bar (1 - s^2)/s^2, motivating minimizing correlation and maximizing strength",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Definitions: margin, raw margin, strength s = E_{X,Y} margin, mean correlation rho_bar; these yield the c/s^2 measure (rho_bar / s^2) to guide forest quality",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Method: Two practical randomized feature methods—Forest-RI (random input selection at each node, F features tried) and Forest-RC (random linear combinations of L inputs form features; F features tried per node); trees built to full size with bagging",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Use of out-of-bag (OOB) estimates from bagging provides internal, unbiased estimates of generalization error, strength, correlation and variable importance without a separate test set",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical procedure summary: run forests with preset F values (typically F=1 and F=int(log2 M +1) for Forest-RI; L=3 and F in {2,8} for Forest-RC), combine many trees (e.g., 100), compare to Adaboost over many datasets and repetitions",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Empirical result: Random forests (Forest-RI and Forest-RC) achieve test errors that compare favorably with Adaboost across many UCI and synthetic data sets, often matching or improving Adaboost while being faster and more robust",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical finding from OOB monitoring: strength often plateaus quickly as F increases while correlation continues to increase, explaining why small F (e.g., 1-4) often suffices on smaller data sets",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Empirical finding: Forest-RC (random combinations) can outperform Forest-RI on many problems; using larger F can help on large complex datasets where strength increases before plateauing",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Adaboost conjecture and experiment: Adaboost may behave like a random forest in later stages; constructing forests by sampling weight vectors inspired by Adaboost yields similar error rates, suggesting Adaboost can be seen as a random-weight forest under ergodicity conjecture",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Robustness result: With 5% randomly corrupted class labels, Adaboost's error often increases markedly while random forests show small changes, indicating greater robustness to output noise",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Many-weak-inputs experiment: On simulated data with 1000 binary weak inputs, Forest-RI with moderate F (e.g., 10 or 25) achieved test errors close to the Bayes rate while individual trees remained very weak, indicating forests can combine many weak predictors if correlation is kept low",
+      "role": "Evidence",
+      "parents": [
+        5,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Variable importance method: permute values of variable m in OOB samples, measure increase in misclassification to obtain variable importance; reruns using selected important variables validate importance estimates in examples (diabetes, congressional votes)",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Regression extension: Theorem (regression) — forest predictor mean squared error converges to EX,Y(Y - E_delta h(X, delta))^2; and PE*(forest) <= rho_bar PE*(tree), so regression forests reduce average tree error proportional to residual correlation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        16
+      ]
+    },
+    {
+      "id": 16,
+      "text": "Regression empirical results: Random forests improve over bagging in all tested regression data sets and sometimes match or beat adaptive bagging; using random linear features and OOB monitoring guides feature count tradeoffs between PE*(tree) and correlation",
+      "role": "Result",
+      "parents": [
+        15,
+        6,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

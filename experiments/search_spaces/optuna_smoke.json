@@ -1,0 +1,35 @@
+{
+  "name": "optuna_smoke",
+  "description": "Small Optuna smoke test over cached scorer settings.",
+  "objective_metric": "graph_score_mean",
+  "direction": "maximize",
+  "normalize_metric_weights": false,
+  "include_component_means": true,
+  "save_top_k_per_paper": 2,
+  "sampler": {
+    "type": "tpe",
+    "seed": 0,
+    "n_startup_trials": 4,
+    "multivariate": true
+  },
+  "pruner": {
+    "type": "median",
+    "n_startup_trials": 2,
+    "n_warmup_steps": 1
+  },
+  "params": {
+    "metric_w.credibility": { "type": "float", "low": 0.5, "high": 1.5, "step": 0.5 },
+    "metric_w.relevance": { "type": "float", "low": 0.5, "high": 1.5, "step": 0.5 },
+    "edge_w.role_prior": { "type": "float", "low": 0.1, "high": 0.3, "step": 0.1 },
+    "edge_w.synergy": { "type": "float", "low": 0.1, "high": 0.3, "step": 0.1 },
+    "graph_w.best_path": { "type": "float", "low": 0.15, "high": 0.25, "step": 0.1 },
+    "penalty.alpha": { "type": "float", "low": 0.5, "high": 1.5, "step": 0.5 }
+  },
+  "constraints": [
+    {
+      "type": "sum_lte",
+      "params": ["edge_w.role_prior", "edge_w.synergy"],
+      "value": 0.5
+    }
+  ]
+}

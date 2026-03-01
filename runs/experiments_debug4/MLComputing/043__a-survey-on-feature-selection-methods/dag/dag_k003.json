@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Feature selection methods (filter, wrapper, embedded) can reduce computation, improve prediction performance, and give better understanding of high-dimensional data in supervised learning tasks",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Feature selection addresses irrelevant and redundant variables to reduce curse of dimensionality, computation, and improve predictor generalization",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Filter methods rank features independently of the classifier (examples: Pearson correlation, mutual information, RELIEF) and are computationally light but can select redundant features and ignore feature interactions",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Wrapper methods use classifier performance as objective and search heuristics (sequential selection SFS/SBS/SFFS/ASFFS and heuristic searches like GA, CHCGA, PSO) to find feature subsets but are computationally expensive and prone to overfitting",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Embedded methods incorporate selection into training (examples: mRMR combining mutual information max-relevancy min-redundancy, SVM-RFE using classifier weights, neural network saliency and pruning) to reduce repeated re-training",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Validation and evaluation practices (k-fold, LOOCV, holdout) are necessary because feature selection procedures can overfit and cross-validation choices affect estimated performance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Stability of feature selection is an important concern: algorithms should produce consistent subsets under small changes to training data; ensemble and fusion methods can improve stability",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Practical benefits of removing irrelevant/dependent variables include reduced data size, improved classifier performance, and better insight into the process (illustrated in gene microarray and fault-prediction contexts)",
+      "role": "Conclusion",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Filter techniques based on Pearson correlation detect only linear dependencies; mutual information measures nonlinear dependency but requires density estimation and may produce poor results if inter-feature MI is ignored",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Wrapper and embedded search choices that account for inter-feature redundancy (e.g., SFFS, ASFFS, mRMR, conditional mutual information, CHCGA) tend to produce better-performing, less-redundant subsets than naive ranking",
+      "role": "Claim",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical evaluation on seven datasets using SVM and RBF classifiers found that SFFS and CHCGA wrappers with SVM produced high test accuracies (examples: Breast cancer ~97.36% with 5 features, Ionosphere ~94.29% with 16 features, FaultMode discrete ~98.83% with 6 features), while filter methods showed irregular performance curves",
+      "role": "Evidence",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Recommendation: choose feature selection method per application balancing simplicity, stability, reduced feature count, classification accuracy, storage and computation; applying FS generally benefits model generalization and insight",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

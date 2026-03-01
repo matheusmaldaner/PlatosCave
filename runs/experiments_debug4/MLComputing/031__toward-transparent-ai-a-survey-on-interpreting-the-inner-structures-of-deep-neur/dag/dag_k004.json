@@ -1,0 +1,206 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods for deep neural networks can provide mechanistic understanding that helps detect failures, guide fixes, and make AI systems safer and more trustworthy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        14
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Taxonomy: inner interpretability methods are organized by the network component they explain (weights, neurons, subnetworks, latent representations) and by whether they are intrinsic or post hoc",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        12
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Motivations for interpretability include open-ended evaluation beyond test sets, exposing failure modes, fixing bugs, assigning accountability, improving basic understanding, and enabling 'microscope' science on models",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Weights-focused methods explain or probe individual parameters and their functional role via intrinsic approaches (e.g., continual learning) or post hoc approaches (e.g., learned weight masks); many weights are often frivolous/prunable",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Neuron-focused methods characterize individual units or feature-map elements via dataset-based analysis, feature synthesis, perturbation/ablation, and gradient-based attribution, while facing hazards like polysemantic and frivolous neurons",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Subnetwork-focused methods aim to identify and analyze groups of weights/neurons (sparsity, modularity, partitioning, circuits) to simplify understanding and enable interventions",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Continual learning (intrinsic, weights): make weights specialize for tasks or protect them from forgetting to produce interpretable specialization",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Weight-masking (post hoc): learn masks over weights to identify subnetworks that are causally responsible for performance on a subtask",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Frivolous weights: empirical finding that many weights can be pruned with little performance loss, complicating weight-level interpretations",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Dataset-based neuron analysis (post hoc): identify inputs that maximally activate neurons or align activations to labeled semantic concepts to describe neuron function",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Feature synthesis (post hoc): synthesize inputs or use generative models to find stimuli that maximally activate neurons, useful because not limited by a fixed dataset",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Neural perturbation and ablation (post hoc): ablate or perturb neurons and measure behavioral changes to provide causal tests of neuron importance (including Shapley-value analyses)",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Hazards for neuron methods: polysemantic neurons (respond to multiple unrelated features) and frivolous neurons (prunable or redundant) undermine faithful, complete interpretations and can be exploited adversarially",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Sparsity and modularity for subnetworks (intrinsic/post hoc): sparsification, pruning, and designed or discovered modular partitions simplify subgraph analysis; circuits analysis studies small subnetworks but scaling and automation are needed",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Latent representations methods explain layer activations via self-explaining models, adversarial training, disentanglement, token/attention analysis in transformers, concept vectors, probing, and representational similarity measures",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        15,
+        16
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Self-explaining and disentanglement approaches (intrinsic): train models to produce human-understandable explanations or to align neurons to concepts, but challenges remain in faithfulness, stability, and leakage",
+      "role": "Method",
+      "parents": [
+        14
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Probing, concept vectors, tokens and attention, and representation-comparison (post hoc): detect whether representations encode concepts or align across models, but probes can be misleading and similarity measures disagree",
+      "role": "Method",
+      "parents": [
+        14
+      ],
+      "children": null
+    },
+    {
+      "id": 17,
+      "text": "Survey evidence and field assessment: the paper surveys over 300 works, finds many partial successes but limited scalability and widespread overclaiming where hypotheses are treated as conclusions",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        18
+      ]
+    },
+    {
+      "id": 18,
+      "text": "Conclusions and recommendations: the status quo is often unproductive; future work should emphasize rigorous evaluation, diagnostics, debugging, adversarial tests, benchmarking, scalability, combining methods, and producing tools useful to engineers",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        17
+      ],
+      "children": null
+    }
+  ]
+}

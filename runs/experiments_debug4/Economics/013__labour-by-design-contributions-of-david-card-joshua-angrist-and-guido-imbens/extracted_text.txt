@@ -1,0 +1,1650 @@
+--- Page 1 ---
+arXiv:2203.16405v1  [econ.GN]  30 Mar 2022
+Labour by Design:
+Contributions of David Card, Joshua Angrist, and Guido Imbens∗
+Peter Hull
+Brown University
+Michal Kolesár
+Princeton University
+Christopher Walters
+UC Berkeley
+March 31, 2022
+Abstract
+The 2021 Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel was awarded to David
+Card “for his empirical contributions to labour economics” and to Joshua Angrist and Guido Imbens “for
+their methodological contributions to the analysis of causal relationships.” We survey these contributions
+of the three laureates, and discuss how their empirical and methodological insights transformed the
+modern practice of applied microeconomics. By emphasizing research design and formalizing the causal
+content of diﬀerent econometric procedures, the laureates shed new light on key questions in labour
+economics and advanced a robust toolkit for empirical analyses across many ﬁelds.
+∗Contact: peter_hull@brown.edu, mkolesar@princeton.edu, and crwalters@econ.berkeley.edu. We thank the editors of the
+Scandinavian Journal of Economics, Erik Lindqvist and Andreas Moxnes, for helpful feedback. We are grateful to Alberto
+Abadie, Joshua Angrist, Orley Ashenfelter, David Card, Guido Imbens, and Pat Kline for excellent suggestions and comments.
+1
+
+
+--- Page 2 ---
+1
+Introduction
+The 2021 Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel was awarded to David
+Card “for his empirical contributions to labour economics” and to Joshua Angrist and Guido Imbens “for
+their methodological contributions to the analysis of causal relationships.” To an observer unfamiliar with
+modern microeconomic research, the connection between these two prize rationales may seem unclear. What
+does empirical labour economics, which studies the functioning of labour markets and institutions, have to
+do with methods for inferring causal relationships? Within economics, however, it’s now taken for granted
+that robust empirical study—both inside and outside labour—often rests on a compelling approach for
+establishing causality. This widespread view reﬂects the profound impact of the three laureates on the ﬁeld.
+At its core, much of microeconomic theory concerns causal relationships. A good’s own-price supply or
+demand elasticity represents the causal eﬀect of a price increase on its quantity produced by ﬁrms or desired
+by consumers.
+Human capital theory (Becker, 1964) explains the causal eﬀect of schooling on workers’
+earning potential. The eﬃcient design of labour market interventions, such as a new training program or
+a minimum wage increase, hinges on their causal eﬀects on wages and employment. Yet for much of the
+20th century, explicit causal language in microeconomic research was relatively rare. As late as the 1980s,
+only around 15% of National Bureau of Economic Research (NBER) working papers contained the terms
+“causality” or “causal” (Currie, Kleven, and Zwiers, 2020). But this share increased sharply in the mid-
+1990’s and early 2000s, and has continued to grow. Now, nearly 50% of NBER papers feature causal inquiry
+(Imbens, 2021). What explains this change?
+While it is challenging to convincingly answer such a (causal) question from a single time series, we can
+hypothesize one potential explanation from the timing of this change. Much of David Card’s pathbreaking
+empirical work was conducted in the late 1980s and early 1990s, at the Industrial Relations Section of
+Princeton University.
+This work brought fresh causal evidence on core questions in labour economics:
+the employment eﬀects of the minimum wage, the impacts of immigration on labour market outcomes of
+natives, and the eﬀect of educational investments on labour market outcomes. The answers that Card’s
+research uncovered were surprising and compelling, challenging conventional wisdom and triggering both
+debate and many follow-up analyses. Analyzing the impact of a large inﬂux of Cuban migrants into Miami
+following the Mariel Boatlift, for example, Card (1990) found little eﬀect on the employment rates and
+wages of native workers. Studying the eﬀects of an increase in the New Jersey minimum wage, Card and
+Krueger (1994) found no evidence for a decline in low-wage employment. Both ﬁndings were at odds with
+simple textbook models of labour markets, and fuelled much subsequent empirical and theoretical research
+on potential explanations—such as the substitutability of foreign and native workers and the market power
+of low-wage ﬁrms. In this way, Card’s work illustrated how surprising empirical facts—viewed as speciﬁc
+causal eﬀects—could move strong theoretical prior beliefs and drive decades of new research.
+But the impact of David Card’s work on empirical practice stems not only from what conclusions he
+reached but from how he reached them. Card—along with Joshua Angrist, Orley Ashenfelter, Alan Krueger,
+2
+
+
+--- Page 3 ---
+other colleagues and students at the Princeton Industrial Relations Section, and other prominent labour
+economists at the time—pioneered a fresh approach to empirical analysis in the late 1980s and early 1990s:
+one centered on the identiﬁcation of causal eﬀects. The foundation of this approach is a careful consideration
+of a study’s underlying research design: an understanding of where the variation in an economic “treatment,”
+such as high minimum wages, came from, and an empirical approach that leverages this understanding
+to construct an appropriate comparison group. Desirable treatment variation often comes from so-called
+“natural experiments”—unanticipated shocks or as-good-as-random shifts in the exposure to treatment, or
+in the factors determining treatment. This design-based approach can make transparent the key assumptions
+that drive an empirical study’s conclusion, and often guides their empirical validation or falsiﬁcation.
+The design-based approach is compelling in part because of the close connections it draws to true ex-
+perimentation, such as in a randomized controlled trial (RCT).1 True randomization is often infeasible for
+studying important economic questions, such as the eﬀect of immigration or eﬀects of large-scale minimum
+wage changes on local labour markets. Most economic treatments are not just determined by chance, as in
+an RCT, but also by individual or institutional choices which are far from random. Earlier solutions to the
+threat of selection bias in such settings focused on models of choice, drawing on a rich body of microeconomic
+theory. By instead focusing on the quasi-randomness in certain natural experiments, Card and fellow pio-
+neers of the design-based approach showed how such modeling restrictions could be relaxed or even eschewed
+with by-chance variation.
+The design-based approach was made more convincing and rigorous by new econometric insights, recog-
+nized in the second half of the 2021 Nobel Prize. In the celebrated local average treatment eﬀect (LATE)
+theorem of Imbens and Angrist (1994), the laureates showed how a natural (or true) experiment gener-
+ating randomness in a variable inﬂuencing treatment could be leveraged to estimate the causal eﬀects of
+the treatment—with minimal restrictions on other factors inﬂuencing the treatment choice. For example, a
+randomly drawn lottery number that determines the eligibility of an individual for military draft service may
+be used to estimate the eﬀects of such service on later-life earnings (Angrist, 1990). But some individuals
+may volunteer in the military regardless of draft eligibility, while others may ﬁnd ways of avoiding military
+service when drafted. Economists typically analyze such settings with instrumental variable (IV) techniques,
+using draft eligibility as an “instrument” for the military service “treatment.” Imbens and Angrist showed
+that such IV analysis generally recover a LATE: the average earnings eﬀect of military service among com-
+pliers, who are induced to service as a result of the draft lottery. In contrast, a hypothetical RCT that
+randomly assigns people to serve in the military would recover the overall average treatment eﬀect in the
+entire population (including volunteers and those who avoid the draft regardless of their lottery number),
+not just among compliers.
+This central insight of the LATE theorem had a profound eﬀect on how economists interpret evidence
+produced by natural experiments, and how the ﬁeld synthesizes evidence accumulated across diﬀerent studies.
+1Card attributes his use of the term “research design” to his exposure to the New England Journal of Medicine, which Alan
+Krueger subscribed to at Princeton and which often used the term in reference to randomized trials (Card and Krueger, 2016).
+3
+
+
+--- Page 4 ---
+Underlying the theorem is a potential outcomes framework, which relaxed the model-based (and often
+parametric) restrictions from earlier analyses of IV. The framework highlighted the potential for treatment
+eﬀect heterogeneity, both across populations and across diﬀerent natural experiments in the same population.
+Such heterogeneity explains how the results from one research design may diﬀer from another, despite both
+yielding valid causal eﬀects.
+The focus on treatment eﬀect heterogeneity and the associated notions of
+internal validity vs. external validity (i.e. generalizability) has motivated a vast and growing literature—
+including later work by the laureates—showing how structural models of individual behavior and statistical
+extrapolations can synthesize causal evidence across diﬀerent research designs and settings.
+This article argues that the face of modern empirical economics was shaped in large part by the empirical
+and methodological contributions of the 2021 Nobel laureates. Card showed how careful attention to research
+design can bring new, compelling, and sometimes unexpected evidence to core questions and theories in
+labour economics. Angrist and Imbens showed the precise strengths and limitations of the design-based
+approach, allowing new empirical work to be better contextualized and integrated across studies. Together,
+the laureates strengthened the scientiﬁc foundation of economics by showing how robust theory and empirics
+can interact to advance our understanding of key economic questions where true experimentation is infeasible.
+To put the contributions of Card, Angrist, and Imbens in context, we ﬁrst outline the key empirical
+challenge the laureates’ work focused on—selection bias—and the state of contemporary empirical practice
+when this work began. We discuss how the design-based approach and search for natural experiments helped
+to address several critiques of existing empirical approaches. We then turn to the empirical contributions
+of the laureates, focusing on David Card’s work on immigration and minimum wage laws as well as the
+three laureates’ work on the earnings eﬀects of education and labour market experiences. Next, we detail
+the methodological piece of the prize, centered around the Angrist and Imbens LATE theorem. We discuss
+how their result and the general potential outcome framework formalized key strengths and limitations of
+the design-based approach for IV and led to further insights for other methods. We conclude by brieﬂy
+summarizing other advances, by the laureates and others, that grew out of this prize-winning work.
+2
+Setting the Stage
+2.1
+The Selection Challenge
+Many important questions in economics hinge on the reliable measurement of causal eﬀects.
+To decide
+whether to expand a subsidized post-schooling training program, a policymaker must weigh the eﬀects of
+the program on trainee labour market outcomes against the costs of the program and the likely eﬀects of
+alternative programs, such as job-search assistance. When considering healthcare reform, a social planner
+must take into account the eﬀects of health insurance on individual health and welfare as well as the social
+cost. Should the national minimum wage be raised to $15 an hour? The answer depends, in part, on the
+likely causal eﬀect of such an increase on low-wage unemployment.
+4
+
+
+--- Page 5 ---
+Unfortunately, the answers to such causal questions tend to not be directly revealed by economic data. A
+researcher cannot simply compare individuals who are “treated” (those who participate in a training program,
+who have health insurance, or who are subject to a higher local minimum wage law) with individuals who
+are “untreated” to estimate the treatment’s eﬀects, since these two populations are likely very diﬀerent.
+Individuals can choose whether to participate in a training program, and this choice may be driven by a
+wide range of characteristics and circumstances that are relevant for the observed outcomes. Trainees tend
+to have lower levels of education and past earnings than non-trainees, for example, and diﬀerences in both
+schooling and work history may signal underlying human capital diﬀerences. Thus, even if the causal eﬀect
+of a training program is positive, a researcher may ﬁnd that trainee earnings after completing the program
+are lower than non-trainee earnings.
+This problem of selection bias has long been recognized in economics. A conceptually simple solution is to
+remove the element of treatment choice with a randomized experiment. This “gold standard” for evaluating
+medical treatments (and some social programs) purges bias by ensuring the individuals randomized into
+the treatment and control groups are, on average, identical prior to the experiment. Unfortunately, such
+randomization may be diﬃcult or infeasible for many important economic questions. It is diﬃcult to imagine
+researchers convincing government oﬃcials to randomly raise the minimum wage in some areas but not others
+or to experiment with other high-stakes economic programs.
+In response to this fundamental identiﬁcation challenge, economists have developed a variety of econo-
+metric methods that aim to purge selection bias in non-experimental settings by incorporating additional
+data and assumptions. The simplest of these approaches is to adjust for observable diﬀerences between
+the groups, often with linear regression. Another approach is to leverage longitudinal data, for example by
+comparing the earnings of individuals before and after their participation in a training program. By further
+contrasting the treatment group’s earning change with an analogous change in the untreated group, one
+arrives at what Ashenfelter and Card (1985) termed a “diﬀerence-in-diﬀerences” analysis. In both cases,
+regression-adjusting or time-diﬀerencing may address selection bias by making the treated and untreated
+group more comparable. A diﬀerent and clever strategy, pioneered by James Heckman (1974; 1976; 1979),
+leverages microeconomic theory to model an individual’s decision to self-select into treatment and derives a
+statistical bias correction from the selection equation. This model-based approach grew out of a long tradi-
+tion of simultaneous equation modeling in economics and quickly caught on in the early 1980s (see Blundell
+(2001) for a review).2
+2.2
+Empirical Concerns
+Despite decades of empirical work leveraging regression adjustment, longitudinal data, and selection models
+to answer important questions in labour economics, by the mid-1980’s there was growing concern that the
+2Heckman was awarded the Nobel Memorial Prize in 2000, alongside Daniel McFadden, for “his development of theory and
+methods for analyzing selective samples.”
+5
+
+
+--- Page 6 ---
+collective evidence produced in this work was weak.
+In a review of studies of the union wage gap, for
+example, Lewis (1986a,b) documented a range of estimates so large as to be of little use. He further showed
+that estimates constructed from elaborate selection models appeared even less reliable than simpler regression
+estimates, noting that “a substantial fraction of [selection method] estimates are. . . preposterously large or
+outlandishly negative” (Lewis, 1986a, p. 1144). In a staﬀstudy of training programs for the congressional
+joint economic committee, Goldstein (1972, p. 14) called for improving the evaluation process for assessing
+training programs, since “the robust expenditures ($179.4 million from ﬁscal 1962 through 1972).. . are a
+disturbing contrast to the anemic set of conclusive and reliable ﬁndings.”
+This assessment is echoed in
+Ashenfelter (1978), which documented a possible reason for the unreliability: trainees’ earnings tend to fall
+prior to joining the program, in both absolute terms and relative to a comparison group of non-trainees.
+This form of self-selection into treatment, dubbed “Ashenfelter’s dip,” suggests that part of the observed
+earnings increase following training may reﬂect mean-reversion—i.e., a return to a permanent earnings path
+that was temporarily disrupted. Simple longitudinal methods are likely to ascribe any such increase to the
+eﬀect of the treatment, making the program appear more eﬀective than it actually was.
+Broadly, these critiques suggested that empirical studies using observational data and existing econo-
+metric methods rarely solve the selection challenge in labour economics, and may thus not be a satisfactory
+substitute for randomized experiments. A direct assessment of the extent to which such studies can repro-
+duce experimental evidence was given in a landmark study by LaLonde (1986). LaLonde ﬁrst calculated
+the eﬀect on trainee earnings of the National Supported Work Demonstration, an employment program that
+randomized participation in a ﬁeld experiment. He then compared the estimates to those produced by a
+variety of non-experimental methods based on a modiﬁed data set, where the experimental control group
+was replaced by diﬀerent comparison groups drawn from the Panel Study of Income Dynamics (PSID) and
+a Matched Current Population Survey—Social Security Administration (CPS—SSA) File. In spite of using
+state-of-the-art econometric methods, LaLonde failed to replicate the experimental results without the ex-
+perimental control group. Diﬀerent methods and comparison groups produced a wide range of estimates,
+and standard speciﬁcation tests were unhelpful in determining which observational estimates were closest to
+the experimental “ground truth.”
+These ﬁndings suggested that more and better data, though clearly necessary, were not suﬃcient for
+credible causal inference. This conclusion exposed cracks in the foundation of an argument made in Staﬀord
+(1986), who documented a stark rise in the share of empirical labour economics papers in 1965-1983 using
+individual-level data (like the PSID and CPS) instead of aggregate data on census tracts, states, or countries.
+Staﬀord argued that the granularity of such “microdata” protected labour economics from the critiques that
+had been leveled at empirical economics as a whole, by Leamer (1983) and others.3 But the core of Leamer’s
+critique was that many empirical ﬁndings were sensitive to small changes in the analytic assumptions—
+exactly the concern raised by the above studies. Granularity of microdata alone, as it turns out, doesn’t
+3Other prominent critiques are found in Hendry (1980), Sims (1980), Black (1982), and Leontief (1982).
+6
+
+
+--- Page 7 ---
+make a study robust.
+Leamer worried that such a lack of robustness encouraged speciﬁcation searches, in which researchers
+tinkered with the analytic method they used until they found a desired result.
+The proposed remedy
+was sensitivity analysis, in which researchers show how their results change with the exact speciﬁcation
+or functional form (or, in a Bayesian analysis, by varying the prior distribution). Such robustness checks
+are now widely used in economic studies. But while sensitivity analyses can reveal the limitations of an
+observational analysis, they rarely suggest solutions on their own. Many carefully executed papers at the
+time, such as the longitudinal studies of training programs by Ashenfelter (1978) and Ashenfelter and Card
+(1985), were already upfront about the fragility of their results.
+LaLonde’s analysis also suggested one path forward: putting less emphasis on model-based solutions to
+self-selection into treatment, which did not clearly dominate simpler regression-based approaches in his study,
+and more emphasis on the researcher’s choice of the comparison group. While “the diﬃculty of obtaining a
+reliable comparison group” (Ashenfelter, 1975) had long been noted in labour economics, LaLonde’s analysis
+made clear that sensitivity to this choice could be as or more important than the particular econometric
+approach.
+Furthermore, LaLonde showed that it can be hard to determine from the data alone which
+comparison group or method is most likely to address selection bias. Addressing the prevailing concerns in
+applied microeconomic research would seem to require help from elsewhere.
+2.3
+Labour Economics by Design
+A primary contribution of the 2021 laureates was to push the ﬁeld towards approaching causal questions in
+a fundamentally diﬀerent way: with an emphasis on research design as a means to address the sensitivity
+concerns raised by Ashenfelter (1978), Lewis (1986a,b), LaLonde (1986), and others. While exact deﬁnitions
+of research design vary (and sometimes overlap with other terms, like “empirical strategy” or “identiﬁcation
+strategy”), it broadly refers to a researcher’s understanding of the process determining how units in a
+study are assigned to diﬀerent “treatments,” or the process determining their outcomes in the absence of a
+treatment—which can, in turn, be used to construct a sensible non-experimental “control group” (Meyer,
+1995). From this perspective, a convincing study makes core bias concerns explicit through a clear discussion
+of the research design, which in turn dictates the appropriate econometric methods. The researcher provides
+direct or indirect evidence supporting the key assumptions underlying the methods—often loosely called the
+“identifying assumptions.” The laureates’ empirical work exempliﬁes this push towards research design in
+the early 1990s, as we discuss in Section 3. Their later methodological work formalized the design-based
+approach, as we discuss in Section 4.
+An emphasis on research design brings new perspective to the argument of Staﬀord (1986), on the virtues
+of microdata in empirical labour economics. First, while more detailed data may allow researchers to probe
+new sources of variation and consider diﬀerent identifying assumptions, granular data does not by itself
+make for a convincing study. To leverage and validate a particular research design, one needs data on the
+7
+
+
+--- Page 8 ---
+appropriate variables—which need not be contained in standard datasets. Sometimes such data must be
+collected by the researcher, as in the seminal Card and Krueger (1994) study discussed below. In other cases
+a design calls for linking diﬀerent administrative data to more standard research extracts, as in the Angrist
+(1990) study also discussed below. New data and linkages could, in turn, enable new lines of research.
+The rise of such researcher- and administratively-collected data in applied microeconomics, over the more
+standard microdata research extracts emphasized in Staﬀord (1986), clearly coincides with the increase in
+design-based research (Angrist and Pischke, 2009; Currie, Kleven, and Zwiers, 2020).
+A design-based perspective also brings insights to Leamer’s (1983) sensitivity critique. Identifying as-
+sumptions, which involve restrictions on the treatment assignment process or comparability of outcomes for
+treatment and control groups, are emphasized and distinguished from other choices in the estimation pro-
+cedure. The “parallel trends” assumption underlying the Card and Krueger (1994) diﬀerence-in-diﬀerences
+analysis, or the key IV assumptions of random assignment, exclusion, monotonicity, and relevance in the
+Imbens and Angrist (1994) framework, are presented and scrutinized. Other parts of estimation, like ex-
+actly how the researcher controls for covariates or weights diﬀerent subpopulations, are less central when
+they are not informed by the research design. The eﬀect of such choices can be assessed by more routine
+sensitivity analysis, while the plausibility of identifying assumptions may require institutional knowledge to
+assess. This hierarchy of assumptions reﬂects an emphasis on design, with transparent treatment-control
+comparisons over potentially complex models and statistical procedures. A state-of-the-art non-parametric
+IV estimator based on an instrument with unclear assignment may be less convincing than a simple com-
+parison of trends in a well-executed diﬀerence-in-diﬀerences analysis. As Rubin (2008) puts it: “[for] causal
+inference, design trumps analysis.”
+The design-based approach advanced by the laureates also raises new issues for empirical practice. While
+a clear and plausible research design may lead to internally valid estimates of causal eﬀects, which are free
+from selection bias in a given study population, the external validity (i.e. generalizability) of such estimates
+to other populations and contexts is far from guaranteed. Similarly, the search for treatments with clear
+assignment processes or plausible control groups may limit the scope of microeconomic research.
+Some
+questions are more easily cast in a design-based approach, while others may seem fully out of reach by
+concerning treatments that are not easily viewed as manipulable by any design. We return to these and
+other issues in Section 4.
+2.4
+Natural Experiments
+Where do convincing research designs come from? The most obvious source is a RCT, with true experimental
+assignment. RCTs may be a natural way to answer some questions in economics, like the eﬀectiveness of
+job training programs (as argued in Ashenfelter and Card (1985) and Ashenfelter (1987)).
+Indeed, the
+past 30 years have seen a steep rise of ﬁeld experiments through microeconomics (Levitt and List, 2008).
+Prominent examples range from randomly oﬀering housing vouchers to allow low-income households to move
+8
+
+
+--- Page 9 ---
+to better neighborhoods through the Moving to Opportunity Program (Kling, Liebman, and Katz, 2007;
+Chetty, Hendren, and Katz, 2016);to randomly oﬀering Medicaid insurance coverage to low-income adults in
+the Oregon Health Insurance Experiment (Finkelstein et al., 2012; Baicker et al., 2013); to entrepreneurial
+researchers setting up their own charity to randomize how a charity solicits donations in a study of the
+determinants of charitable giving (DellaVigna, List, and Malmendier, 2012).
+The ﬁeld of development
+economics, in particular, has seen a stunning transformation in the share of experimental papers, which
+include evaluating the eﬀect of educational policies such as deworming children (Miguel and Kremer, 2004) or
+changing teaching incentives (Glewwe, Ilias, and Kremer, 2010), studying the eﬀects of microcredit provision
+(Banerjee et al., 2015), or the rates of return to fertilizer (Duﬂo, Kremer, and Robinson, 2008, 2011).4 In a
+randomized controlled trial, the research design is clear and often under the researcher’s control. Validating
+the identifying assumption of random assignment is also straightforward: if units are assigned to diﬀerent
+treatment randomly, observable pre-treatment characteristics should be unrelated to treatment status. Such
+balance can be checked by testing if the distribution of covariates is the same across the treatment arms.
+Much of the work by the 2021 laureates, however, considers economic questions where direct experimen-
+tation is rare or infeasible. Here a convincing research design may come from a natural or quasi-experiment,
+in which some institutional quirk or force of nature generates variation that is plausibly as-good-as-randomly
+assigned or which otherwise suggests appropriate treatment and control groups.5 Such variation may take
+the form of large but unforeseen shocks to regions or markets. Freeman (1989) was an early proponent of
+basing empirical analyses around such large shocks, illustrating the value of this approach in an analysis of
+the federal minimum wage imposition on Puerto Rico in the 1970s (Castillo-Freeman and Freeman, 1992),
+and in an analysis of a post-Sputnik boom in the demand for physicists in the U.S. (Freeman, 1975). Other
+quasi-experimental analyses leverage more narrow variation, often across individuals in the same region or
+market, where the research design arises from idiosyncrasies in the rules used to administer some economic
+variable. An example of this approach is the regression discontinuity design of Thistlethwaite and Camp-
+bell (1960), where a threshold assignment rule (such as a minimum test score for students to avoid taking
+remedial classes) can be leveraged to study the eﬀect of assignment among individuals just above and just
+below the threshold. Campbell (1969) was an early proponent of using such discontinuities and other quasi-
+experimental designs in psychology.6 Variation in the timing of policy shocks across regions, such as U.S.
+states, may also provide a basis for a compelling research design: Gruber (1994) exploited such variation in
+an inﬂuential study of the incidence of mandated maternity beneﬁts.
+Labour economists were early adopters of natural experiments as the foundation of a research design. This
+work included studies by Rosenzweig and Wolpin (1980), Meyer, Viscusi, and Durbin (1995), and a group
+4Three of the scholars leading this transformation—Abhijit Banerjee, Esther Duﬂo, and Michael Kremer—were awarded
+the Nobel Memorial Prize in 2019, “for their experimental approach to alleviating global poverty.”
+5DiNardo (2008) diﬀerentiates natural experiments as “serendipitous randomized trails,” where a variable of interest is as-
+good-as-randomly assigned across units, and quasi-experiments which rely on parallel trends assumptions or other restrictions
+on the comparability of unobservables across treatment and control groups. However, like “research design,” exact deﬁnitions
+of these terms vary—see, e.g., Titiunik (2021) for alternative deﬁnitions and discussion.
+6The review by Meyer (1995) helped to make economists aware of this quasi-experimental tradition in psychology.
+9
+
+
+--- Page 10 ---
+of researchers at the Industrial Relations Section (part of the Princeton University Economics department).
+Gary Solon’s work (Solon, 1985) showed how one can leverage changes in laws as a source of variation. Orley
+Ashenfelter and Alan Krueger famously combined a random quirk of nature with innovative data collection
+to study the returns to education in Ashenfelter and Krueger (1994).
+The researchers traveled to the
+annual Twins Days Festival (in Twinsburg, Ohio) to gather data on pairs of identical twins. Independently
+asking both twins about each other’s schooling levels allowed them to account for measurement error in
+self-reported years of schooling—a prominent concern in existing returns to schooling studies. By looking at
+how diﬀerences in twins’ education levels predict diﬀerences in twins’ earnings, Ashenfelter and Krueger were
+further able to address concerns of ability bias in existing estimates. Here the identifying assumption follows
+from the natural experiment of twinning, which generates two individuals with identical genetics and thus
+(arguably) comparable earnings potential. Leveraging the more narrow variation in education within twin
+pairs, Ashenfelter and Krueger found much greater labour market returns than in previous cross-sectional
+studies which adjusted for observable demographics and family characteristics.
+Two other prominent members of the Industrial Relations Section are two of the 2021 laureates: David
+Card and Joshua Angrist. We next discuss how their work made both empirical contributions to key questions
+in labour economics and methodological advances in using design-based approaches to answer them.
+3
+Empirical Landmarks
+Empirical work by the laureates is distinguished by its clarity and compelling analysis of several important
+topics.
+We organize a partial review of this work into four broad topics: the eﬀects of immigration on
+local labour markets, the eﬀects of minimum wages on low-wage employment, the labour market returns to
+schooling, and other determinants of labour earnings.
+3.1
+Eﬀects of Immigration on Local Labour Markets
+Immigration raises several important and hotly debated questions in economics and public policy. A key
+policy concern in many countries is that relaxed immigration laws can induce large inﬂows of migrants,
+sometimes with low levels of education and labour market experience, to compete with local workers and
+potentially reduce wages and employment prospects. Theoretical predictions about the eﬀects of such low-
+skilled labour supply shocks to local labour markets are ambiguous, since they depend on many factors—
+including the substitutability of immigrant and native labour, existing labour market institutions, and the
+potential response in labour and product demand. Early empirical studies of this question typically used
+cross-sectional variation in immigrant populations to estimate production function parameters that speak
+to these mechanisms (e.g., Grossman, 1982).
+As noted by Borjas (1987), however, the self-selection of
+immigrants to diﬀerent labour markets may bias such estimates.
+Two early studies by Card (Card, 1990, and Altonji and Card, 1991) show how an increased focus on
+10
+
+
+--- Page 11 ---
+research design and large-scale natural experiments can address such selection concerns. In Card (1990),
+the so-called 1980 Mariel boatlift was used to study the local labour market eﬀects of low-skill immigration
+in Miami. This large and arguably unanticipated labour market shock grew out of rising political unrest
+in Cuba, and led to an unprecedented inﬂux of immigrants in the Miami labour market. The boatlift was
+announced on April 20th, 1980, with Fidel Castro allowing anyone wishing to emigrate from Cuba to leave
+through the port of Mariel. Between April and October 1980, nearly 125,000 people left Cuba via a ﬂotilla
+of private vessels. Roughly half settled in Miami, where several processing camps had been established.
+Three aspects of the Mariel episode made for a compelling natural experiment. First, the source of the
+immigration shock was clear and external: the political turmoil which gave rise to the boatlift was plausibly
+unrelated to other factors aﬀecting labour markets in the United States. Second, the scale of the shock
+was enormous: the boatlift led to a 7% increase in the size of Miami’s total labour force over the span of
+a few months. The Mariel immigrants tended to be less educated and worked in lower-skill occupations
+than the overall Miami population, implying an even larger increase in labour supply at the lower end of
+the skill distribution. Third, large survey data sets contained the variables needed to study this large and
+external shock: baseline labour market conditions immediately prior to the boatlift could be measured in
+the 1980 census, while the CPS included reasonably large samples for measuring eﬀects in subsequent years.
+Importantly, unlike most other ethnic groups, Cubans are separately identiﬁed in the CPS—allowing Card
+to study outcomes for both Cubans and other Hispanic immigrants.
+Despite these advantages, the appropriate way to leverage the Mariel boatlift experiment to study im-
+migration eﬀects is not immediately clear. Miami is only one city, and neither the timing nor the location
+of the immigration shock were truly random. Moreover, the onset of the 1982 recession in the aftermath of
+the Mariel boatlift highlighted the possibility that the eﬀects of the immigration shock could be confounded
+by changes in other national or regional labour market trends.
+To allay this concern, Card constructed a comparison group that might plausibly account for these other
+time-varying factors and isolate the impact of immigration. Speciﬁcally, Card compared Miami’s labour
+market trajectory to those of Atlanta, Los Angeles, Houston, and Tampa-St. Petersburg—a group of cities
+that featured roughly similar demographics and exhibited similar trends to Miami prior to the boatlift. The
+idea of forming a control group to adjust for time-varying confounders in a non-experimental setting grew
+out of Card’s earlier work on longitudinal earnings models and training programs (Ashenfelter and Card,
+1985; Abowd and Card, 1989).
+The Card (1990) analysis revealed that wages and unemployment moved similarly in Miami and the
+comparison cities from before to after the boatlift, including for lower-skilled groups of workers. This suggests
+that the large inﬂux of Mariel immigrants had limited impacts on native outcomes, a surprising ﬁnding
+that spawned a large literature on the channels through which local labour markets adjust to immigration.
+Methodologically, the Card (1990) study provided a clear example of how to combine a natural experiment
+11
+
+
+--- Page 12 ---
+with a carefully-constructed control group to produce compelling empirical ﬁndings.7 This paper presaged
+the growth of diﬀerence-in-diﬀerences studies, which have since become one of the most common empirical
+strategies in applied microeconomics.8
+The ﬁndings in Card (1990) were striking, and not without critique.9 One clear concern was generaliz-
+ability: the Mariel experiment was a large shock, but its eﬀects were concentrated in one arguably unique
+labour market. Indeed, Card (1990) notes that Miami’s long history of receiving Cuban immigrants may
+complicate the interpretation of the ﬁndings. For a more comprehensive view of local labour market eﬀects,
+Altonji and Card (1991) famously devised an IV strategy which translated the logic of the Card (1990)
+research design to a national level. Just as Cuban immigrants tended to locate to cities like Miami, where
+there were large groups of previous Cuban immigrants, immigrants from other countries tend to settle in
+regions with existing immigrant enclaves. Altonji and Card used previous immigrant settlement patterns
+to instrument for immigration to diﬀerent metropolitan areas, ﬁnding large negative eﬀects of immigrant
+inﬂows on native wages but no eﬀect on employment. Later, Card (2001) reﬁned this IV strategy with a
+“shift-share” instrument that predicted inﬂows by city and occupational groups. This shift-share approach
+is now widely used to study the eﬀects of immigration and other treatments combining large external shocks
+(e.g. immigrant inﬂows) and heterogeneous local exposure (e.g. immigrant enclaves).10
+The design-based approach to immigration study has gained immense popularity in the years following
+Card (1990) and Altonji and Card (1991), and has generated several strands of literature seeking to explain
+why immigration has limited eﬀects on the labour market outcomes of native workers in some—but not all
+settings (see Dustmann, Schönberg, and Stuhler (2016) for a recent review). Key sources of heterogeneity
+appear to include the distribution of native skill (particularly communication skills; e.g. Peri and Sparber,
+2011) and the ease of technological adjustment (e.g.
+Dustmann and Glitz, 2016).
+While there is still
+ongoing debate over the magnitude of wage and employment eﬀects from immigration overall, such studies
+of heterogeneity and mechanisms are no doubt helped by a clearer understanding of research design.
+3.2
+Eﬀects of Minimum Wages on Low-Wage Employment
+A similarly important and ﬁercely debated question in economics and public policy is the eﬀects of federal
+or local wage ﬂoors on low-wage employment. The textbook model of a perfectly competitive labour market
+predicts that an increase in the minimum wage results in movement along a downward-sloping market demand
+curve for labour, creating unemployment and reducing worked hours among the employed. By the early
+1990s, the conventional view among labour economists was that these predictions accurately describe the
+7The synthetic control method (Abadie and Gardeazabal, 2003; Abadie, Diamond, and Hainmueller, 2010), which combines
+multiple control groups to construct a single synthetic control mimicking the treatment group, can be seen as a further reﬁnement
+of this idea.
+8Currie, Kleven, and Zwiers (2020) ﬁnd that nearly a quarter of NBER working papers in 2020 employed diﬀerence-in-
+diﬀerences, constituting around 60% of all NBER working papers using an experimental or quasi-experimental approach.
+9For recent discussion, see Borjas (2017) and Peri and Yasenov (2018).
+10Shift-share, or “Bartik” instruments can be traced back to Freeman (1980), Bartik (1991), and Blanchard and Katz (1992).
+A recent methodological literature, including Goldsmith-Pinkham, Sorkin, and Swift (2020), Borusyak, Hull, and Jaravel (2022),
+and Adão, Kolesár, and Morales (2019), formalizes how such instruments can leverage quasi-experimental variation.
+12
+
+
+--- Page 13 ---
+causal impacts of changes in minimum wage laws. It had long been recognized that increasing the minimum
+wage can theoretically boost employment by ﬂattening the supply curve facing an employer with market
+power (Robinson, 1933), but this scenario was generally regarded as speciﬁc to situations with a single
+monopsonistic employer and irrelevant to the functioning of typical low-wage labour markets. Empirical
+evidence from the 1970s and 1980s, largely based on time-series or cross-sectional variation in minimum
+wages across states, was broadly consistent with the competitive view (see Brown, Gilroy, and Kohen, 1982
+and Card and Krueger, 1995b for reviews).
+Card and Krueger (1994) famously revisited the eﬀects of the minimum wage using a natural experiment
+derived from an increase in New Jersey’s state minimum wage. Their strategy built on earlier work by
+Card (1992a)—who analyzed the eﬀects of a minimum wage increase in California using a comparison set
+of unaﬀected states—as well as Katz and Krueger (1992), who studied an increase in the federal minimum
+wage by comparing establishments paying higher vs. lower wages prior to the change (see also Card, 1992b).
+In 1990, the New Jersey legislature passed a law that would increase the state’s minimum wage from $4.25
+to $5.05 per hour as of April 1, 1992. Anticipating this change, Card and Krueger (1994) surveyed a set
+of fast food establishments on both sides of the New Jersey/Pennsylvania border immediately prior to the
+change (February-March 1992) and again a few months afterward (November-December 1992). Combining
+elements of the Card (1992a) and Katz and Krueger (1992) strategies, Card and Krueger (1994) compared
+changes in outcomes in New Jersey to those in Pennsylvania, as well as changes in outcomes for restaurants
+with higher vs. lower baseline wages within New Jersey.
+Like the Mariel boatlift analysis, the New Jersey/Pennsylvania study exhibits several hallmarks of modern
+studies using natural experiments in applied microeconomics. The action in the variable being studied (the
+minimum wage) originated from a speciﬁc and interpretable source (the New Jersey law change) rather than
+uncontrolled state-level variation of unclear origin. The size of the shock was large: New Jersey’s minimum
+wage increased by roughly 20%, and most fast food restaurants in New Jersey paid below $5.05 before
+the change. Careful attention was paid to constructing and validating a control group that could plausibly
+capture the counterfactual path of outcomes in the absence of treatment for aﬀected units. The controls here
+consisted both of restaurants across the border in Pennsylvania and of high-wage New Jersey restaurants less
+exposed to the reform. Finally, Card and Krueger (1994) assembled detailed microdata to measure outcomes
+for the treatment and control groups. In this case, rather than relying on existing surveys, they ﬁelded their
+own custom survey instrument tailored to the question at hand.
+Card and Krueger’s baseline survey in February/March 1992 showed roughly similar wage distributions in
+New Jersey and Pennsylvania, with average starting wages just over $4.60 and about one-third of restaurants
+in each state paying exactly the baseline minimum wage of $4.25. By the endline survey in late 1992, about
+90% of New Jersey restaurants reported paying exactly the new minimum of $5.05 while the wage distribution
+in Pennsylvania appeared roughly unchanged. But despite this large diﬀerential change in wages, Card and
+Krueger’s survey showed no evidence of a negative employment impact on New Jersey restaurants.
+In
+13
+
+
+--- Page 14 ---
+fact, average full time employees (FTE) at New Jersey stores increased slightly, while average FTEs in
+Pennsylvania fell, resulting in a modest positive diﬀerence-in-diﬀerences estimate. An “exposure design”
+comparing high- and low-wage employers within New Jersey likewise showed a small relative increase in
+employment at low wage restaurants.
+In contrast to the textbook perfectly competitive model and the
+earlier time-series evidence, the Card and Krueger empirical results suggested that increasing the minimum
+wage did not reduce employment—and if anything may have increased it.
+The empirical ﬁndings of Card and Krueger (1994) upended conventional wisdom on the eﬀects of mini-
+mum wages, generating backlash in some quarters of labour economics. Despite the well-known theoretical
+result that minimum wages could increase employment in settings with employer market power, adherents
+of the competitive view of labour markets derided the Card and Krueger (1994) ﬁndings as unscientiﬁc (see,
+e.g., Buchanan 1996). While negative, such reactions highlight the value of natural experiments and careful
+research design. In contrast to empirical work from earlier eras, in which Leamer (1983) argued that “hardly
+anyone takes anyone else’s data analysis seriously,” the results from a compelling natural experiment call
+out for explanation and further study even among skeptics of the substantive conclusions. As it turns out,
+the conclusions of several recent studies are broadly consistent with the Card and Krueger (1994) ﬁnding of
+limited eﬀects of the minimum wage on employment (Dube, Lester, and Reich, 2010, Cengiz et al., 2019, Giu-
+liano, 2013, Harasztosi and Lindner, 2019, and Dustmann et al., 2022). Partially motivated by these ﬁndings,
+an increasing body of work has investigated competitive structure and monopsony power in labour markets
+(see Card et al., 2018 and Manning, 2021, for two recent reviews). Renewed interest in employer monopsony
+power—following Card and Krueger (1994), the extended treatment in Card and Krueger (1995a), and the
+analysis of Manning (2003)—has since fueled a large literature on ﬁrm wage-setting (see, e.g., recent work
+by Azar, Marinescu, and Steinbaum, 2020; Kroft et al., 2020; Lamadon, Mogstad, and Setzler, 2020 and
+Berger, Herkenhoﬀ, and Mongey, 2022).
+3.3
+Eﬀects of Schooling and Experience on Earnings
+A long literature in economics and related ﬁelds considers the eﬀects of education and labour market expe-
+rience on subsequent earnings and employment. While the theoretical impact of increased human capital
+is unambiguous (e.g. Becker, 1964), the empirical evidence for such causal eﬀects was limited throughout
+most of the 20th century. The Coleman (1966) report famously showed in cross-sectional regressions that
+the fraction of variance in student achievement attributable to educational inputs was small relative to the
+contribution of family background. Surveying the large empirical literature following the Coleman report,
+Hanushek (1986) concluded that there was virtually no relationship between educational inputs and sub-
+sequent outcomes. Of course, selection bias looms large for such studies as the deployment of educational
+resources to students and schools is far from random.
+Two inﬂuential studies by David Card and Alan Krueger (Card and Krueger, 1992a,b) investigated the
+eﬀects of school quality on labour market outcomes by isolating a clever source of variation: the movement of
+14
+
+
+--- Page 15 ---
+students across diﬀerent U.S. regions. Card and Krueger (1992a) estimated returns to schooling separately
+by cohort and state of birth, controlling for cohort-speciﬁc state of birth and state of residence eﬀects in
+the 1980 US census. This strategy compares relationships between earnings and schooling for individuals
+in the same birth cohort working in the same state but educated in diﬀerent states, leveraging cross-state
+moves to measure diﬀerences in cohort-speciﬁc school quality across states. Card and Krueger related these
+estimated returns to measures of school quality for each state and birth cohort, showing that school quality
+improvements such as reduced pupil/teacher ratios appear to increase the return to education. To study the
+role of school quality in the evolution of the Black-white wage gap, Card and Krueger (1992b) estimated
+separate returns to schooling by race, state of birth, state of residence, and birth cohort. Between cohorts
+born in the 1920s and the 1940s, they documented a striking relative increase in the return to education for
+Southern-born Black men compared both to non-Southern-born Black men and to Southern-born white men
+within regions of residence. The timing of this diﬀerential change in returns coincided with a relative increase
+in measures of school quality for Southern-born Black men, suggesting an important role for school quality
+in reducing the racial wage gap over time. Though these studies did not take advantage of a sharp policy
+change, they eﬀectively used individuals moving between locations as a collection of natural experiments—
+removing permanent diﬀerences between locations of birth to ﬂexibly account for unobservables. Recent work
+in several areas builds on this idea of using “movers” to mitigate selection bias, including studies of ﬁrm
+eﬀects (Abowd, Kramarz, and Margolis, 1999; Card, Heining, and Kline, 2013; Card, Cardoso, and Kline,
+2016), neighborhood quality (Chetty and Hendren, 2018), and variation in regional healthcare utilization
+(Finkelstein, Gentzkow, and Williams, 2016).11
+The Card and Krueger studies suggest a non-zero “return to schooling:” the theoretical parameter
+governing causal eﬀects of increased education on labour market earnings. Perhaps the most famous estimates
+of the returns to schooling from this period comes from Angrist and Krueger (1991), which used a creative
+IV strategy—based on an institutional quirk of the U.S. education system—to address the clear self-selection
+issue of earlier regression-based analyses.12 Children in the U.S. traditionally start ﬁrst grade in the calendar
+year in which they turn six, but most state compulsory schooling laws allowed students to drop out on their
+sixteenth birthday. The combination of these two rules implies that compulsory schooling laws are more
+stringent for students born early in the calendar year. Consider, for example, two children born in 1930 with
+one born in January and the other born in December. These children would likely be in the same schooling
+cohort, starting ﬁrst grade together in the fall of 1936. The individual born in January would be among the
+oldest of his or her classmates, reaching the compulsory school age of 16 in January 1946, in the middle of
+10th grade. The child born in December would be among the youngest in the class and be compelled to stay
+in school until the middle of 11th grade. If both students drop out as soon as the law allows, the December
+child will attain nearly a full year of additional schooling than the child born in January.
+11Earlier examples of papers using such designs to study industry wage diﬀerentials include Murphy and Topel (1987),
+Krueger and Summers (1988), and Gibbons and Katz (1992).
+12Another seminal contribution is Card (1995), who used the distance to nearby colleges in an individual’s birthplace as an
+instrument for educational attainment.
+15
+
+
+--- Page 16 ---
+This argument suggests a novel instrument for years of schooling: a child’s birthday. The interaction
+between age-at-entry and compulsory schooling rules suggests that birthdays may aﬀect educational attain-
+ment. Moreover, it seems plausible that birthdays are as good as randomly assigned, and have no eﬀects on
+earnings through channels other than completed schooling.13 Angrist and Krueger (1991) operationalized
+this idea using instruments based on season (quarter) of birth, the measure of birthday available in public-use
+decennial census data.14
+Angrist and Krueger’s analysis revealed that the relationship between birthday and education is evident
+in the data for men born in the 1920s through the 1940s. On average, children born in the second through
+fourth quarters of the year stay in school one tenth of a year longer than those born in the ﬁrst quarter.
+Angrist and Krueger presented a battery of falsiﬁcation exercises suggesting that this pattern is due to their
+proposed compulsory schooling mechanism. For example, using point-in-time school enrollment for teenagers
+in the 1960 and 1970 censuses, they demonstrated that the gap in enrollment between ﬁrst- and later-quarter
+births emerges at age 16 only in states where the compulsory school-leaving age is 16 rather than 17 or 18.
+This can be seen as an early example of the placebo and robustness checks that are now commonly used to
+probe identifying assumptions in design-based studies.15 In addition to attaining 0.1 fewer years of schooling,
+individuals born in the ﬁrst quarter of the year also earn about one percent less than those born later. IV
+estimates formed as the ratio of these two diﬀerences (as discussed more in Section 4.1) imply that a year of
+schooling boosts earnings by roughly 10 percent.
+Methodologically, the Angrist and Krueger (1991) analysis diﬀered from several of the above design-based
+studies of immigration and the minimum wage in two important ways. First, while the Card (1990) and
+Card and Krueger (1994) studies looked at large and sudden shocks to aggregate labour markets, Angrist
+and Krueger (1991) leveraged narrow birthdate variation across individuals within markets. Second, while
+the 1980 Mariel boatlift and 1992 New Jersey minimum wage change were paired with natural comparison
+groups, unlike with birthdates it is diﬃcult to imagine these deliberate policy changes as occurring by chance.
+The narrow and plausibly as-good-as-randomly assigned IV variation in Angrist and Krueger (1991) thus
+marked a key methodological shift in the use of natural experiments in economics while, as we discuss below,
+highlighting new econometric questions.
+Substantively, the studies by Card, Angrist, and Krueger helped change the consensus on the eﬀects of
+educational investment, from the rather pessimistic conclusion of the Coleman (1966) report to the modern
+consensus that school resources generally matter (see Jackson, 2020 for a recent review).
+As with the
+13Buckles and Hungerman (2013) note that maternal characteristics vary with birthday in recent birth cohorts, suggesting
+that birthdays may not be fully independent of family background.
+14With more detailed data on date of birth, this strategy can be sharpened into a regression discontinuity design leveraging
+the shift in school entry dates for children born immediately before and after the turn of the calendar year. An example of this
+approach appears in Clark and Royer (2013).
+15This exercise strengthens the case for a causal interpretation of the quarter-of-birth ﬁrst stage. In traditional simultaneous
+equations models, a causal interpretation of the ﬁrst stage is unnecessary – the ﬁrst stage is a linear projection and any bias
+stems from a relationship between the instrument and unobservables in the outcome equation.
+In the design-based view,
+however, it is seen as unlikely that an instrument is as-good-as-randomly assigned unless both the ﬁrst stage and reduced form
+are free of selection bias. This idea is made explicit in the framework of Imbens and Angrist (1994), which features a causal
+model of the ﬁrst stage as detailed in Section 4.
+16
+
+
+--- Page 17 ---
+immigration and minimum wage literatures, recent work focuses on the heterogeneity of educational input
+eﬀects across settings and individuals. IV-based analyses of charter school eﬀects and variation in school
+quality within urban districts (Angrist et al., 2010, Abdulkadiroğlu et al., 2011, Abdulkadiroğlu et al., 2016,
+Angrist et al., 2017) is one area where Angrist has continued to study such heterogeneity.16
+3.4
+Other Determinants of Earnings
+Three other studies by the laureates (Angrist, 1990, Imbens, Rubin, and Sacerdote, 2001, and Card and
+Hyslop, 2005) are worth highlighting, for the creative use of naturally occurring randomization to answer
+important questions on the determinants of labour market earnings. In Angrist (1990), the random assign-
+ment of draft lottery numbers was used to study the eﬀects of Vietnam-era military service on earnings.
+Paralleling the issues in the LaLonde (1986) analysis of training program eﬀects, military veterans diﬀer
+from non-veterans on many dimensions, and earlier eﬀorts to address this selection with the available econo-
+metric tools yielded unstable and inconclusive estimates.
+Angrist (1990) leveraged public lotteries that
+assigned Random Sequences Numbers (RSNs) to dates of birth for men born between 1950 and 1955. For
+the 1950-1952 birth cohorts, men whose RSNs fell below a cutoﬀwere conscripted into military service.17
+Randomly-assigned draft lottery numbers are clearly independent of earnings potential and plausibly aﬀect
+outcomes only through military service, making the draft an attractive natural experiment for studying
+service eﬀects on labour market outcomes.18
+Angrist (1990) obtained a custom version of the Social Security Administration’s Continuous Work His-
+tory Sample (CWHS) augmented with birthdates in order to link earnings to draft RSNs. Veteran status
+was only partially determined by RSNs, however: some men enlisted regardless of lottery number, while
+many with low lottery numbers did not serve due to deferrals or performance on pre-induction mental and
+physical screening tests. As a result, the diﬀerence in military service rates for eligible and ineligible men was
+only around 15 percentage points. This non-compliance calls for an IV, with the RSN serving as instrument
+for veteran status. Angrist (1990) divided the diﬀerence in mean earnings by draft eligibility in the CWHS
+by the diﬀerence in service rates in the Survey of Income and Program Participation (SIPP) to construct
+IV estimates of the causal impact of military service. The results showed that military service led to a 15
+percent earnings penalty for the Vietnam draft cohorts.
+The Imbens, Rubin, and Sacerdote (2001) study likewise uses randomization aﬀorded by a lottery to
+shed light on a diﬀerent question: what are the wage eﬀects of non-labour income? The eﬀect of unearned
+income on economic behavior is a foundational question in labour and public economics but is diﬃcult to
+measure since non-labour income is likely correlated with many unobserved determinants of labour supply
+16Other notable examples include Angrist and Lavy (1999), which uses regression discontinuity to study class size eﬀects,
+and the RCT of Angrist et al. (2002) which studied private school vouchers.
+17As Angrist (1990) notes, RSNs also generated an increase in military service for those born in 1953 even though this cohort
+was never drafted, as men with low lottery numbers preemptively enlisted to improve their terms of service in anticipation of
+the possibility of conscription.
+18Earlier work by Hearst, Newman, and Hulley (1986) used the Vietnam-era draft lottery to study eﬀects of draft eligibility
+on mortality.
+17
+
+
+--- Page 18 ---
+and other outcomes. To address this, Imbens, Rubin, and Sacerdote (2001) conducted a special survey
+of Massachusetts lottery players. The sampling frame for the survey took advantage of the fact that the
+state maintains historical records of lottery winners, including some individuals that won millions of dollars
+and some that won small amounts.
+Winners of small prizes provide a natural control group for bigger
+winners. To lend support to the key identifying assumption that the magnitude of the prize is as good
+as randomly assigned, Imbens, Rubin, and Sacerdote (2001) conducted balance checks which showed no
+correlation between the prize magnitude and individual characteristics (e.g. prior earnings) once the winners
+of the largest prizes are excluded. Their analysis revealed modest negative eﬀects of unearned income on
+labour earnings, with somewhat larger impacts for older workers. Recent studies of the impacts of unearned
+income have followed the Imbens, Rubin, and Sacerdote (2001) lottery-based approach (see, e.g., Cesarini
+et al., 2017).
+Like these two studies, Card and Hyslop (2005) leveraged natural randomization to study the wage eﬀects
+of a large-scale program: the Self Suﬃciency Project (SSP), a Canadian program which made earnings
+subsidies available for a random pool of long-term welfare recipients over three years. Such eﬀects speak to
+a large literature in labour and public economics considering possible employment disincentives from mean-
+tested welfare programs, such as the Earned Income Tax Credit (EITC). Unlike the EITC and earnings
+subsidies in other countries, the SSP was only available for full-time work; participants furthermore had to
+establish eligibility by working full-time within the ﬁrst year of program participation. Card and Hyslop
+(2005) showed how this program structure created distinct incentives to ﬁnd a full-time job in the ﬁrst
+year and to continue working once eligbility was established. To tease apart these channels, they developed
+and estimated a dynamic model with the experimental variation in program participation. Their estimates
+showed that the combination of “establishment” and “entitlement” incentives generated a striking pattern
+in the experimental eﬀects, which peaked in the second year following random assignment before fading.
+Notably, there were no long-run eﬀects on either wages or welfare participation, suggesting temporary wage
+subsidies may not induce program dependency. Beyond these substantive ﬁndings, the Card and Hyslop
+(2005) approach to estimate structural models by exploiting natural experiments helped push the frontier of
+the design-based approach, as we discuss more below.
+3.5
+Taking Stock
+These and other early studies of natural experiments produced new and compelling evidence on several classic
+questions in labour economics. At the same time, they often raised new questions about how such evidence
+is best interpreted and synthesized into a broader body of scientiﬁc knowledge. The increased emphasis
+on the forces determining the assignment of certain economic “treatments” highlighted that design-based
+studies often leverage highly speciﬁc sources of variation. What does the Card and Krueger (1994) result
+for fast-food workers in New Jersey teach us about the impact of minimum wage more broadly? Is the
+lack of labour market eﬀects from a large immigration shock in Card (1990) speciﬁc to the 1980s Miami
+18
+
+
+--- Page 19 ---
+labour market? These questions of interpretation loom especially large in the IV analysis of Angrist and
+Krueger (1991), where the identifying variation in individual birthdates led to relatively small diﬀerences in
+completed education: comparing the schooling of individuals born in the ﬁrst and fourth quarter of a year
+suggests that at most 10% were on the margin of dropping out as soon as they are legally allowed. To what
+extent can this narrow source of variation inform the returns to schooling in the general population?
+The interpretation of design-based IV estimates of the returns to schooling was carefully considered in
+an inﬂuential review by Card (1999).
+He noted that such estimates—including in Angrist and Krueger
+(1991)—typically exceed corresponding ordinary least squares (OLS) estimates, often by 30% or more. This
+pattern would seem to present a puzzle, since standard selection bias reasoning suggests that OLS estimates
+should be biased upward, not downward, as students with higher unobserved ability are likely to select more
+schooling. While measurement error in self-reported years of education could explain some of the discrepancy,
+as it would tend to attenuate the OLS estimates, it is unlikely to explain the often large gap between IV
+and OLS estimates. To close this gap, Card (1999) oﬀered another explanation: the sub-populations shifted
+into treatment by the variation in the quarter of birth or other instrumental variable strategies may have
+higher returns to schooling than the overall population. This idea of heterogeneous causal eﬀects driving the
+interpretation of IV estimates was formalized in the seminal analysis of Imbens and Angrist (1994).
+4
+A Deeper Understanding of Causality
+Interpreting estimates of conceptually similar causal eﬀects across diﬀerent natural experiments and designs
+requires a ﬂexible econometric framework. Speciﬁcally, it requires a way to think about how the speciﬁc
+source of identifying variation might aﬀect the interpretation of the quantity being estimated. Consider,
+for example, the Vietnam draft study of Angrist (1990), where draft eligibility (i.e.
+an RSN below the
+conscription cutoﬀ) was used to instrument for military service. Most individuals who served in Vietnam were
+volunteers who would have served no matter their RSN number. Presumably, the draft-based identiﬁcation
+strategy of Angrist (1990) cannot speak to the eﬀect of serving in the military for these volunteers. But in
+what formal sense is this true?
+A standard way of motivating the use of IV methods in such applications is the potential for selection (or
+“omitted variables”) bias: individuals who do and do not serve in the military diﬀer in many observed and
+unobserved ways, some of which may aﬀect their adult earnings. One way to address this concern is to model
+the selection process: Heckman (1974, 1976, 1979), Heckman and Robb (1985), Chamberlain (1986), and
+others showed how IV could identify such selection models through a combination of exclusion and functional
+form restrictions.19 Selection models can also be used to structure heterogeneity across diﬀerent instruments
+and samples—at least when its clear what observable and unobservable characteristics are relevant and in
+what way. But this may be hard to do in a ﬂexible manner. More importantly, a model-based approach to
+19Other work showed how average eﬀects can be bounded without such restrictions: see, e.g., Robins (1989), Manski (1990),
+and Balke and Pearl (1997)
+19
+
+
+--- Page 20 ---
+bias and heterogeneity may obscure the advantage of a randomly assigned instrument as in Angrist (1990).
+A key innovation in Imbens and Angrist (1994) is to approach the selection bias problem and IV solution
+from a diﬀerent direction. Instead of deriving model restrictions suﬃcient to fully correct selection, and
+align the IV analysis with a hypothetical randomized experiment, Imbens and Angrist asked what minimal
+assumptions make a simple linear IV estimand causally interpretable. Their answer helped separate the con-
+ceptual roles of “chance” (i.e. as-good-as-random instrument assignment) and “choice” (assumptions on the
+selection process) in design-based analyses, clariﬁed how diﬀerent quasi-experimental studies of conceptually
+similar economic quantities could be synthesized, and highlighted more general strengths and weaknesses of
+the design-based approach.
+4.1
+The Potential Outcomes Framework and LATEs
+To keep the individual heterogeneity in the response to treatment unrestricted, Imbens and Angrist (1994)
+cast the IV estimation problem in a potential outcomes framework. This framework dates back to Neyman
+(1923, 1990)—who ﬁrst proposed a version of it for analyzing randomized experiments—and Rubin (1974,
+1978, 1990) who later generalized it for observational studies. The core logic of the potential outcome frame-
+work is also found in the early econometric literature, including work on IV as a method to solve simultaneous
+causality: Wright (1928), Working (1927), Tinbergen (1930), and Haavelmo (1943) all distinguished between
+potential economic variables determined by structural relationships and the observed variables determined in
+market equilibria.20 The distinction between the observed outcomes of simultaneous equations models (such
+as equilibrium prices and quantities) and the “potential” outcomes which might be realized under certain
+counterfactuals is especially clear in Haavelmo (1943), who focused on the challenge of interpreting observed
+data on income and consumption in terms of parameters governing marginal propensities to consume and
+invest.21 The emphasis on potential outcomes was revived in the early 1990s by Heckman (1990), Manski
+(1990), and others, along with Imbens and Angrist (1994); these papers showed the value of the clarity that
+explicit potential outcome notation delivers.22
+To sketch the potential outcomes framework, consider the causal eﬀect of some binary treatment Di
+(say, enlisting in the army) on some subsequent outcome Yi (say, adult earnings). We imagine two potential
+outcomes associated with the treatment, Yi(1) and Yi(0), representing the earnings of individual i if they
+did and did not to enlist in the army. Only one of these potential outcomes is observed, depending on the
+value of Di; the other is the individual’s counterfactual outcome, associated with the unrealized treatment
+20This early literature also can be seen as laying the foundation of later graphical formalizations of causality and related
+methods, particularly the path analysis method of Wright (1928). The do-calculus of Pearl (1995; 2000; 2018) has evolved in
+parallel with the potential outcomes framework in recent years, though the latter generally remains more popular in applied
+economics. See Heckman and Pinto (2014), Pearl (2015), and Imbens (2020) for recent discussions.
+21Trygve Haavelmo received the Nobel Memorial Prize in 1989, “for his clariﬁcation of the probability theory foundations of
+econometrics and his analyses of simultaneous economic structures.” Jan Tinbergen was awarded the ﬁrst Nobel Memorial Prize
+in 1969, along with Ragnar Frisch, “for having developed and applied dynamic models for the analysis of economic processes.”
+22As Imbens (2014) notes, much of the post-war econometric literature used a notation only involving realized or observed
+outcomes; see also Hendry and Morgan (1992) and Imbens (1997) discussions of this history.
+20
+
+
+--- Page 21 ---
+state. Formally, the observed outcome can be written
+Yi = (1 −Di)Yi(0) + DiYi(1) = Yi(0) + Di (Yi(1) −Yi(0)) ,
+(1)
+where the quantity Yi(1) −Yi(0) represents the eﬀect of Di on Yi for individual i.
+When Di is randomly assigned, i.e., we were to randomly enlist some individuals in the military but not
+others, it becomes independent of the potential outcomes Yi(1) and Yi(0). This ensures that the average
+treatment eﬀect (ATE) is identiﬁed by the diﬀerence in average outcomes among treated and untreated
+individuals:
+E[Yi | Di = 1] −E[Yi | Di = 0] = E[Yi(1) | Di = 1] −E[Yi(0) | Di = 0] = E[Yi(1) −Yi(0)],
+where we use Equation (1) in the ﬁrst equality and the random assignment assumption in the second equality.
+The potential outcome notation makes the magic of a randomized experiment transparent: because we never
+observe both potential outcomes for each individual, we can’t ever learn their individual treatment eﬀect,
+Yi(1) −Yi(0). But by virtue of random assignment, we can still learn the value of the treatment eﬀect on
+average, in the population of interest.
+To adapt the potential outcome framework to an IV setting, Imbens and Angrist (1994) deﬁned two sets
+of potential outcomes, one set for the treatment Di and one set for the outcome Yi.23 Speciﬁcally, let Di(z)
+be the potential treatment status when Zi = z. In the Angrist (1990) example, for instance, Di(0) is the
+military status of the individual if they were draft-ineligible, while Di(1) is the potential military status if
+they were draft eligible. Since both the treatment Di and the instrument Zi are manipulable, Imbens and
+Angrist deﬁned potential outcomes Yi(d, z) over potential values d of the treatment Di, and potential values
+z of the instrument Zi. These correspond to earnings under each combination of serving in the military and
+draft eligibility.24 They then considered four substantive assumptions:
+• Random assignment: (Yi(0, 0), Yi(1, 1), Yi(1, 0), Yi(0, 1), Di(0), Di(1)) ⊥⊥Zi;
+• Exclusion: Pr (Yi(d, 0) = Yi(d, 1)) = 1 for each d ∈{0, 1};
+• Monotonicity: Pr (Di(1) ≥Di(0)) = 1; and
+• Relevance: Pr (Di(1) > Di(0)) > 0.
+The ﬁrst assumption requires the instrument to be as-good-as-randomly assigned with respect to the potential
+outcomes and potential treatment choices. This assumption holds automatically for instruments such as the
+draft-eligibility instrument, or arguably the quarter-of-birth instrument in Angrist and Krueger (1991).
+23Footnote 2 in Imbens and Angrist (1994) attributes the adoption of potential outcome notation for Di to Gary Chamberlain,
+who—along with Donald Rubin—were faculty at Harvard when Imbens and Angrist started there as assistant professors.
+24Imbens and Angrist (1994) derived the LATE theorem with a multivalued Zi, but we focus on the case with binary Zi
+here for simplicity.
+21
+
+
+--- Page 22 ---
+Under random assignment, we can estimate the average eﬀect of the instrument on the treatment, E[Di(1)−
+Di(0)], following the logic of randomized experiments above. By the same logic, we can also estimate the
+intent-to-treat eﬀect, the average eﬀect on the outcome of switching the instrument from zero to one: the
+eﬀect of being draft eligible on earnings.
+The second assumption, or “exclusion restriction,” requires any eﬀects of the instrument Zi on the
+outcome Yi to arise from changes in the treatment Di: varying the instrument while holding the actual
+treatment ﬁxed has no eﬀect on the outcome. This condition allows us to deﬁne potential outcomes Yi(d)
+indexed by treatment status d alone, like in the case of a randomly assigned treatment.
+The ﬁrst two
+assumptions together capture the sense in which the instrument is “exogenous” in conventional IV analysis.
+The potential outcomes framework makes it clear that there are actually two separate assumptions underlying
+this condition. Even if the instrument is randomly assigned, it may fail the exclusion restriction if, for
+instance, draft-eligible individuals temporarily leave the country in order to avoid the draft and this dodge
+has an eﬀect on later life earnings.
+The third monotonicity assumption, most original to Imbens and Angrist (1994), requires the instrument
+to only aﬀect treatment status in one direction: without loss of generality, we assume either that switching
+from Zi = 0 to Zi = 1 increases Di (i.e. Di(1) > Di(0)) or has no eﬀect. In other words, being draft
+eligible weakly encourages everyone to serve in the military: no individuals would serve in the military if
+they were draft-ineligible, but refuse to serve if they were draft-eligible—a mild assumption in this case.
+To help interpret this assumption, Angrist, Imbens, and Rubin (1996) deﬁne four types of individuals,
+indexed by their potential treatments. First, there are always-takers: individuals who volunteer to serve,
+regardless of their eligibility status, Di(1) = Di(0) = 1.
+Second, there are never-takers who avoid the
+draft, Di(1) = Di(0) = 0. Third, there are compliers: individuals who serve only if they are draft-eligible,
+Di(1) = 1, Di(0) = 0.
+Finally, there could be deﬁers, who only serve if they are draft-ineligible.
+The
+monotonicity assumption can be seen to rule out the presence of such unusual behavior.
+The ﬁnal condition is a relevance assumption, which says that the fraction of compliers in the population is
+positive. In other words, there are people whose treatment status can be manipulated by changing the instru-
+ment. It is not diﬃcult to come up with an instrument that satisﬁes the ﬁrst three assumptions—ﬂipping
+a coin for each individual would do—but ﬁnding an instrument that jointly satisﬁes all four assumption
+requires some ingenuity. Statistically, the relevance assumption ensures that the correlation between the
+treatment and the instrument is nonzero, Cov(Zi, Di) ̸= 0. This ensures that we do not divide by zero in
+the deﬁnition of the IV estimand, βIV = Cov(Zi,Yi)
+Cov(Zi,Di).25
+Under these assumptions, Imbens and Angrist (1994) showed that the IV estimand βIV identiﬁes a local
+25Here βIV is the population analog of the Wald (1940) estimator for a bivariate regression with mismeasured regressors
+(see Angrist and Pischke (2009) for a discussion).
+22
+
+
+--- Page 23 ---
+average treatment eﬀect (LATE):
+βIV = E[Yi | Zi = 1] −E[Yi | Zi = 0]
+E[Di | Zi = 1] −E[Di | Zi = 0] = E[Yi(1) −Yi(0) | Di(1) > Di(0)],
+where the ﬁrst equality follows from the deﬁnition of βIV and the fact that Zi is binary.26
+The LATE
+E[Yi(1) −Yi(0) | Di(1) > Di(0)] is a “local” treatment eﬀect, since it corresponds to the average treatment
+eﬀect for compliers only; in the Angrist (1990) context, this is the average eﬀect of military service on adult
+earnings among individuals whose draft lottery numbers compelled them to serve.
+The Imbens and Angrist analysis delivers three key insights. First, it clariﬁes precisely how the source
+of variation in the treatment induced by the instrument aﬀects the interpretation of the estimand βIV .
+Second, it helps separate statistical assumptions (random assignment) from substantive economic restrictions
+(exclusion and monotonicity). Finally, it emphasized how causal interpretation of IV requires the treatment
+and the instrument need to be “manipulable.” We discuss each insight in turn.
+Internal and External Validity
+The LATE result showed precisely how the quasi-experimental varia-
+tion in an instrument aﬀects the IV estimand when no structural restrictions are placed on the treatment
+eﬀects. The estimand identiﬁes an average eﬀect for the compliers. If the IV leverages a “narrow” source
+of variation—as in Angrist (1990) and Angrist and Krueger (1991)—then the group of compliers may be a
+small subset of the overall population. In Angrist and Krueger (1991), the compliers are those who are on
+the margin of dropping out of school, but are induced to stay on for an additional year due to their exact
+quarter of birth. These individuals comprise at most 10% of the overall population. Intuitively, we cannot
+ever learn from data alone about the treatment eﬀect for never-takers (or always-takers), since we never see
+them treated (or untreated) in the data. While the identity of compliers is never directly given by data
+(since we never observe both Di(1) and Di(0) for the same individual i), Abadie (2003) showed how a wide
+range of functions of their predetermined characteristics and potential outcomes could be estimated.
+Relative to an experimental ideal, where we could learn the average treatment eﬀect for the overall
+population, the LATE result may appear underwhelming. But the group of compliers is often of policy
+interest. For example, the Angrist and Krueger (1991) compliers may help inform policies that aﬀect the
+minimum school-leaving age. It is true that the LATE is less relevant for predicting eﬀects of other policies,
+such as the eﬀect of abolishing college tuition. After all, people attending college—or those considering
+attendance—are not those who are aﬀected by minimum schooling laws that the variation in quarter of birth
+leverages. Here the value of the LATE result lies in knowing that for considering the eﬀects of such a policy,
+we need to combine the Angrist and Krueger (1991) estimates with an economic model that would allow us
+to extrapolate the treatment eﬀect estimates to this population, or else look for a more informative natural
+26For the second equality, note that by random assignment E[Di | Zi = 1] −E[Di | Zi = 0] = E[Di(1) −Di(0)] and
+E[Yi | Zi = 1] −E[Yi | Zi = 0] = E[Y (Di(1)) −Yi(Di(0))], following similar steps as in the above ATE identiﬁcation proof.
+By monotonicity, E[Di(1) −Di(0)] = Pr(Di(1) > Di(0)) and E[Y (Di(1)) −Yi(Di(0))] = E[(Yi(1) −Yi(0))(Di(1) −Di(0))] =
+E[Yi(1) −Yi(0) | Di(1) > Di(0)] × Pr(Di(1) > Di(0)), completing the proof.
+23
+
+
+--- Page 24 ---
+experiment.
+More generally, the LATE result sharpens the distinction between internal validity of the study (when
+can we interpret the IV estimate as the average treatment eﬀect for compliers?) and its external validity
+(what are the lessons that carry over to other settings?).27 A concern raised in Heckman and Urzúa (2010)
+and Deaton (2010) is that the increased use of natural experiments puts too much emphasis on internal
+over external validity and that too many studies stop at reporting the IV estimate, which may not answer
+a question of economic interest. As argued in Imbens (2010), the value of the LATE framework lies in
+separating the assumptions needed to identify the treatment eﬀect for compliers in the current population
+from any additional assumptions needed to generalize the internally valid estimate to other populations.
+This allows for more transparency when researchers complement the quasi-experimental variation in the
+data with a structural model. For example, it allowed Card and Hyslop (2005) to combine experimental
+variation in an earnings subsidy with a structural model to identify the impact of the subsidy on welfare
+entry and exit rates. The Imbens, Rubin, and Sacerdote (2001) study, also discussed in previous section,
+likewise combine experimental variation with a life-cycle model of labour supply. Recent work by Brinch,
+Mogstad, and Wiswall (2017), Mogstad, Santos, and Torgovitsky (2019), and Kline and Walters (2019)
+clariﬁes connections between the LATE framework and model-based identifying restrictions—and how the
+former can be used to relax the latter.
+Statistical vs.
+Substantive Restrictions
+The second insight of the LATE result lies in separating
+the substantive restrictions in an IV analysis that always need to be justiﬁed by economic reasoning—the
+exclusion restriction and the monotonicity assumption—from the random assignment assumption which can
+hold automatically if the variation in the instrument is as good as random. This clariﬁes what exactly
+randomization delivers: it allows us to identify the intent-to-treat eﬀect. But additional assumptions are
+needed to go from this eﬀect to the treatment eﬀect for compliers.
+The distinction between the exclusion restriction and the random assignment assumption allows for a
+more nuanced analysis of potential violations of instrument “exogeneity.” Statistical balance checks can be
+used to verify that the randomization “worked.” In contrast, while statistical tests of the exclusion restriction
+and monotonicity exist (see, e.g., Kitagawa, 2015), most credible applications of IV rely on institutional or
+theoretical arguments to justify them. Such arguments are often used to develop indirect application-speciﬁc
+diagnostic checks for these assumptions. This targeted probing of the design validity would not be possible
+if Imbens and Angrist did not make the assumptions clear in the ﬁrst place.
+Making the key assumptions clear also allows for more targeted sensitivity analysis. For example, Angrist,
+Imbens, and Rubin (1996) show that under violations of the monotonicity condition, βIV averages the
+treatment eﬀect for compliers with the treatment eﬀect for deﬁers, but the weight on the deﬁers is negative.
+On the one hand, this implies that βIV could be negative even if treatment eﬀects are positive for all
+27Campbell (1957) gives an early formalization of the diﬀerence between internal and external validity in the social sciences.
+24
+
+
+--- Page 25 ---
+individuals. On the other hand, the result also implies that the presence of deﬁers is of lesser concern if their
+proportion is small, since the weight placed on them is proportional to the size of the deﬁer group.28
+Another way of interpreting the Imbens and Angrist (1994) assumptions is to think of them as an
+exploration of model misspeciﬁcation. Early formalizations of instrumental variables methods focused on
+linear structural models for the outcome and supplemented it with an “exogeneity” assumption that the
+residual in this equation is uncorrelated with the instrument. The LATE result shows what happens when
+we drop the parametric restrictions.
+The Role of Manipulation
+The potential outcomes framework generally highlights the need for manip-
+ulation in causal analyses: to interpret the potential outcomes Yi(d, z) and potential treatments Di(z), one
+needs to be able to manipulate, at least in principle and at least for some subpopulation, the treatment and
+the instrument. If the treatment is an innate attribute of a unit that cannot be manipulated, this notation
+makes it clear that we cannot speak of causal eﬀects—in line with Rubin’s 1975 dictum (echoed in Holland,
+1986): “no causation without manipulation.”29 For instance, as discussed by Greiner and Rubin (2011), the
+notation makes it clear that while it is diﬃcult to talk about the causal eﬀect of sex or race, we can talk
+about causal eﬀects of being perceived as having a certain sex or race. Such perception eﬀects have been
+studied in evaluating the eﬀects of blind auditions (Goldin and Rouse, 2000), or in countless “audit studies”
+that manipulate otherwise identical résumés—by, say, changing the name on the résumé (see, e.g., Bertrand
+and Mullainathan (2004) for an early example).
+4.2
+Extensions and Connections
+While our exposition focused on the simplest setting with a binary treatment and a binary instrument, the
+framework extends readily to cases with multi-valued or multi-dimensional instruments (such as indicators
+for quarter of birth). Angrist and Imbens (1995) consider settings with multi-valued treatment (such as years
+of education), demonstrating that in this case IV recovers a generalization of LATE known as the Average
+Causal Response (ACR). Abadie, Angrist, and Imbens (2002) generalize the setup to cover estimation of
+quantile treatment eﬀects.
+In another important contribution, Angrist, Graddy, and Imbens (2000) adapted the LATE framework to
+cover estimation of demand or supply elasticities in a simultaneous equation system of supply and demand.
+This is a classic problem that originally motivated the use of instruments by Philip and Sewell Wright,
+Tinbergen, Haavelmo and other early pioneers of IV methods. This work was extended substantially by the
+Cowles Commission, whose worked showed how exclusion and covariance restrictions can be used to iden-
+28Similarly, certain violations of the exclusion restrictions may have little eﬀect on the interpretation of the results, as
+explored, for example, in Kolesár et al. (2015). See also Imbens and Rubin (1997) for a discussion of sensitivity analyses when
+the exclusion restriction and monotonicity assumptions are violated in a Bayesian framework.
+29As the recent literature on “shift-share” and related instruments show, diﬀerent views on which components of a treatment
+or instrument are manipulable can lead to vastly diﬀerent identifying assumptions, estimation concerns, and inferential pro-
+cedures (Goldsmith-Pinkham, Sorkin, and Swift, 2020; Borusyak, Hull, and Jaravel, 2022; Adão, Kolesár, and Morales, 2019;
+Borusyak and Hull, 2022).
+25
+
+
+--- Page 26 ---
+tify two-equation supply and demand models, as well as more complicated simultaneous equations systems
+(Christ, 1994). To explain the identiﬁcation challenge, suppose both the log of the demand curve Qd
+i (P) and
+the log of the supply curve Qs
+i(P) in market i are linear in log of the price P:
+ln Qd
+i (P) = αd + βd ln P + εd
+i ,
+(2)
+ln Qs
+i(P) = αs + βs ln P + εs
+i,
+(3)
+where βd < 0 and βs > 0 are demand and supply elasticities, respectively (we assume these are constant
+across markets i), and (εd
+i , εs
+i) are unobserved demand and supply shocks. Since equilibrium price equates
+supply and demand, both the observed equilibrium price Pi and the equilibrium quantity Qi depend on
+the supply and demand shocks.30 As a result, a simple regression of observed log quantity on observed log
+price will recover neither the demand nor the supply elasticity, but a hard-to-interpret mixture of the two.
+The IV solution to this simultaneity challenge, as ﬁrst considered by the Wrights, Tinbergen, and others,
+is to measure some component of the supply shock that does not aﬀect demand. Due to this “exclusion
+restriction,” one can show that using such a supply shock component as an instrument for log price in
+a regression of log quantity on log price regression recovers the demand elasticity.31 If we instead use a
+component of the demand shock that doesn’t aﬀect supply, we recover the supply elasticity.
+But what if we relax the assumption that elasticities are constant across markets, and that the un-
+observed shocks are additive? Angrist, Graddy, and Imbens (2000) consider a non-parametric setup that
+doesn’t impose any functional form restrictions on the supply and demand curves Qd
+i (P) and Qs
+i(P). In this
+unrestricted setup, they show that an IV regression using an instrument that shifts the supply curve, but
+does not aﬀect demand, identiﬁes a weighted average of market-speciﬁc demand elasticities. If the demand
+elasticity varies with price, the estimand also averages over diﬀerent prices in the same market. Like the
+LATE result in the context of estimating causal eﬀects of a binary treatment, this result clariﬁes the role of
+internal and external validity of the IV estimates, and the role of functional form restrictions imposed in the
+classic linear model (2)–(3).
+The LATE framework has also been central to understanding regression discontinuity (RD) designs, a
+quasi-experimental design where treatment eligibility is determined by whether a particular variable, called a
+running variable, crosses a threshold. For example, to estimate the eﬀects of class size on student test scores,
+Angrist and Lavy (1999) exploit the fact that class sizes in Israel follow the rule of Maimonides, a twelfth
+century rabbinic scholar: a school should not have class sizes bigger than 40. Here the running variable is
+the class size, and 40 represents the threshold. If a student cohort in a particular school comprises fewer
+than 40 students, they will all be in one large classroom. But if there are 41 students, they become eligible
+for a small classroom treatment: the school is allowed to open two classes with an average size of 20.5. If
+30Speciﬁcally, setting supply equal to demand and solving for price yields ln Qi = (βdαs −βsαd)/(βd −βs) +
+βs
+βs−βd εd
+i −
+βd
+βs−βd εs
+i and ln Pi = (αs −αd)/(βd −βs) +
+1
+βs−βd εd
+i −
+1
+βs−βd εs
+i .
+31The use of the “exclusion” term in this context can be traced back at least as far as Koopmans (1949).
+26
+
+
+--- Page 27 ---
+schools follow the Maimonides’ rule exactly, we can estimate the eﬀect of the small classroom treatment on
+test scores by comparing schools with enrolment just below and just above 40 students. More precisely, such
+a sharp RD design estimates the average causal eﬀect for schools with enrolment at the threshold—those
+who are at the margin of becoming eligible for the small classroom treatment.
+But what if compliance with the Maimonides’ rule is imperfect? That is, what if some schools opt for
+small classrooms even if their cohort size falls below the threshold, and others don’t open two classrooms
+even if their cohort size falls above it? In such fuzzy RD design, the treatment probability would still increase
+as we cross the threshold, but it doesn’t jump all the way from zero to one as in a sharp design. Hahn,
+Todd, and van der Klaauw (2001) adapted the LATE framework to show that, if in this case we use the class
+size running variable as an instrument for the small classroom treatment (again restricting the analysis to
+schools with enrolment close to the eligibility threshold), we estimate a LATE: the average treatment eﬀect
+for compliers—schools at the threshold of eligibility who comply with the treatment assignment rule. The
+conditions for this result very much mirror the LATE assumptions in Section 4.1. This inﬂuential result shows
+that RD designs and IV designs are close cousins, and helped bring about an explosion of RD studies in recent
+years. Methodological work by the laureates also played an important role in boosting the popularity of
+RD. Their contributions range from developing a procedure for selecting the estimation window, formalizing
+what “close to the eligibility threshold” means in practice (Imbens and Kalyanaraman, 2012) to developing
+a framework for extrapolating the treatment eﬀects to those away from the cutoﬀ(Angrist and Rokkanen,
+2015), and to adapting the LATE framework to a closely related regression kink design, where a continuous
+treatment variable is a piecewise linear function of a running variable (Card et al., 2015), again with possibly
+imperfect compliance.
+The basic approach of Imbens and Angrist—use the potential outcome framework, keep treatment eﬀect
+heterogeneity unrestricted, and separate the role of any random variation provided by the natural experiment
+from other substantive restrictions that are needed—has been fruitfully applied by other researchers in many
+other contexts besides RD. Angrist (1998) used the framework to interpret certain ﬁxed-eﬀect regressions.
+The modern literature on diﬀerences-in-diﬀerences methods is still exploring the subtle conceptual issues
+that this approach highlights (see, e.g. de Chaisemartin and D’Haultfœuille, 2020; Sun and Abraham, 2021;
+Goldsmith-Pinkham, Hull, and Kolesár, 2022, among many others).
+Finally, in a series of inﬂuential papers, Heckman and Vytlacil (2005, 2007a,b) develop a broader frame-
+work of marginal treatment eﬀects (MTEs): the eﬀects for individuals at particular values of an unobserved
+preference for participation in treatment. Building on work by Björklund and Moﬃtt (1987), Heckman and
+Vytlacil (2005) show how the LATE result ﬁts within this framework. Vytlacil (2002) shows that the MTE
+framework is formally equivalent to the LATE model of Imbens and Angrist (1994), with a binary or mul-
+tivalued instrument. In particular, the key monotonicity assumption is equivalent to additive separability
+between instruments and unobservables in a latent index model of treatment choice. In the latent index
+setup, LATE can be seen as an average of MTEs over a speciﬁc range of unobserved preferences, highlight-
+27
+
+
+--- Page 28 ---
+ing that eﬀects for compliers for a particular instrument may diﬀer from eﬀects for individuals aﬀected by
+alternative hypothetical policy changes.
+5
+Conclusion
+The 2021 Nobel laureates helped shape modern applied research in labour economics and beyond. A focus
+on clear research designs exploiting natural experiments led David Card to several empirical conclusions—on
+immigration eﬀects, ﬁrm monopsony power, and educational quality—which challenged conventional wisdom
+and fueled large bodies of follow-up literatures. Joshua Angrist and Guido Imbens showed that instrumental
+variables estimators retain internal validity even when restrictive models for the outcome are relaxed. Their
+LATE theorem, rooted in a ﬂexible potential outcomes framework, is underpinned by clear and interpretable
+assumptions and has similarly led to a large body of subsequent applied econometric research.
+More broadly, this methodological and empirical focus on clear research designs, and on understanding
+what core assumptions underlie its internal validity helps portability. Follow-up studies can be conducted
+in other contexts, probing external validity and replicability. The idea that the research design needs to be
+tied to the institutional features or other forces driving treatment assignment helps to limit speciﬁcation
+searches. The laureates’ work also showed how, for more complicated questions, simple research designs can
+be complemented by careful modeling.
+Our brief review focuses on these core contributions of the laureates and necessarily omits many other
+important contributions. As examples, we have not discussed Card’s empirical studies of ﬁrm wage-setting
+(e.g. Card, Heining, and Kline, 2013; Card, Cardoso, and Kline, 2016; Card et al., 2018); Angrist’s method-
+ological work on leveraging the randomness in centralized assignment mechanisms (e.g. Abdulkadiroğlu et al.,
+2017, 2022; Angrist et al., 2021); or Imbens’ econometric contributions to the estimation of treatment eﬀects
+under conditional random assignment (e.g. Imbens, 2000; Hirano, Imbens, and Ridder, 2003; Abadie and
+Imbens, 2006), or to generalizing the diﬀerence-in-diﬀerences framework (e.g. Athey and Imbens, 2006). The
+laureates also made many contributions that address several technical implementation issues that come up in
+design-based studies, such as how to deal with many weak instruments (Angrist and Krueger, 1995; Angrist,
+Imbens, and Krueger, 1999). Not least among these other contributions is the laureates’ generosity and
+dedication when helping their colleagues or advising their students, a trait that we have had the privilege to
+beneﬁt from ﬁrst-hand.
+28
+
+
+--- Page 29 ---
+References
+Abadie, Alberto. 2003. “Semiparametric Instrumental Variable Estimation of Treatment Response Models.”
+Journal of Econometrics 113 (2):231–263.
+Abadie, Alberto, Joshua D. Angrist, and Guido W. Imbens. 2002. “Instrumental Variables Estimates of the
+Eﬀect of Subsidized Training on the Quantiles of Trainee Earnings.” Econometrica 70 (1):91–117.
+Abadie, Alberto, Alexis Diamond, and Jens Hainmueller. 2010. “Synthetic Control Methods for Comparative
+Case Studies: Estimating the Eﬀect of California’s Tobacco Control Program.” Journal of the American
+Statistical Association 105 (490):493–505.
+Abadie, Alberto and Javier Gardeazabal. 2003. “The Economic Costs of Conﬂict: A Case Study of the
+Basque Country.” American Economic Review 93 (1):113–132.
+Abadie, Alberto and Guido W. Imbens. 2006. “Large Sample Properties of Matching Estimators for Average
+Treatment Eﬀects.” Econometrica 74 (1):235–267.
+Abdulkadiroğlu, Atila, Joshua D. Angrist, Susan M. Dynarski, Thomas J. Kane, and Parag A. Pathak.
+2011. “Accountability and Flexibility in Public Schools: Evidence from Boston’s Charters and Pilots.”
+The Quarterly Journal of Economics 126 (2):699–748.
+Abdulkadiroğlu, Atila, Joshua D. Angrist, Peter D. Hull, and Parag A. Pathak. 2016. “Charters without
+Lotteries: Testing Takeovers in New Orleans and Boston.” American Economic Review 106 (7):1878–1920.
+Abdulkadiroğlu, Atila, Joshua D. Angrist, Yusuke Narita, and Parag A. Pathak. 2017. “Research Design
+Meets Market Design: Using Centralized Assignment for Impact Evaluation.” Econometrica 85 (5):1373–
+1432.
+———. 2022.
+“Breaking Ties: Regression Discontinuity Design Meets Market Design.”
+Econometrica
+90 (1):117–151.
+Abowd, John M. and David Card. 1989. “On the Covariance Structure of Earnings and Hours Changes.”
+Econometica 57 (2):411–445.
+Abowd, John M., Francis Kramarz, and David N. Margolis. 1999. “High Wage Workers and High Wage
+Firms.” Econometrica 67 (2):251–333.
+Adão, Rodrigo, Michal Kolesár, and Eduardo Morales. 2019. “Shift-Share Designs: Theory and Inference.”
+The Quarterly Journal of Economics 134 (4):1949–2010.
+Altonji, Joseph G. and David Card. 1991.
+“The Eﬀects of Immigration on the Labor Market Out-
+comes of Less-skilled Natives.”
+In Immigration, Trade, and the Labor Market, edited by John M.
+Abowd and Richard B. Freeman. Chicago,
+IL: University of Chicago Press,
+201–234.
+URL
+http://www.nber.org/chapters/c11773.
+Angrist, Joshua, Peter Hull, Parag A. Pathak, and Christopher R. Walters. 2017. “Interpreting tests of
+school VAM validity.” Quarterly Journal of Economics 132 (2):871–919.
+Angrist, Joshua D. 1990. “Lifetime Earnings and the Vietnam Era Draft Lottery: Evidence from Social
+Security Administrative Records.” The American Economic Review 80 (3):313–336.
+———. 1998. “Estimating the Labor Market Impact of Voluntary Military Service using Social Security
+Data on Military Applicants.” Econometrica 66 (2):249–288.
+Angrist, Joshua D., Eric Bettinger, Erik Bloom, Elizabeth King, and Michael Kremer. 2002. “Vouchers for
+Private Schooling in Columbia: Evidence from a Randomized Natural Experiment.” American Economic
+Review 92 (5):1535–1558.
+29
+
+
+--- Page 30 ---
+Angrist, Joshua D, Susan M. Dynarski, Thomas J. Kane, Parag A. Pathak, and Christopher R. Walters.
+2010. “Inputs and Impacts in Charter Schools: KIPP Lynn.” American Economic Review: Papers &
+Proceedings 100 (2):239–243.
+Angrist, Joshua D., Kathryn Graddy, and Guido W. Imbens. 2000. “The Interpretation of Instrumental
+Variables Estimators in Simultaneous Equations Models with an Application to the Demand for Fish.”
+Review of Economic Studies 67 (3):499–527.
+Angrist, Joshua D., Peter Hull, Parag A. Pathak, and Christopher R. Walters. 2021. “Credible School Value-
+Added with Undersubscribed School Lotteries.” The Review of Economics and Statistics forthcoming.
+Angrist, Joshua D. and Guido W. Imbens. 1995. “Two-Stage Least Squares Estimation of Average Causal
+Eﬀects in Models With Variable Treatment Intensity.” Journal of the American Statistical Association
+90 (430):431–442.
+Angrist, Joshua D., Guido W. Imbens, and Alan B. Krueger. 1999.
+“Jackknife Instrumental Variables
+Estimation.” Journal of Applied Econometrics 14 (1):57–67.
+Angrist, Joshua D., Guido W. Imbens, and Donald B. Rubin. 1996. “Identiﬁcation of Causal Eﬀects using
+Instrumental Variables.” Journal of the American Statistical Association 91 (434):444–455.
+Angrist, Joshua D. and Alan B. Krueger. 1991. “Does Compulsory School Attendance Aﬀect Schooling and
+Earnings?” The Quarterly Journal of Economics 106 (4):979–1014.
+———. 1995.
+“Split-Sample Instrumental Variables Estimates of the Return to Schooling.”
+Journal of
+Business & Economic Statistics 13 (2):225–235.
+Angrist, Joshua D. and Victor Lavy. 1999. “Using Maimonides’ Rule to Estimate the Eﬀect of Class Size on
+Scholastic Achievement.” The Quarterly Journal of Economics 114 (2):533–575.
+Angrist, Joshua D. and Jorn-Steﬀen Pischke. 2009. Mostly Harmless Econometrics: An Empiricist’s Com-
+panion. Princeton University Press.
+Angrist, Joshua D. and Miikka Rokkanen. 2015. “Wanna Get Away? Regression Discontinuity Estima-
+tion of Exam School Eﬀects Away From the Cutoﬀ.”
+Journal of the American Statistical Association
+110 (512):1331–1344.
+Ashenfelter, Orley C. 1975.
+“The Eﬀect of Manpower Training on Earnings: Preliminary Results.”
+In
+Proceedings of the Twenty-Seventh Annual Winter Meeting, edited by James L. Stern and Barbara D.
+Dennis. Madison, WI: Industrial Relations Research Association, 252–260.
+———. 1978. “Estimating the Eﬀect of Training Programs on Earnings.” The Review of Economics and
+Statistics 60 (1):47–57.
+———. 1987. “The Case for Evaluating Training Programs with Randomized Trials.” Economics of Education
+Review 6 (4):333–338.
+Ashenfelter, Orley C. and David Card. 1985. “Using the Longitudinal Structure of Earnings to Estimate the
+Eﬀect of Training Programs.” Review of Economics and Statistics 67 (4):648–660.
+Ashenfelter, Orley C. and Alan B. Krueger. 1994. “Estimates of the Economic Return to Schooling from a
+New Sample of Twins.” American Economic Review 84 (5):1157–1173.
+Athey, Susan and Guido W. Imbens. 2006. “Identiﬁcation and Inference in Nonlinear Diﬀerence-in-Diﬀerences
+Models.” Econometrica 74 (2):431–497.
+Azar, José, Ioana Marinescu, and Marshall Steinbaum. 2020. “Labor Market Concentration.” Journal of
+Human Resources forthcoming.
+30
+
+
+--- Page 31 ---
+Baicker, Katherine, Sarah L. Taubman, Heidi L. Allen, Mira Bernstein, Jonathan H. Gruber, Joseph P.
+Newhouse, Eric C. Schneider, Bill J. Wright, Alan M. Zaslavsky, Amy N. Finkelstein, and the Oregon
+Health Study Group. 2013. “The Oregon Health Insurance Experiment: Eﬀects of Medicaid on Clinical
+Outcomes.” New England Journal of Medicine 368 (18):1713–1722.
+Balke, Alexander and Judea Pearl. 1997.
+“Bounds on Treatment Eﬀects from Studies with Incomplete
+Compliance.” Journal of the American Statistical Association 92 (439):1171–1176.
+Banerjee, Abhijit, Esther Duﬂo, Rachel Glennerster, and Cynthia Kinnan. 2015. “The Miracle of Micro-
+ﬁnance? Evidence from a Randomized Evaluation.” American Economic Journal: Applied Economics
+7 (1):22–53.
+Bartik, Timothy J. 1991. Who Beneﬁts from State and Local Economic Development Policies? Kalamazoo,
+MI: W. E. Upjohn Institute for Employment Research.
+Becker, Gary. 1964. Human Capital. New York, NY: Columbia University Press.
+Berger, David, Kyle Herkenhoﬀ, and Simon Mongey. 2022. “Labor Market Power.” American Economic
+Review forthcoming.
+Bertrand, Marianne and Sendhil Mullainathan. 2004. “Are Emily and Greg More Employable Than Lakisha
+and Jamal? A Field Experiment on Labor Market Discrimination.”
+The American Economic Review
+94 (4):991–1013.
+Björklund, Anders and Robert Moﬃtt. 1987. “The Estimation of Wage Gains and Welfare Gains in Self-
+Selection Models.” The Review of Economics and Statistics 69 (1):42–49.
+Black, Fisher. 1982. “The Trouble with Econometric Models.” Financial Analysts Journal 38 (2):29–37.
+Blanchard, Olivier J. and Lawrence F. Katz. 1992. “Regional Evolutions.” Brookings Papers on Economic
+Activity 1992 (1):1–75.
+Blundell, Richard. 2001. “James Heckman’s Contributions to Economics and Econometrics.” Scandinavian
+Journal of Economics 103 (2):191–204.
+Borjas, George J. 1987. “Self-Selection and the Earnings of Immigrants.” The American Economic Review
+77 (4):531–553.
+———. 2017. “The Wage Impact of the Marielitos: A Reappraisal.” Industrial and Labor Relations Review
+70 (5):1077–1110.
+Borusyak, Kirill and Peter Hull. 2022. “Non-Random Exposure to Exogenous Shocks.” NBER Working
+Paper no. 27845.
+Borusyak, Kirill, Peter Hull, and Xavier Jaravel. 2022. “Quasi-Experimental Shift-Share Research Designs.”
+The Review of Economic Studies 89 (1):181–213.
+Brinch, Christian N., Magne Mogstad, and Matthew Wiswall. 2017. “Beyond LATE with a Discrete Instru-
+ment.” Journal of Political Economy 125 (4):985–1039.
+Brown, Charles, Curtis Gilroy, and Andrew Kohen. 1982. “The Eﬀect of The Minimum Wage on Employment
+and Unemployment.” Journal of Economic Literature 20 (2):487–528.
+Buchanan, James. 1996. “Commentary on the Minimum Wage.” The Wall Street Journal April 25th.
+Buckles, Kasey S. and Daniel M. Hungerman. 2013. “Season of Birth and Later Outcomes: Old Questions,
+New Answers.” Review of Economics and Statistics 95 (3):711–724.
+Campbell, Donald T. 1957. “Factors Relevant to the Validity of Experiments in Social Settings.” Psychological
+Bulletin 54 (4):297–312.
+31
+
+
+--- Page 32 ---
+———. 1969. “Reforms as Experiments.” American Psychologist 24 (4):409–429.
+Card, David. 1990. “The Impact of the Mariel Boatlift on the Miami Labor Market.” Industrial and Labor
+Relations Review 43 (2):245–257.
+———. 1992a. “Do Minimum Wages Reduce Employment? A Case Study of California, 1987–89.” Industrial
+and Labor Relations Review 46 (1):38–54.
+———. 1992b. “Using Regional Variation in Wages to Measure the Eﬀects of the Federal Minimum Wage.”
+Industrial Labor Relations Review 46 (1):22–37.
+———. 1995. “Using Geographic Variation in College Proximity to Estimate the Return to Schooling.”
+In Aspects of Labour Market Behaviour: Essays in Honour of John Vanderkamp, edited by Louis N.
+Christoﬁdes, E. Kenneth Grant, and Robert Swidinsky. Toronto: University of Toronto Press, 201–222.
+———. 1999. “The Causal Eﬀect of Education on Earnings.” In Handbook of Labor Economics, vol. 3A,
+edited by Orley C. Ashenfelter and David Card, chap. 30. Amsterdam: Elsevier, 1801–1863.
+———. 2001. “Immigrant Inﬂows, Native Outﬂows, and the Local Market Impacts of Higher Immigration.”
+Journal of Labor Economics 19 (1):22–64.
+Card, David, Ana Rute Cardoso, Jörg Heining, and Patrick Kline. 2018. “Firms and Labor Market Inequality:
+Evidence and Some Theory.” Journal of Labor Economics 36 (S1):S13–S69.
+Card, David, Ana Rute Cardoso, and Patrick Kline. 2016. “Bargaining, Sorting, and the Gender Wage Gap:
+Quantifying the Impact of Firms on the Relative Pay of Women.” The Quarterly Journal of Economics
+131 (2):633–686.
+Card, David, Jörg Heining, and Patrick Kline. 2013. “Workplace Heterogeneity and the Rise of West German
+Wage Inequality.” The Quarterly Journal of Economics 128 (3):967–1015.
+Card, David and Dean R. Hyslop. 2005. “Estimating the Eﬀects of a Time-Limited Earnings Subsidy for
+Welfare-Leavers.” Econometrica 73 (6):1723–1770.
+Card, David and Alan B. Krueger. 1992a. “Does School Quality Matter? Returns to Education and the
+Characteristics of Public Schools in the United States.” Journal of Political Economy 100 (1):1–40.
+———. 1992b. “School Quality and Black-White Relative Earnings: A Direct Assessment.” The Quarterly
+Journal of Economics 107 (1):151–200.
+———. 1994. “Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey
+and Pennsylvania.” American Economic Review 84 (4):772–793.
+———. 1995a.
+Myth and Measurement: The New Economics of the Minimum Wage.
+Princeton, NJ:
+Princeton University Press.
+———. 1995b. “Time-Series Minimum-Wage Studies: A Meta-analysis.” The American Economic Review
+85 (2):238–243.
+———.
+2016.
+“Equitable
+Growth
+in
+Conversation:
+An
+interview
+with
+David
+Card
+and
+Alan
+Krueger.”
+As
+interviewed
+by
+Ben
+Zipperer,
+https://davidcard.berkeley.edu/interviews/interview%20with%20Card%20and%20Krueger.pdf.
+Card, David, David S. Lee, Zhuan Pei, and Andrea Weber. 2015. “Inference on Causal Eﬀects in a Generalized
+Regression Kink Design.” Econometrica 83 (6):2453–2483.
+Castillo-Freeman, Alida J. and Richard B Freeman. 1992. “When the Minimum Wage Really Bites: The
+Eﬀect of the U. S.-Level Minimum on Puerto Rico.”
+In Immigration and the Work Force: Economic
+Consequences for the United States and Source Areas, edited by George J. Borjas and Richard B. Freeman.
+Chicago, IL: University of Chicago Press, 177–211.
+32
+
+
+--- Page 33 ---
+Cengiz, Doruk, Arindrajit Dube, Attila Lindner, and Ben Zipperer. 2019. “The Eﬀect of Minimum Wages
+on Low-Wage Jobs.” The Quarterly Journal of Economics 134 (3):1405–1454.
+Cesarini, David, Erik Lindqvist, Matthew J. Notowidigdo, and Robert Östling. 2017. “The Eﬀect of Wealth
+on Individual and Household Labor Supply: Evidence from Swedish Lotteries.” American Economic Review
+107 (12):3917–46.
+Chamberlain, Gary. 1986. “Asymptotic Eﬃciency in Semi-Parametric Models with Censoring.” Journal of
+Econometrics 32 (2):189–2018.
+Chetty, Raj and Nathaniel Hendren. 2018. “The Impacts of Neighborhoods on Intergenerational Mobility I:
+Childhood Exposure Eﬀects.” The Quarterly Journal of Economics 133 (3):1107–1162.
+Chetty, Raj, Nathaniel Hendren, and Lawrence F. Katz. 2016. “The Eﬀects of Exposure to Better Neigh-
+borhoods on Children: New Evidence from the Moving to Opportunity Experiment.” American Economic
+Review 106 (4):855–902.
+Christ, Carl F. 1994. “The Cowles Commission’s Contributions to Econometrics at Chicago, 1939-1955.”
+Journal of Economic Literature 32:30–59.
+Clark, Damon and Heather Royer. 2013. “The Eﬀect of Education on Adult Mortality and Health: Evidence
+from Britain.” American Economic Review 103 (6):2087–2120.
+Coleman, James Samuel. 1966. Equality of Educational Opportunity. Washington, DC: Government Printing
+Oﬃce.
+Currie, Janet, Henrik Kleven, and Esmée Zwiers. 2020. “Technology and Big Data are Changing Economics:
+Mining Text to Track Methods.” AEA Papers and Proceedings 110:42–48.
+de Chaisemartin, Clément and Xavier D’Haultfœuille. 2020. “Two-Way Fixed Eﬀects Estimators with Het-
+erogeneous Treatment Eﬀects.” American Economic Review 110 (9):2964–2996.
+Deaton, Angus. 2010. “Instruments, Randomization, and Learning about Development.” Journal of Economic
+Literature 48 (2):424–455.
+DellaVigna, S., J. A. List, and U. Malmendier. 2012. “Testing for Altruism and Social Pressure in Charitable
+Giving.” The Quarterly Journal of Economics 127 (1):1–56.
+DiNardo, John. 2008. “Natural Experiments and Quasi-Natural Experiments.” In The New Palgrave Dic-
+tionary of Economics, edited by Palgrave Macmillan. London: Palgrave Macmillan, 1–12.
+Dube, Arindrajit, T. William Lester, and Michael Reich. 2010. “Minimum Wage Eﬀects Across State Borders:
+Estimates Using Contiguous Counties.” Review of Economics and Statistics 92 (4):945–964.
+Duﬂo, Esther, Michael Kremer, and Jonathan Robinson. 2008. “How High Are Rates of Return to Fertil-
+izer? Evidence from Field Experiments in Kenya.” American Economic Review: Papers & Proceedings
+98 (2):482–488.
+———. 2011. “Nudging Farmers to Use Fertilizer: Theory and Experimental Evidence from Kenya.” Amer-
+ican Economic Review 101 (6):2350–2390.
+Dustmann, Christian and Albrecht Glitz. 2016. “How Do Industries and Firms Respond to Changes in Local
+Labor Supply?” Journal of Labor Economics 33 (3):711–750.
+Dustmann, Christian, Attila Lindner, Uta Schönberg, Matthias Umkehrer, and Philipp vom Berge. 2022.
+“Reallocation Eﬀects of the Minimum Wage.” The Quarterly Journal of Economics 137 (1):267–328.
+Dustmann, Christian, Uta Schönberg, and Jan Stuhler. 2016. “The Impact of Immigration: Why Do Studies
+Reach Such Diﬀerent Results?” Journal of Economic Perspectives 30 (4):31–56.
+33
+
+
+--- Page 34 ---
+Finkelstein, Amy N., Matthew Gentzkow, and Heidi Williams. 2016. “Sources of Geographic Variation in
+Health Care: Evidence from Patient Migration.” Quarterly Journal of Economics 131 (4):1681–1726.
+Finkelstein, Amy N., Sarah Taubman, Bill Wright, Mira Bernstein, Jonathan Gruber, Joseph P. Newhouse,
+Heidi Allen, Katherine Baicker, and the Oregon Health Study Group. 2012. “The Oregon Health Insurance
+Experiment: Evidence from the First Year.” The Quarterly Journal of Economics 127 (3):1057–1106.
+Freeman, Richard B. 1975. “Supply and Salary Adjustments to the Changing Science Manpower Market:
+Physics, 1948-1973.” American Economic Review 65 (1):27–39.
+———. 1980. “An Empirical Analysis of the Fixed Coeﬃcient “Manpower Requirements” Model, 1960–1970.”
+The Journal of Human Resources 15 (2):176–199.
+———. 1989. Labor Markets in Action: Essays in Empirical Economics. Sawston, Cambridge: Woodhead
+Faulkner.
+Gibbons, Robert and Lawrence F. Katz. 1992. “Does Unmeasured Ability Explain Inter-Industry Wage
+Diﬀerentials?” The Review of Economic Studies 59 (3):515–535.
+Giuliano, Laura. 2013.
+“Minimum Wage Eﬀects on Employment, Substitution, and the Teenage Labor
+Supply: Evidence from Personnel Data.” Journal of Labor Economics 31 (1):155–194.
+Glewwe, Paul, Nauman Ilias, and Michael Kremer. 2010. “Teacher Incentives.” American Economic Journal:
+Applied Economics 2 (3):205–227.
+Goldin, Claudia and Cecilia Rouse. 2000. “Orchestrating Impartiality: The Impact of “Blind” Auditions on
+Female Musicians.” American Economic Review 90 (4):715–741.
+Goldsmith-Pinkham, Paul, Peter Hull, and Michal Kolesár. 2022. “Contamination Bias in Linear Regres-
+sions.” Working Paper, Yale University.
+Goldsmith-Pinkham, Paul, Isaac Sorkin, and Henry Swift. 2020. “Bartik Instruments: What, When, Why,
+and How.” American Economic Review 110 (8):2586–2624.
+Goldstein, Jon H. 1972. “The Eﬀectiveness of Manpower Training Programs: A Review of Research on the
+Impact on the Poor.” Tech. Rep. 3, Joint Economic Committee, Washington, DC.
+Greiner, D. James and Donald B. Rubin. 2011. “Causal Eﬀects of Perceived Immutable Characteristics.”
+Review of Economics and Statistics 93 (3):775–785.
+Grossman, Jean Baldwin. 1982. “The Substitutability of Natives and Immigrants in Production.” The Review
+of Economics and Statistics 64 (4):596–603.
+Gruber, Jonathan. 1994. “The Incidence of Mandated Maternity Beneﬁts.” American Economic Review
+84 (3):622–641.
+Haavelmo, Trygve. 1943. “The Statistical Implications of a System of Simultaneous Equations.” Econometrica
+11 (1):1–12.
+Hahn, Jinyong, Petra Elisabeth Todd, and Wilbert van der Klaauw. 2001. “Identiﬁcation and Estimation of
+Treatment Eﬀects with a Regression-Discontinuity Design.” Econometrica 69 (1):201–209.
+Hanushek, Eric A. 1986. “The Economics of Schooling: Production and Eﬃciency in Public Schools.” Journal
+of Economic Literature 49 (3):1141–1177.
+Harasztosi, Peter and Attila Lindner. 2019. “Who Pays for the Minimum Wage?”
+American Economic
+Review 109 (8):2693–2727.
+Hearst, Norman, Thomas B. Newman, and Stephen B. Hulley. 1986. “Delayed Eﬀects of the Military Draft
+on Mortality.” New England Journal of Medicine 314 (10):620–624.
+34
+
+
+--- Page 35 ---
+Heckman, James J. 1974. “Shadow Prices, Market Wages, and Labor Supply.” Econometrica 42 (4):679–694.
+———. 1976. “The Common Structure of Statistical Models of Truncation, Sample Selection and Limited
+Dependent Variables and a Simple Estimator for Such Models.” Annals of Economic and Social Measure-
+ment 4 (5):475–492. URL http://www.nber.org/chapters/c10491.
+———. 1979. “Sample Selection Bias as a Speciﬁcation Error.” Econometrica 47 (1):153–161.
+———. 1990. “Varieties of Selection Bias.” American Economic Review: Papers & Proceedings 80:313–318.
+Heckman, James J. and Rodrigo Pinto. 2014.
+“Causal Analysis After Haavelmo.”
+Econometric Theory
+31 (1):115–151.
+Heckman, James J. and Jr. Robb, Richard. 1985.
+“Alternative Methods for Evaluating the Impact of
+Interventions.” In Longitudinal Analysis of Labor Market Data, edited by James J. Heckman and Burton H.
+Singer, no. 1-2 in Econometric Society Monographs. Cambridge University Press, 145–245.
+Heckman, James J. and Sergio Urzúa. 2010. “Comparing IV with Structural Models: What Simple IV Can
+and Cannot Identify.” Journal of Econometrics 156 (1):27–37.
+Heckman, James J. and Edward J. Vytlacil. 2005. “Structural Equations, Treatment Eﬀects, and Econometric
+Policy Evaluation.” Econometrica 73 (3):669–738.
+———. 2007a. “Econometric Evaluation of Social Programs, Part I: Causal Models, Structural Models, and
+Econometric Policy Evaluation.” In Handbook of Econometrics, vol. 6B, edited by James J. Heckman and
+Edward E. Leamer, chap. 70. Amsterdam: Elsevier, 4779–4874.
+———. 2007b. “Econometric Evaluation of Social Programs, Part II: Using the Marginal Treatment Eﬀect
+to Organize Alternative Economic Estimators to Evaluate Social Programs, and to Forecast Their Eﬀects
+in New Environments.” In Handbook of Econometrics, vol. 6B, edited by James J. Heckman and Edward E.
+Leamer, chap. 71. Amsterdam: Elsevier, 4875–5143.
+Hendry, David F. 1980. “Econometrics—Alchemy or Science?” Economica 47 (188):387–406.
+Hendry, David F. and Mary S. Morgan. 1992.
+The Foundations of Econometric Analysis.
+Cambridge
+University Press.
+Hirano, Keisuke, Guido W. Imbens, and Geert Ridder. 2003. “Eﬃcient Estimation of Average Treatment
+Eﬀects Using the Estimated Propensity Score.” Econometrica 71 (4):1161–1189.
+Holland, Paul W. 1986. “Statistics and Causal Inference.” Journal of the American Statistical Association
+81 (396):945–960.
+Imbens, Guido W. 1997. “Book Review: The Foundations of Econometric Analysis, David F. Hendry and
+Mary S. Morgan.” Journal of Applied Econometrics 12 (1):91–94.
+———. 2000. “The Role of the Propensity Score in Estimating Dose-Response Functions.”
+Biometrika
+87 (3):706–710.
+———. 2010. “Better LATE Than Nothing: Some Comments on Deaton (2009) and Heckman and Urzúa
+(2009).” Journal of Economic Literature 48 (2):399–423.
+———. 2014. “Instrumental Variables: An Econometrician’s Perspective.” Statistical Science 29 (3):323–358.
+———. 2020. “Potential Outcome and Direct Acyclic Graph Approaches to Causality: Relevance for Em-
+pirical Practice in Economics.” Journal of Economic Literature 58 (4):1129–1179.
+———. 2021. “Prize Lecture.” https://www.nobelprize.org/prizes/economic-sciences/2021/imbens/lecture/.
+Accessed 2020-01-30.
+Imbens, Guido W. and Joshua D. Angrist. 1994. “Identiﬁcation and Estimation of Local Average Treatment
+Eﬀects.” Econometrica 62 (2):467–475.
+35
+
+
+--- Page 36 ---
+Imbens, Guido W. and Karthik Kalyanaraman. 2012. “Optimal Bandwidth Choice for the Regression Dis-
+continuity Estimator.” The Review of Economic Studies 79 (3):933–959.
+Imbens, Guido W. and Donald B. Rubin. 1997.
+“Bayesian Inference for Causal Eﬀects in Randomized
+Experiments with Noncompliance.” Annals of Statistics 25 (1):305–327.
+Imbens, Guido W., Donald B. Rubin, and Bruce I. Sacerdote. 2001. “Estimating the Eﬀect of Unearned
+Income on Labor Earnings, Savings, and Consumption: Evidence from a Survey of Lottery Players.” The
+American Economic Review 91 (4):778–794.
+Jackson, C. Kirabo. 2020. “Does School Spending Matter? The New Literature on an Old Question.” In
+Confronting Inequality: How Policies and Practices Shape Children’s Opportunities., edited by Laura Tach,
+Rachel Dunifon, and Douglas L. Miller. Washington, DC: American Psychological Association, 165–186.
+Katz, Lawrence F. and Alan B. Krueger. 1992. “The Eﬀect of the Minimum Wage on the Fast-Food Industry.”
+Industrial and Labor Relations Review 46 (1):6–21.
+Kitagawa, Toru. 2015. “A Test for Instrument Validity.” Econometrica 83 (5):2043–2063.
+Kline, Patrick and Christopher R. Walters. 2019. “On Heckits, LATE, and Numerical Equivalence.” Econo-
+metrica 87 (2):677–696.
+Kling, Jeﬀrey R., Jeﬀrey R. Liebman, and Lawrence F. Katz. 2007. “Experimental Analysis of Neighborhood
+Eﬀects.” Econometrica 75 (1):83–119.
+Kolesár, Michal, Raj Chetty, John Friedman, Edward Glaeser, and Guido W. Imbens. 2015. “Identiﬁcation
+and Inference With Many Invalid Instruments.” Journal of Business & Economic Statistics 33 (4):474–484.
+Koopmans, Tjalling C. 1949. “Identiﬁcation Problems in Economic Model Construction.” Econometrica
+17 (2):125–144.
+Kroft, Kory, Y. Luo, Magne Mogstad, and Brad Setzler. 2020. “Imperfect Competition and Rents in Labor
+and Product Markets: The Case of the Construction Industry.” NBER Working Paper No. 27325 .
+Krueger, Alan B. and Lawrence H. Summers. 1988. “Eﬃciency wages and the Inter-Industry Wage Structure.”
+Econometrica 56 (2):259–293.
+LaLonde, Robert J. 1986. “Evaluating the Econometric Evaluations of Training Programs with Experimental
+Data.” American Economic Review 76 (4):604–620.
+Lamadon, Thibaut, Magne Mogstad, and Brad Setzler. 2020. “Imperfect Competition, Compensating Dif-
+ferentials, and Rent Sharing in the U.S. Labor Market.” Working paper, University of Chicago.
+Leamer, Edward E. 1983. “Let’s Take the Con Out of Econometrics.” American Economic Review 73 (1):31–
+43.
+Leontief, Wassily. 1982. “Academic Economics.” Science 217:104–107. Letter to the Editors.
+Levitt, Steven D. and John A. List. 2008. “Field Experiments in Economics: The Past, The Present and the
+Future.” European Economic Review 53 (1):1–18.
+Lewis, H. Gregg. 1986a. “Union Relative Wage Eﬀects.” In Handbook of Labor Economics, vol. 2, edited by
+Orley C. Ashenfelter and Richard Layard, chap. 20. New York, NY: Elsevier, 1139–1181.
+———. 1986b. Union Relative Wage Eﬀects: A Survey. Chicago, IL: University of Chicago Press.
+Manning, Alan. 2003. Monopsony in Motion: Imperfect Competition in Labor Markets. Princeton, NJ:
+Princeton University Press.
+———. 2021. “Monopsony in Labor Markets: A Review.” Industrial and Labor Relations Review 74 (1):3–26.
+36
+
+
+--- Page 37 ---
+Manski, Charles. 1990. “Nonparametric Bounds on Treatment Eﬀects.” American Economic Review: Papers
+& Proceedings 80:319–323.
+Meyer, Bruce, W. Kip Viscusi, and David Durbin. 1995. “Workers’ Compensation and Injury Duration.”
+American Economic Review 85 (3):322–340.
+Meyer, Bruce D. 1995. “Natural and Quasi-Experiments in Economics.” Journal of Business & Economic
+Statistics 13 (2):151.
+Miguel, Edward and Michael Kremer. 2004. “Worms: Identifying Impacts on Education and Health in the
+Presence of Treatment Externalities.” Econometrica 72 (1):159–217.
+Mogstad, Magne, Andres Santos, and Alexander Torgovitsky. 2019.
+“Using Instrumental Variables for
+Inference About Policy Relevant Treatment Parameters.” Econometrica 86 (5):1589–1619.
+Murphy, Kevin M. and Robert H. Topel. 1987. “Unemployment, Risk, and Earnings: Testing for Equalizing
+Wage Diﬀerences in the Labor Market.” In Unemployment and the Structure of Labor Markets, edited by
+Kevin Lang and Jonathan S. Leonard. London: Basil Blackwell, 103–140.
+Neyman, Jerzy. 1923, 1990. “On the Application of Probability Theory to Agricultural Experiments. Essay
+on Principles. Section 9.” Statistical Science 5 (4):465–480.
+Pearl, Judea. 1995. “Causal Diagrams for Empirical Research.” Biometrika 82 (4):669–688.
+———. 2000. Causality. Cambridge University Press.
+———. 2015. “Trygve Haavelmo and the Emergence of Causal Calculus.” Econometric Theory 31 (1):152–
+179.
+Pearl, Judea and Dana Mackenzie. 2018. The Book of Why: The New Science of Cause and Eﬀect. Basic
+Books.
+Peri, Giovanni and Chad Sparber. 2011. “Assessing Inherent Model Bias: An Application to Native Dis-
+placement in Response to Immigration.” Journal of Urban Economics 69 (1):82–91.
+Peri, Giovanni and Vasil Yasenov. 2018. “The Labor Market Eﬀects of a Refugee Wave: Synthetic Control
+Method Meets the Mariel Boatlift.” Journal of Human Resources 54 (2):267–309.
+Robins, J. M. 1989. “The Analysis of Randomized and Non-Randomized AIDS Treatment Trials Using a
+New Approach to Causal Inference in Longitudinal Studies.” In Health Service Research Methodology: A
+Focus on AIDS, edited by Lee Sechrest, Howard Freeman, and Albert Mulley. Washington, DC: National
+Center for Health Services Research and Health Care Technology Assessment, Public Health Service, U.S.
+Department of Health and Human Services, 113–159.
+Robinson, Joan. 1933. The Economics of Imperfect Competition. New York, NY: St. Martin’s Press.
+Rosenzweig, Mark R. and Kenneth I. Wolpin. 1980. “Testing the Quantity-Quality Fertility Model: The Use
+of Twins as a Natural Experiment.” Econometrica 48 (1):227.
+Rubin, Donald B. 1974.
+“Estimating Causal Eﬀects of Treatments in Randomized and Nonrandomized
+Studies.” Journal of Educational Psychology 66 (5):688–701.
+———. 1975. “Bayesian Inference for Causality: The Importance of Randomization.” In Proceedings of
+the Section on Government Statistics and Section on Social Statistics, edited by Edwin D. Goldﬁeld.
+Washington, DC: American Statistical Association, 233–239.
+———. 1978. “Bayesian Inference for Causal Eﬀects: The Role of Randomization.” The Annals of Statistics
+6 (1):34–58.
+———. 1990. “Formal Modes of Statistical Inference for Causal Eﬀects.” Journal of Statistical Planning and
+Inference 25 (3):279–292.
+37
+
+
+--- Page 38 ---
+———. 2008. “For Objective Causal Inference, Design Trumps Analysis.” The Annals of Applied Statistics
+2 (3):808–840.
+Sims, Christopher A. 1980. “Macroeconomics and Reality.” Econometrica 48 (1):1–48.
+Solon, Gary. 1985. “Work Incentive Eﬀects of Taxing Unemployment Beneﬁts.” Econometrica 53 (2):295.
+Staﬀord, Frank. 1986. “Forestalling the Demise of Empirical Economics: The Role of Microdata in Labor
+Economics Research.” In Handbook of Labor Economics, vol. 1, edited by Orley C. Ashenfelter and Richard
+Layard, chap. 7. New York, NY: Elsevier, 387–423.
+Sun, Liyang and Sarah Abraham. 2021. “Estimating Dynamic Treatment Eﬀects in Event Studies with
+Heterogeneous Treatment Eﬀects.” Journal of Econometrics 225 (2):175–199.
+Thistlethwaite, Donald L. and Donald T. Campbell. 1960. “Regression-Discontinuity Analysis: An Alterna-
+tive to the Ex Post Facto Experiment.” Journal of Educational Psychology 51 (6):309–317.
+Tinbergen, Jan. 1930.
+“Bestimmung und Deutung von Angebotskurven: Ein Beispiel.”
+Zeitschrift für
+Nationalökonomie 1:669–679.
+Titiunik, Rocío. 2021. “Natural Experiments.” In Advances in Experimental Political Science, edited by
+James Druckman and Donald P. Green, chap. 6. Cambridge, UK: Cambridge University Press, ﬁrst ed.,
+103–129.
+Vytlacil, Edward J. 2002. “Independence, Monotonicity, and Latent Index Models: An Equivalence Result.”
+Econometrica 70 (1):331–341.
+Wald, Abraham. 1940. “The Fitting of Straight Lines If Both Variables Are Subject to Error.” The Annals
+of Mathematical Statistics 11 (3):284–300.
+Working, E. J. 1927. “What Do Statistical ‘Demand Curves’ Show?” The Quarterly Journal of Economics
+41 (2):279–292.
+Wright, Philip. 1928. The Tariﬀon Animal and Vegetable Oils. New York, NY: Macmillan.
+38

@@ -1,0 +1,168 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree classifier (J48/C4.5) can be used to predict diabetes status from the Pima Indian diabetes dataset with high accuracy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Context: Data mining classification methods are used in medicine to predict diseases such as diabetes by learning models from training and test data",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Method: The Pima Indian Diabetes dataset (768 female subjects, 8 predictive numeric attributes, class 0/1) was used as the data source",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: J48 (WEKA implementation of C4.5) was applied, using entropy and information gain to select split attributes and optionally pruning; WEKA Explorer was used to build and visualize the tree",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: Model evaluation used a confusion matrix to compute accuracy and counts of true positives, true negatives, false positives, and false negatives",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Claim: Entropy and information gain determine which attribute becomes the root and splits during tree construction",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Claim: The proposed J48-based model has advantage over a referenced existing method in accuracy, with a small increase in model build time",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: The dataset contains 768 records with 8 input variables: pregnancies, plasma glucose, diastolic blood pressure, triceps skin fold, 2-hour insulin, BMI, diabetes pedigree, age, and the class label",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Result: J48 handles continuous and discrete attributes, missing values, differing attribute costs, and can produce pruned or unpruned trees",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Evidence: WEKA Explorer was used to load diabetes.arff, run J48, visualize the decision tree, and produce evaluation output",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evidence / Result: Model accuracy = 84.1146%; correctly classified = 84.1146%, incorrectly = 15.8854%; TP=468, TN=178, FP=32, FN=90",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Result: Entropy of class distribution (268 positive, 500 negative) is 0.9328",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Result: Entropy and information gain calculations: plasma feature entropy 0.7996 with gain 0.1332",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Result: Entropy and gain for other attributes: BMI entropy 0.8604 gain 0.0724; pregnancy entropy 0.8962 gain 0.0366",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Evidence: Compared to an existing method, proposed method accuracy increased by 0.48 percentage points (from 83.63% to 84.1146%) while build time increased by 0.02 seconds (from 0.03s to 0.05s)",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation / Conclusion: The Pima dataset contains many zero or missing values (glucose=0 for 5 cases, BMI=0 for 11, blood pressure=0 for 28, skin fold=0 for 192, insulin=0 for 140); deleting such cases reduces dataset to 392 complete cases, so missing data handling is necessary for accurate prediction",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

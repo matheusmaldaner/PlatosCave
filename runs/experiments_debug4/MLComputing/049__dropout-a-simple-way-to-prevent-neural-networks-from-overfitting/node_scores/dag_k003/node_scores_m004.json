@@ -1,0 +1,134 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the standard dropout training procedure of applying Bernoulli masks per layer and training on the thinned network.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.9,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "This aligns with the standard dropout inference approach where the full network with outgoing weights scaled by the retention probability approximates averaging over thinned models, a widely used and accepted interpretation in neural network practice.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.72,
+    "relevance": 0.8,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with common explanations of dropout as preventing co adaptation and enabling model averaging over thinned networks.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines common neural network training practices such as stochastic gradient descent with sampling masks, max norm constraints on incoming weight vectors, high learning rates with momentum, and optional unsupervised pretraining with weight scaling, but there is no context or empirical evidence provided in the claim text.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.7,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on general understanding that dropout can be applied to architectures beyond feed-forward networks such as CNNs and RBMs; no specific citations provided in the claim text.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim hinges on using multiplicative Gaussian noise with mean one and variance (1-p)/p so that the expected activations remain unchanged, implying no test time scaling; while this is a known conceptual link to dropout, the practical equivalence and effectiveness depend on specifics of training setup and noise choice.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim overstretches dropout results by asserting state of the art on ImageNet; dropout did improve performance on MNIST, SVHN, CIFAR-10/100, but did not win ILSVRC2012.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.75,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with widely discussed effects of dropout on learned representations such as sparsity and reduced co adaptation, though explicit cross dataset confirmation beyond MNIST and RBMs is not guaranteed in the provided context.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.62,
+    "relevance": 0.75,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts slower training and noisier gradients due to dropout, and that combining dropout with max norm, high momentum, and careful learning rate scheduling reduces overfitting while keeping gains; this aligns with general practitioner knowledge but remains uncertain without specific experiments.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.95,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible extension of RBMs by introducing a binary retention mask (dropout) producing a mixture of masked RBMs with shared weights and using dropout sampling during CD.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim enumerates several improvements across datasets attributed to dropout, pretraining, and Bayesian variants; while individually plausible, the exact figures and dominance claims are uncertain without additional sources.",
+    "confidence_level": "medium"
+  }
+}

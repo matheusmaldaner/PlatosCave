@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Practical success in machine learning depends on a set of empirical 'folk' lessons about representation, evaluation, optimization, data, features, and methodology that complement formal theory",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Learning systems decompose into three core components: representation (hypothesis space and feature design), evaluation (objective/scoring function), and optimization (search technique)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The fundamental goal of machine learning is generalization to unseen data, not performance on the training set",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data alone is insufficient for generalization; learners must embody inductive bias or prior knowledge to perform better than random",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Overfitting occurs when a learner fits idiosyncrasies of the training data and fails to generalize; it manifests as high variance or inappropriate complexity relative to available data",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        5,
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Common methods to detect and mitigate overfitting include holding out test data, cross-validation, regularization, statistical significance checks, and controlling false discovery rate",
+      "role": "Method",
+      "parents": [
+        4,
+        2
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Feature engineering is the most important practical factor: constructing informative features often determines project success and requires domain knowledge and iterative human effort",
+      "role": "Claim",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        7,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "More training data often yields greater improvements than more sophisticated algorithms; a simple algorithm with lots of data can outperform a clever one with limited data",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        8,
+        14
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Scalability and limited human time are practical constraints: enormous datasets can be available but processing time or model training cost may force use of simpler methods",
+      "role": "Limitation",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Ensembles of models (bagging, boosting, stacking) improve accuracy by reducing variance or combining complementary predictors and are empirically powerful in competitions",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Theoretical guarantees (sample complexity bounds, asymptotic consistency) provide insight but are often loose or inapplicable in practice and should not be the sole criterion for method choice",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "The curse of dimensionality makes learning and similarity reasoning harder as feature dimensionality grows, but data nonuniformity and low intrinsic dimensionality can mitigate this",
+      "role": "Claim",
+      "parents": [
+        2,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Representable does not imply learnable: a function being expressible in a representation does not guarantee a practical learner will find it given finite data, time, and local optima",
+      "role": "Claim",
+      "parents": [
+        1,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Multiple testing and extensive parameter tuning can themselves cause overfitting; corrections like false discovery rate control are necessary but may induce underfitting",
+      "role": "Evidence",
+      "parents": [
+        4,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Human effort, infrastructure for rapid experimentation, and collaboration with domain experts are often the main bottlenecks and determinants of applied ML project success",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        7,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Correlations learned from observational data do not imply causation; experimental data or causal analysis is needed to predict effects of interventions",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    }
+  ]
+}

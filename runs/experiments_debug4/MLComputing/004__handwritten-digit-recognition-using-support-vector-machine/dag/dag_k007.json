@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Using support vector machines (SVM) at the segment/classification level and integrating SVM with HMM will improve handwritten numeral recognition accuracy compared to neural network/HMM or HMM alone",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        4,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SVMs offer better discrimination and generalization (large margin, structural risk minimization) than neural networks for classification tasks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Replacing the neural network classifier in a hybrid NN/HMM system with an SVM at the segment classification level is feasible and expected to improve hybrid recognizer performance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        12,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Feature extraction used for SVM input comprises 18 features: seven moment invariants, seven thinned-moment invariants, and four affine moment invariant features",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Experiments use optical recognition datasets including UCI Optdigits (8x8 preprocessed) and a collected Assamese character dataset (8235 samples from 45 writers)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "SVM training used radial basis function kernel with grid search for C and gamma; final chosen parameters included C = 8 and a selected gamma value",
+      "role": "Method",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "In testing the implemented system the classifier correctly identified 98% of the testing data in the reported analysis",
+      "role": "Result",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Across the three isolated-character databases tested, SVM recognition rates were higher than Hidden Markov Model recognition rates",
+      "role": "Result",
+      "parents": [
+        1,
+        4,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "SVM models typically require substantially more storage because memory scales with number of support vectors times number of features (here 350 features)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Storage can be reduced by compactly storing original online signals with pen-up/pen-down status and dynamically expanding the SVM model during recognition",
+      "role": "Method",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Integrating the SVM character recognizer into an HMM-based word recognizer is expected to improve word recognition rates because character-level discrimination from SVM will raise word likelihood estimates",
+      "role": "Conclusion",
+      "parents": [
+        2,
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Reducing the number of support vectors requires finer hyperparameter grid search and reduced-set selection methods and is an identified area for further work",
+      "role": "Limitation",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Multiclass numeral recognition was handled by applying binary SVMs in a one-versus-rest scheme",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    }
+  ]
+}

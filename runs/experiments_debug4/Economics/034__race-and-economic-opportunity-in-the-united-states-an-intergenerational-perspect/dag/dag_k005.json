@@ -1,0 +1,180 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Counties have causal effects on children's adult incomes; estimating each county's effect identifies which places produce better intergenerational mobility and why",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: identify county causal effects using a movers-based fixed effects regression that regresses children's age-26 income ranks on county fixed effects interacted with fraction of childhood spent in each county, including origin-by-destination fixed effects and controls",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Key identification assumption: conditional on origin-by-destination fixed effects, variation in childhood exposure time to each county is orthogonal to other determinants of child outcomes (no age-dependent selection)",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Validation evidence: (i) controlling for parents' income and marital status around the move does not change estimates; (ii) placebo tests using movers after exposure window (moves after age 23) and teenage labor-force participation produce estimates uncorrelated with baseline estimates",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Estimation implementation: estimate commuting-zone (CZ) effects with a two-step procedure from cross-CZ movers, then estimate county-within-CZ effects from within-CZ county movers; normalize effects to mean zero and allow effects to vary with parental income percentile",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result — magnitude: for children from low-income families (parents at 25th percentile), one year of exposure to a one-standard-deviation better county raises age-26 household income by about 0.5% (≈0.17 percentile points); cumulative 20-year exposure from birth to a one-SD better county implies ≈10% higher income",
+      "role": "Result",
+      "parents": [
+        4,
+        3
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result — variation: substantial heterogeneity exists across counties and within CZs; county-level signal standard deviation of annual effects for p=25 is ~0.17 percentile (signal), implying nontrivial place-by-place differences",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Forecasting method: construct MSE-minimizing forecasts of county causal effects by optimally shrinking noisy mover-based fixed effects toward predictions from permanent residents' outcomes (weighted by precision), producing more precise unbiased forecasts for policy use",
+      "role": "Method",
+      "parents": [
+        4,
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Forecast examples and magnitudes: among large counties, DuPage County, IL is forecasted to yield the highest gains for low-income children (≈0.80% per year; ≈16% from birth), while Cook County (Chicago) is near the bottom (≈−13% from birth), so moving from Cook to DuPage at birth implies large average gains",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Heterogeneity: (a) counties with less concentrated poverty, lower inequality, better school outcomes, more two-parent families, and lower crime produce better outcomes for low-income children; (b) boys' outcomes vary more across areas than girls' and have a thicker negative tail in high-poverty segregated areas",
+      "role": "Claim",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Causal versus selection decomposition: for many area-level predictors (segregation, inequality, school quality, social capital) most of the observed correlation with upward mobility is causal rather than selection-driven, while for aggregated individual demographics (fraction single mothers, racial composition, immigrant share) a substantial share of observational correlations reflect selection",
+      "role": "Result",
+      "parents": [
+        9,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Housing market and policy implication: within CZs, rents are only weakly correlated with causal effects (rents explain <5% of variance in county causal effects for p=25), creating many 'opportunity bargains' (places that yield good child outcomes without high rents), suggesting rent-based voucher rules may not target neighborhood quality efficiently",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        8,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: identification relies on the strong orthogonality assumption for each county and on constant additive exposure effects across childhood and across children conditional on parent income; estimates are county-level averages and may mask within-county heterogeneity",
+      "role": "Limitation",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Policy and research implications: forecasts can guide families and policymakers to higher-opportunity counties; further research should (i) estimate effects at finer geographies and by subgroup (race), and (ii) isolate mechanisms (e.g., causal role of segregation, schools) via exogenous policy variation",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

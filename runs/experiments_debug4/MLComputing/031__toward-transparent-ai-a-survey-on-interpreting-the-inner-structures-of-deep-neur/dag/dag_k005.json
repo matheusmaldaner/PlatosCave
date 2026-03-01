@@ -1,0 +1,156 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods for internal components of deep neural networks can make AI systems more trustworthy by enabling detection of failures, debugging, mechanistic understanding, and safer deployment",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "A practical taxonomy classifies inner interpretability methods by the network part they explain (weights, neurons, subnetworks, latent representations) and by whether methods are intrinsic (during training) or post hoc (after training)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Motivations for inner interpretability include: enabling open-ended evaluation beyond test sets, exposing and fixing failure modes, determining accountability, improving basic scientific understanding, and enabling 'microscope' AI for reverse engineering high-performing systems",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Inner interpretability methods are complementary to but distinct from input attribution, black-box explanations, neurosymbolic methods, and external evaluation techniques; focus here is specifically on internal structures and representations",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Current interpretability research faces hazards and limitations including frivolous (prunable) weights and neurons, polysemantic neurons, unfaithful attention or self-explanations, scalability issues, cherry-picking of examples, and treating hypotheses as conclusions",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Weights-focused methods: intrinsic continual-learning-like regularization to specialize weights, and post hoc weight-masking to identify task-essential weights and subnetworks; pruning reveals many frivolous weights",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Neuron-focused methods: intrinsic neuron specialization via continual-learning or adding neurons, and post hoc analyses including dataset-based dissection, feature synthesis, gradient-based attribution, perturbation/ablation, and Shapley-value importance estimates",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Subnetwork-focused methods: intrinsic sparsity and modular architectures to simplify analysis, and post hoc modular partitioning and circuits analysis (identifying small functional subnetworks) often relying on weight and neuron techniques",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Representation-focused methods: intrinsic self-explaining models, adversarial training and disentanglement, and post hoc approaches including token/attention analysis, concept vectors, probing, and representation-comparison metrics",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical findings and properties: adversarially robust models often yield more interpretable representations and better transfer; sparsity can simplify subnetwork analysis but not always neuron interpretability; pruning/compression can increase interpretability in some cases",
+      "role": "Evidence",
+      "parents": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Limitations of specific techniques: dataset-based neuron characterization is limited by dataset labels; feature synthesis may be less predictive for human judgment than natural exemplars; gradients provide local approximations not causal proofs; probing requires careful controls and causal validation",
+      "role": "Limitation",
+      "parents": [
+        6,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "To be practically useful, interpretability research must scale to large models, quantify uncertainty and faithfulness, avoid cherry-picking, focus on diagnostics/debugging/adversaries/benchmarking, and target tools engineers can use in real applications",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Hazards arising from current practice include: misinterpreting polysemantic or frivolous units, over-reliance on attention or generated explanations that are not faithful, and potential for interpretability advances to enable risky capabilities if not safety-focused",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Recommended future directions: develop rigorous benchmarks (e.g., rediscover implanted flaws), combine complementary methods, automate human-in-the-loop screening, study links with robustness/modularity/compression, and pursue mechanistic interpretability and latent-knowledge detection",
+      "role": "Conclusion",
+      "parents": [
+        11
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "CONDA (compiler-level code transformation) can provide versatile datapath soft-error detection for HPC applications with substantially lower runtime overhead while maintaining error-detection effectiveness and low detection latency",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        11,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Lazy Checking Motion - duplicate instructions and compute software signatures but buffer comparison results in registers per basic block to avoid introducing extra basic blocks and preserve original control-flow",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Domination Propagation - use domination-tree based register-level propagation to aggregate buffered checking results across basic blocks without global memory load/store",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Adaptive Detection Placement - statically analyze loops and place detection branches at function exits, loop backedges or loop exits to balance detection latency and control-flow complexity",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        6,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Claim: Simplifying control-flow and avoiding frequent global memory synchronizations reduces runtime overhead of combined data-flow and control-flow detection",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Evidence: CONDA reduces dynamic basic-block overhead to 22.82% on average (versus baseline 224.17%), demonstrating simplified control-flow due to lazy checking motion",
+      "role": "Evidence",
+      "parents": [
+        4,
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Result/Evidence: On 38 benchmarks, CONDA incurs 57.79% average runtime overhead, which is 41.84% lower than the combined-baseline technique, showing substantial performance improvement",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Evidence: CONDA outperforms CONDA-mem (which uses memory for aggregation) showing register-level aggregation via domination propagation preserves original memory-access patterns and reduces overhead compared with memory-based aggregation",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Evidence: Fault-coverage experiments (1,000 injections per benchmark) show CONDA achieves equivalent data-flow detection to EDDI and equivalent or higher control-flow detection than CFCSS (comparable SDC reduction averages)",
+      "role": "Evidence",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Evidence/Result: Adaptive detection placement reduces detection latency by 16.28x compared to placing detection only at function exits while incurring only about 4.65% additional runtime overhead for that latency reduction",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evidence/Result: CONDA is compatible with parallel OpenMP HPC workloads (SimpleMOC case study) with measured runtime overheads between 46.23% and 64.23% across thread counts",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Claim (root-cause analysis): High runtime overheads in prior holistic datapath detectors stem mainly from (a) added branches per check that complicate control-flow and (b) frequent global memory accesses that break coalesced memory patterns",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: The adaptive detection placement is a static heuristic (cases for N=0,1,>1 outermost loops) and may not be globally optimal without dynamic profiling; it trades some added detection branches for lower latency",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Method/Evaluation: Experimental methodology used LLVM IR transformations, 38 diverse benchmarks, assembly- and IR-level fault injection (1,000 injections/benchmark) and a 15-node cluster and additional supercomputer for SimpleMOC",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8,
+        9,
+        10
+      ]
+    }
+  ]
+}

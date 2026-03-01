@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a specific architectural breakdown for a GPU kernel named cuSZp, detailing four integrated components including quantization with Lorenzo style prediction, fixed-length encoding with a sign map, on gpu hierarchical prefix sum synchronization, and block bit shuffle for aligned output, which is plausible given common GPU compression and data-parallel techniques but cannot be independently verified from the provided text alone.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general background knowledge, the described approach plausibly combines quantization within error bounds with delta encoding of adjacent quantized values using a one dimensional Lorenzo predictor, but no independent validation is provided.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a fixed length encoding method where for each nonzero block cuSZp the maximum absolute quantized value determines the bits per value, plus a sign map, and asserts the compressed block size equals (Fk plus 1) times L divided by eight bytes.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on general knowledge of GPU hierarchies and prefix-sum techniques, the claim is plausible but specifics cannot be verified from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment relies solely on the claim text and general background knowledge; no external sources consulted.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the design favors fixed length encoding and single kernel parallelism with block smoothness assumption; no external evidence provided.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Evaluation claims experiments on an NVIDIA A100 across six datasets and multiple metrics; no sources checked.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, Lorenzo prediction is described as reducing bits per quantized integer within blocks, which would improve fixed-length encoding efficiency.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts fixed-length encoding is suitable due to spatial smoothness in scientific blocks and a CDF finding that most blocks have small relative value range for L=8 and L=32, suggesting high intra block compression potential.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a high throughput on-GPU synchronization for variable-length concatenation with no CPU-GPU transfers, but no external sources are consulted; assess plausibility rather than verification.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that a block bit-shuffle design enables efficient aligned writes, avoids irregular bit shifting control flow, and enables high parallelism in storing compressed bytes; without external evidence, plausibility is moderate but not established.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim posits that a single kernel design removes CPU and host device data movement overheads present in prior error bounded GPU compressors, thereby improving end-to-end throughput.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.58,
+    "relevance": 0.92,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "No independent data is available; evaluation relies solely on the claim text and general background knowledge.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text without external data; limited detail on methods or empirical results reduces certainty.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general knowledge, the assertion that a single GPU kernel can implement an error bounded lossy compressor meeting throughput, compression ratio, and data quality for many datasets is plausible but not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  }
+}

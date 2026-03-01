@@ -1,0 +1,169 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A simple, computationally practical estimator based on dynamic OLS/GLS can efficiently estimate cointegrating vectors in systems with deterministic components and variables of differing higher orders of integration, and can be used for inference (Wald tests) and empirical applications such as long-run money demand",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Define dynamic OLS (DOLS) and dynamic GLS (DGLS) estimators by regressing the dependent cointegrating equations on contemporaneous levels, leads and lags of first differences, and deterministic terms; feasible GLS uses an estimated filter for serial correlation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Claim: The DOLS and DGLS estimators arise as Gaussian MLEs for a particular two-sided triangular parameterization and are asymptotically efficient under general I(d) conditions, yielding estimators with mixed normal limits and Wald statistics with asymptotic chi-square distributions",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Construct triangular representations for I(1) and general I(d) systems, orthogonalize errors by projecting onto leads and lags, and transform regressors to canonical regressors to obtain nondegenerate asymptotic behavior",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Assumption: The data-generating process admits a Wold MA representation with martingale-difference shocks, summable lag polynomials, nonsingular spectra at nonzero frequencies, and a fixed maximum integration order d (Assumptions A,B,C)",
+      "role": "Assumption",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        2,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Under finite-parameter approximations for the two-sided projection polynomials, feasible DGLS and DOLS are asymptotically equivalent for the coefficients on integrated regressors and produce Wald tests that are asymptotically chi-square",
+      "role": "Result",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Limitation: Implementation requires at least partial knowledge or pretesting of individual series integration orders and cointegration structure; pretesting may add finite-sample uncertainty not captured by asymptotics",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence (Monte Carlo): In designs mimicking U.S. real money, income and interest dynamics, DOLS generally exhibits lower bias and RMSE than other efficient estimators; finite-sample distributions can deviate from asymptotic approximations, especially with strong serial correlation and small samples",
+      "role": "Evidence",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Claim: The asymptotic distribution of the estimators is a random mixture of normals (local asymptotic mixed normal), reflecting dependence on the realized integrated regressors, and test statistics remain chi-square under broad I(d) scenarios",
+      "role": "Claim",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Application (money demand): Apply DOLS/DGLS and other estimators to U.S. annual data 1900-1989 for nominal Ml, price level, real income, and interest rates to estimate long-run nominal money demand cointegrating vector",
+      "role": "Method",
+      "parents": [
+        0,
+        1,
+        3
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result (empirical): Full-sample (1900-1989) DOLS-based 95% confidence intervals for income elasticity and interest semielasticity are (0.88, 1.06) and (-0.127, -0.075) respectively, supporting a stable long-run Ml demand relation with income elasticity near one and interest semielasticity near -0.10",
+      "role": "Result",
+      "parents": [
+        9,
+        7
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence/Claim: Postwar data alone (1946 onward) are dominated by a single low-frequency trend (income and interest rising, real balances roughly flat), producing imprecise and unstable estimates of individual long-run elasticities though their ratio is constrained by the trend line; confidence regions based on asymptotics can substantially understate sampling uncertainty",
+      "role": "Claim",
+      "parents": [
+        9,
+        7,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: The full-sample evidence supports a single stable long-run money demand relation over 1900-1989, but precise estimation requires long spans of data and careful finite-sample assessment; analysts should use multiple estimators and be cautious about relying only on postwar samples",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11,
+        7,
+        6
+      ],
+      "children": null
+    }
+  ]
+}

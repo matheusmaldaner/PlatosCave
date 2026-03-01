@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The Almost Ideal Demand System (AIDS) provides a flexible, theory-consistent demand system that is practical to estimate and preferable to Rotterdam and translog models for testing and extending conventional demand analysis",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "AIDS is derived from a PIGLOG class cost/expenditure representation log c(u,p) = (1-u) log a(p) + u log b(p) leading to budget-share demand functions linear in log real expenditure and log prices",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "AIDS has the following theoretical properties: arbitrary first-order approximation to any demand system, exact satisfaction of choice axioms, exact aggregation over consumers under PIGLOG assumptions, linear testing of homogeneity and symmetry, and relative simplicity of estimation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Aggregation over households is exact under PIGLOG/PIGL if individual shares take the price-independent generalized linear (PIGLOG) form with household scale factors kh and representative budget index k",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "AIDS can be written in budget-share form wi = ai + sum_j yij log pj + beta_i log(x/P) with price index log P and parameter restrictions for adding-up, homogeneity and symmetry",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "In practice AIDS estimation can use an approximate price index P* = exp(sum wk log pk) to linearize the system and permit single-equation OLS estimation, with iterative updates to P when needed",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The yij parameters represent compensated price effects (approximately the same sign as compensated cross-price elasticities) and beta_i measure real expenditure effects (positive for luxuries, negative for necessities)",
+      "role": "Claim",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The cost function in AIDS is linearly homogeneous in prices and flexible because its derivatives can match those of any arbitrary cost function at a point given parameter normalization",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Negativity (concavity) of the underlying cost function cannot be guaranteed by linear parameter restrictions alone but can be checked by eigenvalues of a transformed Slutsky matrix and may fail in estimated symmetric models",
+      "role": "Limitation",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Hypothesis-consistent restrictions are: adding-up (sum ai =1, sum yij =0, sum beta_i =0), homogeneity (sum_j yij =0 for each i), and Slutsky symmetry (yij = yji)",
+      "role": "Assumption",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Household heterogeneity is captured by kh which adjusts budgets for needs and demographic composition; aggregate representative budget k equals a distributional index (Theil entropy/ H) so omission of k is innocuous if k is constant or uncorrelated with x or p",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Estimation strategy: estimate linearized equation wi = (ai - beta_i log a0) + sum_j yij log pj + beta_i log x using P* by OLS; test homogeneity equation-by-equation; impose cross-equation symmetry and reestimate the non-linear system with assumed residual covariance structure when necessary",
+      "role": "Method",
+      "parents": [
+        5,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical concavity violations occurred in symmetric estimates for the British data (positive eigenvalues in the transformed Slutsky matrix and implausible compensated own-price elasticities, e.g., fuel), indicating estimated cost function nonconcavity",
+      "role": "Result",
+      "parents": [
+        8,
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Applied to annual British nondurable expenditure data 1954-1974 (eight commodity groups) the estimation used P* initially, OLS single-equation fits, homogeneity tests, then symmetric reestimation using P and a variance structure V = sigma2(I - ii') to allow system likelihood comparisons",
+      "role": "Method",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Empirical findings: the unconstrained AIDS explains much variance; homogeneity and symmetry restrictions are decisively rejected in levels, imposition of homogeneity generates positive serial correlation in residuals of strongly rejecting equations, and first-difference specification with trends reduces some rejections",
+      "role": "Result",
+      "parents": [
+        13,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: AIDS is a recommended platform for testing and extending demand analysis because of its theoretical consistency, flexibility, and tractability, but additional modeling of dynamics, expectations, household distribution index k, or intertemporal structure is required for a fully satisfactory empirical explanation",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

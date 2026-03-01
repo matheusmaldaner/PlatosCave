@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim proposes a fully kernel level compression and decompression pipeline to remove CPU work and CPU GPU data movement, which is plausible but relies on implementation specifics and may face kernel size, synchronization, and hardware constraints",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.56,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim alone, there is no external corroboration; the four step pipeline is plausible for a block-wise coder but cannot be verified from provided text.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.58,
+    "relevance": 0.65,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.3,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general ideas about trading variable length codes for fixed blocks and sign maps to exploit spatial smoothness for parallelism, but no specific evidence is provided for cuSZp.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.45,
+    "relevance": 0.8,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Assessed claim suggests kernel fusion eliminates CPU and data movement overhead; without empirical data or context, plausibility remains uncertain and likely context dependent.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based on the claim text and general GPU knowledge; cannot verify details without sources; hierarchical synchronization to compute exclusive prefix sums for block start indices within a kernel is plausible but unconfirmed.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Quantization to integers within an error bound is a standard approach in lossy compression, and using a Lorenzo type predictor to record deltas within blocks to reduce bits is plausible, though the exact 1D 1-layer Lorenzo configuration and its claimed benefits are not established in the provided text.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.52,
+    "relevance": 0.68,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a fixed-length encoding that records a sign map and derives bits per value Fk from the position of the MSB of the block maximum, yielding block size equal to (Fk+1) times L divided by 8 bytes.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible technique in bit packing where a block bit shuffle maps bit offsets to aligned bytes for parallel writes and mitigates irregular shifts when bitfield width is not a multiple of eight, which is conceptually reasonable but not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that six real world HPC datasets were used on an Nvidia A100 to measure end to end throughput kernel throughput compression ratio PSNR SSIM and visualization, but there is no external verification information provided.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that empirical analysis shows high intra block smoothness with most blocks having small relative value range, exemplified by hurricane blocks with relative range below 0.02 for block length eight, which would support a fixed length per block; given limited context, the claim appears plausible but not verifiable without methodological details or data access.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.58,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general intuition that fixedLength encoding is faster and simpler when symbol distributions are not highly skewed and that Huffman encoding incurs overheads from tree construction and code storage, potentially reducing throughput under certain conditions",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states specific throughput numbers for cuSZ algorithms on A100 and comparisons to cuSZ and cuSZx, but no supporting data or references are provided.",
+    "confidence_level": "low"
+  },
+  "13": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given known benefits of single kernel workflows on GPUs, but cannot be verified without empirical data or references within the provided text.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.65,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, role, and general background knowledge, the statement appears plausible but not verifiable from provided information and thus is treated as an intermediate level assertion.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts novelty and performance but cannot be verified without external sources; evaluation remains uncertain.",
+    "confidence_level": "medium"
+  }
+}

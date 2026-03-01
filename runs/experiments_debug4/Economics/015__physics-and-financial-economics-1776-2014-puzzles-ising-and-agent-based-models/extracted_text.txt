@@ -1,0 +1,3440 @@
+--- Page 1 ---
+arXiv:1404.0243v1  [q-fin.GN]  1 Apr 2014
+Physics and Financial Economics (1776-2014)
+Puzzles, Ising and Agent-Based models
+D. Sornette1,2
+1ETH Zurich – Department of Management, Technology and Economics, Scheuchzerstrasse 7, CH-8092 Zurich, Switzerland
+2Swiss Finance Institute, 40, Boulevard du Pont-d’ Arve, Case Postale 3, 1211 Geneva 4, Switzerland
+E-mail address: dsornette@ethz.ch
+Abstract
+This short review presents a selected history of the mutual fertil-
+ization between physics and economics, from Isaac Newton and Adam
+Smith to the present. The fundamentally diﬀerent perspectives em-
+braced in theories developed in ﬁnancial economics compared with
+physics are dissected with the examples of the volatility smile and
+of the excess volatility puzzle. The role of the Ising model of phase
+transitions to model social and ﬁnancial systems is reviewed, with the
+concepts of random utilities and the logit model as the analog of the
+Boltzmann factor in statistic physics. Recent extensions in term of
+quantum decision theory are also covered.
+A wealth of models are
+discussed brieﬂy that build on the Ising model and generalize it to
+account for the many stylized facts of ﬁnancial markets. A summary
+of the relevance of the Ising model and its extensions is provided to
+account for ﬁnancial bubbles and crashes. The review would be incom-
+plete if it would not cover the dynamical ﬁeld of agent based models
+(ABMs), also known as computational economic models, of which the
+Ising-type models are just special ABM implementations. We formu-
+late the “Emerging Market Intelligence hypothesis” to reconcile the
+pervasive presence of “noise traders” with the near eﬃciency of ﬁnan-
+cial markets. Finally, we note that evolutionary biology, more than
+physics, is now playing a growing role to inspire models of ﬁnancial
+markets.
+Keywords: Finance, physics, econophysics, Ising model, phase transitions,
+excess volatility puzzle, logit model, Boltzmann factor, bubbles, crashes,
+adaptive markets, ecologies
+JEL: A12, B41, C00; C44; C60; C73; D70; G01
+1
+
+
+--- Page 2 ---
+Contents
+1
+Introduction
+3
+2
+A short history of mutual fertilization between physics and
+economics
+6
+2.1
+From Isaac Newton to Adam Smith . . . . . . . . . . . . . . .
+6
+2.2
+Equilibrium . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+6
+2.3
+Pareto and power laws . . . . . . . . . . . . . . . . . . . . . .
+7
+2.4
+Brownian motion and random walks . . . . . . . . . . . . . . .
+8
+2.5
+Stable L´evy distributions . . . . . . . . . . . . . . . . . . . . .
+9
+2.6
+Power laws after Mandelbrot . . . . . . . . . . . . . . . . . . .
+10
+2.7
+Full distribution, positive feedbacks, inductive reasoning
+. . .
+11
+3
+Thinking as an economist or as a physicist?
+12
+3.1
+Puzzles and normative science . . . . . . . . . . . . . . . . . .
+12
+3.2
+The volatility smile . . . . . . . . . . . . . . . . . . . . . . . .
+13
+3.3
+The excess volatility puzzle: thinking as an economist . . . . .
+14
+4
+The Ising model and ﬁnancial economics
+17
+4.1
+Roots and sources . . . . . . . . . . . . . . . . . . . . . . . . .
+17
+4.2
+Random utilities, Logit model and Boltzmann factor
+. . . . .
+18
+4.3
+Quantum decision theory . . . . . . . . . . . . . . . . . . . . .
+20
+4.4
+Discrete choice with social interaction and Ising model
+. . . .
+24
+5
+Generalized kinetic Ising model for ﬁnancial economics
+27
+6
+Ising-like imitation of noise traders and models of ﬁnancial
+bubbles and crashes
+32
+6.1
+Phenomenology of ﬁnancial bubbles and crashes . . . . . . . .
+32
+6.2
+The critical point analogy
+. . . . . . . . . . . . . . . . . . . .
+34
+6.3
+Tests with the ﬁnancial crisis observatory . . . . . . . . . . . .
+35
+6.4
+The social bubble hypothesis . . . . . . . . . . . . . . . . . . .
+36
+7
+Agent-based models (ABMs) in economics and ﬁnance
+37
+7.1
+A taste of ABMs
+. . . . . . . . . . . . . . . . . . . . . . . . .
+38
+7.2
+Outstanding open problems: robustness and calibration/validation
+of agent-based models
+. . . . . . . . . . . . . . . . . . . . . .
+42
+7.3
+The “Emerging Market Intelligence Hypothesis”
+. . . . . . .
+46
+8
+Concluding remarks
+49
+2
+
+
+--- Page 3 ---
+1
+Introduction
+The world economy is an extremely complex system with hidden causali-
+ties rooted in intensive social and technological developments. Critical events
+in such systems caused by endogenous instabilities can lead to huge crises
+wiping out of the wealth of whole nations. On the positive side, positive
+feedbacks of education and venture capital investing on entrepreneurship can
+weave a virtuous circle of great potential developments for the future gen-
+erations. Risks, both on the downside as well as on the upside, are indeed
+permeating and controlling the outcome of all human activities and require
+high priority.
+Traditional economic theory is based on the assumptions of rationality of
+economic agents and of their homogeneous beliefs, or equivalently that their
+aggregate behaviors can be represented by a representative agent embodying
+their eﬀective collective preferences. However, many empirical studies pro-
+vide strong evidences on market agents heterogeneity and on the complexity
+of market interactions. Interactions between individual market agents for
+instance cause the order book dynamics, which aggregate into rich statistical
+regularities at the macroscopic level. In ﬁnance, there is growing evidence
+that equilibrium models and the eﬃcient market hypothesis (EMH), see sec-
+tion 7.3 for an extended presentation and generalisation, cannot provide a
+fully reliable framework for explaining the stylized facts of price formation
+(Fama, 1970). Doubts are further fuelled by studies in behavioral economics
+demonstrating limits to the hypothesis of full rationality for real human be-
+ings (as opposed to the homo economicus posited by standard economic the-
+ory). We believe that a complex systems approach to research is crucial to
+capture the inter-dependent and out-of-equilibrium nature of ﬁnancial mar-
+kets, whose total size amounts to at least 300% of the world GDP and of the
+cumulative wealth of nations.
+From the risk management point of view, it is now well established that
+the Value-at-Risk measure, on which prudential Basel I and II recommen-
+dations are based, constitutes a weak predictor of the losses during crises.
+Realized and implied volatilities as well as inter-dependencies between assets
+observed before the critical events are usually low, thus providing a com-
+pletely misleading picture of the coming risks. New risk measures that are
+sensitive to global deteriorating economic and market conditions are yet to
+be fully developed for better risk management.
+In todays high-tech era, policy makers often use sophisticated computer
+models to explore the best strategies to solve current political and economic
+issues. However, these models are in general restricted to two classes: (i) em-
+pirical statistical methods that are ﬁtted to past data and can successfully be
+3
+
+
+--- Page 4 ---
+extrapolated a few quarters into the future as long as no major changes oc-
+cur; and (ii) dynamic stochastic general equilibrium models (DSGE), which
+by construction assume a world always in equilibrium. The DSGE-models
+are actively used by central banks, which in part rely on them to take im-
+portant decisions such as ﬁxing interest rates. Both of these methods as-
+sume that the acting agents are fully rational and informed, and that their
+actions will lead to stable equilibria. These models therefore do not encom-
+pass out-of-equilibrium phenomena such as bubbles and subsequent crashes
+(Kindleberger, 2000; Sornette, 2003), arising among other mechanisms from
+herding among not fully rational traders (De Grauwe, 2010). Consequently,
+policy makers such as central banks base their expectations on models and
+processes that do not contain the full spectrum of possible outcomes and are
+caught oﬀguard when extreme events such as the ﬁnancial crisis in 2008 oc-
+cur (Colander et al., 2009). Indeed, during and following the ﬁnancial crisis
+of 2007-2008 in the US that cascaded to Europe in 2010 and to the world,
+central bankers in top policy making positions, such as Trichet, Bernanke,
+Turner and many others, have expressed signiﬁcant dissatisfaction with eco-
+nomic theory in general and macroeconomic theory in particular, suggesting
+even that their irrelevance in times of crisis.
+Physics as well as other natural sciences, in particular evolutionary bi-
+ology and environmental sciences, may provide inspiring paths to break the
+stalemate. The analytical and computational concepts and tools developed
+in physics in particular are starting to provide important frameworks for a
+revolution that is in the making. We refer in particular to the computa-
+tional framework using agent-based or computational economic models. In
+this respect, let us quote Jean-Claude Trichet, the previous chairman of the
+European Central Bank in 2010: First, we have to think about how to char-
+acterize the homo economicus at the heart of any model. The atomistic,
+optimizing agents underlying existing models do not capture behavior dur-
+ing a crisis period. We need to deal better with heterogeneity across agents
+and the interaction among those heterogeneous agents. We need to entertain
+alternative motivations for economic choices. Behavioral economics draws on
+psychology to explain decisions made in crisis circumstances. Agent-based
+modeling dispenses with the optimization assumption and allows for more
+complex interactions between agents.
+Such approaches are worthy of our
+attention. And, as Alan Kirman (2012) stressed recently, computational or
+algorithmic models have a long and distinguished tradition in economics.
+The exciting result is that simple interactions at the micro level can generate
+sophisticated structure at the macro level, exactly as observed in ﬁnancial
+time series. Moreover, such ABMs are not constrained to equilibrium condi-
+tions. Out-of-equilibrium states can naturally arise as a consequence of the
+4
+
+
+--- Page 5 ---
+agents’ behavior, as well as fast changing external conditions and impacting
+shocks, and lead to dramatic regime shift or tipping points. The fact that
+such systemic phenomena can naturally arise in agent based models makes
+this approach ideal to model extreme events in ﬁnancial markets. The em-
+phasis on ABMs and computational economics parallels a similar revolution
+in Physics that developed over the last few decades. Nowadays, most physi-
+cists would agree that Physics is based on three pillars: experiments, theory
+and numerical simulations, deﬁning the three inter-related disciplines of ex-
+perimental physics, theoretical physics and computational physics.
+Many
+scientists have devoted their life in just one of these three. In comparison,
+computational economics and agent-based models are still in their infancy
+but with similar promising futures.
+Given the above mentioned analogies and relationships between economics
+and physics, it is noteworthy that these two ﬁelds have been life-long compan-
+ions during their mutual development of concepts and methods emerging in
+both ﬁelds. There has been much mutual enrichment and catalysis of cross-
+fertilization. Since the beginning of the formulation of the scientiﬁc approach
+in the physical and natural sciences, economists have taken inspiration from
+physics, in particular in its success in describing natural regularities and pro-
+cesses. Reciprocally, physics has been inspired several times by observations
+done in economics.
+This review aims at providing some insights on this relationship, past,
+present and future.
+In the next section, we present a selected history of
+mutual fertilization between physics and economics. Section 3 attempts to
+dissect the fundamentally diﬀerent perspectives embraced in theories devel-
+oped in ﬁnancial economics compared with physics.
+For this, the excess
+volatility puzzle is presented and analyzed in some depth. We explain the
+meaning of puzzles and the diﬀerence between empirically founded science
+and normative science. Section 4 reviews how the Ising model of phase tran-
+sitions has developed to model social and ﬁnancial systems. In particular, we
+present the concept of random utilities and derive the logit model describing
+decisions made by agents, as being the analog of the Boltzmann factor in sta-
+tistical physics. The Ising model in its simplest form can then be derived as
+the optimal strategy for boundedly rational investors facing discrete choices.
+The section also summarises the recent developments on non-orthodox de-
+cision theory, called quantum decision theory. Armed with these concepts,
+section 5 reviews non-exhaustively a wealth of models that build on the Ising
+model and generalize it to account for the many stylized facts of ﬁnancial
+markets, and more, with still a rich future to enlarge the scope of the investi-
+gations. Section 6 brieﬂy reviews our work on ﬁnancial bubbles and crashes
+and how the Ising model comes into play. Section 7 covers the literature on
+5
+
+
+--- Page 6 ---
+agent-based models, of which the class of Ising models can be considered a
+sub-branch. This section also presents the main challenges facing agent-based
+modelling before being widely adopted by economists and policy makers. We
+also formulate the “Emerging Market Intelligence hypothesis”, to explain the
+pervasive presence of “noise traders” together with the near eﬃciency of ﬁ-
+nancial markets. Section 8 concludes with advice on the need to combine
+concepts and tools beyond physics and ﬁnance with evolutionary biology.
+2
+A short history of mutual fertilization be-
+tween physics and economics
+Many physicists and economists have reﬂected on the relationships be-
+tween physics and economists.
+Let us mention some prominent accounts
+(Zhang, 1999; Bouchaud, 2001; Derman, 2004; Farmer and Lux, 2010). Here,
+we consider rather the history of the inter-fertilisation between the two ﬁelds,
+providing an hopefully general inspiring perspective especially for the physi-
+cist aspiring to work in economics and ﬁnance.
+2.1
+From Isaac Newton to Adam Smith
+To formulate his “Inquiry into the Nature and Causes of the Wealth of
+Nations”, Adam Smith (1776) was inspired by the Philosophiae Naturalis
+Principia Mathematica (1687) of Isaac Newton, which speciﬁcally stresses
+the (novel at the time) notion of causative forces. In the ﬁrst half of the
+nineteenth century, Quetelet and Laplace among others become fascinated
+by the regularities of social phenomena such as births, deaths, crimes and
+suicides, even coining the term “social physics” to capture the evidence for
+natural laws (such as the ubiquitous Gaussian distribution based on the law
+of large numbers and the central limit theorem) that govern human social
+systems such as the economy.
+2.2
+Equilibrium
+In the second half of the 19th century, the microeconomists Francis Edge-
+worth and Alfred Marshall drew on the concept of macroequilibrium in gas,
+understood to be the result of the multitude of incessant micro-collisions
+of gas particles, which was developed by Clerk Maxwell and Ludwig Boltz-
+mann. Edgeworth and Marshall thus developed the notion that the economy
+achieves an equilibrium state not unlike that described for gas. In the same
+way that the thermodynamic description of a gas at equilibrium produces a
+6
+
+
+--- Page 7 ---
+mean-ﬁeld homogeneous representation that gets rid of the rich heterogeneity
+of the multitude of micro-states visited by all the particles, the dynamical
+stochastic general equilibrium (DSGE) models used by central banks for in-
+stance do not have agent heterogeneity and focus on a representative agent
+and a representative ﬁrm, in a way parallel to the Maxwell Garnett eﬀec-
+tive medium theory of dielectrics and eﬀective medium approximations for
+conductivity and wave propagation in heterogenous media. In DSGE, equi-
+librium refers to clearing markets, such that total consumption equal output,
+or total demand equals total supply, and this takes place between represen-
+tative agents. This idea, which is now at the heart of economic modeling,
+was not accepted easily by contemporary economists who believed that the
+economic world is out-of-equilibrium, with heterogeneous agents who learn
+and change their preferences as a function of circumstances. It is important
+to emphasize that the concept of equilibrium, which has been much criticized
+in particular since the advent of the “great ﬁnancial crisis” since 2007 and
+of the “great recession”, was the result of a long maturation process with
+many ﬁghts within the economic profession. In fact, the general equilibrium
+theory now at the core of mainstream economic modeling is nothing but a
+formalization of the idea that “everything in the economy aﬀects everything
+else” (Krugman, 1996), reminiscent of mean-ﬁeld theory or self-consistent ef-
+fective medium methods in physics. However, economics has pushed further
+than physics the role of equilibrium by ascribing to it a normative role, i.e.,
+not really striving to describe economic systems as they are, but rather as
+they should be (Farmer and Geanakoplos, 2009).
+2.3
+Pareto and power laws
+In his “Cours d’Economie Politique” (1897), the economist and philoso-
+pher Vilfredo Pareto reported remarkable regularities in the distribution of
+incomes, described by the eponym power laws, which have later become the
+focus of many natural scientists and physicists attracted by the concept of
+universality and scale invariance (Stanley, 1999). Going beyond Gaussian
+statistics, power laws belong to the class of “fat-tailed” or sub-exponential
+distributions.
+One of the most important implications of the existence of the fat-tail
+nature of event size distributions is that the probability of observing a very
+large event is not negligible, contrary to the prediction of the Gaussian world,
+which rules out for all practical purposes events with sizes larger than a few
+standard deviations from the mean.
+Fat-tailed distributions can even be
+such that the variance and even the mean are not deﬁned mathematically,
+corresponding the wild class of distributions where the presence of extreme
+7
+
+
+--- Page 8 ---
+event sizes is intrinsic.
+Such distributions have later been documented for many types of systems,
+when describing the relative frequency of the sizes of events they generate,
+for instance earthquakes, avalanches, landslides, storms, forest ﬁres, solar
+ﬂares, commercial sales, war sizes, and so on (Mandelbrot, 1982; Bak, 1996;
+Newman, 2005; Sornette, 2004). Notwithstanding the appeal for a univer-
+sal power law description, the reader should be warned that many of the
+purported power law distributions are actually spurious or only valid over a
+rather limited range (see e.g. Sornette, 2004; Perline, 2005; Clauset et al.,
+2009). Moreover, most data in ﬁnance show strong dependence, which inval-
+idates simple statistical tests such as the Kolmogorov Smirnov test (Clauset
+et al., 2009). A drastically diﬀerent view point is oﬀered by multifractal pro-
+cesses, such as the multifractal random walk (Bacry et al., 2001; 2013; Muzy
+et al., 2001; 2006), in which the multiscale two-point correlation structure of
+the volatility is the primary construction brick, from which derives the power
+law property of the one-point statistics, i.e. the distribution of returns (Muzy
+et al., 2006). Moreover, the power law regime may even be superseded by
+a diﬀerent “dragon-king” regime in the extreme right tail (Sornette, 2009;
+Sornette and Ouillon, 2012).
+2.4
+Brownian motion and random walks
+In order to model the apparent random walk motion of bonds and stock
+options in the Paris stock market, mathematician Louis Bachelier (1900)
+developed in his thesis the mathematical theory of diﬀusion (and the ﬁrst el-
+ements of ﬁnancial option pricing). He solved the parabolic diﬀusion equation
+ﬁve years before Albert Einstein (1905) established the theory of Brownian
+motion based on the same diﬀusion equation, also underpinning the theory of
+random walks. These two works have ushered research on mathematical de-
+scriptions of ﬂuctuation phenomena in statistical physics, of quantum ﬂuctu-
+ation processes in elementary particles-ﬁelds physics, on the one hand, and of
+ﬁnancial prices on the other hand, both anchored in the random walk model
+and Wiener process. The geometric Brownian motion (GBM) (exponential
+of a standard random walk) was introduced by Osborne (1959) on empirical
+grounds and Samuelson (1965) on theoretical grounds that prices cannot be-
+come negative and price changes are proportional to previous prices. Cootner
+(1964) compiled strong empirical support for the GBM model of prices and
+its associated log-normal distribution of prices, corresponding to Gaussian
+distributions of returns. The GBM model has become the backbone of ﬁnan-
+cial economics theory, underpinning many of its fundamental pillars, such
+as Markowitz’ portfolio theory (Markowitz, 1952), Black-Scholes-Merton op-
+8
+
+
+--- Page 9 ---
+tion pricing formula (Black and Scholes, 1973; Merton, 1973) and the Capital
+Asset Pricing Model (Sharpe, 1964) and its generalized factor models of as-
+set valuations (Fama and French, 1993; Carhart, 1997). Similarly, it is not
+exaggerated to state that much of physics is occupied with modeling ﬂuctu-
+ations of (interacting) particles undergoing some kind of correlated random
+walk motion. As in physics, empirical analyses of ﬁnancial ﬂuctuations have
+forced the introduction of a number of deviations from the pure naive random
+walk model, in the form of power law distribution of log-price increments,
+long-range dependence of their absolute values (intermittency and cluster-
+ing) and absence of correlation of returns, multifractality of the absolute
+value of returns (multi-scale description due to the existence of information
+cascades) (Mandelbrot, 1997; Mandelbrot et al., 1997; Bacry et al., 2001)
+and many others (Chakraborti et al., 2011). A profusion of models have
+been introduced to account for these observations, which build on the GBM
+model.
+2.5
+Stable L´evy distributions
+In the early 1960s, mathematician Benoit Mandelbrot (1963) pioneered
+the use in Financial Economics of heavy-tailed distributions (stable L´evy
+laws), which exhibit power law tails with exponent less than 21, in con-
+trast with the traditional Gaussian (Normal) law..
+Several economists at
+the University of Chicago (Merton Miller, Eugene Fama, Richard Roll), at
+MIT (Paul Samuelson) and at Carnegie Mellon University (Thomas Sargent)
+were initially attracted by Mandelbrot’s suggestion to replace the Gaussian
+framework by a new one based on stable L´evy laws.
+In his PhD thesis,
+Eugene Fama conﬁrmed that the frequency distribution of the changes in
+the logarithms of prices was “leptokurtic”, i.e., with a high peak and fat
+tails. However, other notable economists (Paul Cootner and Clive Granger)
+strongly opposed Mandelbrot’s proposal, based on the argument that “the
+statistical theory that exists for the normal case is nonexistent for the other
+members of the class of Lvy laws.” Actually, Fama (1965), Samuelson (1967)
+and later Bawa et al. (1979) extended Markowitz’ portfolio theory to the case
+of stable Paretian markets, showing that some of the standard concepts and
+tools in ﬁnancial economics have a natural generation in the presence of
+power laws. This last statement has been made ﬁrmer even in the presence
+of non-stable power law tail distributions by Bouchaud et al. (1998). How-
+1Heavy-tailed distributions are deﬁned in the mathematical literature (Embrechts et al.,
+1997) roughly speaking by exhibiting a probability density function (pdf) with a power
+law tail of the form pdf(x) ∼1/x1+µ with 0 < µ < 2 so that the variance and other
+centered moments of higher orders do not exist.
+9
+
+
+--- Page 10 ---
+ever, the interest in stable L´evy laws faded as empirical evidence mounted
+rapidly to show that the distributions of returns are becoming closer to the
+Gaussian law at time scales larger than one month, in contradiction with
+the self-similarity hypothesis associated with the L´evy laws (Campbell et
+al., 1997; MacKenzie, 2006). In the late 1960s, Benoit Mandelbrot mostly
+stopped his research in the ﬁeld of ﬁnancial economics. However, inspired by
+his forays on the application of power laws to empirical data, he went on to
+show that non-diﬀerentiable geometries (that he coined “fractal”), previously
+developed by mathematicians (Weierstrass, H¨older, Hausdorﬀamong others)
+from the 1870s to the 1940s, could provide new ways to deal with the real
+complexity of the world (Mandelbrot, 1982). This provided an inspiration
+for the econophysicists’ enthusiasm starting in the 1990s to model the mul-
+tifractal properties associated with the long-memory properties observed in
+ﬁnancial asset returns (Mandelbrot et al., 1997; Mandelbrot, 1997; Bacry et
+al., 2001; 2013; Muzy et al., 2001; 2006; Sornette et al., 2003).
+2.6
+Power laws after Mandelbrot
+Much of the eﬀorts in the econophysics literature of the late 1990s and
+early 2000s revisited and reﬁned the initial 1963 Mandelbrot hypothesis on
+heavy-tailed distribution of returns, conﬁrming on the one hand the existence
+of the variance (which rules out the class of L´evy distributions proposed
+by Mandelbrot), but also suggesting a power law tail with an exponent µ
+close to 3 (Mantegna and Stanley, 1995; Gopikrishnan et al., 1999). Note
+however that several other groups have discussed alternatives, such as expo-
+nential (Silva et al. (2004) or stretched exponential distributions (Laherrere
+and Sornette, 1999). Moreover, Malevergne et al. (2005) and Malevergne
+and Sornette (2006; Chapter 2) developed an asymptotic statistical theory
+showing that the power law distribution is asymptotically nested within the
+larger family of stretched exponential distributions, allowing the use of the
+Wilks log-likelihood ratio statistics of nested hypotheses in order to decide
+between power law and stretched exponential for a given data set. Similarly,
+Malevergne et al. (2011) developed a uniformly most powerful unbiased test
+to distinguish between the power law and log-normal distributions, whose
+statistics turns out to be simply the sample coeﬃcient of variation (the ratio
+of the sample standard deviation (std) to the sample mean of the logarithm
+of the random variable).
+Financial engineers actually care about these technicalities because the
+tail structure controls the Value-at-Risk and other risk measures used by
+regulators as well as investors to assess the soundness of ﬁrms as well as the
+quality of investments. Physicists care because the tail may constrain the un-
+10
+
+
+--- Page 11 ---
+derlying mechanism(s). For instance, Gabaix et al. (2003) attribute the large
+movements in stock market activity to the interplay between the power-law
+distribution of the sizes of large ﬁnancial institutions and the optimal trading
+of such large institutions. Levy and Levy (2003) and Levy (2005) similarly
+emphasize the importance of the Pareto wealth distribution in explaining
+the distribution of stock returns, pointing out that the Pareto wealth dis-
+tribution, market eﬃciency, and the power law distribution of stock returns
+are closely linked and probably associated with stochastic multiplicative pro-
+cesses (Sornette and Cont, 1997; Sornette, 1998a; Malevergne and Sornette,
+2001; Huang and Solomon, 2002; Solomon and Richmond, 2002; Malcai et
+al., 2002; Lux and Sornette, 2002; Saichev et al., 2010). However, another
+strand of literature emphasizes that most large events happen at relatively
+high frequencies, and seem to be triggered by a sudden drop in liquidity
+rather than to an outsized order (Farmer et al., 2004; Weber and Rosenow,
+2006; Gillemot et al., 2007; Joulin et al., 2008).
+2.7
+Full distribution, positive feedbacks, inductive rea-
+soning
+In a seminal Nobel prize winning article, Anderson (1958) laid out the
+foundation of the physics of heterogenous complex systems by stressing the
+need to go beyond the standard description in terms of the ﬁrst two mo-
+ments (mean and variance) of statistical distributions. He pointed out the
+importance of studying their full shape in order to account for important rare
+large deviations that often control the long-term dynamics and organization
+of complex systems (dirty magnetic systems, spin-glasses). In the same vein,
+Gould (1996) has popularized the need to look at the “full house”, the full
+distribution, in order to explain many paradoxes in athletic records as well
+as in the biology of evolution. The study of spinglasses (M´ezard et al., 1987)
+and of out-of-equilibrium self-organizing complex systems (Strogatz, 2003;
+Sornette, 2004; Sethna, 2006) have started to inspire economists to break
+the stalemate associated with the concept of equilibrium, with emphasis on
+positive feedbacks and increasing returns (Arthur, 1994a; 1997; 2005; Krug-
+man, 1996) and on inductive bottom-up organizational processes (Arthur,
+1994b; Challet et al., 2005). This is in contrast with the deductive top-down
+reasoning most often used in economics, leading to the so-called “normative”
+approach of economics, which aims at providing recipes on how economies
+should be, rather than striving to describe how they actually are.
+11
+
+
+--- Page 12 ---
+3
+Thinking as an economist or as a physicist?
+3.1
+Puzzles and normative science
+Economic modeling (and ﬁnancial economics is just a branch following
+the same principles) is based on the hunt for paradoxes or puzzles. The term
+puzzle refers to problems posed by empirical observations that do not conform
+to the predictions based on theory. Many puzzles have been unearthed by
+ﬁnancial economists. One of the most famous of these paradoxes is called
+the excess volatility puzzle, which was discovered by Shiller (1981;1989) and
+LeRoy and Porter (1981).
+A puzzle emerges typically by the following procedure. A ﬁnancial mod-
+eler builds a model or a class of models based on a pillar of standard eco-
+nomic thinking, such as eﬃcient markets, rational expectations, represen-
+tative agents, and so on.
+She then draws some prediction that is then
+tested statistically, often using linear regressions on empirical data. A puz-
+zle emerges when there is a strong divergence or disagreement between the
+model prediction and the regressions, so that something seems at odds, liter-
+ally “puzzling” when viewed from the interpreting lenses of the theory. But
+rather than rejecting the model as the falsiﬁcation process in physics dic-
+tates (Dyson, 1988), the ﬁnancial modeler is excited because she has hereby
+identiﬁed a new “puzzle”: the puzzle is that the “horrible” reality (to quote
+Huxley) does not conform to the beautiful and parsimonious (and norma-
+tive) theoretical ediﬁce of neo-classical economic thinking. This is a puzzle
+because the theory should not be rejected, it cannot be rejected, and there-
+fore the data has something wrong in it, or there are some hidden eﬀects that
+have to be taken into account that will allow the facts to conﬁrm the theory
+when properly treated. In the most generous acceptation, a puzzle points
+to improvements to bring to the theory. But the remarkable thing remains
+that the theory is not falsiﬁed. It is used as the deforming lens to view and
+interpret empirical facts.
+This rather critical account should be balanced with the beneﬁts obtained
+from studying “puzzles” in economics. Indeed, since it has the goal of for-
+malising the behavior of individuals and of organisations striving to achieve
+desired goals in the presence of scarce resources, economics has played and
+is still playing a key role in helping policy makers shape their decision when
+governing organisation and nations. To be concerned with how things should
+be may be a good idea, especially with the goal of designing “better” sys-
+tems. If and when reality deviates from the ideal, this signals to economists
+the existence of some “friction” that needs to be considered and possibly
+alleviated. Frictions are important within economics and, in fact, are often
+12
+
+
+--- Page 13 ---
+modelled.
+3.2
+The volatility smile
+This ideology is no better illustrated than by the concept of the “volatility
+smile”. The celebrated Black-Scholes-Merton pricing formula calculates the
+value of options, derivatives deﬁned on underlying assets, such as the Euro-
+pean call option that gives the right but not the obligation for its holder to
+buy the underlying stock at some ﬁxed exercise price K at a ﬁxed maturity
+time T in the future (Black and Scholes, 1973; Merton, 1973). In addition to
+the exercise price K and the time T −t to maturity counted from the present
+time t, the Black-Scholes-Merton pricing formula depends on several other
+parameters, namely the risk-free interest rate, the volatility σ of the returns
+of the underlying asset as well as its present price p(t).
+As recounted by MacKenzie (2006), the spreading use of the Black-
+Scholes-Merton pricing formula associated with the opening of the Chicago
+Board Options Exchange in 1973 led to a progressive convergence of traded
+option prices to their Black-Scholes theoretical valuation, legitimizing and
+catalyzing the booming derivative markets. This developed nicely until the
+crash of 19 October 1987, which, in one stroke, broke for ever the validity of
+the formula. Since that day, one literally fudges the Black-Scholes-Merton
+formula by adjusting the volatility parameter to a value σimplied such that
+the Black-Scholes-Merton formula coincides with the empirical price. The
+corresponding volatility value is called “implied”, because it is the value of σ
+needed in the formula, and thus “implied” by the markets, in order for theory
+and empirics to agree. The volatility smile refers to the fact that σimplied is
+not a single number, not even a curve, but rather a generally convex surface,
+function of both K and T −t: in order to reconcile the failing formula, one
+needs fudged values of σ for all possible pairs of K and T −t traded on the
+market for each underlying asset.
+This is contrast to the theory that assumes a single unique ﬁxed value
+representing the standard deviation of the returns of the underlying asset.
+The standard ﬁnancial rationale is that the volatility smile σimplied(K, T −t)
+quantiﬁes the aggregate market view on risks. Rather than improving the
+theory, the failed formula is seen as the engine for introducing an eﬀective
+risk metric that gauges the market risk perception and appetites.
+More-
+over, the volatility smile surface σimplied(K, T −t) depends on time, which is
+interpreted as reﬂecting the change of risk perceptions as a function of eco-
+nomic and market conditions. This is strikingly diﬀerent from the physical
+approach, which would strive to improve or even cure the Black-Scholes-
+Merton failure (Bouchaud and Sornette, 1994; Bouchaud and Potters, 2003)
+13
+
+
+--- Page 14 ---
+by accounting for non-Gaussian features of the distribution of returns, long-
+range dependence in the volatility as well as other market imperfections that
+are neglected in the standard Black-Scholes-Merton theory.
+The implied volatility type of thinking is so much ingrained that all
+traders and investors are trained in this way, think according to the risks
+supposedly revealed by the implied volatility surface and develop correspond-
+ingly their intuition and operational implementations. By their behaviors,
+the traders actually justify the present use of the implied volatility surface
+since, in ﬁnance, if everybody believes in something, it will happen by their
+collective actions, called self-fulﬁlling prophecies. It is this behavioral bound-
+edly rational feedback of traders’ perception on risk taking and hedging that
+is neglected in the Black-Scholes-Merton theory.
+Actually, Potters et al.
+(1998) showed, by studying in detail the market prices of options on liquid
+markets, that the market has empirically corrected the simple, but inade-
+quate Black-Scholes formula to account for the fat tails and the correlations
+in the scale of ﬂuctuations. These aspects, although not included in the pric-
+ing models, are found very precisely reﬂected in the price ﬁxed by the market
+as a whole.
+Sircar and Papanicolaou (1998) showed that a partial account of this
+feedback of hedging in the Black-Scholes theory leads to increased volatil-
+ity. Wyart and Bouchaud (2007) formulated a nice simple model for self-
+referential behavior in ﬁnancial markets where agents build strategies based
+on their belief of the existence of correlation between some ﬂow of informa-
+tion and prices. Their belief followed by action makes the former realized
+and may produce excess volatility and regime shifts that can be associated
+with the concept of convention (Orl´ean, 1995).
+3.3
+The excess volatility puzzle: thinking as an economist
+As another illustration of the fundamental diﬀerence between how economists
+and physicists construct models and analyze empirical data, let us dwell fur-
+ther on the “excess volatility puzzle” discovered by Shiller (1981;1989) and
+LeRoy and Porter (1981), according to which observed prices ﬂuctuate much
+too much compared with what is expected from their fundamental valuation.
+Physics uses the concept of causality: prices should derive from funda-
+mentals. Thus, let us construct our best estimate for the fundamental price
+p∗(t).
+The price, which should be a “consequence” of the fundamentals,
+should be an approximation of it. The physical idea is that the dynamics of
+agents in their expectations and trading should tend to get the right answer,
+14
+
+
+--- Page 15 ---
+that is, p(t) should be an approximation of p∗(t). Thus, we write
+p(t) = p∗(t) + ǫ′(t) ,
+(1)
+and there is no excess volatility paradox. The large volatility of p(t) com-
+pared with p∗(t) provides an information on the price forming processes, and
+in particular tells us that the dynamics of price formation is not optimal
+from a fundamental valuation perspective. The corollary is that prices move
+for other reasons than fundamental valuations and this opens the door to
+investigating the mechanisms underlying price ﬂuctuations.
+In contrast, when thinking in equilibrium, the notion of causality or cau-
+sation ceases to a large degree to play a role in ﬁnance. According to ﬁnance,
+it is not because the price should be the logical consequence of the fundamen-
+tals that it should derive from it. In contrast, the requirement of “rational
+expectations” (namely that agents’ expectations equal true statistical ex-
+pected values) gives a disproportionate faith in the market mechanism and
+collective agent behavior so that, by a process similar to Adam Smith’s invis-
+ible hand, the collective of agents by the sum of their actions, similar to the
+action of a central limit theorem given an average converging with absolute
+certainty to the mean with no ﬂuctuation in the large N limit, converge to
+the right fundamental price with almost certainty. Thus, the observed price
+is the right price and the fundamental price is only approximately estimated
+because not all fundamentals are known with good precision. And here comes
+the excess volatility puzzle.
+In order to understand all the fuss made in the name of the excess volatil-
+ity puzzle, we need to go back to the deﬁnition of value. According the ef-
+ﬁcient market hypothesis (Fama, 1970; 1991; Samuelson, 1965; 1973), the
+observed price p(t) of a share (or of a portfolio of shares representing an
+index) equals the mathematical expectation, conditional on all information
+available at the time, of the present value p∗(t) of actual subsequent divi-
+dends accruing to that share (or portfolio of shares). This fundamental value
+p∗(t) is not known at time t, and has to be forecasted. The key point is
+that the eﬃcient market hypothesis holds that the observed price equals the
+optimal forecast of it. Diﬀerent forms of the eﬃcient markets model diﬀer
+for instance in their choice of the discount rate used in the present value, but
+the general eﬃcient markets model can be written as
+p(t) = Et[p∗(t)] ,
+(2)
+where Et refers to the mathematical expectation conditional on public infor-
+mation available at time t. This equation asserts that any surprising move-
+ment in the stock market must have at its origin some new information about
+15
+
+
+--- Page 16 ---
+the fundamental value p∗(t). It follows from the eﬃcient markets model that
+p∗(t) = p(t) + ǫ(t)
+(3)
+where ǫ(t) is a forecast error. The forecast error ǫ(t) must be uncorrelated
+with any information variable available at time t, otherwise the forecast would
+not be optimal; it would not be taking into account all information. Since
+the price p(t) itself constitutes a piece of information at time t, p(t) and
+ǫ(t) must be uncorrelated with each other. Since the variance of the sum of
+two uncorrelated variables is the sum of their variances, it follows that the
+variance of p∗(t) must equal the variance of p(t) plus the variance of ǫ(t).
+Hence, since the variance of ǫ(t) cannot be negative, one obtains that the
+variance of p∗(t) must be greater than or equal to that of p(t). This expresses
+the fundamental principle of optimal forecasting, according to which the
+forecast must be less variable than the variable forecasted.
+Empirically, one observes that the volatility of the realized price p(t) is
+much larger than the volatility of the fundamental price p∗(t), as estimated
+from all the sources of ﬂuctuations of the variables entering in the deﬁnition
+of p∗(t). This is the opposite of the prediction resulting from expression (3).
+This disagreement between theoretical prediction and empirical observation
+is then referred to as the “excess volatility puzzle”. This puzzle is consid-
+ered by many ﬁnancial economists as perhaps the most important challenge
+to the orthodoxy of eﬃcient markets of neo-classical economics and many
+researchers have written on its supposed resolution.
+To a physicist, this puzzle is essentially non-existent. Rather than (3), a
+physicist would indeed have written expression (1), that is, the observed price
+is an approximation of the fundamental price, up to an error of appreciation
+of the market.
+The diﬀerence between (3) and (1) is at the core of the
+diﬀerence in the modeling strategies of economists, that can be called top-
+down (or from rational expectations and eﬃcient markets), compared with
+the bottom-up or microscopic approach of physicists. According to equation
+(1), the fact that the volatility of p(t) is larger than that of the fundamental
+price p∗(t) is not a problem; it simply expresses the existence of a large noise
+component in the pricing mechanism.
+Black (1985) himself introduced the notion of “noise traders”, embodying
+the presence of traders who are less than fully rational and whose inﬂuence
+can cause prices and risk levels to diverge from expected levels. Models built
+on the analogy with the Ising model to capture social inﬂuences between in-
+vestors are reviewed in the next section, which often provide explanations for
+the excess volatility puzzle. Let us mention in particular our own candidate
+in terms of the “noise-induced volatility” phenomenon (Harras et al., 2012).
+16
+
+
+--- Page 17 ---
+4
+The Ising model and ﬁnancial economics
+4.1
+Roots and sources
+The Ising model, introduced initially as a mathematical model of ferro-
+magnetism in statistical mechanics (Brush, 1967), is now part of the common
+culture of physics, as the simplest representation of interacting elements with
+a ﬁnite number of possible states. The model consists of a large number of
+magnetic moments (or spins) connected by links within a graph, network
+or grid. In the simplest version, the spins can only take two values (±1),
+which represent the direction in which they point (up or down). Each spin
+interacts with its direct neighbors, tending to align together in a common
+direction, while the temperature tends to make the spin orientations random.
+Due to the ﬁght between the ordering alignment interaction and the disor-
+dering temperature, the Ising model exhibits a non-trivial phase transition
+in systems at and above two dimensions. Beyond ferromagnetism, it has de-
+veloped into diﬀerent generalized forms that ﬁnd interesting applications in
+the physics of ill-condensed matter such as spin-glasses (Mezard et al., 1987)
+and in neurobiology (Hopﬁeld, 1982).
+There is also a long tradition of using the Ising model and its extensions
+to represent social interactions and organization (Wiedlich, 1971; 1991; 2000;
+Callen and Shapero, 1974; Montroll and Badger, 1974; Galam et al., 1982;
+Orlean, 1995). Indeed, the analogy between magnetic polarization and opin-
+ion polarization was presented in the early 1970s by Weidlich (1971), in the
+framework of “Sociodynamics”, and later by Galam et al. (1982) in a mani-
+festo for “Sociophysics”. In this decade, several eﬀorts towards a quantitative
+sociology developed (Schelling, 1971; 1978; Granovetter, 1978; 1983), based
+on models essentially undistinguishable from spin models.
+A large set of economic models can be mapped onto various versions of
+the Ising model to account for social inﬂuence in individual decisions (see
+Phan et al. (2004) and references therein). The Ising model is indeed one of
+the simplest models describing the competition between the ordering force of
+imitation or contagion and the disordering impact of private information or
+idiosyncratic noise, which leads already to the crucial concept of spontaneous
+symmetry breaking and phase transitions (McCoy and Wu, 1973).
+It is
+therefore not surprising to see it appearing in one guise or another in models
+of social imitation (Galam and Moscovici, 1991) and of opinion polarization
+(Galam, 2004; Sousa et al., 2005; Stauﬀer, 2005; Weidlich and Huebner,
+2008).
+The dynamical updating rules of the Ising model can be shown to describe
+the formation of decisions of boundedly rational agents (Roehner and Sor-
+17
+
+
+--- Page 18 ---
+nette, 2000) or to result from optimizing agents whose utilities incorporate
+a social component (Phan et al., 2004).
+An illuminating way to justify the use in social systems of the Ising model
+(and of its many generalizations) together with a statistical physics approach
+(in terms of the Boltzmann factor) derives from discrete choice models. Dis-
+crete choice models consider as elementary entities the decision makers who
+have to select one choice among a set of alternatives (Train, 2003). For in-
+stance, the choice can be to vote for one of the candidates, or to ﬁnd the right
+mate, or to attend a university among several or to buy or sell a given ﬁnan-
+cial asset. To develop the formalism of discrete choice models, the concept of
+a random utility is introduced, which is used to derive the most prominent
+discrete choice model, the Logit model, which has a strong resemblance with
+Boltzmann statistics. The formulation of a binary choice model of socially
+interacting agents then allows one to obtain exactly an Ising model, which
+establishes a connection between studies on Ising-like systems in physics and
+collective behavior of social decision makers.
+4.2
+Random utilities, Logit model and Boltzmann fac-
+tor
+In this section, our goal is to demonstrate the intimate link between
+the economic approach of random utilities and the framework of statistical
+physics, on which the treatment of the Ising model in particular relies.
+Random Utility Models provide a standard framework for discrete choice
+scenarios. The decision maker has to choose one alternative out of a set X
+of N possible ones. For each alternative x ∈X, the decision maker obtains
+the utility (or payoﬀ) U(x). The decision maker will choose the alternative
+that maximizes his/her utility. However, neither an external observer nor
+the decision maker herself may be fully cognizant of the exact form of the
+utility function U(x). Indeed, U(x) may depend upon a number of attributes
+and explanatory variables, the environment as well as emotions, which are
+impossible to specify or measure exhaustively and precisely. This is captured
+by writing
+U(x) = V (x) + ǫ(x) ,
+(4)
+where ǫ(x) is the unknown part decorating the normative utility V (x). One
+interpretation is that ǫ(x) can represent the component of the utility of a de-
+cision maker that is unknown or hidden to an observer trying to rationalize
+the choices made by the decision maker, as done in experiments interpreted
+within the utility framework. Or ǫ(x) could also contain an intrinsic random
+part of the decision unknown to the decision maker herself, rooted in her un-
+18
+
+
+--- Page 19 ---
+conscious. As ǫ(x) is unknown to the researcher, it will be assumed random,
+hence the name, random utility model.
+The probability for the decision maker to choose x over all other alterna-
+tives Y = X −{x} is then given by
+P(x)
+=
+Prob (U(x) > U(y) , ∀y ∈Y )
+=
+Prob (V (x) −V (y) > ǫ(y) −ǫ(x) , ∀y ∈Y ) .
+(5)
+Holman and Marley (as cited in Luce and Suppes (1965)) showed that if
+the unknown utility ǫ(x) is distributed according to the double exponential
+distribution, also called the Gumbel distribution, which has a cumulative
+distribution function (CDF) given by
+FG(x) = e−e−(x−µ)/γ
+(6)
+with positive constants µ and γ, then P(x) deﬁned in expression (5) is given
+by the logistic model, which obeys the axiom of independence from irrelevant
+alternatives (Luce, 1959). This axiom, at the core of standard utility theory,
+states that the probability of choosing one possibility against another from
+a set of alternatives is not aﬀected by the addition or removal of other alter-
+natives, leading to the name “independence from irrelevant alternatives”.
+Mathematically, it can be expressed as follows. Suppose that X represents
+the complete set of possible choices and consider S ⊂X, a subset of these
+choices. If, for any element x ∈X, there is a ﬁnite probability pX(x) ∈]0; 1[
+of being chosen, then Luce’s choice axiom is deﬁned as
+pX(x) = pS(x) · pX(S) ,
+(7)
+where pX(S) is the probability of choosing any element in S from the set X.
+Writing expression (7) for another element y ∈X and taking the ratios term
+by term leads to
+pS(x)
+pS(y) = pX(x)
+pX(y) ,
+(8)
+which is the mathematical expression of the axiom of independence from
+irrelevant alternatives. The other direction was proven by McFadden (1974),
+who showed that, if the probability satisﬁes the independence from irrelevant
+alternatives condition, then the unknown utility ǫ(x) has to be distributed
+according to the Gumbel distribution.
+The derivation of the Logit model from expressions (5) and (6) is as
+follows. In equation (5), P(x) is written
+P(x)
+=
+Prob (V (x) −V (y) + ǫ(x) > ǫ(y) , ∀y ∈Y ) ,
+=
+Z +∞
+−∞
+ Y
+y∈Y
+e−e−(V (x)−V (y)+ǫ(x))/γ
+!
+fG(ǫ(x))dǫ(x) ,
+(9)
+19
+
+
+--- Page 20 ---
+where µ has been set to 0 with no loss of generality and fG(ǫ(x)) = 1
+γe−x/γe−e−x/γ
+is the probability density function (PDF) associated with the CDF (6). Per-
+forming the change of variable u = e−ǫ(x)/γ, we have
+P(x)
+=
+Z +∞
+0
+ Y
+y∈Y
+e−ue(V (x)−V (y))/γ
+!
+e−udu ,
+=
+Z +∞
+0
+e−u P
+y∈Y e−(V (x)−V (y))/γe−udu ,
+=
+1
+1 + e−V (x)/γ P
+y∈Y eV (y)/γ .
+(10)
+Multiplying both numerator and denominator of the last expression (10) by
+eV (x)/γ, keeping in mind that Y = X −x, the well known logit formulation
+is recovered,
+P(x) =
+eV (x)/γ
+P
+y∈X eV (y)/γ ,
+(11)
+which fulﬁlls the condition of independence from irrelevant alternatives. Note
+that the Logit probability (11) has the same form as the Boltzmann proba-
+bility in statistical physics for a system to be found in a state of with energy
+−V (x) at a given temperature γ.
+4.3
+Quantum decision theory
+There is a growing realisation that even these above frameworks do not
+account for the many fallacies and paradoxes plaguing standard decision theo-
+ries (see for instance http://en.wikipedia.org/wiki/List_of_fallacies).
+A strand of literature has been developing since about 2006 that borrows the
+concept of interference and entanglement used in quantum mechanics in order
+to attempt to account for theses paradoxes (Busemeyer et al., 2006; Pothos
+and Busemeyer, 2009). A recent monograph reviews the developments using
+simple analogs of standard physical toy models, such as the two entangled
+spins underlying the Einstein-Poldovsky-Rosen phenomenon (Busemeyer and
+Bruza, 2012).
+From our point of view, the problem however is that these proposed reme-
+dies are always designed for the speciﬁc fallacy or paradox under considera-
+tion and require a speciﬁc set-up that cannot be generalised. To address this,
+Yukalov and Sornette (2008-2013) have proposed a general framework, which
+extends the interpretation of an intrinsic random component in any decision
+by stressing the importance of formulating the problem in terms of composite
+prospects. The corresponding “quantum decision theory” (QDT) is based on
+20
+
+
+--- Page 21 ---
+the mathematical theory of separable Hilbert spaces. We are not suggesting
+that the brain operates according to the rule of quantum physics. It is just
+that the mathematics of Hilbert spaces, used to formalized quantum mechan-
+ics, provides the simplest generalization of the probability theory axiomatized
+by Kolmogorov, which allows for entanglement. This mathematical structure
+captures the eﬀect of superposition of composite prospects, including many
+incorporated intentions, which allows one to describe a variety of interesting
+fallacies and anomalies that have been reported to particularize the decision
+making of real human beings. The theory characterizes entangled decision
+making, non-commutativity of subsequent decisions, and intention interfer-
+ence.
+Two ideas form the basement of the QDT developed by Yukalov and Sor-
+nette (2008-2013). First, our decision may be intrinsically probabilistic, i.e.,
+when confronted with the same set of choices (and having forgotten), we may
+choose diﬀerent alternatives. Second, the attraction to a given option (say
+choosing where to vacation among the following locations: Paris, New York,
+Roma, Hawaii or Corsica) will depend in signiﬁcant part on the presentation
+of the other options, reﬂecting a genuine “entanglement” of the propositions.
+The consideration of composite prospects using the mathematical theory of
+separable Hilbert spaces provides a natural and general foundation to capture
+these eﬀects. Yukalov and Sornette (2008-2013) demonstrated how the viola-
+tion of the Savage’s sure-thing principle (disjunction eﬀect) can be explained
+quantitatively as a result of the interference of intentions, when making deci-
+sions under uncertainty. The sign and amplitude of the disjunction eﬀects in
+experiments are accurately predicted using a theorem on interference alter-
+nation, which connects aversion-to-uncertainty to the appearance of negative
+interference terms suppressing the probability of actions. The conjunction
+fallacy is also explained by the presence of the interference terms. A series
+of experiments have been analysed and shown to be in excellent agreement
+with a priori evaluation of interference eﬀects. The conjunction fallacy was
+also shown to be a suﬃcient condition for the disjunction eﬀect and novel
+experiments testing the combined interplay between the two eﬀects are sug-
+gested.
+Our approach is based on the von Neumann theory of quantum measure-
+ments (von Neumann, 1955), but with an essential diﬀerence. In quantum
+theory, measurements are done over passive systems, while in decision the-
+ory, decisions are taken by active human beings. Each of the latter is char-
+acterized by its own strategic state of mind, speciﬁc for the given decision
+maker. Therefore, expectation values in quantum decision theory are deﬁned
+with respect to the decision-maker strategic state. In contrast, in standard
+measurement theory, expectation values are deﬁned through an arbitrary
+21
+
+
+--- Page 22 ---
+orthonormal basis.
+In order to give a feeling of how QDT works in practice, let us delineate
+its scheme. We refer to the published papers (Yukalov and Sornette, 2008,
+2009a,b,c; 2010a,b; 2011) for more in-depth presentations and preliminary
+tests. The ﬁrst key idea of QDT is to consider the so-called prospects, which
+are the targets of the decision maker. Let a set of prospects πj be given,
+pertaining to a complete transitive lattice
+L ≡{πj : j = 1, 2, . . . , NL} .
+(12)
+The aim of decision making is to ﬁnd out which of the prospects is the most
+favorable.
+There can exist two types of setups. One is when a number of agents,
+say N, choose between the given prospects. Another type is when a single
+decision maker takes decisions in a repetitive manner, for instance taking
+decisions N times. These two cases are treated similarly.
+To each prospect πj, we put into correspondence a vector |πj > in the
+Hilbert space, M, called the mind space, and the prospect operator
+ˆP(πj) ≡| πj ⟩⟨πj | .
+QDT is a probabilistic theory, with the prospect probability deﬁned as the
+average
+p(πj) ≡⟨s | ˆP(πj) | s ⟩
+over the strategic state |s > characterizing the decision maker.
+Though some intermediate steps of the theory may look a bit compli-
+cated, the ﬁnal results are rather simple and can be straightforwardly used
+in practice. Thus, for the prospect probabilities, we get ﬁnally
+p(πj) = f(πj) + q(πj) ,
+(13)
+whose set deﬁnes a probability measure on the prospect lattice L, such that
+X
+πj∈L
+p(πj) = 1 ,
+0 ≤p(πj) ≤1 .
+(14)
+The most favorable prospect corresponds to the largest of probabilities (13).
+The ﬁrst term on the right-hand side of Eq. (13) is the utility factor
+deﬁned as
+f(πj) ≡
+U(πj)
+P
+j U(πj)
+(15)
+22
+
+
+--- Page 23 ---
+through the expected utility U(πj) of prospects. The utilities are calculated
+in the standard way accepted in classical utility theory. By this deﬁnition
+X
+πj∈L
+f(πj) = 1 ,
+0 ≤f(πj) ≤1 .
+The second term is an attraction factor that is a contextual object de-
+scribing subconscious feelings, emotions, and biases, playing the role of hid-
+den variables. Despite their contextuality, it is proved that the attraction
+factors always satisfy the alternation property, such that the sum
+X
+πj∈L
+q(πj) = 0
+(−1 ≤q(πj) ≤1)
+(16)
+over the prospect lattice L be zero. In addition, the average absolute value
+of the attraction factor is estimated by the quarter law
+1
+NL
+X
+πj∈L
+| q(πj) | = 1
+4 .
+(17)
+These properties (16) and (17) allow us to quantitatively deﬁne the prospect
+probabilities (13).
+The prospect π1 is more useful than π2, when f(π1) > f(π2). And π1
+is more attractive than π2 , if q(π1) > q(π2). The comparison between the
+attractiveness of prospects is done on the basis of the following criteria: more
+certain gain, more uncertain loss, higher activity under certainty, and lower
+activity under uncertainty and risk.
+Finally, decision makers choose the preferable prospect, whose probability
+(13) is the largest. Therefore, a prospect can be more useful, while being less
+attractive, as a result of which the choice can be in favor of the less useful
+prospect. For instance, the prospect π1 is preferable over π2 when
+f(π1) −f(π2) > q(π2) −q(π1) .
+(18)
+This inequality illustrates the situation and explains the appearance of para-
+doxes in classical decision making, while in QDT such paradoxes never arise.
+The existence of the attraction factor is due to the choice under risk and
+uncertainty. If the latter would be absent, we would return to the classical
+decision theory, based on the maximization of expected utility.
+Then we
+would return to the variety of known paradoxes.
+The comparison with experimental data is done as follows. Let Nj agents
+of the total number N choose the prospect πj. Then the aggregate probability
+of this prospect is given (for a large number of agents) by the frequency
+pexp(πj) = Nj
+N .
+(19)
+23
+
+
+--- Page 24 ---
+This experimental probability is to be compared with the theoretical prospect
+probability (13), using the standard tools of statistical hypothesis testing. In
+this way, QDT provides a practical scheme that can be applied to realistic
+problems. The development of the scheme for its application to various kinds
+of decision making in psychology, economics, and ﬁnance, including temporal
+eﬀects, provides interesting challenges.
+Recently, Yukalov and Sornette (2013a) have also been able to deﬁne
+quantum probabilities of composite events, thus introducing for the ﬁrst time
+a rigorous and coherent generalisation of the probability of joint events. This
+problem is actually of high importance for the theory of quantum measure-
+ments and for quantum decision theory that is a part of measurement theory.
+Yukalov and Sornette (2013a) showed that Luders probability of consecutive
+measurements is a transition probability between two quantum states and
+that this probability cannot be treated as a quantum extension of the classi-
+cal conditional probability. Similarly, the Wigner distribution was shown to
+be a weighted transition probability that cannot be accepted as a quantum
+extension of the classical joint probability. Yukalov and Sornette (2013a) sug-
+gested the deﬁnition of quantum joint probabilities by introducing composite
+events in multichannel measurements. Based on the notion of measurements
+under uncertainty, they demonstrated that the necessary condition for mode
+interference is the entanglement of the composite prospect together with the
+entanglement of the composite statistical state. Examples of applications
+include quantum games and systems with multimode states, such as atoms,
+molecules, quantum dots, or trapped Bose-condensed atoms with several co-
+herent modes (Yukalov et al., 2013).
+4.4
+Discrete choice with social interaction and Ising
+model
+Among the diﬀerent variables that inﬂuence the utility of the decision
+maker, partial information, cultural norms as well as herding tend to push her
+decision towards that of her acquaintances as well as that of the majority. Let
+us show here how access to partial information and rational optimization of
+her expected payoﬀleads to strategies described by the Ising model (Roehner
+and Sornette, 2000).
+Consider N traders in a social network, whose links represent the com-
+munication channels between the traders. We denote N(i) the number of
+traders directly connected to i in the network. The traders buy or sell one
+asset at price p(t), which evolves as a function of time assumed to be discrete
+with unit time step. In the simplest version of the model, each agent can
+24
+
+
+--- Page 25 ---
+either buy or sell only one unit of the asset. This is quantiﬁed by the buy
+state si = +1 or the sell state si = −1. Each agent can trade at time t−1 at
+the price p(t −1) based on all previous information up to t −1. We assume
+that the asset price variation is determined by the following equation
+p(t) −p(t −1)
+p(t −1)
+= F
+ PN
+i=1 si(t −1)
+N
+!
++ σ η(t) ,
+(20)
+where σ is the price volatility per unit time and η(t) is a white Gaussian noise
+with unit variance that represents for instance the impact resulting from the
+ﬂow of exogenous economic news.
+The ﬁrst term in the r.h.s. of (20) is the price impact function describ-
+ing the possible imbalance between buyers and sellers. We assume that the
+function F(x) is such that F(0) = 0 and is monotonically increasing with
+its argument. Kyle (1985) derived his famous linear price impact function
+F(x) = λx within a dynamic model of a market with a single risk neutral in-
+sider, random noise traders, and competitive risk neutral market makers with
+sequential auctions. Huberman and Stanzl (2004) later showed that, when
+the price impact of trades is permanent and time-independent, only linear
+price-impact functions rule out quasi-arbitrage, the availability of trades that
+generate inﬁnite expected proﬁts. We note however that this normative lin-
+ear price impact impact has been challenged by physicists. Farmer et al.
+(2013) report empirically that market impact is a concave function of the
+size of large trading orders. They rationalize this observation as resulting
+from the algorithmic execution of splitting large orders into small pieces and
+executing incrementally. The approximate square-root impact function has
+been earlier rationalized by Zhang (1999) with the argument that the time
+needed to complete a trade of size L is proportional to L and that the unob-
+servable price ﬂuctuations obey a diﬀusion process during that time. Toth
+et al. (2011) propose that the concave market impact function reﬂects the
+fact that markets operate in a critical regime where liquidity vanishes at the
+current price, in the sense that all buy orders at price less than current prices
+have been satisﬁed, and all sell orders at prices larger than the current price
+have also been satisﬁed.
+The studies (Bouchaud et al., 2009; Bouchaud,
+2010), which distinguish between temporary and permanent components of
+market impact, show important links between impact function, the distri-
+bution of order sizes, optimization of strategies and dynamical equilibrium.
+Kyle (private communication, 2012) and Gatheral and Schied (2013) point
+out that the issue is far from resolved due to price manipulation, dark pools,
+predatory trading and no well-behaved optimal order execution strategy.
+Returning to the implication of expression (20), at time t −1, just when
+25
+
+
+--- Page 26 ---
+the price p(t−1) has been announced, the trader i deﬁnes her strategy si(t−1)
+that she will hold from t−1 to t, thus realizing the proﬁt (p(t)−p(t−1))si(t−
+1). To deﬁne si(t −1), the trader calculates her expected proﬁt E[P&L],
+given the past information and her position, and then chooses si(t −1) such
+that E[P&L] is maximal. Within the rational expectation model, all traders
+have full knowledge of the fundamental equation (20) of their ﬁnancial world.
+However, they cannot poll the positions {sj} that all other traders will take,
+which will determine the price drift according to expression (20). The next
+best thing that trader i can do is to poll her N(i) “neighbors” and construct
+her prediction for the price drift from this information. The trader needs
+an additional information, namely the a priori probability P+ and P−for
+each trader to buy or sell. The probabilities P+ and P−are the only pieces
+of information that she can use for all the traders that she does not poll
+directly. From this, she can form her expectation of the price change. The
+simplest case corresponds to a neutral market where P+ = P−= 1/2. To
+allow for a simple discussion, we restrict the discussion to the linear impact
+function F(x) = λx. The trader i thus expects the following price change
+λ
+ P∗N(i)
+j=1
+sj(t −1)
+N
+!
++ σ ˆηi(t) ,
+(21)
+where the index j runs over the neighborhood of agent i and ˆηi(t) represents
+the idiosyncratic perception of the economic news as interpreted by agent
+i.
+Notice that the sum is now restricted to the N(i) neighbors of trader
+i because the sum over all other traders, whom she cannot poll directly,
+averages out. This restricted sum is represented by the star symbol. Her
+expected proﬁt is thus
+E[P&L] =
+ 
+λ
+ P∗N(i)
+j=1
+sj(t −1)
+N
+!
++ σ ˆηi(t)
+!
+p(t −1) si(t −1) .
+(22)
+The strategy that maximizes her proﬁt is
+si(t −1) = sign
+
+λ
+N
+N(i)∗
+X
+j=1
+sj(t −1) + σ ˆηi(t)
+
+.
+(23)
+Equation (23) is nothing but the kinetic Ising model with Glauber dynamics
+if the random innovations ˆηi(t) are distributed with a Logistic distribution
+(see demonstration in the Appendix of (Harras et al., 2012)).
+This evolution equation (23) belongs to the class of stochastic dynamical
+models of interacting particles (Liggett, 1995; 1997), which have been much
+26
+
+
+--- Page 27 ---
+studied mathematically in the context of physics and biology. In this model
+(23), the tendency towards imitation is governed by λ/N, which is called the
+coupling strength; the tendency towards idiosyncratic behavior is governed
+by σ. Thus the value of λ/N relative to σ determines the outcome of the
+battle between order (imitation process) and disorder, and the development
+of collective behavior. More generally, expression (23) provides a convenient
+formulation to model imitation, contagion and herding and many generaliza-
+tions have been studied that we now brieﬂy review.
+5
+Generalized kinetic Ising model for ﬁnan-
+cial economics
+The previous section motivates the notion that the Ising model provides
+a natural framework to study the collective behaviour of interacting agents.
+Many generalisations have been introduced in the literature and we provide
+a brief survey here.
+The existence of an underlying Ising phase transition, together with the
+mechanism of “sweeping of an instability” (Sornette, 1994; Stauﬀer and Sor-
+nette, 1999; Sornette et al., 2002), was found to lead to the emergence of
+collective imitation that translate into the formation of transient bubbles,
+followed by crashes (Kaizoji et al., 2002).
+Bouchaud and Cont (1998) presented a nonlinear Langevin equation of
+the dynamics of a stock price resulting from the unbalance between supply
+and demand, themselves based on two opposite opinions (sell and buy). By
+taking into account the feedback eﬀects of price variations onto themselves,
+they ﬁnd a formulation analogous to an inertial particle in a quartic potential
+as in the mean-ﬁeld theory of phase transitions.
+Brock and Durlauf (1999) constructed a stylized model of community
+theory choice based on agents’ utilities that contains a term quantifying the
+degree of homophily which, in a context of random utilities, lead to a for-
+malism essentially identical to the mean ﬁeld theory of magnetism. They
+ﬁnd that periods of extended disagreement alternate with periods of rapid
+consensus formation, as a result of choices that are made based on compar-
+isons between pairs of alternatives. Brock and Durlauf (2001) further extend
+their model of aggregate behavioral outcomes, in the presence of individual
+utilities that exhibits social interaction eﬀects, to the case of generalized lo-
+gistic models of individual choice that incorporate terms reﬂecting the desire
+of individuals to conform to the behavior of others in an environment of non-
+cooperative decision making. A multiplicity of equilibria is found when the
+27
+
+
+--- Page 28 ---
+social interactions exceed a particular threshold and decision making is non-
+cooperative. As expected from the neighborhood of phase changes, a large
+susceptibility translates into the observation that small changes in private
+utility lead to large equilibrium changes in average behavior. The originality
+of Brock and Durlauf (2001) is to be able to introduce heterogeneity and
+uncertainty into the microeconomic speciﬁcation of decision making, as well
+as to derive an implementable likelihood function that allows one to calibrate
+the agent-based model onto empirical data.
+Kaizoji (2000) used an inﬁnite-range Ising model to embody the tendency
+of traders to be inﬂuenced by the investment attitude of other traders, which
+gives rise to regimes of bubbles and crashes interpreted as due to the collec-
+tive behavior of the agents at the Ising phase transition and in the ordered
+phase. Biased agent’s idiosyncratic preference corresponds to the existence
+of an eﬀective “magnetic ﬁeld” in the language of physics. Because the so-
+cial interactions compete with the biased preference, a ﬁrst-order transition
+exists, which is associated with the existence of crashes.
+Bornholdt (2001) studied a simple spin model in which traders interact at
+diﬀerent scales with interactions that can be of opposite signs, thus leading
+to “frustration”, and traders are also related to each other via their aggre-
+gate impact on the price. The frustration causes metastable dynamics with
+intermittency and phases of chaotic dynamics, including phases reminiscent
+of ﬁnancial bubbles and crashes. While the model exhibits phase transitions,
+the dynamics deemed relevant to ﬁnancial markets is sub-critical.
+Krawiecki et al.
+(2002) used an Ising model with stochastic coupling
+coeﬃcients, which leads to volatility clustering and a power law distribution
+of returns at a single ﬁxed time scale.
+Michard and Bouchaud (2005) have used the framework of the Random
+Field Ising Model, interpreted as a threshold model for collective decisions
+accounting both for agent heterogeneity and social imitation, to describe
+imitation and social pressure found in data from three diﬀerent sources: birth
+rates, sales of cell phones and the drop of applause in concert halls.
+Nadal et al. (2005) developed a simple market model with binary choices
+and social inﬂuence (called “positive externality” in economics), where the
+heterogeneity is either of the type represented by the Ising model at ﬁnite
+temperature (known as annealed disorder) in a uniform external ﬁeld (the
+random utility models of Thurstone) or is ﬁxed and corresponds to a a par-
+ticular case of the quenched disorder model known as a random ﬁeld Ising
+model, at zero temperature (called the McFadden and Manski model). A
+novel ﬁrst-order transition between a high price and a small number of buy-
+ers, to another one with a low price and a large number of buyers, arises
+when the social inﬂuence is strong enough. Gordon et al. (2009) further
+28
+
+
+--- Page 29 ---
+extend this model to the case of socially interacting individuals that make
+a binary choice in a context of positive additive endogenous externalities.
+Speciﬁcally, the diﬀerent possible equilibria depend on the distribution of id-
+iosyncratic preferences, called here Idiosyncratic Willingnesses to Pay (IWP)
+and there are regimes where several equilibria coexist, associated with non-
+monotonous demand function as a function of price. This model is again
+strongly reminiscent of the random ﬁeld Ising model studied in the physics
+literature.
+Grabowski and Kosinski (2006) modeled the process of opinion forma-
+tion in the human population on a scale-free network, taking into account
+a hierarchical, two-level structures of interpersonal interactions, as well as a
+spatial localization of individuals. With Ising-like interactions together with
+a coupling with a mass media “ﬁeld”, they observed several transitions and
+limit cycles, with non-standard “freezing of opinions by heating” and the re-
+building of the opinions in the population by the inﬂuence of the mass media
+at large annealed disorder levels (large temperature).
+Sornette and Zhou (2006a) and Zhou and Sornette (2007) generalized a
+stochastic dynamical formulation of the Ising model (Roehner and Sornette,
+2000) to account for the fact that the imitation strength between agents may
+evolve in time with a memory of how past news have explained realized mar-
+ket returns. By comparing two versions of the model, which diﬀer on how
+the agents interpret the predictive power of news, they show that the stylized
+facts of ﬁnancial markets are reproduced only when agents are overconﬁdent
+and mis-attribute the success of news to predict return to the existence of
+herding eﬀects, thereby providing positive feedbacks leading to the model
+functioning close to the critical point. Other stylized facts, such as a multi-
+fractal structure characterized by a continuous spectrum of exponents of the
+power law relaxation of endogenous bursts of volatility, are well reproduced
+by this model of adaptation and learning of the imitation strength. Harras
+et al. (2012) examined a diﬀerent version of the Sornette-Zhou (2006a) for-
+mulation to study the inﬂuence of a rapidly varying external signal to the
+Ising collective dynamics for intermediate noise levels. They discovered the
+phenomenon of “noise-induced volatility”, characterized by an increase of
+the level of ﬂuctuations in the collective dynamics of bistable units in the
+presence of a rapidly varying external signal. Paradoxically, and diﬀerent
+from “stochastic resonance”, the response of the system becomes uncorre-
+lated with the external driving force. Noise-induced volatility was proposed
+to be a possible cause of the excess volatility in ﬁnancial markets, of en-
+hanced eﬀective temperatures in a variety of out-of-equilibrium systems, and
+of strong selective responses of immune systems of complex biological organ-
+isms. Noise-induced volatility is robust to the existence of various network
+29
+
+
+--- Page 30 ---
+topologies.
+Horvath and Kuscsik (2007) considered a network with reconnection dy-
+namics, with nodes representing decision makers modeled as (“intra-net”)
+neural spin network with local and global inputs and feedback connections.
+The coupling between the spin dynamics and the network rewiring produces
+several of the stylized facts of standard ﬁnancial markets, including the Zipf
+law for wealth.
+Biely et al. (2009) introduced an Ising model in which spins are dynam-
+ically coupled by links in a dynamical network in order to represent agents
+who are free to choose their interaction partners.
+Assuming that agents
+(spins) strive to minimize an “energy”, the spins as well as the adjacency
+matrix elements organize together, leading to an exactly soluble model with
+reduced complexity compared with the standard ﬁxed links Ising model.
+Motivated by market dynamics, Vikram and Sinha (2011) extend the Ising
+model by assuming that the interaction dynamics between individual com-
+ponents is mediated by a global variable making the mean-ﬁeld description
+exact.
+Harras and Sornette (2011) studied a simple agent-based model of bub-
+bles and crashes to clarify how their proximate triggering factor relate to
+their fundamental mechanism. Taking into account three sources of informa-
+tion, (i) public information, i.e. news, (ii) information from their “friendship”
+network and (iii) private information, the boundedly rational agents continu-
+ously adapt their trading strategy to the current market regime by weighting
+each of these sources of information in their trading decision according to
+its recent predicting performance. In this set-up, bubbles are found to origi-
+nate from a random lucky streak of positive news, which, due to a feedback
+mechanism of these news on the agents’ strategies develop into a transient
+collective herding regime. Paradoxically, it is the attempt for investors to
+adapt to the current market regime that leads to a dramatic ampliﬁcation
+of the price volatility. A positive feedback loop is created by the two dom-
+inating mechanisms (adaptation and imitation), which, by reinforcing each
+other, result in bubbles and crashes. The model oﬀers a simple reconciliation
+of the two opposite (herding versus fundamental) proposals for the origin of
+crashes within a single framework and justiﬁes the existence of two popu-
+lations in the distribution of returns, exemplifying the concept that crashes
+are qualitatively diﬀerent from the rest of the price moves (Johansen and
+Sornette, 1998; 2001/2002; Sornette, 2009; Sornette and Ouillon, 2012).
+Inspired by the bankruptcy of Lehman Brothers and its consequences on
+the global ﬁnancial system, Sieczka et al. (2011) developed a simple model
+in which the credit rating grades of banks in a network of interdependen-
+cies follow a kind of Ising dynamics of co-evolution with the credit ratings
+30
+
+
+--- Page 31 ---
+of the other ﬁrms. The dynamics resembles the evolution of a Potts spin
+glass with the external global ﬁeld corresponding to a panic eﬀect in the
+economy. They ﬁnd a global phase transition, between paramagnetic and
+ferromagnetic phases, which explains the large susceptibility of the system
+to negative shocks. This captures the impact of the Lehman default event,
+quantiﬁed as having an almost immediate eﬀect in worsening the credit wor-
+thiness of all ﬁnancial institutions in the economic network. The model is
+amenable to testing diﬀerent policies. For instance, bailing out the ﬁrst few
+defaulting ﬁrms does not solve the problem, but does have the eﬀect of al-
+leviating considerably the global shock, as measured by the fraction of ﬁrms
+that are not defaulting as a consequence.
+Kostanjcar and Jeren (2013) deﬁned a generalized Ising model of ﬁnancial
+markets with a kind of minority-game payoﬀstructure and strategies that
+depend on order sizes. Because their agents focus on the change of their
+wealth, they ﬁnd that the macroscopic dynamics of the aggregated set of
+orders (reﬂected into the market returns) remains stochastic even in the
+thermodynamic limit of a very large number of agents.
+Bouchaud (2013) proposed a general strategy for modeling collective
+socio-economic phenomena with the Random Field Ising model (RFIM) and
+variants, which is argued to provide a unifying framework to account for
+the existence of sudden ruptures and crises. The variants of the RFIM cap-
+ture destabilizing self-referential feedback loops, induced either by herding
+or trending. An interesting insight is the determination of conditions under
+which Adam Smith’s invisible hand can fail badly at solving simple coor-
+dination problems. Moreover, Bouchaud (2013) stresses that most of these
+models assume explicitly or implicitly the validity of the so-called “detailed-
+balance” in decision rules, which is not a priori necessary to describe real
+decision-making processes.
+The question of the robustness of the results
+obtained when detailed balance holds to models where it does not remain
+largely open. Examples from physics suggest that much richer behaviors can
+emerge.
+Kaizoji et al. (2013) introduced a model of ﬁnancial bubbles with two
+assets (risky and risk-free), in which rational investors and noise traders co-
+exist. Rational investors form expectations on the return and risk of a risky
+asset and maximize their expected utility with respect to their allocation on
+the risky asset versus the risk-free asset. Noise traders are subjected to social
+imitation (Ising like interactions) and follow momentum trading (leading to a
+kind of time-varying magnetic ﬁeld). Allowing for random time-varying herd-
+ing propensity as in (Sornette, 1994; Stauﬀer and Sornette, 1999; Sornette
+et al., 2002), this model reproduces the most important stylized facts of ﬁ-
+nancial markets such as a fat-tail distribution of returns, volatility clustering
+31
+
+
+--- Page 32 ---
+as well as transient faster-than-exponential bubble growth with approximate
+log-periodic behavior (Sornette, 1998b; 2003). The model accounts well for
+the behavior of traders and for the price dynamics that developed during the
+dotcom bubble in 1995-2000. Momentum strategies are shown to be tran-
+siently proﬁtable, supporting these strategies as enhancing herding behavior.
+6
+Ising-like imitation of noise traders and mod-
+els of ﬁnancial bubbles and crashes
+6.1
+Phenomenology of ﬁnancial bubbles and crashes
+Stock market crashes are momentous ﬁnancial events that are fascinating
+to academics and practitioners alike. According to the standard academic
+textbook world view that markets are eﬃcient, only the revelation of a dra-
+matic piece of information can cause a crash, yet in reality even the most
+thorough post-mortem analyses are, for most large losses, inconclusive as to
+what this piece of information might have been. For traders and investors,
+the fear of a crash is a perpetual source of stress, and the onset of the event
+itself always ruins the lives of some of them. Most approaches to explain
+crashes search for possible mechanisms or eﬀects that operate at very short
+time scales (hours, days or weeks at most). Other researchers have suggested
+market crashes may have endogenous origins.
+In a culmination of almost 20 years of research in ﬁnancial economics, we
+have challenged the standard economic view that stock markets are both eﬃ-
+cient and unpredictable. We propose that the main concepts that are needed
+to understand stock markets are imitation, herding, self-organized cooper-
+ativity and positive feedbacks, leading to the development of endogenous
+instabilities. According to this theory, local eﬀects such as interest raises,
+new tax laws, new regulations and so on, invoked as the cause of the burst of
+a given bubble leading to a crash, are only one of the triggering factors but
+not the fundamental cause of the bubble collapse. We propose that the true
+origin of a bubble and of its collapse lies in the unsustainable pace of stock
+market price growth based on self-reinforcing over-optimistic anticipation.
+As a speculative bubble develops, it becomes more and more unstable and
+very susceptible to any disturbance.
+In a given ﬁnancial bubble, it is the expectation of future earnings rather
+than present economic reality that motivates the average investor. History
+provides many examples of bubbles driven by unrealistic expectations of fu-
+ture earnings followed by crashes.
+The same basic ingredients are found
+repeatedly. Markets go through a series of stages, beginning with a market
+32
+
+
+--- Page 33 ---
+or sector that is successful, with strong fundamentals. Credit expands, and
+money ﬂows more easily. (Near the peak of Japan’s bubble in 1990, Japan’s
+banks were lending money for real estate purchases at more than the value
+of the property, expecting the value to rise quickly.) As more money is avail-
+able, prices rise. More investors are drawn in, and expectations for quick
+proﬁts rise. The bubble expands, and then ﬁnally has to burst. In other
+words, fuelled by initially well-founded economic fundamentals, investors de-
+velop a self-fulﬁlling enthusiasm by an imitative process or crowd behavior
+that leads to the building of castles in the air, to paraphrase Malkiel (2012).
+Furthermore, the causes of the crashes on the US markets in 1929, 1987,
+1998 and in 2000 belong to the same category, the diﬀerence being mainly
+in which sector the bubble was created: in 1929, it was utilities; in 1987, the
+bubble was supported by a general deregulation of the market with many
+new private investors entering it with very high expectations with respect to
+the proﬁt they would make; in 1998, it was an enormous expectation with
+respect to the investment opportunities in Russia that collapsed; before 2000,
+it was extremely high expectations with respect to the Internet, telecommu-
+nications, and so on, that fuelled the bubble. In 1929, 1987 and 2000, the
+concept of a “new economy” was each time promoted as the rational origin
+of the upsurge of the prices.
+Several previous works in economics have suggested that bubbles and
+crashes have endogenous origins, as we explain below. For instance, Irving
+Fisher (1933) and Hyman Minsky (1992) both suggested that endogenous
+feedback eﬀects lead to ﬁnancial instabilities, although their analysis did
+not include formal models.
+Robert Shiller (2006) has been spearheading
+the notion that markets, at times, exhibit “irrational exuberance”. While
+the eﬃcient market hypothesis provides a useful ﬁrst-order representation of
+ﬁnancial markets in normal times, one can observe regimes where the an-
+chor of a fundamental price is shaky and large uncertainties characterize the
+future gains, which provides a fertile environment for the occurrence of bub-
+bles. When a number of additional elements are present, markets go through
+transient phases where they disconnect in speciﬁc dangerous ways from this
+fuzzy concept of fundamental value. These are regimes where investors are
+herding, following the ﬂock and pushing the price up along an unsustainable
+growth trajectory. Many other mechanisms have been studied to explain the
+occurrence of ﬁnancial bubbles, such as constraints on short selling and lack
+of synchronisation of arbitrageurs due to heterogeneous beliefs on the exis-
+tence of a bubble, see Brunnermeier and Oehmke (2012) and Xiong (2013)
+for two excellent reviews.
+33
+
+
+--- Page 34 ---
+6.2
+The critical point analogy
+Mathematically, we propose that large stock market crashes are the so-
+cial analogues of so-called critical points studied in the statistical physics
+community in relation to magnetism, melting, and other phase transforma-
+tion of solids, liquids, gas and other phases of matter (Sornette, 2000). This
+theory is based on the existence of a cooperative behavior of traders imi-
+tating each other which leads to progressively increasing build-up of market
+cooperativity, or eﬀective interactions between investors, often translated
+into accelerating ascent of the market price over months and years before
+the crash. According to this theory, a crash occurs because the market has
+entered an unstable phase and any small disturbance or process may have
+triggered the instability. Think of a ruler held up vertically on your ﬁnger:
+this very unstable position will lead eventually to its collapse, as a result of a
+small (or absence of adequate) motion of your hand or due to any tiny whiﬀ
+of air. The collapse is fundamentally due to the unstable position; the in-
+stantaneous cause of the collapse is secondary. In the same vein, the growth
+of the sensitivity and the growing instability of the market close to such a
+critical point might explain why attempts to unravel the local origin of the
+crash have been so diverse. Essentially, anything would work once the system
+is ripe. In this view, a crash has fundamentally an endogenous or internal
+origin and exogenous or external shocks only serve as triggering factors.
+As a consequence, the origin of crashes is much more subtle than often
+thought, as it is constructed progressively by the market as a whole, as a self-
+organizing process. In this sense, the true cause of a crash could be termed a
+systemic instability. This leads to the possibility that the market anticipates
+the crash in a subtle self-organized and cooperative fashion, hence releas-
+ing precursory “ﬁngerprints” observable in the stock market prices (Sornette
+and Johansen, 2001; Sornette, 2003). These ﬁngerprints have been modeled
+by log-periodic power laws (LPPL) (Johansen et al., 1999; 2000), which are
+beautiful mathematical patterns associated with the mathematical general-
+ization of the notion of fractals to complex imaginary dimensions (Sornette,
+1998).
+In the framework of Johansen, Ledoit and Sornette (1999; 2000),
+an Ising-like stochastic dynamics is used to describe the time evolution of
+imitation between noise traders, which controls the dynamics of the crash
+hazard rate (see Sornette et al. (2013) for a recent update on the status of
+the model).
+Our theory of collective behaviour predicts robust signatures of specula-
+tive phases of ﬁnancial markets, both in accelerating bubbles and decreasing
+prices (see below).
+These precursory patterns have been documented for
+essentially all crashes on developed as well as emergent stock markets. Ac-
+34
+
+
+--- Page 35 ---
+cordingly, the crash of October 1987 is not unique but a representative of
+an important class of market behaviour, underlying also the crash of Octo-
+ber 1929 (Galbraith, 1997) and many others (Kindleberger, 2000; Sornette,
+2003).
+We refer to the book (Sornette, 2003) for a detailed description and the
+review of many empirical tests and of several forward predictions. In partic-
+ular, we predicted in January 1999 that Japan’s Nikkei index would rise 50
+percent by the end of that year, at a time when other economic forecasters
+expected the Nikkei to continue to fall, and when Japan’s economic indica-
+tors were declining. The Nikkei rose more than 49 percent during that time.
+We also successfully predicted several short-term changes of trends in the US
+market and in the Nikkei and we have diagnosed ex-ante several other major
+bubbles (see e.g. (Jiang et al., 2010) and references therein).
+6.3
+Tests with the ﬁnancial crisis observatory
+In 2008, we created the Financial Crisis Observatory (FCO: http://www.er.ethz.ch/fco)
+as a scientiﬁc platform that aimed at testing and quantifying rigorously, in
+a systematic way and on a large scale the hypothesis that ﬁnancial markets
+exhibit a degree of ineﬃciency and a potential for predictability, especially
+during regimes when bubbles develop. Because back-testing is subjected to a
+host of possible biases, in November 2009, the Financial Bubble Experiment
+(FBE) was launched within the FCO at ETH Zurich. Our motivation is to
+develop real-time advanced forecast methodology that is constructed to be
+free, as much as possible, of all possible biases plaguing previous tests of
+bubbles.
+In particular, active researchers are constantly tweaking their procedures,
+so that predicted ‘events’ become moving targets. Only advanced forecasts
+can be free of data-snooping and other statistical biases of ex-post tests. The
+FBE aims at rigorously testing bubble predictability using methods devel-
+oped in our group and by other scholars over the last decade. The main
+concepts and techniques used for the FBE have been documented in numer-
+ous papers (Jiang et al., 2009; Johansen et al., 1999; Johansen and Sornette,
+2006; Sornette and Johansen, 2001; Sornette and Zhou, 2006b) and the book
+(Sornette, 2003). In the FBE, we developed a new method of delivering our
+forecasts where the results are revealed only after the predicted event has
+passed but where the original date when we produced these same results
+can be publicly, digitally authenticated (see the reports and ex-post anal-
+ysis of our diagnostics performed ex-ante at http://www.er.ethz.ch/fco and
+resources therein).
+Stock market crashes are often unforeseen by most people, especially
+35
+
+
+--- Page 36 ---
+economists. One reason why predicting complex systems is diﬃcult is that we
+have to look at the forest rather than the trees, and almost nobody does that.
+Our approach tries to avoid this trap. From the tulip mania, where tulips
+worth tens of thousands of dollars in present U.S. dollars became worthless
+a few months later, to the U.S. bubble in 2000, the same patterns occur over
+the centuries. Today we have electronic commerce, but fear and greed remain
+the same. Humans remain endowed with basically the same qualities (fear,
+greed, hope, lust) today as they were in the 17th century.
+6.4
+The social bubble hypothesis
+Bubbles and crashes are ubiquitous to human activity: we as humans
+are rarely satisﬁed with the Status Quo; we tend to be over-optimistic with
+respect to future prospects and, as social animals, we herd to ﬁnd comfort in
+being (right or wrong) with the crowd. This leads to human activities being
+punctuated by bubbles and their corrections. The bubbles may come as a
+result of expectations of the future returns from new technology, such as in
+the exploration of the solar system, of the human biology or new computer
+and information technologies. I contend that this trait allows us as a species
+to take risks to innovate with extraordinary successes that would not arise
+otherwise.
+Bubbles deﬁned as collective over-enthusiasm seem a necessary (and un-
+avoidable) process to foster our collective attitude towards risk taking, break-
+ing the stalemate of society resulting from its tendency towards strong risk
+avoidance (Sornette, 2008). An absence of bubble psychology would lead
+to stagnation and conservatism as no large risks are taken and, as a con-
+sequence, no large return can be accrued. We have coined the term ‘social
+bubble’ in order to show how to take advantage of the bubble process to
+catalyze long-term investment (Sornette, 2008; Gisler and Sornette, 2009;
+2010; Gisler et al., 2011). A similar conclusion has been reached by William
+Janeway (2012), an American venture capital investor for more than 40 years.
+His book provides an accessible pathway to appreciate the dynamics of the
+innovation economy. In his understanding, informed by both practice and
+theory, the innovation economy begins with discovery and culminates in spec-
+ulation, with continuous positive feedbacks loops between them. Over some
+250 years, so his argument goes, economic growth has been driven by suc-
+cessive processes of trial and error: upstream explorations in research and
+inventions and downstream experiments in exploiting the new economic space
+opened by innovation.
+In a nutshell, the “social bubble hypothesis” claims that strong social
+interactions between enthusiastic supporters weave a network of reinforcing
+36
+
+
+--- Page 37 ---
+feedbacks that lead to widespread endorsement and extraordinary commit-
+ment by those involved, beyond what would be rationalized by a standard
+cost-beneﬁt analysis. It does not cast any value system however, notwith-
+standing the use of the term “bubble”.
+Rather it identiﬁes the types of
+dynamics that shape scientiﬁc or technological endeavors. In other words,
+we suggest that major projects often proceed via a social bubble mechanism
+(Sornette, 2008; Gisler and Sornette, 2009; 2010; Gisler et al., 2011; 2013).
+Thus, bubbles and crashes, the hallmark of humans, are perhaps our
+most constructive collective process. But they may also undermine our quest
+for stability.
+We thus have to be prepared and adapted to the systemic
+instabilities that are part of us, part of our collective organization, ... and
+which will no doubt recur again perhaps with even more violent eﬀects in
+the coming decade.
+7
+Agent-based models (ABMs) in economics
+and ﬁnance
+Our review would be incomplete if not covering the very dynamical ﬁeld of
+agent based models (ABMs), also known as computational economic models.
+They provide an alternative to the econometric and dynamical stochastic
+general equilibrium (DSGE) approaches used by central banks for instance.
+They use computer simulated interactions between agents (decision-makers)
+(Farmer and Foley, 2009). The Ising-type models discussed in the preceding
+sections can be considered as special ABM implementations.
+ABMs also illustrate vividly the special relations between economics and
+physics. Consider Schelling (1971; 1978)’s work that demonstrated how slight
+diﬀerences of micro motives among heterogenous agents lead to impressive
+macro behaviours. Schelling wanted to falsify the standard view about seg-
+regations between black and white communities in the US, which assumed
+strong diﬀerences in preferences in order to explain the observed concen-
+trations. Using manually implemented ABMs on a check board, he showed
+that tiny variations in tastes are suﬃcient to lead to macroscopic segregation
+when allowing the system to evolve over suﬃciently long times. Small micro-
+eﬀects lead to large macro-consequences. This discovery was a breakthrough
+in the social sciences and changed the perspective on community segrega-
+tion. To the physicist trained in the ﬁeld of phase transitions and statistical
+physics, this result is pretty obvious: tiny diﬀerences in the interactions be-
+tween pairs of molecules (oil-oil, water-water and oil-water) are well-known
+to renormalise into macroscopic demixing. This is a beautiful example of the
+37
+
+
+--- Page 38 ---
+impact of repeated interactions leading to large-scale collective patterns. In
+the physicist language, in addition to energy, entropy is an important and
+often leading contribution to large scale pattern formation, and this under-
+standing requires the typical statistical physics training that economists and
+social scientists often lack.
+7.1
+A taste of ABMs
+Agent-based models have the advantage of facilitating interdisciplinary
+collaboration and reveal unity across disciplines (Axelrod, 2005; Parisi et
+al., 2013). The possibilities of such models are a priori almost endless, only
+limited by the available computational power as well as the insights of the
+modeller. One can simulate very large number of diﬀerent agents acting (up
+to tens of millions of agents as for instance in www.matsim.org, see (Meister
+et al., 2010) and other references at this url). Diﬀerent decision making rules
+can be implemented, including utility maximization or behavioral decision
+making. For example, one can have diﬀerent agents to model consumers,
+policy-makers, traders or institutions where each type follows possibly dis-
+tinct agendas and obeys diﬀerent decision making rules. Such a simulation
+is performed in discrete time steps where, at every time step, each actor has
+to take a decision (e.g. buying, selling or staying out of a stock on the ﬁnan-
+cial market) based on her behavioral rules. Phenomena such as bubbles and
+subsequent crashes have been found to emerge rather naturally from such
+ABMs as a consequence of the existence of general interaction eﬀects among
+heterogeneous agents. These interactions range from social herding, rational
+imitation to information cascades (Bikhchandani et al., 1992).
+To study large-scale phenomena arising from micro-interactions, ABMs
+have already found numerous applications in the past (Bonabeau, 2002;
+MacKinzie, 2002).
+Early ABM developed for social science applications
+include F¨ollmer (1974)’s mathematical treatment of Ising economies with
+no stabilization for strong agent interactions, Schelling (1978)s segregation
+model, Weidlich (1991)’s synergetic approach, Kirman (1991, 1993)’s ant
+model of recruitment and so on.
+The Santa Fe Institute Artiﬁcial Stock Market is one of the pioneering
+ABMs, which was created by a group of economists and computer scientists
+at the Santa Fe Institute in New Mexico (Arthur et al., 1997; LeBaron et al,
+1999; Palmer et al., 1994; 1999). The key motivation was to test whether
+artiﬁcially intelligent agents would converge to the homogeneous rational
+expectations equilibrium or not. To the surprise of the creators, the artiﬁ-
+cial stock markets failed to show convergence to the expected equilibrium,
+but rather underlined the importance of co-evolution of trading strategies
+38
+
+
+--- Page 39 ---
+adopted by the synthetic agents together with the aggregate market behav-
+ior. However, the Santa Fe Institute Artiﬁcial Stock Market has been shown
+to suﬀer from a number of defects, for instance the fact that the rate of ap-
+pearance of new trading strategies is too fast to be realistic. Only recently
+was it also realized that previous interpretations neglecting the emergence of
+technical trading rules should be corrected (Ehrentreich, 2008).
+Inspired by the El-Farol Bar problem (Arthur, 1994b) meant to emphasize
+how inductive reasoning together with a minority payoﬀprevents agents to
+converge to an equilibrium and force them to continuously readjust their ex-
+pectation, the Minority Game was introduced by Challet and Zhang (1997;
+1998) to model prices in markets as reﬂecting competition among a ﬁnite
+number of agents for a scarce resource (Marsili et al., 2000). Extensions in-
+clude the Majority Game and the Dollar Game (a time delayed version of
+the majority game) and delayed version of the minority games. In minority
+games, which are part of ﬁrst-entry games, no strategy can remain persis-
+tently a winner; otherwise it will be progressively adopted by a growing
+number of agents, bringing its demise by construction of the minority payoﬀ.
+This leads to the phenomenon of frustration and anti-persistence. Satinover
+and Sornette (2007a,b; 2009) have shown that optimizing agents are actually
+underperforming random agents, thus embodying the general notion of the
+illusion of control. It can be shown more generally that learning and adaptive
+agents will converge to the best dominating strategy, which turns out to be
+the random choice strategy for minority or ﬁrst-entry payoﬀs.
+Evstigneev et al. (2009) review results obtained on evolutionary ﬁnance,
+namely the ﬁeld studying the dynamic interaction of investment strategies in
+ﬁnancial markets through ABM implementing Darwinian ideas and random
+dynamical system theory. By studying the wealth distribution among agents
+over the long-term, Evstigneev et al. are able to determine the type of strate-
+gies that over-perform in the long term. They ﬁnd that such strategies are
+essentially derived from Kelly (1956)’s criterion of optimizing the expected
+log-return. They also pave the road for the development of a generalization of
+continuous-time ﬁnance with evolutionary and game theoretical components.
+Darley and Outkin (2007) describe the development of a Nasdaq ABM
+market simulation, developed during the collaboration between the Bios
+Group (a spin-oﬀof the Santa Fe Institute) and Nasdaq Company to explore
+new ways to better understand Nasdaq’s operating world. The artiﬁcial mar-
+ket has opened the possibility to explore the impact of market microstructure
+and market rules on the behavior of market makers and traders. One ob-
+tained insight is that decreasing the tick size to very small values may hinder
+the market’s ability to perform its price discovery process, while at the same
+time the total volume traded can greatly increase with no apparent beneﬁts
+39
+
+
+--- Page 40 ---
+(and perhaps direct harm) to the investors’ average wealth.
+In a similar spirit of using ABM for an understanding of real-life economic
+developments, Geanakoplos et al.
+(2012) have developed an agent based
+model to describe the dynamics that led to the housing bubble in the US
+that peaked in 2006 (Zhou and Sornette, 2006). At every time step, the
+agents have the choice to pay a monthly coupon or to pay oﬀthe remaining
+balance (prepay). The conventional method makes a guess for the functional
+form of the prepayments over time, which basically boils down to extrapolate
+into the future past patterns in the data. In contrast, the ABM takes into
+account the heterogeneity of the agents through a parameterization with two
+variables that are speciﬁc to each agent: the cost of prepaying the mortgage
+and the alertness to his ﬁnancial situation. A simulation of such agents acting
+in the housing market is able to capture the run up in housing price and
+the subsequent crash. The dominating factor driving this dynamic could be
+identiﬁed as the leverage the agents get from easily accessible mortgages. The
+conventional model entirely missed this dynamic and was therefore unable
+to forecast the bust. Of course, this does not mean that non-ABM models
+have not been able or would not be able to develop the insight about the
+important role of the procyclicality of the leverage on real-estate prices and
+vice-versa, a mechanism that has been well and repeatedly described in the
+literature after the crisis in 2007-2008 erupted.
+Hommes (2006) provides an early survey on dynamic behavioral ﬁnancial
+and economic models with rational agents with bounded rationality using
+diﬀerent heuristics. He emphases the class of relatively simple models for
+which some tractability is obtained by using analytic methods in combina-
+tion with computational tools. Nonlinear structures often lead to chaotic
+dynamics, far from an equilibrium point, in which regime switching is the
+natural occurrence associated with coexisting attractors in the presence of
+stochasticity (Yukalov et al., 2009). By the aggregation of relatively sim-
+ple interactions occurring at the micro level, quite sophisticated structure
+at the macro level may emerge, providing explanations for observed stylized
+facts in ﬁnancial time series, such as excess volatility, high trading volume,
+temporary bubbles and trend following, sudden crashes and mean reversion,
+clustered volatility and fat tails in the returns distribution.
+Chiarella et al. (2009) review another branch of investigation of bound-
+edly rational heterogeneous agent models of ﬁnancial markets, with particular
+emphasis to the role of the market clearing mechanism, the utility function of
+the investors, the interaction of price and wealth dynamics, portfolio implica-
+tions, and the impact of stochastic elements on market dynamics. Chiarella et
+al. ﬁnd regimes with market instabilities and stochastic bifurcations, leading
+to fat tails, volatility clustering, large excursions from the fundamental, and
+40
+
+
+--- Page 41 ---
+bubbles, which are features of real markets that are not easily reconcilable
+for the standard ﬁnancial market paradigm.
+Shiozawa et al., 2008 summarize the main properties and ﬁnding resulting
+from the U-Mart project, which creates a virtual futures market on a stock
+index using a computer or network in order to promote on-site training,
+education, and economics research. In the U-Mart platform, human players
+can interact with algorithms, providing a rich experimental platform.
+Building on the insight that when past information is limited to a rolling
+window of prior states of ﬁxed length, the minority, majority and dollar
+games may all be expressed in Markov-chain formulation (Marsili et al. 2000,
+Hart et al. 2002, Satinover and Sornette 2007a,b), Satinover and Sornette
+(2012a,b) have further shown how, for minority and majority games, a cycle
+decomposition method allows to quantify the inherently probabilistic nature
+of a Markov chain underlying the dynamics of the models as an exact su-
+perposition of deterministic cyclic sequences (Hamiltonian cycles on binary
+graphs), extending ideas discussed by Jeﬀeries et al. (2002). This provides
+a novel technique to decompose the sign of the time-series they generate
+(analogous to a market price time-series) into a superposition of weighted
+Hamiltonian cycles on graphs. The cycle decomposition also provides a dis-
+section of the internal dynamics of the games and a quantitative measure of
+the degree of determinism. The performance of diﬀerent classes of strategies
+may be understood on a cycle-by-cycle basis. The decomposition oﬀers a
+new metric for comparing diﬀerent game dynamics with real-world ﬁnancial
+time-series and a method for generating predictors. A cycle predictor applied
+to a real-world market can generate signiﬁcantly positive returns.
+Feng et al. (2012) use an agent-based model that suggests a dominant
+role for the investors using technical strategies over those with fundamen-
+tal investment styles, showing that herding emerges via the mechanism of
+converging on similar technical rules and trading styles in creating the well-
+known excess volatility phenomenon (Shiller, 1981; LeRoy and Porter, 1981;
+LeRoy, 2008). This suggests that there is more to price dynamics than just
+exogeneity (e.g. the dynamics of dividends). Samanidou et al. (2007) review
+several agent-based models of ﬁnancial markets, which have been studied by
+economists and physicists over the last decade: Kim-Markowitz, Levy-Levy-
+Solomon (1994), Cont-Bouchaud, Solomon-Weisbuch, Lux-Marchesi (1999;
+2000), Donangelo-Sneppen and Solomon-Levy-Huang. These ABM empha-
+size the importance of heterogeneity, of noise traders (Black, 1986) or tech-
+nical analysis based investment styles, and of herding. Lux (2009a) reviews
+simple stochastic models of interacting traders, whose design is closer in spirit
+to models of multiparticle interaction in physics than to traditional asset-
+pricing models, reﬂecting the insight emergent properties at the macroscopic
+41
+
+
+--- Page 42 ---
+level are often independent of the microscopic details of the system. Hasan-
+hodzic et al. (2011) provides a computational view of market eﬃciency, by
+implementing agent-based models in which agents with diﬀerent resources
+(e.g, memories) perform diﬀerently. This approach is very promising to un-
+derstand the relative nature of market eﬃciency (relative with respect to
+resources such as super-computer power and intellectual capital) and pro-
+vides a rationalization of the technological arm race of quantitative trading
+ﬁrms.
+7.2
+Outstanding open problems: robustness and cali-
+bration/validation of agent-based models
+The above short review gives a positive impression on the potential of
+ABMs.
+In fact, orthodox (neoclassical) economists have in a sense taken
+stock of the advances provided by ABMs by extending their models to in-
+clude ingredients of heterogeneity, bounded rationality, learning, increasing
+returns, and technological change. Why then are not ABMs more pervasive
+in the work of economists and in the process of decision making in central
+banks and regulators? We think that there are two dimensions to this ques-
+tion, which are interconnected (see also Windrum et al, 2007).
+First, ABMs have the disadvantage of being complicated with strong
+nonlinearities and stochasticity in the individual behaviors, made of multiple
+components connected through complex interactive networks, and it is often
+diﬃcult to relate the resulting outcomes from the constituting ingredients. In
+addition, the feedbacks between the micro and macro levels lead to complex
+behavior that cannot be analyzed analytically, for instance by the powerful
+tool of the renormalization group theory (Wilson, 1979; Goldenfeld, 1993;
+Cardy, 1996), which has been so successful in statistical physics in solving
+the micro-macro problem (Anderson, 1972; Sornette, 2004) by the ﬂow of the
+change of the descriptive equations of a complex system when analyzed at
+diﬀerent resolution scales. The diﬀerent types of agents and their associated
+decision making rules can be chosen without much restrictions to encompass
+the available knowledge in decision theory and behavioral economics. How-
+ever, the choices made to build a given agent-based model may represent the
+personal preferences or biases of the modeler, which would not be agreeable
+to another modeler. ABMs are often constructed with the goal of illustrating
+a given behavior, which is actually already encoded more or less explicitly
+in the chosen rules (De Grauwe, 2010; Galla and Farmer, 2013). Therefore,
+the correctness of the model relies mostly on the relevance of the used rules,
+and the predictive power is often constrained to a particular domain so that
+42
+
+
+--- Page 43 ---
+generalization is not obvious. This makes it diﬃcult to compare the diﬀerent
+ABMs found in the literature and gives an impression of lack of robustness
+in the results that are often sensitive to details of the modelers choices. The
+situation is somewhat similar to that found with artiﬁcial neural network,
+the computational models inspired by animals’ central nervous systems that
+are capable of machine learning and pattern recognition. While providing
+interesting performance, artiﬁcial neural networks are black boxes: it is gen-
+erally very diﬃcult if not impossible to extract a qualitative understanding
+of the reasons for their performance and ability to solve a speciﬁc task. We
+can summarize this ﬁrst diﬃculty as the micro-macro problem, namely un-
+derstanding how micro-ingredients and rules transform into macro-behaviors
+at the collective level when aggregated over many agents.
+The second related problem is that of calibration and validation (Sornette
+et al., 2007). Standard DSGE models of an economy, for instance, provide
+speciﬁc regression relations that are relatively easy to calibrate to a cross-
+sectional set of data. In contrast, the general problem of calibrating ABMs is
+unsolved. By calibrating, we refer to the problem of determining the values
+of the parameters (and their uncertainty intervals) that enter in the deﬁnition
+of the ABM, which best corresponds to a given set of empirical data. Due to
+the existence of nonlinear chaotic or more complex dynamical behaviors, the
+likelihood function is in general very diﬃcult if not impossible to determine
+and standard statistical methods (maximum likelihood estimation (MLE))
+cannot apply. Moreover, due to the large number of parameters present in
+large scale ABMs, calibration suﬀers from the curse of dimensionality and of
+ill-conditioning: small errors in the empirical data can be ampliﬁed into large
+errors in the calibrated parameters. We think that it is not exaggerated to
+state that the major obstacle for the general adoption of ABMs by economists
+and policy makers is the absence of a solid theoretical foundation for and
+eﬃcient reliable operational calibration methods.
+This diagnostic does not mean that there have not been attempts, some-
+time quite successful, in calibrating ABMs. Windrum et al. (2007) review the
+advances and discuss the methodological problems arising in the empirical
+calibration and validation of agent-based models in economics. They classify
+the calibration methods into three broad classes: (i) the indirect calibration
+approach, (ii) the Werker-Brenner approach, and (iii) the history-friendly.
+They have also identiﬁed six main methodological and operational issues
+with ABM calibration: (1) ﬁtness does not imply necessarily that the true
+generating process has been correctly identiﬁed; (2) the quest for feasible cal-
+ibration inﬂuences the type of ABMs that are constructed; (3) the quality of
+the available empirical data; (4) the possible non-ergodicity of the real world
+generating process and the issue of representativeness of short historical time
+43
+
+
+--- Page 44 ---
+series; (5) possible time-dependence of the micro and macro parameters.
+Restricting our attention to ﬁnancial markets, an early eﬀort of ABM
+calibration is that of Poggio et al. (2001), who constructed a computer simu-
+lation of a repeated double-auction market. Using six diﬀerent experimental
+designs, the calibration was of the indirect type, with attempt to match the
+price eﬃciency of the market, the speed at which prices converge to the
+rational expectations equilibrium price, the dynamics of the distribution of
+wealth among the diﬀerent types of artiﬁcial Intelligent agents, trading vol-
+ume, bid/ask spreads, and other aspects of market dynamics. Among the
+ABM studies touched upon above, that of Chiarella et al. (2009) include an
+implementation of the indirect calibration approach. Similarly, Bianchi et
+al. (2007) develop a methodology to calibrate the Complex Adaptive Trivial
+System (CATS) model proposed by Gallegati et al. (2005), again matching
+several statistical outputs associated with diﬀerent stylized facts of the ABM
+to the empirical data. Fabretti (2013) uses a combination of mean and stan-
+dard deviation, kurtosis, Kolmogorov-Smirnov statistics and Hurst exponent
+for the statistical objects determined from the ABM developed by Farmer
+and Joshi (2002) whose distance to the real statistics should be minimized.
+Alfarano et al. (2005) studied a very simple ABM that reproduces the
+most studied stylized facts (fat tails, volatility clustering). The simplicity
+of the model allows the authors to derive a closed form solution for the
+distribution of returns and hence to develop a rigorous maximum likelihood
+estimation (MLE) approach to the calibration of the ABM. The analytical
+analysis provides an explicit link between the exponent of the unconditional
+power law distribution of returns and some structural parameters, such as the
+herding propensity and the autonomous switching tendency. This is a rare
+example for which the calibration of the ABM is similar to more standard
+problems of calibration in econometrics.
+Andersen and Sornette (2005) introduced a direct history-friendly cal-
+ibration method of the Minority game on time series of ﬁnancial returns,
+which statistically signiﬁcant abnormal performance to detect special pock-
+ets of predictability associated with turning points. Roughly speaking, this
+is done by calibrating many times the ABM to the data and by performing
+meta-searches in the set of parameters and strategies, while imposing robust-
+ness constraints to address the intrinsic ill-conditional nature of the problem.
+One of the advantages is to remove possible biases of the modeler (except for
+the fact that the structure of the model reﬂects itself a view of what should
+be the structure of the market). This work by Andersen and Sornette (2005)
+was one of the ﬁrst to establish the existence of pockets of predictability in
+stock markets. A theoretical analysis showed that when a majority of agents
+follows a decoupled strategy, namely the immediate future has no impact
+44
+
+
+--- Page 45 ---
+on the longer-term choice of the agents, a transient predictable aggregate
+move of the market occurs. It has been possible to estimate the frequency of
+such prediction days if the strategies and histories were randomly chosen. A
+statistical test, using the Nasdaq Composite Index as a proxy for the price
+history, conﬁrms that it is possible to ﬁnd prediction days with a probability
+extremely higher then chance.
+Another interesting application is to use the ABM to issue forecasts that
+are used to further reﬁne the calibration as well as test the predictive power
+of the model. To achieve this, the strategies of the agents become in a certain
+sense a variable, which is optimized to obtain the best possible calibration of
+the in-sample data. Once the optimal strategies are identiﬁed, the predictive
+power of the simulation can be tested on the out-of-sample data. Statis-
+tical tests have shown that the model performs signiﬁcantly better than a
+set of random strategies used as comparison (Andersen and Sornette; 2005;
+Wiesinger et al., 2012). These results are highly relevant, because they show
+that it seems possible to extract from times series information about the fu-
+ture development of the series using the highly nonlinear structure of ABMs.
+Applied to ﬁnancial return time series, the calibration and subsequent fore-
+cast show that the highly liquid ﬁnancial markets (e.g. S&P500 index) have
+progressively evolved towards better eﬃciency from the 1970s to present
+(Wiesenger et al., 2012). Nevertheless, there seems to remain statistically
+signiﬁcant arbitrage opportunities (Zhang, 2013), which seems inconsistent
+with the weak form of the eﬃcient market hypothesis (EMH). This method
+lays down the path to a novel class of statistical falsiﬁcation of the EMH. As
+the method is quite generic, it can virtually be applied on any time series
+to check how well the EMH holds from the viewpoint oﬀered by the ABM.
+Further on, this approach has wide potential to reverse engineer many more
+stylized facts observed in ﬁnancial markets.
+Lillo et al. (2008) present results obtained in the rare favorable situa-
+tion in which the empirical data is plentiful, with access to a comprehensive
+description of the strategies followed by the ﬁrms that are members of the
+Spanish Stock Exchange. This provides a rather unique opportunity for val-
+idating the assumptions about agents preferred stylized strategies in ABMs.
+The analysis indicates that three well-deﬁned groups of agents (ﬁrms) char-
+acterize the stock exchange.
+Saskia Ter and Zwinkels (2010) have modeled the oil price dynamics with
+a heterogeneous agent model that, as in many other ABMs, incorporates two
+types of investors, the fundamentalists and the chartists and their relation
+to the fundamental supply and demand. The fundamentalists, who expect
+the oil price to move towards the fundamental price, have a stabilizing eﬀect,
+while the chartists have a destabilizing eﬀect driving the oil price away from
+45
+
+
+--- Page 46 ---
+its fundamental value. The ABM has been able to outperform in an out-
+of-sample test both the random walk model and VAR models for the Brent
+and WTI market, providing a kind of partial history-friendly calibration ap-
+proach.
+7.3
+The “Emerging Market Intelligence Hypothesis”
+Financial markets can be considered as the engines that transform infor-
+mation into price. The eﬃcient market hypothesis (EMH) states that the
+continuous eﬀorts of diligent investors aggregate into a price dynamics that
+does not contain any arbitrage opportunities (Samuelson, 1965; 1973; Fama,
+1970; 1991). In other words, the very process of using better information or
+new technology to invest with the goal of generating proﬁts in excess to the
+long-term historical market growth rate makes the prices unfathomable and
+destroys the very goals of the investors.
+Farmer (2002) constructed simple set-ups in which the mean-reversion
+nature of investors’ strategies stabilise prices and tends to remove arbi-
+trage opportunities.
+Satinover and Sornette (2007a;b; 2009) showed how
+the “whitening” (i.e. destruction of any predictive patterns) of the prices
+precisely occur in minority games (Challet and Zhang, 1998; 1999; Chal-
+let et al., 2005). Speciﬁcally, agents who optimize their strategy based on
+available information actually perform worse than non-optimizing agents. In
+other words, low-entropy (more informative) strategies under-perform high-
+entropy (or random) strategies. This results from an emergent property of
+the whole game that no non-random strategy can outwit. Minority games
+can be considered as subset of ﬁrst-entry games, for which the same phe-
+nomenon holds (Duﬀy and Hopkins, 2005). In ﬁrst-entry games, this means
+that agents who learn on stochastic ﬁctitious plays will adapt and modify
+their strategies to ﬁnally converge to the best strategies, which randomize
+over the entry decisions. Thus, in minority and ﬁrst-entry games, when play-
+ers think that they can put some sense to the patterns created by the games,
+that they have found a winning strategy and they have an advantage, they
+are delusional since the true winning strategies are random.
+In reality, eﬃcient markets do not exist. Grossman and Stiglitz (1980)
+articulated in a simpliﬁed model the essence of a quite intuitive mechanism:
+because gathering information is costly, prices cannot perfectly reﬂect all the
+information that is available since this would confer no competitive advan-
+tage to those who spent resources to obtain it and trade on it, therefore
+destroying the very mechanism by which information is incorporated into
+prices. As a consequence, an informationally eﬃcient market is impossible
+and the Eﬃcient Market Hypothesis (EMH) can only be a ﬁrst-order approx-
+46
+
+
+--- Page 47 ---
+imation, an asymptotic ideal construct that is never reached in practice. It
+can be approached but a convergence towards it unleash eﬀective repelling
+forces due to dwindling incentives. “The abnormal returns always exist to
+compensate for the costs of gathering and processing information. These re-
+turns are necessary to compensate investors for their information-gathering
+and information-processing expenses, and are no longer abnormal when these
+expenses are properly accounted for. The proﬁts earned by the industrious
+investors gathering information may be viewed as economic rents that ac-
+crue to those willing to engage in such activities” (cited from Campbell et
+al., 1997).
+Let us push this reasoning in order to illuminate further the nature and
+limits of the EMH and as a bonus clarify the nature and origin of “noise
+traders” (Black, 1986). As illustrated by the short review of section 7.1, the
+concept of “noise trader” is an essential constituent of most ABMs that aim
+at explaining the excess volatility, fat-tailed distributions of asset returns,
+as well as the astonishing occurrence of bubbles and crashes. It also solves
+the problem of the no-trade theorem (Milgrom and Stokey, 1982), which
+in essence shows that no investor will be willing to trade if the market is
+in a state of eﬃcient equilibrium and there are no noise traders or other
+non-rational interferences with prices. Intuitively, if there is a well-deﬁned
+fundamental value, all well-informed rational traders agree on it, the market
+prices is the fundamental value and everybody holds the stock according to
+their portfolio allocation strategy reﬂecting their risk proﬁles. No trade is
+possible without the existence of exogenous shocks, changes of fundamental
+values or taste alterations.
+In reality, real ﬁnancial markets are heavily traded, with at each tick an
+exact balance between the total volume of buyers and of sellers (by deﬁ-
+nition of each realised trade), reﬂecting a generalised disagreement on the
+opportunity to hold the corresponding stocks. These many investors who
+agree to trade and who trade much more than would be warranted on the
+basis of fundamental information are called noise traders. Noise traders are
+loosely deﬁned as the investors who makes decisions regarding buy and sell
+trades without much use of fundamental data, but rather on the basis of price
+patterns, trends, and who react incorrectly to good and bad news. On one
+side, traders exhibit over-reaction, which refers to the phenomenon that price
+responses to news events are exaggerated. A proposed explanation is that
+excess price pressure is applied by overconﬁdent investors (Bondt and Thaler,
+1985; Daniel et al., 1998) or momentum traders (Hong and Stein, 1999), re-
+sulting in an over- or under-valued asset, which then increases the likelihood
+of a rebound and thus creates a negative autocorrelation in returns. On the
+other side, investors may under-react, resulting in a slow internalisation of
+47
+
+
+--- Page 48 ---
+news into price.
+Due to such temporally spread-out impact of the news,
+price dynamics exhibit momentum, i.e. positive return autocorrelation (Lo
+and MacKinlay, 1988; Jegadeesh, 1990; Cutler, 1990; Jegadeesh and Titman,
+1993).
+In fact, most investors and portfolio managers are considered noise traders
+(Malkiel, 2012)! In other words, after controlling for luck, there is a general
+consensus in the ﬁnancial academic literature that most fund managers do
+not provide statistically signiﬁcant positive returns above the market return
+that would be obtained by just buying and holding for the long term (Barras
+et al., 2010; Fama and French, 2010). This prevalence of noise traders is in
+accord with the EMH. But are these investors really irrational and mindless?
+This seems diﬃcult to reconcile with the evidence that the banking and
+investment industry has been able in the last decades to attract a signiﬁcant
+fraction of the best minds and most motivated persons on Earth.
+Many
+have noticed and even complained that, in the years before the ﬁnancial
+crisis of 2008, the best and brightest college grads were heading for Wall
+Street. At ETH Zurich where I teach ﬁnancial market risks and tutor master
+theses, I have observed even after the ﬁnancial crisis a growing ﬂood of civil,
+mechanical, electrical and other engineers choosing to defect from their ﬁeld
+and work in ﬁnance and banking.
+Consequently, we propose that noise traders are actually highly intelligent
+motivated and capable investors. They are like noise traders as a result of
+the aggregation of the collective intelligence of all trading strategies that
+structure the price dynamics and makes each of the individual strategy look
+“stupid”, like noise trading. The whole is more than the sum of the part. In
+other words, a universe of rational optimizing traders create endogenously
+a large fraction of rational traders who are eﬀectively noise, because their
+strategies are like noise, given the complexity or structure of ﬁnancial and
+economic markets that they collectively create. The continuous actions of
+investors, which are aggregated in the prices, produce a “market intelligence”
+more powerful than that of most of them. The “collective intelligence” of
+the market transforms most (but not all) strategies into losing strategies,
+just providing liquidity and transaction volume. We call this the “Emerging
+Market Intelligence hypothesis” (EIMH). This phrasing stresses the collective
+intelligence that dwarfs the individual ones, making them look like noise when
+applied to the price structures resulting from the price formation process.
+But for this EIMH to hold, the “noise traders” need a motivation to
+continue trading, in the face of their collective dismal performances. In ad-
+dition to the role of monetary incentives for rent-seeking that permeates
+the banking industry (Freeman, 2010) and makes working in ﬁnance very
+attractive notwithstanding the absence of genuine performance, there is a
+48
+
+
+--- Page 49 ---
+well-documented fact in the ﬁeld of psychology that human beings in gen-
+eral and investors in particular (and especially traders who are (self-)selected
+for their distinct abilities and psychological traits) tend to rate their skills
+over-optimistically (Kruger and Dunning, 1999). And when by chance, some
+performance emerges, we tend to attribute the positive outcome to our skills.
+When a negative outcome occurs, this is bad luck. This is referred to in the
+psychological literature as “illusion of control” (Langer 1975). In addition,
+human beings have evolved the ability to attribute meaning and regularity
+when there is none. In the psychological literature, this is related to the
+fallacy of “hasty generalisation” (“law of small numbers”) and to “retrospec-
+tive determinism”, which makes us look at historical events as part of an
+unavoidable meaningful laminar ﬂow. All these elements combine to gener-
+ate a favourable environment to catalyse trading, by luring especially young
+bright graduate students to ﬁnance in the belief that their intelligence and
+technical skills will allow them to “beat the market”.
+Thus, building on
+our cognitive biases and in particular on over-optimism, one could say that
+the incentive structures of the ﬁnancial industry provides the remunerations
+for the individuals who commit themselves to arbitrage the ﬁnancial mar-
+kets, thereby providing an almost eﬃcient functioning machine. The noise
+traders naturally emerge as a result of the emergent collective intelligence.
+This concept is analogous to the sandpile model of self-organised criticality
+(Bak, 1996), which consistency functions at the edge of chaos, driven to its
+instability but never completely reaching it by the triggering of avalanches
+(Scheinkman and Woodford, 1994). Similarly, the incentives of the ﬁnancial
+system creates an army of highly motivated and skilled traders who push the
+market towards eﬃciency but never succeeding to allow some of them to win,
+while make most of them look like noise.
+8
+Concluding remarks
+While it is diﬃcult to argue for a physics-based foundation of economics
+and ﬁnance, physics has still a role to play as a unifying framework full
+of concepts and tools to deal with complex dynamical out-of-equilibrium
+systems. Moreover, the speciﬁc training of physicists explains the impressive
+number of recruitments in investment and ﬁnancial institutions, where their
+data-driven approach coupled with a pragmatic sense of theorizing has made
+physicists a most valuable commodity on Wall Street.
+At present however, the most exciting progress seems to be unraveling at
+the boundary between economics and the biological, cognitive and behavioral
+sciences (Camerer et al., 2003; Shiller, 2003; Thaler 2005). A promising re-
+49
+
+
+--- Page 50 ---
+cent trend is the enrichment of ﬁnancial economics by concepts developed in
+evolutionary biology. Several notable groups with very diﬀerent backgrounds
+have touched upon the concept that ﬁnancial markets may be similar to ecolo-
+gies ﬁlled by species that adapt and mutate. For instance, we mentioned
+earlier that Potters et al. (1998) showed that the market has empirically
+corrected and adapted to the simple, but inadequate Black-Scholes formula
+to account for the fat tails and the correlations in the scale of ﬂuctuations.
+Doyne Farmer (2002) proposed a theory based on the interrelationships of
+strategies, which views a market as a ﬁnancial ecology. In this ecology, new
+better adapted strategies exploit the ineﬃciencies of old strategies and the
+evolution of the capital of a strategy is analogous to the evolution of the
+population of a biological species. Cars Hommes (2001) also reviewed works
+modeling ﬁnancial markets as evolutionary systems constituted of diﬀerent,
+competing trading strategies. Strategies are again taken as the analog of
+species. It is found that simple technical trading rules may survive evolution-
+ary competition in a heterogeneous world where prices and beliefs coevolve
+over time. Such evolutionary models can explain most of the stylized facts
+of ﬁnancial markets (Chakraborti et al., 2011).
+Andrew Lo (2004; 2005; 2011) coined the term “adaptive market hypoth-
+esis” in reaction to the “eﬃcient market hypothesis” (Fama, 1970; 1991), to
+propose an evolutionary perspective on market dynamics in which intelligent
+but fallible investors learn from and adapt to changing environments, lead-
+ing to a relationship between risk and expected return that is not constant
+in time. In this view, markets are not always eﬃcient but they are highly
+competitive and adaptive, and can vary in their degree of eﬃciency as the eco-
+nomic environment and investor population change over time. Lo emphasizes
+that adaptation in investment strategies (Neelya et al. 2009) are driven by the
+“push for survival”. This is perhaps a correct assessment of Warren Buﬀet’s
+own stated strategy: “We do not wish it only to be likely that we can meet our
+obligations; we wish that to be certain. Thus we adhere to policies – both in
+regard to debt and all other matters – that will allow us to achieve acceptable
+long-term results under extraordinary adverse conditions, rather than opti-
+mal results under a normal range of conditions” (Berkshire Hathaway Annuel
+Report 1987: http://www.berkshirehathaway.com/letters/1987.html).
+But the analogy with evolutionary biology as well as many studies of the be-
+havior of bankers and traders (e.g. Coates, 2012) suggest that most market
+investors care for much more than just survival. They strive to maximize
+their investment success measured as bonus and wealth, which can accrue
+with luck on time scales of years. This is akin to maximizing transmission of
+“genes” in a biological context (Dawkins, 1976). The focus on survival within
+an evolutionary analogy is clearly insuﬃcient to account for the extraordi-
+50
+
+
+--- Page 51 ---
+nary large death rate of business companies and in particular of ﬁnancial
+ﬁrms such as hedge-funds (Saichev et al., 2010; Malevergne et al., 2013 and
+references therein).
+But evolutionary biology itself is witnessing a revolution with genomics,
+beneﬁtting from computerized automation and artiﬁcial intelligence classiﬁ-
+cation (ENCODE Project Consortium, 2012). And (bio-)physics is bound to
+continue playing a growing role to organize the wealth of data in models that
+can be handled, playing on the triplet of experimental, computational and
+theoretical research. On the question of what could be useful tools to help
+understand, use, diagnose, predict and control ﬁnancial markets (Cincotti
+et al., 20120; de S. Cavalcante et al. 2013), we envision that both physics
+and biology are going to play a growing role to inspire models of ﬁnancial
+markets, and the next signiﬁcant advance will be obtained by marrying the
+three ﬁelds.
+References
+[1] Alfarano, S., T. Lux and F. Wagner (2005) Estimation of Agent-Based
+Models: The Case of an Asymmetric Herding Model, Computational Eco-
+nomics 26, 19-49.
+[2] Andersen, J. V., and D. Sornette (2005) A Mechanism for Pockets of
+Predictability in Complex Adaptive Systems, Europhysics Letters (EPL)
+70.5, 697-703.
+[3] Anderson, P.W. (1958) Absence of diﬀusion in certain random lattices,
+Phys. Rev. 109, 1492-1505.
+[4] Anderson, P.W. (1972) More is diﬀerent (Broken symmetry and the na-
+ture of the hierarchical structure of science), Science 177, 393-396.
+[5] Arneodo, A., J.-F. Muzy and D. Sornette (1998) Direct causal cascade in
+the stock market, European Physical Journal B 2, 277-282 (1998).
+[6] Arthur, W. B. (1994a) Increasing Returns and Path Dependence in the
+Economy, University of Michigan Press, Ann Arbor.
+[7] Arthur, W. B. (1994b) Inductive Reasoning and Bounded Rationality,
+American Economic Review (Papers and Proceedings), 84,406-411.
+[8] Arthur, W. B. (1997) The Economy as an Evolving Complex System II,
+edited with Steven Durlauf and David Lane, Addison-Wesley, Reading,
+MA, Series in the Sciences of Complexity.
+51
+
+
+--- Page 52 ---
+[9] Arthur, W. B. (2005) Out-of-Equilibrium Economics and Agent-Based
+Modeling, in Handbook of Computational Economics, Vol. 2: Agent-Based
+Computational Economics, K. Judd and L. Tesfatsion, eds. (Elsevier /
+North Holland).
+[10] Arthur, W. B., J. H. Holland, B. LeBaron, R. Palmer, and P. Tayler
+(1997) Asset pricing under endogenous expectations in an artiﬁcial stock
+market. In W. B. Arthur, S. N. Durlauf, and D. A. Lane, editors, The
+Economy as an Evolving Complex System II, volume 27 of SFI Studies
+in the Sciences of Complexity, pages 15-44. Santa Fe Institute, Addison-
+Wesley.
+[11] Axelrod, R. (2005) Agent-based modelling as a bridge between disci-
+plines, in Kenneth L. Judd and Leigh Tesfatsion (Eds.), Handbook of Com-
+putational Economics, Vol. 2: Agent-Based Computational Economics,
+Handbooks in Economics Series, North-Holland.
+[12] Bachelier, L. (1900) Thorie de la speculation, Annales de lEcole Nor-
+male Suprieure (translated in the book Random Character of Stock Mar-
+ket Prices); Thorie des probabilits continues, 1906, Journal des Mathema-
+tiques Pures et Appliques; Les Probabilits cinematiques et dynamiques,
+1913, Annales de lEcole Normale Suprieure.
+[13] Bacry, E., J. Delour and J.-F. Muzy (2001) Multifractal random walk,
+Physical Review E 64, 026103.
+[14] Bacry, E., A. Kozhemyak and J. F. Muzy (2013) Log-normal continuous
+cascade model of asset returns: aggregation properties and estimation,
+Quantitative Finance, 13 (5), 795-818.
+[15] Bak, P. (1996) How Nature Works: the Science of Self-organized Criti-
+cality (Copernicus, New York).
+[16] Barras, L., O. Scaillet and R. Wermers (2010) False Discoveries in Mu-
+tual Fund Performance: Measuring Luck in Estimated Alphas, The Jour-
+nal of Finance 65 (1), 179-216.
+[17] Bawa, V.S., E.J. Elton and M.J. Gruber (1979) Simple rules for optimal
+portfolio selection in stable Paretian markets, Journal of Finance 34 (4),
+1041-1047.
+[18] Bianchi, C., P. Cirillo, M. Gallegati, and P.A. Vagliasindi (2007) Validat-
+ing and Calibrating Agent-Based Models: A Case Study, Computational
+Economics 30 (3), 245-264.
+52
+
+
+--- Page 53 ---
+[19] Biely, C., R. Hanel and S. Thurner (2009) Socio-economical dynamics
+as a solvable spin system on co-evolving networks, Eur. Phys. J. B 67,
+285-289.
+[20] Bikhchandani, S., Hirshleifer, D., and Welch, I. (1992) A Theory of
+Fads, Fashion, Custom, and Cultural Change as Informational Cascades,
+Journal of Political Economy 100 (5), 992-1026.
+[21] Bishop, C.M. (2006) Pattern Recognition and Machine Learning,
+Springer, 738pp.
+[22] Black, F. (1985) Noise, Journal of Finance 41 (3), 529-543.
+[23] Black, F. and M. Scholes (1973)The Pricing of Options and Corporate
+Liabilities, Journal of Political Economy 81 (3), 637-654.
+[24] Bonabeau, E. (2002) Agent-based modeling: Methods and techniques
+for simulating human systems, Proc. Natl. Acad. Sci. USA 99 (3), 7280-
+7287.
+[25] Bondt, W.F. and R. Thaler (1985) Does the Stock Market Overreact?
+The Journal of Finance 40 (3), 793-805.
+[26] Bornholdt, S. (2001) Expectation bubbles in a spin model of market in-
+termittency from frustration across scales, International Journal of Modern
+Physics C 12 (5), 667-674.
+[27] Bouchaud, J-P. (2001) Power laws in economics and ﬁnance: some ideas
+from physics, Quantitative Finance 1 (1), 105-112.
+[28] Bouchaud, J.-P. (2010) Price impact, in Encyclopedia of Quantitative
+Finance, R. Cont, ed., John Wiley & Sons Ltd.
+[29] Bouchaud, J.-P. (2013), Crises and Collective Socio-Economic Phenom-
+ena: Simple Models and Challenges, J Stat Phys (2013) 151:567-606.
+[30] Bouchaud, J.-P. and R. Cont (1998) A Langevin approach to stock mar-
+ket ﬂuctuations and crashes, Eur. Phys. J. B 6, 543-550.
+[31] Bouchaud, J.-P., J.D. Farmer, and F. Lillo (2009) How markets slowly
+digest changes in supply and demand, in Handbook of Financial Markets,
+Elsevier.
+[32] Bouchaud, J.-P. and M. Potters (2003) Theory of Financial Risk and
+Derivative Pricing, From Statistical Physics to Risk Management, 2nd ed.
+(Cambridge University Press).
+53
+
+
+--- Page 54 ---
+[33] Bouchaud, J.-P. and D. Sornette (1994) The Black-Scholes option pric-
+ing problem in mathematical ﬁnance : Generalization and extensions for
+a large class of stochastic processes, J.Phys. I France 4, 863-881.
+[34] Bouchaud, J.-P., D. Sornette, C. Walter and J.-P. Aguilar (1998) Taming
+large events : Optimal portfolio theory for strongly ﬂuctuating assets,
+International Journal of Theoretical and Applied Finance 1, 25-41.
+[35] Brock, W.A. and S.N. Durlauf (1999) A formal model of theory choice
+in science, Economic Theory 14, 113-130.
+[36] Brock and Durlauf (2001) Discrete Choice with Social Interactions, Re-
+view of Economic Studies 68, 235-260.
+[37] Brunnermeier, M.K. and M. Oehmke (September 2012) NBER Working
+Paper No. 18398 (http://www.nber.org/papers/w18398)
+[38] Brush, S. G. (1967) History of the Lenz-Ising Model, Reviews of Modern
+Physics 39 (4), 883-893.
+[39] Busemeyer, J.R. and P.D. Bruza (2012) Quantum Models of Cognition
+and Decision, Cambridge University Press; 1 edition (September 17).
+[40] Busemeyer, J.R., Z. Wang and J.T. Townsend, (2006) Quantum dy-
+namics of human decision making, Journal of Mathematical Psychology,
+50, 220-241.
+[41] Callen, E. and Shapero, D. (1974) A theory of social imitation, Phys.
+Today 27 (7) 23-28.
+[42] Calvet, L. and A.J. Fisher, A. (2001) Forecasting multifractal volatility,
+Journal of Econometrics 105, 27-58.
+[43] Calvet, L.E. and A.J. Fisher (2008) Multifractal volatility theory, fore-
+casting, and pricing. Burlington, MA: Academic Press.
+[44] Camerer, C.F., G. Loewenstein and M. Rabin, editors (2003) Advances
+in Behavioral Economics, (Roundtable Series in Behavioral Economics),
+Princeton University Press.
+[45] Campbell, J.Y., A.W. Lo and A.C. MacKinlay (1997) The Econometrics
+of Financial Markets. Princeton University Press, Princeton, NJ.
+[46] Carhart, M.M.. (1997) On Persistence in Mutual Fund Performance,
+Journal of Finance 52 (1), 57-82.
+54
+
+
+--- Page 55 ---
+[47] Cardy, J.L. (1996) Scaling and Renormalization in Statistical Physics
+(Cambridge University Press, Cambridge, UK).
+[48] Chakraborti, A., M. Toke, M. Patriarca and F. Abergel (2011) Econo-
+physics review: I. Empirical facts, Quantitative Finance 11 (7), 991-1012.
+[49] Challet, D., M. Marsili, Y.-C. Zhang (2005) Minority Games: Interact-
+ing Agents in Financial Markets, Oxford University Press, Oxford.
+[50] Challet, D. and Zhang, Y.C. (1997) Emergence of cooperation and or-
+ganization in an evolutionary game. Physica A 246 (3), 407-418.
+[51] Challet, D. and Zhang, Y.C. (1998) On the minority game: Analytical
+and numerical studies. Physica A 256 (3/4), 514-532.
+[52] Chiarella, C., R. Dieci and X.-Z. He (2009) Heterogeneity, Market Mech-
+anisms, and Asset Price Dynamics, Handbook of Financial Markets, Dy-
+namics and Evolution, North-Holland, Elsevier.
+[53] Cincotti, S., D. Sornette, P. Treleaven, S. Battiston, G. Caldarelli, C.
+Hommes and A. Kirman (2012) An economic and ﬁnancial exploratory,
+European Journal of Physics: Special Topics 214, 361-400.
+[54] Clauset, A., C. Rohilla Shalizi, and M. E. J. Newman (2009) Power-law
+distributions in empirical data, SIAM Review 51, 661-703.
+[55] Coates, J. (2012) The Hour Between Dog and Wolf: Risk Taking, Gut
+Feelings and the Biology of Boom and Bust, Penguin Press.
+[56] Colander, D., M. Goldberg, A. Haas, K. Juselius, A. Kirman, T. Lux
+and B. Sloth (2009) The ﬁnancial crisis and the systemic failure of the
+economics profession, Critical Review 21 (2), 249-267.
+[57] Cootner, P.H. (1964) The random character of stock market prices, MIT
+Press (ISBN 978-0-262-03009-0).
+[58] Crane, R. and D. Sornette (2008) Robust dynamic classes revealed by
+measuring the response function of a social system, Proc. Nat. Acad. Sci.
+USA 105 (41), 15649-15653.
+[59] Cutler, D. M., J.M. Poterba and L.H. Summers (1990) peculative Dy-
+namics and the Role of Feedback Traders The American Economic Review
+80 (2), 63-68.
+55
+
+
+--- Page 56 ---
+[60] Daniel, K., D. Hirshleifer and A. Subrahmanyam (1998) Investor Psy-
+chology and Security Market Under- and Overreactions, The Journal of
+Finance 53 (6), 1839-1885.
+[61] Darley, V. and A.V. Outkin (2007) A Nasdaq market simulation (In-
+sights on a major market from the science of complex adaptive systems),
+Complex Systems and Interdisciplinary Science, World Scientiﬁc, Singa-
+pore.
+[62] Dawkins, R. (1976) The Selﬁsh Gene, New York City: Oxford University
+Press.
+[63] De Grauwe, P. (2010) The Scientiﬁc Foundation of Dynamic Stochastic
+General Equilibrium (DSGE) Models, Public Choice 144 (3-4), 413-443.
+[64] de S. Cavalcante, H.L.D., M. Ori´a, D. Sornette, E. Ott and D.J. Gauthier
+(2013) Predictability and control of extreme events in complex systems,
+Phys. Rev. Lett. 111, 198701 [5 pages].
+[65] Derman, E. (2004) My Life as a Quant: Reﬂections on Physics and
+Finance, Wiley.,
+[66] Deschatres, F. and D. Sornette (2005) The Dynamics of Book Sales:
+Endogenous versus Exogenous Shocks in Complex Networks, Phys. Rev.
+E 72, 016112.
+[67] Dezso, Z., E. Almaas, A. Lukacs, B. Racz, I. Szakadat, A.-L. Barabasi
+(2006) Dynamics of information access on the web, Phys. Rev. E 73,
+066132.
+[68] Duﬀy, J. and E. Hopkins (2005) Learning, information, and sorting in
+market entry games: theory and evidence, Games and Economic behavior
+51 (1), 31-62.
+[69] Dyson, F. (1988) Inﬁnite in all directions (Penguin, London).
+[70] Ehrentreich, N. (2008) Agent-Based Modeling: The Santa Fe Institute
+Artiﬁcial Stock Market Model Revisited, Lecture Notes in Economics and
+Mathematical Systems, Springer-Verlag, Berlin, Heidelberg.
+[71] Einstein, A. (1905) On the Motion of Small Particles Suspended in Liq-
+uids at Rest Required by the Molecular-Kinetic Theory of Heat, Ann.
+Phys., Lpz 17, 549-560.
+56
+
+
+--- Page 57 ---
+[72] Embrechts, P., C. Kluppelberg and T. Mikosch (1997) Modelling Ex-
+tremal Events for Insurance and Finance (Springer, New York).
+[73] ENCODE Project Consortium (2012) An integrated encyclopedia of
+DNA elements in the human genome, Nature 489, 57-74.
+[74] Evstigneev I.V., T. Hens and K. R. Schenk-Hopp (2009) Evolutionary
+Finance, Evolutionary Finance, Handbook of Financial Markets, Dynam-
+ics and Evolution, North-Holland, Elsevier.
+[75] Fabretti,
+A.
+(2011)
+Calibration
+of
+an
+Agent
+Based
+Model
+for
+Financial
+Markets,
+In
+Highlights
+in
+Practical
+Appli-
+cations
+of
+Agents
+and
+Multiagent
+Systems,
+1-8.
+Springer,
+(http://link.springer.com/chapter/10.1007/978-3-642-19917-2_1).
+[76] Fama, E. (1965) Portfolio analysis in a stable Paretian market, Manage-
+ment Science 11 (3), 404-419.
+[77] Fama, E.J. (1970) Eﬃcient capital markets: a review of theory and
+empirical work, Journal of Finance 25, 383-417.
+[78] Fama, E.J. (1991) Eﬃcient capital markets: II, Journal of Finance 46
+(5), 1575-1617.
+[79] Fama, E.F.; and K.R. French (1993) Common Risk Factors in the Re-
+turns on Stocks and Bonds, Journal of Financial Economics 33 (1), 3-56.
+[80] Fama, Eugene F. and French, Kenneth R. (2010) Luck versus Skill in
+the Cross-Section of Mutual Fund Returns The Journal of Finance 65 (5),
+1915-1947.
+[81] Farmer, J.D. (2002) Market forces, ecology and evolution, Industrial and
+Corporate Change 11 (5), 895-953.
+[82] Farmer, J. D. and J. Geanakoplos (2009) The virtues and vices of equi-
+librium and the future of nancial economics, Complexity 14 (3),11-38.
+[83] Farmer, J.D., A. Gerig, F. Lillo and H. Waelbroeck (2013) How eﬃciency
+shapes market impact (http://arxiv.org/abs/1102.5457).
+[84] Farmer, J. D., L. Gillemot, F. Lillo, S. Mike, S. and A. Sen (2004) What
+really causes large price changes? Quant. Finance 4(4), 383-397.
+[85] Farmer, J.D. and S. Joshi (2002) The price dynamics of common trading
+strategies, J. Econ. Behav. Org. 49, 149-171.
+57
+
+
+--- Page 58 ---
+[86] Farmer, J.D. and T. Lux, editors (2008) Applications of statistical
+physics in economics and ﬁnance, Journal of Economic Dynamics and Con-
+trol 32 (1), 1-320.
+[87] Feng, L., B. Lia, B. Podobnik, T. Preisc and H.E. Stanley (2012) Linking
+agent-based models and stochastic models of ﬁnancial markets, Proceed-
+ings of the National Academy of Sciences of the United States of America
+109 (22), 8388-8393.
+[88] Filimonov, V.A and D. Sornette (2011) Self-Excited Multifractal Dy-
+namics, Europhysics Letters 94, 46003.
+[89] Filimonov, V. and D. Sornette (2012) Quantifying reﬂexivity in ﬁnan-
+cial markets: towards a prediction of ﬂash crashes, Phys. Rev. E 85 (5):
+056108.
+[90] Filimonov, V., D. Bicchetti, N. Maystre and D. Sornette, Quantiﬁca-
+tion of the High Level of Endogeneity and of Structural Regime Shifts in
+Commodity Prices, submitted to The Journal of International Money and
+Finance (JIMF) (http://ssrn.com/abstract=2237392)
+[91] Fisher, I. (1933) The Debt Deﬂation Theory of Great Depressions,
+Econometrica 1, 337-357.
+[92] Freeman, R.B. (2010) It’s ﬁnancialization! International Labour Review
+149 (2), 163-183.
+[93] F¨ollmer, H. (1974) Random economies with many interacting agents,
+Journal of Mathematical Economics 1, 51-62.
+[94] Gabaix, X., P. Gopikrishnan, V. Plerou and H.E. Stanley (2003) A The-
+ory of Power Law Distributions in Financial Market Fluctuations, Nature
+423, 267-270.
+[95] Galam, S. (2004) Sociophysics: A personal testimony, Physica A 336,
+49-55.
+[96] Galam, S. and Gefen ,Y. and. Shapir, Y. (1982) Sociophysics: A new
+approach of sociological collective behavior 1. Mean-behavior description
+of a strike, Math. J. Soc. 9, 1-13.
+[97] Galam, S. and S. Moscovici (1991) Towards a theory of collective phe-
+nomena: consensus and attitude changes in groups, European Journal of
+Social Psychology 21, 49-74.
+58
+
+
+--- Page 59 ---
+[98] Galla, T. and J.D. Farmer (2013) Complex Dynamics in Learning Com-
+plicated Games, Proceedings of the National Academy of Sciences 110
+(4),1232-1236.
+[99] Gallegati, M., Delli Gatti, D., Di Guilmi, C., Gaﬀeo, E., Giulioni, G.
+and Palestrini, A. (2005) A new approach to business ﬂuctuations: Het-
+erogeneous interacting agents, scaling laws and ﬁnancial fragility. Journal
+of Economic Behavior and Organization, 56, 489-512.
+[100] Gatheral, J. and A. Schied, Alexander, Dynamical Models of Market
+Impact and Algorithms for Order Execution (January 24, 2013). Available
+at SSRN: http://ssrn.com/abstract=2034178.
+[101] Geanakoplos, J., R. Axtell, J.D. Farmer, P. Howitt, B. Conlee, J. Gold-
+stein, M. Hendrey, N.M. Palmer, and C.-Y. Yang (2012) Getting at Sys-
+temic Risk via an Agent-Based Model of the Housing Market, American
+Economic Review 102 (3), 53-58.
+[102] Gillemot, L., J. D. Farmer, and F. Lillo (2007) Theres More to Volatility
+than Volume, Quantitative Finance 6, 371-384.
+[103] Gisler, M. and D. Sornette (2009) Exuberant Innovations: The Apollo
+Program, Society 46, 55-68.
+[104] Gisler, M. and D. Sornette (2010) Bubbles Everywhere in Human Af-
+fairs, chapter in book entitled “Modern RISC-Societies. Towards a New
+Framework for Societal Evolution”, L. Kajfez Bogataj, K.H. Mueller,
+I. Svetlik, N. Tos (eds.), Wien, edition echoraum:
+137-153 (2010)
+(http://ssrn.com/abstract=1590816)
+[105] Gisler, M., D. Sornette and G. Grote (2013) Early dynamics of a major
+scientiﬁc project: Testing the social bubble hypothesis, Science, Technol-
+ogy and Innovation (submitted) (http://ssrn.com/abstract=2289226)
+[106] Gisler, M., D. Sornette and R. Woodard (2011) Innovation as a Social
+Bubble: The Example of the Human Genome Project, Research Policy 40,
+1412-1425.
+[107] Goldenfeld, N., Lectures on phase transitions and the renormalization
+group. Addison-Wesley.
+[108] Gopikrishnan, P., V. Plerou, L.A.N. Amaral, M. Meyer, and H.E. Stan-
+ley (1999) Scaling of the distributions of ﬂuctuations of ﬁnancial market
+indices, Physical Review E 60, 5305-5316.
+59
+
+
+--- Page 60 ---
+[109] Gordon, M.B. J.-P. Nadal, D. Phan and V. Semeshenko (2009) Discrete
+Choices under Social Inﬂuence: Generic Properties Mathematical Models
+and Methods in Applied Sciences (M3AS) 19 (Suppl. 1), 1441-1481.
+[110] Gould, S.J. (1996) Full House: The Spread of Excellence From Plato
+to Darwin (New York: Harmony Books).
+[111] Granovetter, M. (1978) Threshold models of collective behavior, Am.
+J. Sociol. 83 (6), 1420-1443.
+[112] Granovetter, M. and Soong, R. (1983) Threshold models of diﬀusion
+and collective behavior, . J. Math. Sociol. 9, 165-179.
+[113] Grabowski, A. and R.A. Kosinski (2006) Ising-based model of opinion
+formation in a complex network of interpersonal interactions, Physica A
+36, 651-664.
+[114] Hardiman, S.J., N. Bercot and J.-P. Bouchaud (2013) Critical reﬂex-
+ivity in ﬁnancial markets: a Hawkes process analysis, Eur. Phys. J. B (in
+press) (http://arxiv.org/abs/1302.1405)
+[115] Harras, G. and D. Sornette (2011) How to grow a bubble: A model of
+myopic adapting agents, Journal of Economic Behavior and Organization
+80 (1), 137-152.
+[116] Harras, G., C. Tessone and D. Sornette (2012) Noise-induced volatility
+of collective dynamics, Phys. Rev. E 85, 011150.
+[117] Hart, M.L., Jeﬀeries, P. and Johnson, N.F. (2002) Dynamics of the
+time horizon minority game. Physica A 311(1), 275-290.
+[118] Hasanhodzic, J., A.W. Lo and E. Viola (2011) A computational view
+of market eﬃciency Quantitative Finance 11 (7), 1043-1050.
+[119] Hawkes, A.G. and Oakes D. (1974) A cluster representation of a self-
+exciting process, Journal Applied Prob. 11, 493-503 .
+[120] Hommes, C.H. (2001) Financial markets as nonlinear adaptive evolu-
+tionary systems, Quantitative Finance 1 (1), 149-167.
+[121] Hommes,
+C.H.
+(2006)
+Chapter
+23,
+Heterogeneous
+Agent
+Models
+in
+Economics
+and
+Finance,
+In
+Hand-
+book
+of
+Computational
+Economics,
+2:1109-1186.
+Elsevier
+(http://linkinghub.elsevier.com/retrieve/pii/S157400210502023X).
+60
+
+
+--- Page 61 ---
+[122] Hong, H. and J.C. Stein (1999) A Uniﬁed Theory of Underreaction,
+Momentum Trading, and Overreaction in Asset Markets, The Journal of
+Finance 54 (6), 2143-2184.
+[123] Hopﬁeld, J.J. (1982), Neural networks and physical systems with emer-
+gent collective computational abilities, Proc. Natl. Acad. Sci. USA 79 (8).
+2554-2558.
+[124] Horvath, D. and Z. Kuscsik (2007) Structurally dynamic spin market
+networks, Int. J. Mod. Phys. C 18, 1361-1374.
+[125] Huang, Z.F. and S. Solomon (2002) Stochastic multiplicative processes
+for ﬁnancial markets, Physica A 306, 412-422.
+[126] Huberman, G. and W. Stanzl (2004) Price Manipulation and Quasi-
+Arbitrage, Econometrica 74 (4), 1247-1276.
+[127] Janeway, W.H. (2012) Doing Capitalism in the Innovation Economy:
+Markets, Speculation and the State, Cambridge University Press.
+[128] Jeﬀeries, P., Hart, M.L. and Johnson, N.F. (2002) Deterministic dy-
+namics in the minority game. Phys. Rev. E 65, 016105-016113.
+[129] Jegadeesh, N. (1990) Evidence of Predictable Behavior of Security Re-
+turns The Journal of Finance 45 (3), 881-898.
+[130] Jegadeesh, N. and S. Titman (1993) Returns to Buying Winners and
+Selling Losers: Implications for Stock Market Eﬃciency The Journal of
+Finance 48 (1), 65-91.
+[131] Jiang, Z.-Q. W.-X. Zhou, D. Sornette, R. Woodard, K. Bastiaensen and
+P. Cauwels (2010) Bubble Diagnosis and Prediction of the 2005-2007 and
+2008-2009 Chinese stock market bubbles, Journal of Economic Behavior
+and Organization 74, 149-162.
+[132] Johansen, A. and D. Sornette (1998) Stock market crashes are outliers,
+European Physical Journal B 1, 141-143.
+[133] Johansen, A. and D. Sornette (2001/2002) Large Stock Market Price
+Drawdowns Are Outliers, Journal of Risk 4 (2), 69-110.
+[134] Johansen,
+A.
+and
+D.
+Sornette
+(2006)
+Shocks,
+Crashes
+and
+Bubbles
+in
+Financial
+Markets,
+Brussels
+Economic
+Review
+(Cahiers
+economiques
+de
+Bruxelles)
+53
+(2),
+201-253
+(summer
+)
+(http://arXiv.org/abs/cond-mat/0210509)
+61
+
+
+--- Page 62 ---
+[135] Johansen, A., D. Sornette and O. Ledoit (1999) Predicting Financial
+Crashes using discrete scale invariance, Journal of Risk 1 (4), 5-32.
+[136] Johansen, A., O. Ledoit and D. Sornette (2000) Crashes as critical
+points, Int. J. Theor. Applied Finance 3 (2) 219-255.
+[137] Joulin, A. Lefevre, D. Grunberg, J. P. Bouchaud (2008) Stock price
+jumps:
+news and volume play a minor role Wilmott Magazine, Vol.
+Sep/Oct, pp. 1-7.
+[138] Kaizoji, T. (2000) Speculative bubbles and crashes in stock markets:
+an interacting-agent model of speculative activity, Physica A 287, 493-506.
+[139] Kaizoji, T. and Bornholdt, S. and Fujiwara, Y. (2002) Dynamics of
+price and trading volume in a spin model of stock markets with heteroge-
+neous agents, Physica A 316, 441-452.
+[140] Kaizoji, T., M. Leiss, A. Saichev and D. Sornette (2013) Endogenous
+bubbles in an equilibrium model of rational and noise traders without
+strategy switching, Journal of Economic Dynamics and Control (second
+revision) (http://arxiv.org/abs/1109.4726)
+[141] Kelly, J. L. (1956) A new interpretation of information rate, Bell Sys-
+tem Technical Journal 35, 917-926.
+[142] Kindleberger, C.P. (2000) Manias, panics, and crashes: A history of
+ﬁnancial crises, 4th Edition. Wiley, New York.
+[143] Kirman, A. (1991) Epidemics of opinion and speculative bubbles in
+ﬁnancial markets, in M. Taylor (ed.), Money and Financial Markets,
+MacMillan.
+[144] Kirman, A. (1993) Ants, rationality and recruitment, Quarterly Jour-
+nal of Economics 108, 137-156.
+[145] Kirman, A. (2012) Can artiﬁcial economies help us understand real
+economies? Revue de lOFCE / Debats & policies 124, 1-27.
+[146] Kostanjcar, Z. and B. Jeren (2013) Emergence of power-law and two-
+phase behavior in ﬁnancial market ﬂuctuations, Advances in Complex Sys-
+tems 16 (1), 1350008 (12 pages).
+[147] Krawiecki, A. and Holyst, J. A. and Helbing, D. (2002) Volatility clus-
+tering and scaling for ﬁnancial time series due to attractor bubbling, Phys.
+Rev. Lett. 89, 158701.
+62
+
+
+--- Page 63 ---
+[148] Kruger, J. and D. Dunning (1999) Unskilled and unaware of it: how
+diﬃculties in recognising one’s own incompetence lead to inﬂated self-
+assessments, Journal of Personality and Social Psychology 77 (6), 1121-
+1134.
+[149] Krugman, P. (1996) The Self-Organizing Economy (Blackwell, Malden,
+MA).
+[150] Kyle, A. (1985) Continuous auctions and insider trading, Econometrica
+53 (6), 1315-1335.
+[151] Laherrere, J. and D. Sornette (1999) Stretched exponential distribu-
+tions in nature and economy: Fat tails with characteristic scales, European
+Physical Journal B 2, 525-539.
+[152] Langer, E. (1975) The illusion of control, J Person Soc Psychol. 7,
+185-207.
+[153] LeBaron, B., W. B. Arthur, and R. Palmer (1999) Time series prop-
+erties of an artiﬁcial stock market, Journal of Economic Dynamics and
+Control, 23 (9-10), 1487-1516.
+[154] LeRoy, S. F. (2008) Excess Volatility Tests, The New Palgrave Dictio-
+nary of Economics, 2nd ed.
+[155] LeRoy, S.F. and R.D. Porter (1981) The present value relation: Tests
+based on implied variance bounds, Econometrica 49, 555-574.
+[156] Leskovec, J., M. McGlohon, C. Faloutsos, N. Glance and M. Hurst,
+Cascading Behavior in Large Blog Graphs, Technical Report CMU-ML-
+06-113, October 2006 preprint http://arxiv.org/abs/0704.2803
+[157] Levy, M. (2005) Market Eﬃciency, the Pareto Wealth Distribution, and
+the Lvy Distribution of Stock Returns, in The Economy as an Evolving
+Complex System III, S. Durlauf and L. Blume (Eds.), Oxford University
+Press.
+[158] Levy, M. and H. Levy, Investment Talent and the Pareto Wealth Dis-
+tribution: Theoretical and experimental Analysis, Review of Economics
+and Statistics 85 (3), 709-725.
+[159] Levy, M., H. Levy, and S. Solomon (1994) A Microscopic Model of the
+Stock Market: Cycles, Booms, and Crashes, Economics Letters 45 (1),
+103-111.
+63
+
+
+--- Page 64 ---
+[160] Liggett,
+T.M. (1995) Interacting particle systems (New York :
+Springer-Verlag)
+[161] Liggett, T.M. (1997) Stochastic models of interacting systems, The
+Annals of Probability 25, 1-29.
+[162] Lillo, F., E. Moro, G. Vaglica, and R.N. Mantegna (2008) Specialization
+and herding behavior of trading ﬁrms in a ﬁnancial market, New Journal
+of Physics 10, 043019 (15pp).
+[163] Lo, A. (2004) The Adaptive Market Hypothesis: Market Eﬃciency
+from an Evolutionary Perspective. The Journal of Portfolio Management
+30 (5), 15-29.
+[164] Lo, A. (2005) Reconciling Eﬃcient Markets with Behavioral Finance:
+The Adaptive Markets Hypothesis, Journal of Investment Consulting 7
+(2), 21-44 (Available at SSRN: http://ssrn.com/abstract=728864).
+[165] Lo, A. (2011) Adaptive Markets and the New World Order (December
+30, 2011). Available at SSRN: http://ssrn.com/abstract=1977721
+[166] Lo, A. W. and A.C. MacKinlay (1988) Stock market prices do not
+follow random walks: evidence from a simple speciﬁcation test, Review of
+Financial Studies 1 (1), 41-66.
+[167] Luce, R. D. (1959) Individual Choice Behavior: A theoretical analysis.
+Wiley.
+[168] Luce, R. D., Suppes, P. (1965) Preference, Utility, and Subjective Prob-
+ability. Handbook of mathematical psychology 3 (171), 249-410.
+[169] Lux, T. (2008) The Markov-Switching Multifractal Model of Asset Re-
+turns, Journal of Business & Economic Statistics 26 (2),194-210.
+[170] Lux, T. (2009) Stochastic Behavioral Asset-Pricing Models and the
+Stylized Facts, Handbook of ﬁnancial markets: dynamics and evolution,
+Chapter 3, North-Holland, Elsevier.
+[171] Lux, T. and M. Marchesi (1999) Scaling and criticality in a stochastic
+multi-agent model of ﬁnancial market, Nature 397, 498-500.
+[172] Lux, T., and M. Marchesi (2000) Volatility clustering in ﬁnancial mar-
+kets: A microsimulation of interacting agents, International Journal of
+Theoretical and Applied Finance 3, 675-702.
+64
+
+
+--- Page 65 ---
+[173] Lux, T. and D. Sornette (2002) On Rational Bubbles and Fat Tails,
+Journal of Money, Credit and Banking, Part 1, vol. 34, No. 3, 589-610.
+[174] MacKenzie, D. (2006) An Engine, not a Camera (How ﬁnancial mod-
+els shape markets) (the MIT Press, Cambridge, Massachussets, London,
+England).
+[175] MacKinzie, D. (2002) The Science of Surprise, Discover Magazine 23
+(2), 59-63 (February).
+[176] Malcai, O., O. Biham, O., P. Richmond and S. Solomon (2002) The-
+oretical analysis and simulations of the generalized Lotka-Volterra model,
+Physical Review E, 66, 3, 31102.
+[177] Malevergne, Y., V.F. Pisarenko and D. Sornette (2005) Empirical Dis-
+tributions of Log-Returns: between the Stretched Exponential and the
+Power Law? Quantitative Finance 5 (4), 379-401.
+[178] Malevergne, Y., V. Pisarenko and D. Sornette (2011) Testing the
+Pareto against the lognormal distributions with the uniformly most pow-
+erful unbiased test applied to the distribution of cities, Physical Review E
+83, 036111.
+[179] Malevergne, Y., A. Saichev and D. Sornette (2013) Zipfs law and max-
+imum sustainable growth, Journal of Economic Dynamics and Control 37
+(6), 1195-1212.
+[180] Malevergne, Y. and D. Sornette (2001) Multi-dimensional Rational
+Bubbles and fat tails, Quantitative Finance 1, 533541.
+[181] Malevergne, Y. and D. Sornette (2006) Extreme Financial Risks (From
+Dependence to Risk Management) (Springer, Heidelberg).
+[182] Malkiel, B.G. (2012) A Random Walk Down Wall Street: The Time-
+Tested Strategy for Successful Investing, Tenth Edition, W. W. Norton &
+Company.
+[183] Mandelbrot, B.B. (1963) The variation of certain speculative prices, J.
+Business 36, 394-419.
+[184] Mandelbrot, B.B. (1982) The fractal Geometry of Nature (W.H. Free-
+man, San Francisco).
+[185] Mandelbrot, B.B. (1997) Fractals and Scaling in Finance: Discontinu-
+ity, Concentration, Risk (Springer, New York).
+65
+
+
+--- Page 66 ---
+[186] Mandelbrot, B.B., A. Fisher and L. Calvet (1997) A Multifractal Model
+of Asset Returns, Cowles Foundation Discussion Papers 1164, Cowles
+Foundation, Yale University.
+[187] Mantegna, R. N. and H.E. Stanley (1995) Scaling behavior in the dy-
+namics of an economic index, Nature 376, 46-49.
+[188] Mantegna, R. and Stanley, H. E. (1999) An Introduction to Econo-
+physics: Correlations and Complexity in Finance (Cambridge University
+Press, Cambridge, U.K. and New York).
+[189] Markowitz, H. (1952) Portfolio Selection, The Journal of Finance 7 (1),
+77-91.
+[190] Marsili, M., Challet, D. and Zecchina, R. (2000) Exact solution of a
+modiﬁed El Farol’s bar problem. Physica A 280 (3/4), 522-553.
+[191] McCoy, B. M. and T. T. Wu (1973) The Two-Dimensional Ising Model,
+Havard University Press (Cambridge, Mass.).
+[192] McFadden, D. (1974) Conditional Logit Analysis of Qualitative Choice
+Behavior, In: Zarembka, P. (Ed.), Frontiers in econometrics. Academic
+Press, New York, pp. 105-142.
+[193] Meister, K., M. Balmer, F. Ciari, A. Horni, M. Rieser, R.A. Waraich
+and K.W. Axhausen (2010) Large-scale agent-based travel demand opti-
+mization applied to Switzerland, including mode choice. paper presented at
+the 12th World Conference on Transportation Research, Lisbon, July 2010
+(http://www.ivt.ethz.ch/vpl/publications/reports/ab625.pdf).
+[194] Merton, R. (1973) Theory of Rational Option Pricing, Bell Journal of
+Economics and Management Science 4 (1), 141-183.
+[195] M´ezard, M., G. Parisi and M. Virasoro (1987) Spin Glass Theory and
+Beyond (World Scientiﬁc, Singapore).
+[196] Michard, Q. and J.-P. Bouchaud (2005) Theory of collective opinion
+shifts: from smooth trends to abrupt swings, Eur. Phys. J. B 47, 151-159.
+[197] Milgrom, P. and N. Stokey (1982) Information, trade and common
+knowledge, Journal of Economic Theory 26 (1), 17-27.
+[198] Minsky, H.P. (1992) The Financial Instability Hypothesis, The Jerome
+Levy Economics Institute Working Paper No. 74. Available at SSRN:
+http://ssrn.com/abstract=161024.
+66
+
+
+--- Page 67 ---
+[199] Montroll, E. W. and Badger, W. W. (1974) Introduction to Quantita-
+tive Aspects of Social Phenomena, Gordon and Breach, New York.
+[200] Muzy, J.F., E. Bacry and A. Kozhemyak (2006) Extreme values and
+fat tails of multifractal ﬂuctuations, Phys. Rev. E 73, 066114.
+[201] Muzy, J.-F., D. Sornette, J. Delour and A. Arneodo (2001) Multifractal
+returns and hierarchical portfolio theory, Quantitative Finance 1, 131-148.
+[202] Neelya, C.J., P.A. Wellera and J.M. Ulrich (2009) The Adaptive Mar-
+kets Hypothesis: Evidence from the Foreign Exchange Market, Journal of
+Financial and Quantitative Analysis 44 (2), 467-488.
+[203] Newman, M.E.J. (2005) Power laws, Pareto distributions and Zipf’s
+law, Contemporary Physics 46, 323-351.
+[204] Nadal, J.-P., D. Phan, M.B. Gordon and J. Vannimenus (2005) Multi-
+ple equilibria in a monopoly market with heterogeneous agents and exter-
+nalities Quantitative Finance 5 (6), 557-568.
+[205] Orl´ean, A. (1995) Bayesian interactions and collective dynamics of
+opinion: Herd behavior and mimetic contagion, J. Econ. Behav. Org. 28,
+257-274.
+[206] Osborne, M.F.M. (1959) Brownian Motion in the Stock Market, Oper-
+ations Research 7 (2), 145-173.
+[207] Ouillon, E. Ribeiro and D. Sornette (2009) Multifractal Omori Law for
+Earthquake Triggering: New Tests on the California, Japan and Worldwide
+Catalogs, Geophysical Journal International 178, 215-243.
+[208] Ouillon, G. and D. Sornette (2005) Magnitude-Dependent Omori
+Law:
+Theory and Empirical Study, J. Geophys. Res., 110, B04306,
+doi:10.1029/2004JB003311.
+[209] Palmer, R. G., W. B. Arthur, B. LeBaron, and P . Tayler (1994) Artiﬁ-
+cial economic life: A simple model of a stockmarket, Physica D 75,264-274.
+[210] Palmer, R. G., W. B. Arthur, J. H. Holland, and B. LeBaron (1999)
+An artiﬁcial stock market, Artiﬁcial Life and Robotics, 3(1), 27-31.
+[211] Pareto, V. (1897) Cours d’conomique Politique (Macmillan, Paris), Vol.
+2.
+67
+
+
+--- Page 68 ---
+[212] Parisi, D.R., D. Sornette, and D. Helbing (2013) Financial Price Dy-
+namics vs. Pedestrian Counterﬂows: A Comparison of Statistical Stylized
+Facts, Physical Review E 87, 012804.
+[213] Perline, R. (2005) Strong, weak and false inverse power laws, Statistical
+Science 20 (1), 68-88.
+[214] Phan, D. and Gordon,M. B. and Nadal, J.-P. (2004) Social interac-
+tions in economic theory: An insight from statistical mechanics, Cognitive
+Economics – An Interdisciplinary Approach, Springer, Bourgine, P. and
+Nadal, J.-P., eds., pp. 335-354.
+[215] Poggio, T. A.W. Lo, B. LeBaron, and N.T. Chan (2001) Agent-Based
+Models of Financial Markets: A Comparison with Experimental Markets
+(October). MIT Sloan Working Paper No. 4195-01. Available at SSRN:
+http://ssrn.com/abstract=290140.
+[216] Pothos, E.M. and J.R. Busemeyer (2009) A Quantum Probability Ex-
+planation for Violations of “Rational” Decision Theory, Proceedings of the
+Royal Society B, 276 (1165), 2171-2178.
+[217] Potters, M., R. Cont and J.-P. Bouchaud (1998) Financial markets as
+adaptive systems Europhys. Lett. 41 (3), 239-244.
+[218] Roehner, B.M. and D. Sornette (2000) “Thermometers” of speculative
+frenzy, Eur. Phys. J. B 16, 729-739.
+[219] Roehner, B.M., D. Sornette and J.V. Andersen (2004) Response Func-
+tions to Critical Shocks in Social Sciences: An Empirical and Numerical
+Study, Int. J. Mod. Phys. C 15 (6), 809-834.
+[220] Ruelle, D. (2004) Conversations on nonequilibrium physics with an
+extraterrestrial, Physics Today, 57, 48-53.
+[221] Saichev, A. and D. Sornette (2004) Anomalous Power Law Distribution
+of Total Lifetimes of Aftershock Sequences, Phys. Rev. E 70, 046123.
+[222] Saichev, A., A. Helmstetter and D. Sornette (2005) Anomalous Scaling
+of Oﬀspring and Generation Numbers in Branching Processes, Pure and
+Applied Geophysics 162, 1113-1134.
+[223] Saichev, A., Y. Malevergne and D. Sornette (2010) Theory of Zipf’s
+Law and Beyond, Series: Lecture Notes in Economics and Mathematical
+Systems , Vol. 632, ISBN: 978-3-642-02945-5
+68
+
+
+--- Page 69 ---
+[224] Saichev, A. and D. Sornette (2006) Power law distribution of seismic
+rates: theory and data, Eur. Phys. J. B 49, 377-401.
+[225] Saichev, A. and D. Sornette (2006) Generic Multifractality in Expo-
+nentials of Long Memory Processes, Physical Review E 74, 011111.
+[226] Saichev, A. and D. Sornette (2007) Power law distribution of seismic
+rates, Tectonophysics 431, 7-13.
+[227] Saichev, A. and D. Sornette (2010) Generation-by-Generation Dissec-
+tion of the Response Function in Long Memory Epidemic Processes, Eu-
+ropean Physical Journal B 75, 343-355.
+[228] Samanidou, E, E. Zschischang, D. Stauﬀer, and T. Lux (2007) Agent-
+Based Models of Financial Markets. Reports on Progress in Physics 70 (3),
+409-450.
+[229] Samuelson, P. A. (1965), Proof that Properly Anticipated Prices Fluc-
+tuate Randomly, Industrial Management Review 7, 41-49.
+[230] Samuelson, P.A. (1967) Eﬃcient portfolio selection for Pareto-L´evy
+investments, Journal of Financial and Quantitative Analysis 2 (2), 107-
+122.
+[231] Samuelson, P. A. (1973) Proof that properly discounted present values
+of assets vibrate randomly, The RAND Journal of Economics 4, 369-374.
+[232] Saskia Ter, E.and R.C.J. Zwinkels (2010) Oil Price Dynamics: A Be-
+havioral Finance Approach with Heterogeneous Agents, Energy Economics
+32.6, 1427-1434.
+[233] Satinover, J.B. and D. Sornette (2007a) Illusion of Control in a Brow-
+nian Game, Physica A 386, 339-344.
+[234] Satinover, J.B. and Sornette, D. (2007b) Illusion of control in Time-
+Horizon Minority and Parrondo games. Eur. Phys. J. B, 2007, 60(3), 369-
+384.
+[235] Satinover, J.B. and D. Sornette (2009) Illusory versus Genuine Control
+in Agent-Based Games, Eur. Phys. J. B 67, 357-367.
+[236] Satinover, J.B. and D. Sornette (2012a) Cycles, determinism and per-
+sistence in agent-based games and ﬁnancial time-series I, Quantitative Fi-
+nance 12 (7), 1051-1064.
+69
+
+
+--- Page 70 ---
+[237] Satinover, J.B. and D. Sornette (2012b) Cycles, determinism and per-
+sistence in agent-based games and ﬁnancial time-series II , Quantitative
+Finance 12 (7), 1065-1078.
+[238] Sethna, J. P. (2006) StatisticalMechanics: Entropy, Order Parameters
+and Complexity, (Oxford University Press, Oxford).
+[239] Scheinkman, J.A. and M. Woodford (1994) Self-Organized Criticality
+and Economic Fluctuations, The American Economic Review 84 (2), 417-
+421.
+[240] Schelling, T. (1971) Dynamic models of segregation. J. Math. Soc. 1
+(2), 143-186
+[241] Schelling, T. (1978) Micromotives and Macrobehaviour. Norton, New
+York.
+[242] Sharpe, W.F. (1964) A Theory of Market Equilibrium under Conditions
+of Risk, The Journal of Finance 19 (3), 425-442.
+[243] Shiller, R.J. (1981) Do stock prices move too much to be justied by
+subsequent changes in dividends? American Economic Review 71, 421-
+436.
+[244] Shiller, R.J., Market Volatility, MIT Press, Cambridge MA (1989).
+[245] Shiller,
+R.J.,
+From
+eﬃcient
+market
+theory
+to
+behavioral
+ﬁ-
+nance, Cowles Foundation Discussion Paper No. 1385 (October 2002)
+(http://papers.ssrn.com/abstract_id=349660)
+[246] Shiller, R.J. (2003) From Eﬃcient Markets Theory to Behavioral Fi-
+nance, The Journal of Economic Perspectives 17 (1), 83-104.
+[247] Shiller, R.J., Irrational Exuberance, Crown Business; 2 edition (May
+9, 2006).
+[248] Shiozawa, Y., Y. Nakajima, H. Matsui, Y. Koyama, K. Taniguchi, F.
+Hashimoto (2008) Artiﬁcial Market Experiments with the U-Mart System,
+Agent-Based Social Systems, Volume 4, Series Editor: Hiroshi Deguchi,
+Yokohama, Japan, Springer, Heidelberg.
+[249] Sieczka, P., D. Sornette and J.A. Holyst (2011) The Lehman Brothers
+Eﬀect and Bankruptcy Cascades, European Physical Journal B 82 (3-4),
+257-269.
+70
+
+
+--- Page 71 ---
+[250] Silva, A.C., R.E. Prange, and V.M. Yakovenko (2004) Exponential dis-
+tribution of ﬁnancial returns at mesoscopic time lags: a new stylized fact,
+Physica A 344, 227-235.
+[251] Sircar, K.R. and G. Papanicolaou (1998) General Black-Scholes models
+accounting for increased market volatility from hedging strategies, Applied
+Mathematical Finance 5, 45-82.
+[252] Solomon, S and P. Richmond (2002) Stable power laws in variable
+economies; Lotka-Volterra implies Pareto-Zipf, The European Physical
+Journal B 27 (2), 257-261.
+[253] Sornette D. (1994) Sweeping of an instability : an alternative to self-
+organized criticality to get power laws without parameter tuning, J.Phys.I
+France 4, 209-221.
+[254] Sornette, D. (1998a) Multiplicative processes and power laws, Phys.
+Rev. E 57 (N4), 4811-4813.
+[255] Sornette,
+D. (1998b) Discrete scale invariance and complex di-
+mensions,
+Physics Reports 297 (5),
+239-270. (extended version at
+http://xxx.lanl.gov/abs/cond-mat/9707012)
+[256] Sornette, D. (2000) Stock Market Speculation: Spontaneous Symmetry
+Breaking of Economic Valuation, Physica A 284 (Nos. 1-4), 355-375.
+[257] Sornette, D. (2003) Why Stock Markets Crash, Critical Events in Com-
+plex Financial Systems (Princeton University Press).
+[258] Sornette, D. (2004) Critical Phenomena in Natural Sciences, Chaos,
+Fractals, Self-organization and Disorder: Concepts and Tools. 2nd ed.,
+Springer Series in Synergetics, Heidelberg.
+[259] Sornette, D. (2005) in Extreme Events in Nature and Society, eds Al-
+beverio S, Jentsch V, Kantz H (Springer, Berlin), pp 95-119.
+[260] Sornette, D. (2008) Nurturing Breakthroughs; Lessons from Complex-
+ity Theory, Journal of Economic Interaction and Coordination 3, 165-181.
+[261] Sornette,
+D. (2009) Dragon-Kings,
+Black Swans and the Pre-
+diction
+of
+Crises,
+International
+Journal
+of
+Terraspace
+Science
+and
+Engineering
+2(1),
+1-18
+(http://arXiv.org/abs/0907.4290)
+and
+(http://ssrn.com/abstract=1470006)
+71
+
+
+--- Page 72 ---
+[262] Sornette, D. and R. Cont (1997) Convergent multiplicative processes
+repelled from zero: power laws and truncated power laws, J. Phys. I France
+7, 431-444.
+[263] Sornette, D., A. B. Davis, K. Ide, K. R. Vixie, V. Pisarenko, and J. R.
+Kamm (2007) Algorithm for Model Validation: Theory and Applications,
+Proc. Nat. Acad. Sci. USA 104 (16), 6562-6567.
+[264] Sornette, D., F. Deschatres, T. Gilbert, and Y. Ageon (2004) Endoge-
+nous Versus Exogenous Shocks in Complex Networks: an Empirical Test
+Using Book Sale Ranking, Phys. Rev. Lett. 93, 228701.
+[265] Sornette, D. and A. Helmstetter (2003) Endogeneous Versus Exoge-
+neous Shocks in Systems with Memory, Physica A 318 (3-4), 577-591.
+[266] Sornette, D. and A. Johansen (2001) Signiﬁcance of log-periodic pre-
+cursors to ﬁnancial crashes, Quantitative Finance 1 (4), 452-471.
+[267] Sornette,
+D.,
+Y.
+Malevergne
+and
+J.F.
+Muzy
+(Febru-
+ary
+2003)
+What
+causes
+craches?
+Risk
+16
+(2),
+67-71
+(http://arXiv.org/abs/cond-mat/0204626).
+[268] Sornette, D. and G. Ouillon (2005) Multifractal Scaling of Thermally-
+Activated Rupture Processes, Phys. Rev. Lett. 94, 038501.
+[269] Sornette, D. and G. Ouillon (2012) Dragon-kings: mechanisms, statis-
+tical methods and empirical evidence, Eur. Phys. J. Special Topics 205,
+1-26.
+[270] Sornette, D., D. Stauﬀer and H. Takayasu (2002) Market Fluctu-
+ations:
+multiplicative and percolation models, size eﬀects and predic-
+tions, chapter 14 of the book entitled “Theories of Disaster:
+Scal-
+ing Laws Governing Weather,
+Body,
+and Stock Market Dynamics
+edited by A. Bunde, J. Kropp, H.-J. Schellnhuber, Springer Verlag
+(http://xxx.lanl.gov/abs/cond-mat/9909439)
+[271] Sornette, D., R. Woodard, W. Yan and W.-X. Zhou (2013) Clariﬁca-
+tions to Questions and Criticisms on the Johansen-Ledoit-Sornette bubble
+Model, Physica A 392 (19), 4417-4428.
+[272] Sornette, D., R. Woodard and W.-X. Zhou (2009) The 2006-2008 Oil
+Bubble: evidence of speculation, and prediction, Physica A 388, 1571-1576.
+72
+
+
+--- Page 73 ---
+[273] Sornette, D. and W.-X. Zhou (2006a) Importance of Positive Feedbacks
+and Over-conﬁdence in a Self-Fulﬁlling Ising Model of Financial Markets,
+Physica A 370 (2), 704-726.
+[274] Sornette, D. and W.-X. Zhou (2006b) Predictability of Large Future
+Changes in major ﬁnancial indices, International Journal of Forecasting
+22, 153-168.
+[275] Sousa, A.O., K. Malarz, S. Galam (2005) Reshuﬄing spins with short
+range interactions: When sociophysics produces physical results, Int. J.
+Mod. Phys. C16, 1507-1517.
+[276] Stauﬀer, D. (2005) Sociophysics simulations II: Opinion dynamics, in
+“Modeling Cooperative Behavior In The Social Sciences”, AIP Conference
+Proceedings, Granada, Spain, Marro, J. and Garrido, P. L. and Mu˜noz,
+M. A., eds., vol. 779, pp. 56-68.
+[277] Stauﬀer, D. and D. Sornette (1999) Self-Organized Percolation Model
+for Stock Market Fluctuations, Physica A 271 (3-4), 496-506.
+[278] Strogatz, S. (2003). Sync : the emerging science of spontaneous order
+(Hyperion, ISBN 978-0-7868-6844-5. OCLC 50511177).
+[279] Stanley, H.E. (1999) Scaling, universality, and renormalization: Three
+pillars of modern critical phenomena, Rev. Mod. Phys. 71(2), S358-S366.
+[280] Thaler, R.H. (Editor) (2005) Advances in Behavioral Finance, Vol-
+ume II (Roundtable Series in Behavioral Economics), Princeton University
+Press (July 25, 2005)
+[281] T´oth, B., Y. Lemp´eri`ere, C. Deremble, J. de Lataillade, J. Kockelko-
+ren, and J.-P. Bouchaud (2011) Anomalous Price Impact and the Critical
+Nature of Liquidity in Financial Markets, Phys. Rev. X 1, 021006.
+[282] Train, K. E. (2003) Discrete Choice Methods with Simulation. Cam-
+bridge University Press.
+[283] Tsai, C.-Y., G. Ouillon and D. Sornette (2012) New Empirical Tests
+of the Multifractal Omori Law for Taiwan, Bulletin of the Seismological
+Society of America 102 (5), 2128-2138.
+[284] Vikram, S.V. and S. Sinha (2011) Emergence of universal scaling in
+ﬁnancial markets from mean-ﬁeld dynamics, Phys. Rev. E 83, 016101.
+73
+
+
+--- Page 74 ---
+[285] von Neumann, J. (1955) Mathematical Foundations of Quantum Me-
+chanics, Princeton University, Princeton.
+[286] Weber, P. and B. Rosenow (2006) Large stock price changes: volume
+or liquidity?, Quant. Finance 6 (1), 7-14.
+[287] Weidlich, W. (1971) The statistical description of polarisation phenom-
+ena in society. Br. J. Math. Stat. Psychol. 24, 251.
+[288] Weidlich, W. (1991) Weidlich, W. (1991) Physics and social science
+–the approach of synergetics, Phys. Rep. 204, 1-163.
+[289] Weidlich, W. (2000) Sociodynamics: A Systematic Approach to Math-
+ematical Modeling in the Social Sciences, CRC Press; 1 edition (August
+1).
+[290] Weidlich, W. and H. Huebner (2008) Dynamics of political opinion
+formation including catastrophe theory, Journal of Economic Behavior &
+Organization 67, 1-26.
+[291] Wiesinger, J., D. Sornette, and J. Satinover (2012) Reverse Engineer-
+ing Financial Markets with Majority and Minority Games Using Genetic
+Algorithms, Computational Economics 41 (4), 475-492.
+[292] Wilson, K.G. (1979) Problems in physics with many scales of length,
+Scientiﬁc American, August.
+[293] Windrum, P., G. Fagiolo and A. Moneta (2007) Empirical Validation
+of Agent-Based Models: Alternatives and Prospects, Journal of Artiﬁcial
+Societies and Social Simulation 10 (2), 8-36.
+[294] Wyart, M. and J.-P. Bouchaud (2007) Self-referential behavior, overre-
+action and conventions in ﬁnancial markets, Journal of Economic Behavior
+& Organization 63, 1-24.
+[295] Xiong, W. (March 2013) Bubbles, Crises, and Heterogeneous Beliefs,
+NBER Working Paper No. 18905 (http://www.nber.org/papers/w18905)
+[296] Yukalov, V.I. and D. Sornette (2008) Quantum decision theory as quan-
+tum theory of measurement, Physics Letters A 372, 6867-6871.
+[297] Yukalov, V.I. and D. Sornette (2009a) Scheme of thinking quantum
+systems, Laser Phys. Lett. 6, 833-839 (2009)
+74
+
+
+--- Page 75 ---
+[298] Yukalov, V.I. and D. Sornette (2009b) Physics of risk and uncertainty
+in quantum decision making, Eur. Phys. J.B 71, 533-548.
+[299] Yukalov, V.I. and D. Sornette (2009c) Processing Information in Quan-
+tum Decision Theory, Entropy 11, 1073-1120.
+[300] Yukalov, V.I. and D. Sornette (2010a) Mathematical structure of quan-
+tum decision theory, Advances in Complex Systems 13 (5), 659-698.
+[301] Yukalov, V.I. and D. Sornette (2010b) Entanglement Production in
+Quantum Decision Making, Physics of Atomic Nuclei 73 (3), 559-562.
+[302] Yukalov, V.I. and D. Sornette (2011) Decision Theory with Prospect
+Interference and Entanglement, Theory and Decision 70, 283-328.
+[303] Yukalov, V.I. and D. Sornette (2013a) Quantum probabilities of com-
+posite events in quantum measurements with multimode states, Laser
+Physics 23, 105502 (14pp).
+[304] Yukalov,
+V.I.
+and
+D.
+Sornette
+(2013b)
+Conditions
+for
+Quan-
+tum
+Interference
+in
+Cognitive
+Sciences,
+in
+press
+in
+Topics
+in
+Cognitive
+Science
+(2013)
+A
+TopiCS
+special
+issue:
+The
+po-
+tential
+of
+using
+quantum
+theory
+to
+build
+models
+of
+cognition
+(http://cognitivesciencesociety.org/journal_topics.html)
+[305] Yukalov, V.I. and D. Sornette (2013c) Role of information in decision
+making of social agents, Int. J. Inf. Technol. Dec. Making (submitted 8
+February 2013) (http://arxiv.org/abs/1202.4918)
+[306] Yukalov, V.I. and D. Sornette (2013d) Manipulating decision making
+of typical agents, IEEE Transactions on Systems, Man and Cybernetics:
+Systems (submitted 17 May 2013) (http://excen.gsu.edu/fur2012/)
+[307] Yukalov, V.I. and D. Sornette (2013e) Self-organization in nature and
+society as decision making, Adv. Complex Systems (submitted)
+[308] Yukalov, V.I., D. Sornette, E.P. Yukalova (2009) Nonlinear Dynamical
+Model of Regime Switching Between Conventions and Business Cycles, J.
+Economic Behavior and Organization 70, 206-230..
+[309] Yukalov, V.I., E.P. Yukalova and D. Sornette (2013) Mode interfer-
+ence of quantum joint probabilities in multi-mode Bose-condensed systems,
+Laser Phys. Lett. 10, 115502.
+75
+
+
+--- Page 76 ---
+[310] Zhang,
+Q.
+(2013)
+Disentangling
+Financial
+Mar-
+kets
+and
+Social
+Networks:
+Models
+and
+Empirical
+Tests,
+PhD
+thesis
+at
+ETH
+Zurich,
+25
+February
+2013
+(http://www.er.ethz.ch/publications/PHD_QunzhiZhang_final_050213.pdf)
+[311] Zhang, Y.-C. (1999) Toward a theory of marginally eﬃcient markets,
+Physica A: Statistical Mechanics and its Applications 269 (1), 30-44.
+[312] Zhou, W.-X. and D. Sornette (2006) Is There a Real-Estate Bubble in
+the US? Physica A: Statistical Mechanics and Its Applications 361, 297-
+308.
+[313] Zhou, W.-X. and D. Sornette (2007) Self-fulﬁlling Ising Model of Fi-
+nancial Markets, European Physical Journal B 55, 175-181.
+76

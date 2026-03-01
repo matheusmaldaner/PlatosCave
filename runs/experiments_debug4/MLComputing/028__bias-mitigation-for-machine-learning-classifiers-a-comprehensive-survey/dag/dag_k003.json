@@ -1,0 +1,139 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A comprehensive survey of bias mitigation methods for machine learning classifiers can systematize methods, datasets, metrics, and evaluation practices to support practitioners and identify challenges and opportunities",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        3,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Bias mitigation methods are categorizable by intervention stage into pre-processing (123 publications), in-processing (212 publications), and post-processing (56 publications)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        12
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Methods further divide into 13 approach categories (e.g., relabelling/perturbation, sampling, latent variables, representation learning, regularization/constraints, adversarial learning, compositional, adjusted learning, input correction, classifier correction, output correction)",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Surveyed literature comprises 341 publications collected via preliminary search, repository searches, snowballing and author feedback; 324 include experiments and the corpus yields 83 unique real datasets plus many synthetic/semi-synthetic datasets",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Dataset usage: Adult is used most (249 papers, 77% of experimental papers), COMPAS second (166 papers, 51%); average number of datasets per experimental paper is 2.7 and 90% of papers use four or fewer datasets",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Fairness measurement: authors use 109 unique metrics organized in six categories (labels in dataset, predicted outcome, predicted and actual outcomes, predicted probabilities and actual outcome, similarity, causal reasoning); most popular metrics include statistical parity difference, disparate impact, equality of opportunity, and equalized odds",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Benchmarking practices: 308 of 324 experimental papers perform benchmarking; common baselines are the original (fairness-agnostic) model (used by ~82%), suppressing the protected attribute (30 papers), random baselines (13 papers); many papers benchmark against prior bias-mitigation methods, with several canonical methods frequently reused",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Most frequently benchmarked methods include classifier modification (Hardt et al.), pre-processing sampling/relabelling (Kamiran and Calders), constraints approaches (Zafar et al.), adversarial methods (Zhang et al.), and representation approaches (Zemel et al.)",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Reproducibility: 192 of the 341 surveyed publications (56%) publicly share source code; three toolkits (AIF360, Fairlearn, Themis-ML) implement multiple bias mitigation methods",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Identified challenges from the literature include (1) proliferation and selection of fairness definitions and metrics, (2) need for fairness guarantees beyond test-set evaluation, (3) dataset limitations including missing or sensitive attribute availability and real-world validity, (4) transfer of methods to real-world dynamic settings and subgroup identification, and (5) limited experimental breadth in many studies",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Recommendations and current best practices distilled from the survey: check prior methods, evaluate on at least three diverse datasets, state protected attributes, report at least two fairness metrics plus a performance metric, benchmark against original model and related methods, test on multiple classifiers (esp. logistic regression and neural nets), repeat experiments (e.g., 10 runs), and share code and numerical results",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Survey scope and limitations: focuses on algorithmic fairness for tabular binary classification and excludes methods solely for vision or NLP tasks; results may not fully transfer to all real-world applications",
+      "role": "Limitation",
+      "parents": [
+        3,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "High-level empirical conclusion: in-processing approaches dominate the literature (most methods and publications); post-processing and input-correction post-processing methods are relatively underexplored (only two works on input correction), indicating gaps and opportunities for future work",
+      "role": "Conclusion",
+      "parents": [
+        1,
+        0
+      ],
+      "children": null
+    }
+  ]
+}

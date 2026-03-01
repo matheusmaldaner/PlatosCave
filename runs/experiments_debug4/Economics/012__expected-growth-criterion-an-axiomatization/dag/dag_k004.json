@@ -1,0 +1,161 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An agent who seeks to maximize the time-average growth rate of wealth has preferences representable by a unique ergodic transformation f, so that ranking stochastic wealth processes by long-run time-average growth is equivalent to ranking by expected value of f",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Define stochastic wealth processes (SWP) as adapted sequences xt on a filtered probability space, and define sample average, time-average, and expected growth rates for transformations of these processes",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Introduce axioms on preferences over SWPs: Consistency (completeness, transitivity, reflexivity), Archimedian, Independence, Monotonicity, and the Ergodicity Axiom that ranks processes by their long-run time-average growth of some transformation f",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Mixture space representation: under Consistency, Archimedian, and Independence, preferences over the mixture space X admit a linear functional L such that x >= x' iff L(x) >= L(x')",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Illustrative computations: show examples where f(x)=x is non-ergodic (time-average diverges from expectation) while f(x)=log(x) is ergodic (time-average equals expectation), motivating the search for ergodic transformations",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Ergodicity axiom pins the linear functional to time-average growth: combined axioms imply the linear representation equals expectation of f and this expectation equals the time-average growth limit",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Theorem (Ergodic vNM): Preferences satisfying axioms 3.1-3.5 iff x >= x' iff E[f(xt)] >= E[f(x't)] and E[f(xt)] = lim_{t->infty} (f(xt)-f(x0))/t, so f is an ergodic transformation extracting growth rate",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Procedure to obtain f for an Ito SWP dx = a(x) dt + b(x) dW: require df(x)=alpha dt + beta dW with constants alpha,beta, yielding differential conditions a(x) = (alpha/beta) b(x) + b(x) b'(x)/2 and f'(x)=1/b(x)",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Concrete example: for dx = x^gamma [1 + gamma/2 x^{gamma-1} dt + dW] the ergodic transformation is f(x)=x^{1-gamma}/(1-gamma)+C (gamma !=1), which matches common CRRA utility functional forms",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Because f is an ergodic transformation with independent increments, one can derive an exponential Cauchy functional equation for asset value over time and recover a discounted-utility style factor V(f(xt+Delta)) = beta exp(-alpha Delta)",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Interpretation: the ergodic transformation f is not a conventional psychological utility; it operationalizes growth optimization and may coincide with standard utility functional forms (e.g., CRRA or log) when they render the process ergodic, but gamma should not be interpreted generically as risk aversion in this framework",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Empirical context: the Copenhagen Experiment observed that subjects' implied utilities were approximately logarithmic under multiplicative dynamics and linear in wealth under additive dynamics, consistent with agents adapting toward ergodic transformations",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Limitations and assumptions: analysis assumes infinite discrete time asymptotics, objective known dynamics (no model misspecification), identically distributed increments in examples, and leaves out preferences for early resolution of uncertainty and ambiguity aversion",
+      "role": "Limitation",
+      "parents": [
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Suggested extensions: compare ergodicity axiom to temporal consistency (Kreps-Porteus), incorporate time-to-convergence preferences for pre-asymptotic decisions, and extend framework to robust/ambiguity averse preferences",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A simple, computationally convenient estimator based on dynamic OLS or GLS applied to a triangular representation yields efficient estimators of cointegrating vectors in systems with deterministic components and variables of differing higher orders of integration, and these estimators can be used to assess long-run relations such as U.S. Ml money demand",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Define a two-sided triangular representation of the system and motivate dynamic OLS (DOLS) and dynamic GLS (DGLS) as (conditional) Gaussian MLEs for the cointegrating coefficients by regressing the dependent block on contemporaneous levels, leads and lags of first differences, and deterministic terms",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method: Extend the triangular representation and DOLS/DGLS estimation to general I(d) systems with polynomial time trends by partitioning series into blocks associated with stochastic trends of different orders and transforming regressors to canonical form before OLS/GLS",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Assumption: The data-generating process admits the triangular representation under Assumption A (martingale differences, summable lag polynomials, nonsingular spectra, rank conditions) and Assumption B (finite parameterization of projection polynomials) and C (finite fourth moments, sufficient summability)",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Theoretical result: Under these assumptions the DOLS and feasible DGLS estimators are asymptotically efficient (local asymptotic mixed normal), DOLS and DGLS are asymptotically equivalent for coefficients on integrated regressors, and Wald tests of cointegrating restrictions have asymptotic chi-squared distributions",
+      "role": "Claim",
+      "parents": [
+        1,
+        2,
+        3
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Method/Result: Implement feasible DGLS via parametric finite-order approximation to the GLS filter and implement DOLS by OLS including leads and lags; construct robust covariance estimators (AR spectral or kernel) for inference",
+      "role": "Method",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Monte Carlo evidence: In simulated designs mimicking U.S. Ml dynamics, all estimators can be biased in some designs, but DOLS shows relatively good finite-sample performance (lower RMSE) across realistic designs while DGLS, PBSR, PHFM, JOH and SOLS each exhibit shortcomings depending on serial correlation and model specifics",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Claim from application: Using the proposed estimators on U.S. annual data 1900-1989, there is empirical support for a stable long-run Ml money demand relation cointegrating real balances, real income, and an interest rate",
+      "role": "Claim",
+      "parents": [
+        0,
+        6
+      ],
+      "children": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Limitation: Finite-sample inference can be poor; asymptotic standard errors and chi-squared approximations may understate sampling variability, especially with short postwar samples, many nuisance parameters, strong serial correlation, or truncated leads/lags",
+      "role": "Limitation",
+      "parents": [
+        6,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence: Full-sample DOLS-based 95% confidence intervals for the income elasticity and the interest-rate semielasticity of nominal Ml demand are (0.88, 1.06) and (-0.127, -0.075), respectively",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result/Claim: Estimates based only on postwar data are unstable and imprecise because postwar series are dominated by a single low-frequency trend (income and interest growth versus stable real balances), so parameters are highly negatively correlated and only their ratio is well determined",
+      "role": "Result",
+      "parents": [
+        7,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence: Tests do not reject a constant cointegrating relation across 1900-1945 vs 1946-1989; prewar-estimated cointegrating residuals appear stationary when applied to postwar data, but postwar-only estimates produce residuals with different persistence and much larger sampling uncertainty",
+      "role": "Evidence",
+      "parents": [
+        7,
+        9,
+        10,
+        8
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: The full-sample evidence supports Lucas' (1988) conjecture of a stable long-run money demand over the twentieth century with income elasticity near one and interest semielasticity near -0.10, but inference based on postwar data alone is weak",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Claim/Recommendation: In practice researchers should use multiple asymptotically efficient estimators, prefer long-span data when feasible, and treat postwar-only estimates with caution because of multicollinearity from dominant trends and finite-sample distortions",
+      "role": "Claim",
+      "parents": [
+        6,
+        10,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Final conclusion: DOLS/DGLS provide simple, asymptotically efficient tools for estimating cointegrating vectors in I(d) systems and for testing long-run economic relations, but careful attention to assumptions, finite-sample behavior, and data span is required when applying them to empirical problems like money demand",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        4,
+        8,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

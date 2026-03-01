@@ -1,0 +1,163 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "The widespread use of constant elasticity of substitution (CES) functions in Integrated Assessment Models (IAMs) causes a modeling artifact that falsely produces monotonically and exponentially increasing carbon prices and misrepresents technical energy transitions",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "CES functions are share-preserving and imply a marginal rate of technical substitution (MRTS) that depends on the input ratio, requiring exponentially increasing amounts of the substitute as substitution progresses",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "IAMs have multiple external shortcomings including controversial discount rate choices, arbitrary climate damage functions that understate high-warming impacts, and poor handling of catastrophic tail risks",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Mathematical derivation: for a two-input CES production Y = [alpha*F^-rho + (1-alpha)*R^-rho]^(-1/rho), MRTS and the relative price PF/PR follow formulas that imply substitution elasticity epsilon_F,R = -1/(1+rho) and PF/PR = (alpha/(1-alpha))*(F/R)^(-rho-1)",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Stylized CES example substituting fossil energy (F) with renewables (R) shows: (i) exponentially increasing R required, (ii) substitution saturates far from complete, (iii) carbon price starts low and rises exponentially, and (iv) results are highly sensitive to elasticity and initial shares",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Empirical evidence from mainstream IAMs (GTEM-C, MIT EPPA, GCAM, MERGE and others) exhibits the same artifact: carbon prices rising to hundreds or thousands of dollars per ton late-century and limited apparent penetration of renewables without backstop technologies",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Policy-relevant implications of the CES artifact are: price diversion (overemphasis on carbon pricing over physical planning), sticker shock (resignation due to very high projected prices), and technological myopia (models favor incumbent, pre-specified technologies like CCS, nuclear, or biomass)",
+      "role": "Claim",
+      "parents": [
+        2,
+        4,
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Because CES is unsuitable for long-term technical substitution, IAM results that rely on CES produce misleading marginal carbon price trajectories and therefore unreliable policy guidance",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        1,
+        4,
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Technological substitutions historically follow S-curve diffusion (logistic, Gompertz, Bass models) with dynamic elasticity that becomes easier as adoption increases, contrary to CES assumptions",
+      "role": "Context",
+      "parents": [
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "A practical alternative within IAM frameworks is to use a dynamically varying elasticity of substitution (linearly or exponentially decreasing rho) to reproduce S-curve transition behavior and avoid CES artifacts",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "A fundamentally different and preferable approach is to model energy transitions using physical energy principles and high-resolution physics-driven models that account for storage, system integration, and explicit deployment targets",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Model modification demonstration: implementing dynamic elasticity in the sample CES formulation yields substitution and carbon price trajectories that align with expected diffusion dynamics and cap carbon price by substitute technology cost",
+      "role": "Result",
+      "parents": [
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Assumption and limitation: many IAMs also embed other modeling choices (exogenous GDP growth, discounting, damage function shapes) that interact with substitution formulations and can compound misleading results",
+      "role": "Limitation",
+      "parents": [
+        2,
+        7
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "BinFI can efficiently identify safety-critical bits in machine learning applications by leveraging monotonicity in ML computations to prune the fault injection space",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many common ML operations (conv/matmul, ReLu, pooling, batch normalization, softmax, data transforms) are monotonic or approximately monotonic during inference",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Define error-propagation (EP) function as the composite mapping from a bit-flip deviation at an operator output to the final model output deviation, and EP is often (approximately) monotonic",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Under (approximate) monotonicity, higher-order bit flips produce larger output deviations and are more likely to cause silent data corruption (SDC), creating an SDC boundary in bit-order",
+      "role": "Claim",
+      "parents": [
+        0,
+        1,
+        2
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "BinFI is a binary-search-like fault injection algorithm that searches bit positions (separately for bits originally 0 and 1) to find the highest-order bit that causes SDC (the SDC boundary) and derive critical-bit counts and SDC rates",
+      "role": "Method",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Implementation: extended TensorFI to support DNN operators and added BinFI modes (binary FI, exhaustive FI, random FI) operating on TensorFlow operator outputs; experiments used 32-bit fixed-point representation",
+      "role": "Method",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Fault model and scope: single transient faults in processor datapath mapped to operator outputs (one-fault-per-execution), assume memory/registers protected by ECC, faults during inference only, inputs and model structure not altered",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Because EP is (approximately) monotonic, faults at lower-order bits can be pruned when a higher-order bit does not cause SDC, enabling logarithmic search per data element",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Binary-search injection uses separate sorted lists of indices of 0-bits and 1-bits, repeatedly injects at mid index, and moves search bounds depending on whether the injection caused an SDC",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evaluation setup: eight ML models (2-layer NN, kNN, LeNet-4, AlexNet, VGG11, VGG16, Nvidia Dave, Comma.ai), six datasets (MNIST, CIFAR-10, ImageNet subset, traffic signs, medical survival, driving frames), 10 inputs per benchmark, exhaustive FI as ground truth",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: BinFI identifies on average 99.56% of safety-critical bits with 99.63% precision across evaluated benchmarks, substantially outperforming random FI given the same number of trials",
+      "role": "Result",
+      "parents": [
+        4,
+        9
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Result: BinFI estimates overall SDC probability close to exhaustive ground truth (near-zero deviation for monotonic models like NN and kNN; low deviations otherwise), while random FI with same trial count is less accurate",
+      "role": "Result",
+      "parents": [
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Performance: BinFI requires roughly 20% of the fault-injection trials of exhaustive FI (logarithmic in bit width), yielding about 5X speedup over exhaustive FI; overhead decreases relatively as data width increases",
+      "role": "Result",
+      "parents": [
+        4,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation: EP functions are sometimes only approximately monotonic, so BinFI can miss a small fraction of critical bits (observed misses under 0.5%), causing minor inaccuracy compared to exhaustive FI",
+      "role": "Limitation",
+      "parents": [
+        2,
+        10,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Counterevidence and applicability limits: For models using strongly non-monotonic operators (e.g., local response normalization), BinFI precision can degrade; BinFI still works well for functions that are monotonic across non-trivial intervals (approximate monotonicity)",
+      "role": "Counterevidence",
+      "parents": [
+        1,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion and implication: BinFI is a practical tradeoff to find most safety-critical bits with low overhead and can guide selective protection or runtime mitigation for safety-critical ML in HPC and autonomous vehicle domains, though exhaustive FI remains required for complete coverage",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

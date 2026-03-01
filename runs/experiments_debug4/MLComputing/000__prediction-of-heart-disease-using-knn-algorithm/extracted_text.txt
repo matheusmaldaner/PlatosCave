@@ -1,0 +1,852 @@
+--- Page 1 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a836 
+ 
+PREDICTION OF HEART DISEASE USING KNN 
+ 
+ 
+Suresh P 
+Assistant Professor 
+Dept. Of Computer Science 
+And Engineering 
+Sri Venkateshwara College Of 
+Engineering, 
+Vidyanagar, Kempegowda 
+International 
+Airport Road, Bengaluru- 
+562157. 
+ 
+Bhavana.M 
+Dept. Of Computer Science 
+And Engineering 
+Sri Venkateshwara College Of 
+Engineering, 
+Vidyanagar, Kempegowda 
+International 
+Airport Road, Bengaluru- 
+562157. 
+ 
+Charitha.B.M 
+Dept. Of Computer Science 
+And Engineering 
+Sri Venkateshwara College Of 
+Engineering, 
+Vidyanagar, Kempegowda 
+International 
+Airport Road, Bengaluru- 
+562157. 
+ 
+Deepshika.R 
+Dept. Of Computer Science And 
+Engineering 
+Sri Venkateshwara College Of 
+Engineering, 
+Vidyanagar, Kempegowda International 
+Airport Road, Bengaluru-562157. 
+Abstract— Heart disease is a common, 
+universal and a life threatening condition which 
+requires early treatment and prior prediction. In 
+this research study, we have proposed the 
+utilization of K-nearest neighbors algorithm for 
+prediction of the heart disease. The KNN 
+algorithm relies on the non-parametric and 
+instance based classification which has shown 
+the most promising results in various domains. 
+The main aim of this research is to develop a 
+model which accurately predicts the possibility 
+of the heart disease using KNN algorithm by 
+leveraging a comprehensive dataset of clinical 
+and demographic features. The dataset usually 
+comprises the records of many patients, their 
+risk factors, medical history and the diagnosed 
+test results. In order to determine the challenges 
+associated with the prediction of heart disease, 
+we follow 'feature selection' techniques to detect 
+the most accurate disease. Alongwith this, we 
+handle the issue of the imbalanced data by 
+implementing appropriate weighting strategies. 
+The K-nearest neighbors algorithm is carried 
+out by implementing various parameters like 
+K(number of neighbors) and distances to 
+optimize the performance of KNN model. 
+Cross-validation 
+techniques 
+have 
+been 
+implemented to assess the model's sensitivity, 
+specificity, accuracy, 
+Farah Anjum 
+Dept. Of Computer Science And 
+Engineering 
+Sri Venkateshwara College Of 
+Engineering, 
+Vidyanagar, Kempegowda International 
+Airport Road, Bengaluru-562157. 
+and 
+area 
+under 
+the 
+receiver 
+operating 
+characteristic curve(AUC-ROC). The results 
+from these techniques determine that the KNN 
+algorithm exhibits promising results in the heart 
+disease prediction, achieving high accuracy and 
+AUC-ROC values. The model's interpretability 
+is 
+enhanced 
+through 
+feature 
+importance 
+analysis, providing insights about the key factors 
+contributing to heart disease risk. Overall, this 
+study 
+highlights 
+the 
+potential 
+of 
+KNN 
+algorithm as a successful tool for heart disease 
+prediction. The discovery contribute for the 
+improvement of accurate and reliable prediction 
+models, resulting in prevention and early 
+identification of the heart disease. 
+Keywords—KNN, Machine Learning, Heart 
+Disease, prognostication, dataset. 
+ 
+1.INTRODUCTION 
+ 
+ 
+Application Introduction: 
+Heart Disease is one among the leading causes for 
+the deaths worldwide and its early detection plays 
+a major role in the prevention . Our application 
+includes developed machine learning algorithms 
+for analyzing the various factors and indicators 
+associated with the heart disease. Firstly, the 
+patient will be asked for the relevant information 
+
+
+--- Page 2 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a837 
+ 
+such as gender, age, cholesterol levels, diabetes 
+alongwith other medical history. Our algorithm 
+will then enumerate this data and generate a 
+personalized risk assessment report. 
+This application will provide us with an easy to 
+understand prediction of patient's chances of 
+being diagnosed with a heart disease within a 
+specified time period. It also highlights the major 
+factors aiding the risk, allowing the patient to take 
+preventive steps for improving the health. 
+Algorithm Introduction: 
+The K-nearest neighbors(KNN) algorithm is a 
+machine learning method used for predictions, 
+including heart disease prediction . It is a 
+supervised learning algorithm which works on the 
+principle of similarity. 
+In context to the heart disease prediction, the KNN 
+algorithm uses a labelled dataset that involves 
+information of various attributes such as age, 
+gender, cholesterol levels, blood pressure and other 
+factors. Each individual in the given dataset is 
+labelled as either they are suffering with the heart 
+disease or not suffering with any heart disease. 
+When an individual's data is provided, the KNN 
+algorithm calculates the similarity between the 
+individual and the labelled data points in the 
+dataset. It does it by measuring the distance 
+between the individual's attribute values of the 
+labelled data points. 
+The KNN algorithm then selects the K-nearest 
+neighbors(data points with the closest attribute 
+values) and determines the majority class among 
+these neighbors. This majority class is used to 
+predict if the individual is expected to be diagnosed 
+with the heart disease or not. 
+Its very important to note the choice of K(number 
+of neighbors) which can have an effect on the 
+algorithm's performance. Additionally, feature 
+selection and data preprocessing are the crucial 
+steps in preparing the dataset for accurate 
+predictions. Overall, the KNN algorithm can be 
+considered as one of the useful tools for detecting 
+the heart diseases depending on the similarities 
+between the individuals and their attributes. 
+However, its always recommended to consult the 
+medical professionals for accurate diagnosis and 
+treatment. 
+Objectives: 
+The objectives of using the KNN (K-Nearest 
+Neighbors) 
+algorithm 
+in 
+heart 
+disease 
+prognostication are as follows: 
+1. Classification: The chief objective of the KNN 
+algorithm is to classify patients into various 
+categories, such as if cardiac disease is present or 
+not. 
+By 
+analyzing 
+the 
+features 
+and 
+the 
+characteristics of patients, the algorithm aims to 
+accurately assign them to the appropriate class. 
+2. Prediction: Depending on the input features, 
+KNN is also used to estimate the probability or 
+chance that a person has cardiac disease. This can 
+provide significant insights into risk assessment, 
+and it helps in making informed decisions 
+concerning further medical interventions or 
+treatments. 
+3. Accuracy: This KNN algorithm aims to obtain 
+high accuracy in predicting heart disease. By 
+considering the K-nearest neighbors of a given 
+patient, the algorithm leverages the similarities and 
+models of the data in making promising predictions. 
+The aim is to reduce false positives and false 
+negatives, ensuring reliable predictions. 
+4. Early detection: Another objective of using KNN 
+in prognosticating the heart disease is to aid in early 
+detection. By analyzing the input features and 
+assessing them with the historical data, the 
+algorithm can identify potential signs, or the risky 
+factors related with the heart disease. This enables 
+quick interventions and preventive steps to reduce 
+the severity of the condition. 
+Overall, the KNN algorithm aims to provide 
+accurate, reliable, and timely predictions for heart 
+disease, assisting in risk assessment, early 
+detection, and decision-making in healthcare 
+settings. 
+II. LITERATURE REVIEW 
+In today's fast-paced nature, people often 
+prioritize work and earning a living over taking 
+care of their health. This leads to change in their 
+diet and lifestyle, causing high stress and tension. 
+Unfortunately, this can also increase the risk of 
+developing conditions like high blood pressure, 
+diabetes, and other diseases at a younger age. 
+These factors contribute to a negligence of their 
+
+
+--- Page 3 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a838 
+ 
+health, which can eventually lead to heart disease. 
+The heart is a vital organ that affects the 
+functioning of other important organs in the body. 
+Traditional methods of diagnosing heart disease 
+rely on a patient's medical history, but these 
+approaches may not always yield accurate results. 
+This can lead to biases, errors, and high medical 
+costs, eventually impacting the quality of patient 
+care. Additionally, medical decisions are often 
+based on a physician's experience rather than on 
+comprehensive data analysis, further highlighting 
+the need for more accurate and data-driven 
+approaches in diagnosing and treating heart 
+conditions. 
+However, over recent years, the healthcare sector 
+has witnessed significant progress in data mining 
+and machine learning. These methods have been 
+broadly embraced and proven effective in 
+numerous healthcare applications, Especially in 
+medical cardiology. Despite these advancements, 
+heart disease remains a leading cause of mortality 
+in developing nations. Consequently, there is a 
+continued emphasis on identifying risk factors 
+and early indicators of the disease, highlighting 
+the importance of ongoing research in this area. 
+One such algorithm that researchers have used for 
+predicting heart disease risk is the K-nearest 
+neighbors (KNN) algorithm. This algorithm 
+collects features such as age, cholesterol levels, 
+blood pressure, and other relevant information 
+from patients. Based on these features, the 
+algorithm is trained to predict whether a patient is 
+at risk of heart disease. The dataset used for 
+training contains labelled examples of patients 
+with and without heart disease. 
+In this project, we have incorporated the KNN 
+Classifier, an AI algorithm that aims to predict 
+heart disease by collecting relevant information 
+from doctors, including data on resting blood 
+pressure, cholesterol levels, thalassemia, and 
+diabetes status, among other factors. This 
+algorithm can help healthcare professionals make 
+accurate, reliable, and timely assessments that 
+empower them to intervene effectively, detect 
+issues early, and make informed decisions for the 
+well-being of their patients. 
+Related Work: 
+J Thomas, R Theresa Princy [1], utilized a union 
+of the Neural networks, decision trees, naïve 
+Bayes, and the K-nearest neighbor method are 
+used to predict cardiac problems. They applied 
+knowledge of mining methods to assess the risk 
+rate of the heart conditions. 
+Himanshu Sharma and M A Rizvi [2] employed 
+Decision trees, SVM, Deep Learning, and K- 
+Nearest Neighbours algorithms in their study. To 
+acknowledge the noise in the datasets, they 
+focused on cleaning and pre-processing the data, 
+and also reducing its dimensionality. Their 
+finding highlighted that neural network could 
+attain high precision in such scenarios. 
+ 
+Amandeep Kaur et al. [14] guided a comparative 
+comparison of several algorithms, including K- 
+nearest neighbours, artificial neural networks, 
+SVM, and Naïve Bayes, for identifying heart 
+conditions. 
+In an analysis conducted by Alotalibi (2019) [19], 
+the 
+emphasis 
+was 
+on 
+investigating 
+the 
+effectiveness 
+of 
+machine 
+learning 
+(ML) 
+techniques in detecting heart failure illness. The 
+dataset used in the study came from the Cleveland 
+Clinic Foundation and applied various ML 
+methods, such as logistic regression, random 
+forests, decision trees, logistic regression, and 
+support vector machines (SVM) to construct 
+prediction models. The development process of 
+these models incorporated a 10-fold cross- 
+validation approach. The results showed that the 
+SVM method had the second-highest prediction 
+precision (92.30%) for heart disease, behind the 
+decision tree technique (93.19%). 
+ 
+In an alternative study conducted by L. H. Malik, 
+Zaibunnisa, Momin Fatema, Gawandar Ankita 
+and 
+Nikam 
+Pooja 
+[12], 
+the 
+proposed 
+methodology was K Neighbours Classifier, 
+Decision Tree Classifier and Random Forest 
+Classifier Support Vector Classifier Decision 
+Tree Classifier where the results were that the 
+diseases could be detected in the primary stages 
+using the risk factors and the patient can also keep 
+a monitor on his health and prevent from 
+spreading more and treat it as early as possible. 
+In one more study conducted by Harshit Jindal, 
+Preeti Nagrath, Rishabh Khera, Sarthak Agrawal, 
+Rachna Jain and Rishabh Khera [17] , the method 
+proposed was K nearest neighbors (KNN), 
+Logistic Regression and Random Forest 
+
+
+--- Page 4 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a839 
+ 
+Classifiers. The outcomes which were obtained 
+could find whether the person could be suffering 
+with any of the heart diseases in the coming time 
+through the medical record of the person. 
+Another research was performed by Nouh Sabri 
+Elmitwally [20], the methodology used was 
+Support Vector Machine(SVM).The results were 
+that this method was with the accuracy of 90.47% 
+and could identify the heart disease as early as 
+possible and the person can be given the proper 
+treatment on time. 
+III. PROPOSED METHODOLOGY 
+Problems with regression and classification are 
+addressed by the supervised machine learning 
+technique known as the K-Nearest Neighbors 
+(KNN) algorithm. Joseph Hodges and Evelyn Fix 
+proposed this algorithm in 1951, which was 
+subsequently developed by Thomas Cover. 
+The KNN method is a popular and adaptable 
+machine learning technique that is mostly used 
+due to its simplicity and ease of implementation. 
+No presumptions on the underlying data 
+distribution are necessary. It is an adaptable 
+option for a variety of dataset types in regression 
+and classification applications because it can 
+handle both numerical and categorical data. This 
+approach, which is non-parametric, bases its 
+predictions on how similar the data points are to 
+one another across datasets. The sensitivity of K- 
+NN to outliers is lower than that of other methods. 
+Using a distance metric, such as Euclidean 
+distance, the K-NN algorithm locates the K- 
+nearest neighbors (KNN) of a given data point. 
+The majority vote or average of the K neighbors 
+then controls the class or value of data points. 
+Using the local structure of the data, this method 
+enables the KNN algorithm to adjust to various 
+patterns and generate predictions. 
+The basic, non-parametric algorithm that doesn't 
+make any assumptions about the distribution of 
+the data is K-Nearest Neighbor (KNN). This 
+approach is based on the Euclidean distance 
+theory, which states that examples with 
+comparable characteristics tend to appear close 
+together within a dataset. In the event that each 
+instance has a classification tag applied, the 
+closest neighbor's class can be used to determine 
+the tag value of an unclassified instance. The 
+current modelling entails performing every step 
+thrice (repeats = 3), with a numerical value for K 
+of 10 (number = 10) and averaging each of the 
+three trials. 
+Certainly, determining coronary artery disease 
+(CAD) using the KNN is an interesting 
+application of machine learning. Let’s delve into 
+it: 
+K-Nearest Neighbors (KNN): 
+Regression and classification tasks are the two 
+uses for the supervised learning algorithm KNN. 
+That built on the idea that the similar data points 
+tend to have similar labels. KNN, a non- 
+parametric method, meaning it doesn’t assume 
+any kind of specific functional form for the data. 
+Unlike some other algorithms, KNN memorizes 
+the training set during training and performs most 
+of its computation during classification. 
+The key steps in KNN are: 
+ 
+Choose a value for K. 
+ 
+Determine 
+the 
+distance 
+(e.g., 
+Euclidean distance) between the new 
+data point and all the prior data points. 
+ 
+Select the K-nearest neighbors based 
+on small distances. 
+ 
+Assigns new data point to every class 
+that appears most commonly amongst 
+the K neighbor values. 
+Working of KNN Algorithm: 
+Given a new data point, KNN: 
+1. Finds the K-nearest neighbors based on 
+distance. 
+2. Determines the majority class among 
+those neighbors. 
+3.  Gives that class ownership of the new 
+data piece. 
+ 
+The preference of K is crucial: 
+o Odd values of K are preferred to 
+avoid ties during voting. 
+o Too small a K may lead to 
+overfitting, while too large a K may 
+introduce noise. 
+
+
+--- Page 5 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a840 
+ 
+Pros and Cons of KNN Algorithm: 
+Pros: 
+ 
+Easy to understand and simple to 
+implement. 
+ 
+It is ideal for non-linear data. 
+ 
+Can be used for both classification and 
+regression. 
+ 
+Works well with large data sets. 
+ 
+DATASET 
+Cons: 
+ 
+Computationally 
+expensive 
+during 
+classification. 
+ 
+Sensitive to the choice of K. 
+ 
+Requires 
+careful 
+preprocessing 
+(scaling 
+features, handling missing data). 
+ 
+Attributes 
+Explanation 
+age 
+It depicts the age of an individual. 
+sex 
+It depicts the gender of a person where 0 signifies female, 1 signifies male. 
+cp 
+Chest-pain type: It illustrates the kind of chest pain a person experiences, with 1 
+denoting typical angina, 2 denoting a typical angina, and 3 denoting non-anginal 
+discomfort. 
+trestbps 
+It reveals a person's resting arterial pressure reading in millimeters of mercury (mmHg). 
+chol 
+The serum cholesterol appears as mg/dl (unit). 
+fbs 
+It contrasts a person's fasting blood sugar level with 120 mg/dl.If blood sugar when 
+fasting is greater than 120 mg/dl, then the answer is 1 (true); otherwise, it is 0 (false). 
+restecg 
+It exhibits ecg readings at rest, with 0 signifying normal and 1 signifying an odd ST-T 
+wave. 
+thalach 
+It represents its highest heart rate, which counts as 0 in no sign of pain and 1 in an 
+instance of unease. 
+exang 
+It demonstrates that the exang is exercise-induced angina, given a value of 1 showing 
+pain and 0 showing no sensation of pain. 
+oldpeak 
+Exercise-induced minimizing of ST contrasted to rest ('ST' symbolizes regions on the 
+ECG plot). 
+slope 
+S–T segment/heart rate (ST/HR) slope 
+ca 
+If you have accumulation of waxy, fatty substance (plaque) that can narrow or 
+obstruction the coronary arteries, the calcium in your arteries can tell you. 
+thal 
+defines the thalassemia as the following: 1 as normal, 2 as fixed, while 3 as reversible. 
+target 
+target: Heart ailments (1 = no, 0= yes) 
+
+
+--- Page 6 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a841 
+ 
+𝑖=1 
+IV. 
+RESULTS AND DISCUSSION 
+KNN is the strategy that is used in this instance. 
+KNN, or K-Nearest Neighbors, uses the 
+Euclidean distance to figure out who is K-nearest. 
+Using this algorithm it is quite easy to detect the 
+disease from given dataset. 
+A. HISTOGRAM 
+VISUALIZATION 
+OF 
+DATASET 
+ 
+Fig 1: Visualization of the data 
+In Fig 1, we can observe the Histogram 
+Visualization of the data set where it creates a 
+histogram for each numerical column in the Data 
+Frame, showing the allocation of values within 
+each column. Histogram visualization is a 
+powerful technique for understanding, analyzing, 
+and 
+interpreting 
+datasets 
+across 
+different 
+domains, building it as an essential tool in data 
+analysis and decision-making processes. 
+B. AFFECTED INDIVIDUALS WITH HEART 
+DISEASE 
+ 
+Fig 2: Depicting the count of male and females 
+with heart disease. 
+The individuals who are prone to any of the heart 
+diseases are 303. In fig 2, the graph provides the 
+count of the no. of males and females those who 
+are suffering with the heart disease. 
+As seen from the above fig,1 represents male and 
+0 represents female. The male individuals are 
+diagnosed majorly with more heart diseases 
+which is caused due to elevated level of 
+cholesterol and high trestbps(resting blood 
+pressure). The females too are diagnosed with the 
+heart diseases but not as much as that of men. 
+C. FINDING THE SCORES OF K NEIGHBORS 
+CLASSIFIER FOR DIFFERENT VALUES OF 
+K. 
+ 
+ 
+Fig 3: Graph showing scores of K-neighbors 
+classifiers. 
+To find K Neighbors Classifiers scores with 
+different K-values, use the Euclidean distance 
+formula i.e., 
+ 
+D(x,y)=√∑𝑛  (𝑥𝑖 − 𝑦𝑖)2 
+The above formula gives the accurate scores of K 
+Neighbors Classifiers with different values of K. 
+From fig 3 we can find out scores of K Neighbors 
+Classifiers. 
+D. CONFUSION MATRIX 
+ 
+Confusion matrix classifies the values which are 
+predicted correctly, and which are predicted 
+incorrectly by the algorithm or the classifier. 
+ 
+ 
+ 
+Fig 4: Confusion Matrix 
+
+
+--- Page 7 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a842 
+ 
+True Positive (TP) and True Negative (TN), 
+respectively, are symbolized by the green 
+squares, and False Positive (FP) and False 
+Negative (FN), on the other hand, are illustrated 
+by the red squares. The sum of TP and TN gives 
+the value of correctly predicted by the KNN and 
+the sum of FP and FN gives the value of 
+incorrectly     predicted     by     the     KNN. 
+The correctly predicted heart diseases by the 
+KNN classifier is: 
+Accuracy=((38+45)/(38+10+7+45))*100 
+=83% 
+Therefore, the KNN algorithm has 83% 
+accuracy for predicting correctly the heart 
+diseases. 
+V. CONCLUSION 
+Using K-Nearest Neighbors (KNN) algorithm, 
+the circumstances surrounding heart disease 
+detection via AI yields promising results. Using 
+the results of relevant medical data, KNN 
+leverages patterns and similarities to organize 
+patients 
+into 
+distinctive 
+risk 
+categories 
+accurately. This is a succinct summary of how 
+the KNN algorithm can be used to diagnose 
+heart problems. 
+The KNN algorithm serves as a key tool in heart 
+disease recognition, offering a non-linear 
+approach to classification based on patient data. 
+By considering the proximity of data points in a 
+multidimensional 
+feature 
+space, 
+KNN 
+effectively discerns patterns indicative of heart 
+related risk. Through its adaptability and 
+simplicity, KNN provides clinicians and 
+researchers with a robust framework, aiding in 
+risk 
+assessment, 
+early 
+detection, 
+and 
+personalized 
+treatment strategies. 
+As 
+AI 
+continues 
+to 
+progress, 
+integrating 
+KNN 
+algorithms with sophisticated medical datasets 
+which holds potential in enhancing diagnostic 
+accuracy, improving outcomes for patients, and 
+ultimately, mitigating the cost of cardiac disease 
+on global health. 
+REFERENCES: 
+1.Thomas, J., & Princy, R. T. (2016, March). 
+Human heart disease prediction system using 
+data mining techniques. In 2016 international 
+conference on circuit, power and computing 
+technologies (ICCPCT) (pp. 1-5). IEEE. 
+1. Sharma, H., & Rizvi, M. A. (2017). Prediction 
+of heart disease using machine learning 
+algorithms: A survey. International Journal on 
+Recent and Innovation Trends in Computing and 
+Communication, 5(8), 99-104. 
+2. Bharti, S., & Singh, S. N. (2015, May). 
+Analytical study of heart disease prediction 
+comparing      with      different      algorithms. 
+In International Conference on Computing, 
+Communication & Automation (pp. 78-82). 
+IEEE. 
+3. Gavhane, A., Kokkula, G., Pandya, I., & 
+Devadkar, K. (2018, March). Prediction of 
+heart disease using machine learning. In 2018 
+second international conference on electronics, 
+communication and aerospace technology 
+(ICECA) (pp. 1275-1278). IEEE. 
+4. Shah, D., Patel, S., & Bharti, S. K. (2020). 
+Heart 
+disease 
+prediction 
+using 
+machine 
+learning techniques. SN Computer Science, 1, 
+1-6. 
+5. Khan, 
+S. 
+S., 
+& 
+Quadri, 
+S. 
+M. 
+K. 
+(2016).Prediction of angiographic disease 
+status using rule-based data mining techniques. 
+In Biol. Forum Int. J (Vol. 8, No. 2, pp. 103- 
+107). 
+6. Santhanam, T., & Ephzibah, E. P. (2013)."Heart 
+disease classification using PCA and feed 
+forward 
+neural 
+networks." 
+In 
+Mining 
+Intelligence and Knowledge Exploration: First 
+International Conference, MIKE 2013, Tamil 
+Nadu, 
+India, 
+December 
+18-20, 
+2013. 
+Proceedings (pp. 90-99). Springer International 
+Publishing. 
+7. Ramprakash, P., Sarumathi, R., Mowriya, R., & 
+Nithyavishnupriya, S. (2020, February). Heart 
+disease prediction using deep neural network. 
+In 2020 International Conference on Inventive 
+Computation Technologies (ICICT) (pp. 666- 
+670). IEEE. 
+8. Guidi, G., Pettenati, M. C., Melillo, P., & 
+Iadanza, E. (2014). A machine learning system 
+to improve heart failure patient assistance. 
+IEEE journal of biomedical and health 
+informatics, 18(6), 1750-1756.B. Dun, E. 
+
+
+--- Page 8 ---
+TIJER || ISSN 2349-9249 || © July 2024, Volume 11, Issue 7 || www.tijer.org 
+ 
+TIJER2407107 
+TIJER – INTERNATIONAL RESEARCH JOURNAL  www.tijer.org 
+a843 
+ 
+Wang, and S. Majumder(2016) "Heart disease 
+diagnosis on medical data using ensemble 
+learning." 
+9. Guidi, G., Pettenati, M. C., Melillo, P., & 
+Iadanza, E. (2014). A machine learning system 
+to improve heart failure patient assistance. 
+IEEE journal of biomedical and health 
+informatics, 18(6), 1750-1756. 
+10. Latha, C. B. C., & Jeeva, S. C. (2019). 
+Improving the accuracy of prediction of heart 
+disease risk based on ensemble classification 
+techniques. Informatics in Medicine Unlocked, 
+16, 100203. 
+11. Malik, Z. L., Fatema, M., Pooja, N., & Ankita, 
+G. (2021). Heart Disease Prediction Using 
+Artificial Intelligence. Heart Disease Prediction 
+Using Artificial Intelligence, 2278-0181. 
+12. Soni, J., Ansari, U., Sharma, D., & Soni, S. 
+(2011). Predictive data mining for medical 
+diagnosis: An overview of heart disease 
+prediction. International Journal of Computer 
+Applications, 17(8), 43-48. 
+13. Kaur, Amandeep. (2018). HEART DISEASE 
+PREDICTION 
+USING 
+DATA 
+MINING 
+TECHNIQUES: A SURVEY. International 
+Journal of Advanced Research in Computer 
+Science. 9. 569-572. 
+14. Dangare, C. S., & Apte, S. S. (2012). Improved 
+study of heart disease prediction system using 
+data 
+mining 
+classification 
+techniques. 
+International 
+Journal 
+of 
+Computer 
+Applications, 47(10), 44-48. 
+15. Shinde, R., Arjun, S., Patil, P., & Waghmare, J. 
+(2015). An intelligent heart disease prediction 
+system using k-means clustering and Naïve 
+Bayes algorithm. International Journal of 
+Computer 
+Science 
+and 
+Information 
+Technologies, 6(1), 637-639. 
+16. Jindal, H., Agrawal, S., Khera, R., Jain, R., & 
+Nagrath, P. (2021). Heart disease prediction 
+using machine learning algorithms. In IOP 
+conference series: materials science and 
+engineering (Vol. 1022, No. 1, p. 012072). IOP 
+Publishing. 
+17. Sitar-tăut, A., Zdrenghea, D., Pop, D., & Sitar- 
+tăut, D. (2009). Using machine learning 
+algorithms in cardiovascular disease risk 
+evaluation. Age, 1(4), 4. 
+18. Alqahtani, L. A., Alotaibi, H. M., Khan, I. U., 
+& Aslam, N. (2020, October). Automated 
+prediction of Heart disease using optimized 
+machine learning techniques. In 2020 11th 
+IEEE 
+Annual 
+Ubiquitous 
+Computing, 
+Electronics 
+& 
+Mobile 
+Communication 
+Conference (UEMCON) (pp. 0298-0302). 
+IEEE. 
+19. Rasheed, M., Khan, M. A., Elmitwally, N. S., 
+Issa, G. F., Ghazal, T. M., Alrababah, H., & 
+Mago, B. (2022, October). Heart disease 
+prediction using machine learning method. In 
+2022 International Conference on Cyber 
+Resilience (ICCR) (pp. 1-6). IEEE. 

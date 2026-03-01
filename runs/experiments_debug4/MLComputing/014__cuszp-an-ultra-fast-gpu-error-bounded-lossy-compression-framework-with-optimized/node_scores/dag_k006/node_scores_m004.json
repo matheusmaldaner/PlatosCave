@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts implementing the entire compression and decompression pipeline in a single GPU kernel to eliminate CPU computation and data movement; feasibility hinges on kernel size, data dependencies, and hardware limits, and is not a universally established or proven approach.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.58,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text only, the described four step pipeline aligns with known components in predictive coding and bit packing, but there is no independent verification; assume moderate plausibility with limited evidence.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment based solely on the claim text and general knowledge; plausibility moderate given the idea that spatially smooth scientific data can permit blockwise fixed length coding with a sign map to achieve parallelism and competitive ratios.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.45,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, it is unclear whether a single kernel eliminates CPU and data movement overhead to equate kernel throughput with end-to-end throughput; real systems typically have other bottlenecks.",
+    "confidence_level": "low"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible GPU prefix sum using hierarchical synchronization to assign block start indices in one kernel, but is not verifiable from the provided text.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts two techniques: quantization to integer values within an error bound, and 1D one layer Lorenzo prediction to record deltas per block to reduce bits and improve encodability; these ideas align with standard lossy quantization and block-based prediction in compression, but the claim lacks specific evidence.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.56,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible fixed length encoding approach using a sign map and Fk derived from the most significant nonzero bit of the block maximum to compute the compressed size as (Fk plus one) times L divided by eight; however, without additional derivation or context, its correctness cannot be confirmed from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "assessment based solely on claim text and general background knowledge; no external sources used",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the evaluation setup mentions six datasets, an NVIDIA A100 GPU, and multiple metrics, but there is no external sourcing or detailed methodological description provided.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts empirical results showing most hurricane blocks have very small relative value range for L equals eight, implying intra-block smoothness and support for fixed length per block",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.65,
+    "relevance": 0.68,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessment notes that fixed length encoding can reduce overhead when per block symbol frequency is low, making Huffman tree construction and storage potentially costly relative to throughput.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim provides exact throughput numbers for compression and decompression on A100 and relative speedups, but no methodological details or sources are provided in the text to assess validity.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.58,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, it asserts that cuSZp achieves comparable kernel throughput to leading single kernel compressors due to avoiding multi kernel launches and CPU heavy steps, but no external data is used.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, there is uncertainty about empirical results and no external sources are consulted within this assessment.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.42,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim alone; no external verification performed; assumes the claim's statements about cuSZp are accurate.",
+    "confidence_level": "medium"
+  }
+}

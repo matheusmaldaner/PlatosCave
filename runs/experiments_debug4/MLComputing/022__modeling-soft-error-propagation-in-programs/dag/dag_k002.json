@@ -1,0 +1,201 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A three-level probabilistic model (TRIDENT) that models error propagation at static-instruction, control-flow and memory levels can predict program and per-instruction SDC probabilities without performing fault injection, with accuracy comparable to fault injection and much better scalability",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "TRIDENT is implemented as a compiler module in LLVM and operates in two phases: profiling (dynamic) to collect execution counts and dependencies and inferencing (static) to compute SDC probabilities",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "TRIDENT decomposes propagation into three sub-models: fs (static-instruction level), fc (control-flow divergence level), and fm (memory dependency level), composed to trace propagation from a fault site to program outputs",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Static-instruction sub-model fs computes per-static-instruction probabilities of propagation, masking and crash by approximating instruction semantics and operand statistics and aggregates them along static data-dependent sequences",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Control-flow sub-model fc estimates probabilities that corrupted branch conditions cause control-flow divergences and computes probabilities that specific dynamic store instructions become corrupted due to branch flips (separately handling loop-terminating and non-loop-terminating comparisons)",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6,
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Memory sub-model fm traces propagation from corrupted stores to program outputs via a memory dependence graph of loads and stores, pruning redundant symmetric loop dependencies and invoking fs recursively on static sequences encountered",
+      "role": "Method",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "TRIDENT inputs: LLVM IR program, one program input for profiling, and user-specified program output instructions; outputs: per-instruction SDC probabilities and overall program SDC probability (sampling instructions to trade time and accuracy)",
+      "role": "Method",
+      "parents": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Assumptions and fault model: single-bit transient faults injected in processor computational elements (pipeline registers and functional units); memory and control logic assumed ECC/protected; program may take legally incorrect branches but not illegal jumps; SDC probability defined conditional on activation",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        5,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evaluation setup: 11 diverse benchmarks compiled with LLVM -O2, ground truth via LLFI fault injection (single-bit flips) used for comparison, statistical sampling (3000 samples) used for overall SDC estimates and paired t-tests for significance",
+      "role": "Method",
+      "parents": [
+        1,
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result - Accuracy (overall): TRIDENT predictions of overall program SDC probabilities closely match fault injection (mean absolute error 4.75% across 11 programs; TRIDENT mean 14.83% vs FI 13.59%); paired t-test p=0.764 fails to reject equality",
+      "role": "Result",
+      "parents": [
+        8,
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result - Accuracy (per-instruction): TRIDENT predictions of per-instruction SDC probabilities are statistically indistinguishable from FI in most benchmarks (p>0.05 in 8/11 benchmarks); simpler models fs+fc and fs perform significantly worse",
+      "role": "Result",
+      "parents": [
+        8,
+        3,
+        4,
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Limitations and sources of inaccuracy: TRIDENT omits special handling for bulk memory ops (memcpy/memmove), assumes only comparisons/logic/casts mask errors which ignores other masking instructions, conservatively treats dominated stores as corrupted, and faces difficulty analyzing corrupted store addresses",
+      "role": "Limitation",
+      "parents": [
+        7,
+        5,
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result - Scalability and performance: TRIDENT requires a fixed profiling cost (about 15 minutes) and then incurs small incremental cost per instruction; it is orders of magnitude faster than FI as sample counts increase (e.g., TRIDENT 16 minutes for 1000 static instructions vs FI often hours/days)",
+      "role": "Result",
+      "parents": [
+        8,
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Use-case (selective instruction duplication): Using TRIDENT to rank instructions and solve a knapsack selection yields greater SDC reduction for a given performance overhead than simpler models: example reductions average 65% and 90% SDC reduction at 11.78% and 23.31% overheads respectively",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        9,
+        10,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Comparison with prior models: TRIDENT is significantly more accurate than PVF and ePVF on the same benchmarks (mean absolute errors: PVF 75.19%, ePVF 36.78% vs TRIDENT 4.75%) because TRIDENT models control-flow divergence and memory propagation beyond static sequences",
+      "role": "Claim",
+      "parents": [
+        2,
+        9,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

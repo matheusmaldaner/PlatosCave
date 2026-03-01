@@ -1,0 +1,156 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.95,
+    "relevance": 0.9,
+    "evidence_strength": 0.7,
+    "method_rigor": 0.6,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Adam tracks first and second moment estimates as exponential moving averages of gradients and their squares with bias correction to compute per parameter adaptive learning rates for updates",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.85,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim matches the standard bias correction for Adam moment estimates, where m and v are divided by (1 minus beta1 to the t) and (1 minus beta2 to the t) respectively to obtain bias corrected estimates.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general knowledge of Adam, the asserted bound by alpha and invariance to diagonal gradient rescaling are not universally guaranteed; the statement is plausible but not clearly established or universally valid.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.5,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general online convex optimization bounds and potential Adam variants, but universal convergence to sqrt T regret under the stated assumptions is not universally established and depends on specific decays and conditions; evidence is not definitive.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.55,
+    "relevance": 0.75,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given known discussions about Adam's performance relative to SGD with momentum and other optimizers, but it is not universally true across all models and datasets and lacks guaranteed generalizability.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that in experiments on MNIST logistic regression and IMDB bag-of-words logistic regression, Adam performed as well as or better than AdaGrad on sparse problems and outperformed SGD with Nesterov momentum, but no external sources are consulted and only common background expectations apply.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.72,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "Claim aligns with widely taught intuition about bias correction in adaptive optimizers; however specific quantitative impact when beta2 near one depends on architecture and task.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.6,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Adam's behavior described aligns with common understanding from optimization literature that Adam adapts per parameter, often converges faster than AdaGrad and can outperform SGD with momentum on CNNs; however exact performance varies and epsilon term can dominate in certain CNN settings.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim, the stated assumptions align with typical convergence analyses for adaptive gradient methods, but no external verification was performed.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.72,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on general knowledge of Adam as combining ideas from AdaGrad and RMSProp with momentum and adaptive learning rates, the claim is plausible but specifics about memory efficiency and simplicity are somewhat subjective.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.75,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "AdaMax uses a max operation on the second moment estimate and is described as more numerically stable with a potential bound on the update magnitude and often claimed to avoid bias correction for the v term, aligning with the claim as stated",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Temporal averaging of parameters in Adam or AdaMax with bias corrected EMA is plausible to reduce noise and may improve generalization, reflecting general use of EMA or weight averaging in training.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.7,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on common knowledge that Adam defaults are widely used across tasks, the claim seems plausible but cannot be fully verified without empirical evidence.",
+    "confidence_level": "medium"
+  }
+}

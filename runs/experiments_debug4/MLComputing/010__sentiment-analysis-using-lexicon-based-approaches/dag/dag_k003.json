@@ -1,0 +1,195 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based sentiment analysis system (SO-CAL) that uses hand-ranked multi-part-of-speech dictionaries plus linguistic handling of intensification, negation, irrealis, and weighting yields robust, domain-independent polarity classification and strength estimation",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        7,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL computes semantic orientation for texts by aggregating semantic orientation scores of words and phrases adjusted by contextual valence shifters and text-level weighting",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "SO-CAL uses manually created, hand-ranked dictionaries for adjectives, nouns, verbs, adverbs (scale −5 to +5), with multi-word expressions and part-of-speech distinctions",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Intensification is modeled via a percentage-based modifier lexicon (amplifiers positive, downtoners negative) applied multiplicatively and recursively to capture scale and interaction with item strength",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Negation is handled primarily by polarity shift (moving score toward opposite polarity by a fixed amount) with a conservative backward search for negators and optional polarity-flip treatment for intensifier interaction",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": 5,
+      "text": "SO-CAL implements irrealis blocking (ignore SO in scope of modals, conditionals, NPIs, questions, quotes) and exceptions for local definiteness, to avoid counting non-factive or hypothetical sentiment",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Text-level features include negative-value weighting (boosting negative expressions), repetition weighting (nth occurrence scaled by 1/n), XML or positional weighting, and multiple cut-offs for fine-grained class labels",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "SO-CAL was evaluated on multiple corpora (Epinions 400 reviews development, unseen Epinions 400, Polarity movie reviews ~1900, Camera 2400) and shorter texts (MPQA sentences, MySpace comments, news/blog sentences, SemEval headlines)",
+      "role": "Method",
+      "parents": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "SO-CAL achieved overall accuracies around 78.7% on mixed review corpora with full features enabled, outperforming simpler or single-part-of-speech lexicons and most automatic dictionaries in cross-domain tests",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        12,
+        14
+      ]
+    },
+    {
+      "id": 9,
+      "text": "On shorter texts and other domains (MPQA, MySpace, news/blog sentences, headlines), SO-CAL attained comparable accuracy when non-empty (had SO-carrying words), e.g., 77–82% excluding texts with no matched lexicon words",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Feature ablations show that negation handling, intensification, negative weighting and repetition weighting each improve accuracy; shifted negation generally outperformed simple switch negation",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Mechanical Turk judgments of adjective and intensifier strength correlate substantially with SO-CAL manual rankings and pairwise comparisons, supporting the validity of the hand-ranked lexicons",
+      "role": "Evidence",
+      "parents": [
+        2,
+        7
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Comparisons with other lexicons (Google PMI automatic dictionary, SentiWordNet versions, General Inquirer, Subjectivity lexicon, Maryland thesaurus-derived list) show SO-CAL's manual, POS-tagged, moderate-coverage dictionaries plus linguistic features produce higher cross-domain polarity accuracy",
+      "role": "Claim",
+      "parents": [
+        8,
+        11
+      ],
+      "children": [
+        14,
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitations include: (a) too much automatic expansion can add noise and reduce performance, (b) negation and pragmatic phenomena are complex and neither shift nor flip fully capture all cases, (c) sentence-level/short-text empty cases arise from limited coverage",
+      "role": "Limitation",
+      "parents": [
+        4,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: a linguistically informed, manually curated lexicon approach (SO-CAL) yields robust, portable sentiment polarity and strength detection across domains and text lengths, and can be improved further by discourse/topic weighting and targeted lexicon updates",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

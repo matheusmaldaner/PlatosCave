@@ -1,0 +1,172 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Decisions that maximize time-average growth of wealth (growth optimality) can be formulated as expected utility maximization by identifying the utility function with the ergodicity transformation of the underlying wealth dynamics",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity economics (EE) models wealth as a stochastic process and proposes agents maximize the time-average growth rate of wealth rather than expectation values over ensembles",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Expected utility theory (EUT) models decisions by maximization of expected changes in a nonlinear utility function u(x), interpreted as psychological risk preferences",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "For a given wealth dynamic, an ergodicity transformation u(x) may be chosen so that the long-time average rate r_bar of changes in u equals the expectation value of that rate, making r an ergodic observable",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "All invertible utility functions correspond to wealth dynamics for which expected-utility maximization is equivalent to time-average growth maximization; conversely, any u(x) that yields additive stationary independent increments (Brownian motion with drift) makes EUT dynamically interpretable",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "EE and EUT differ conceptually: expectation values are ensemble averages relevant to hypothetical collectives, while time averages are mechanistically relevant to single agents following one trajectory",
+      "role": "Claim",
+      "parents": [
+        1,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Mathematical condition: u(t) must be a stochastic process with stationary independent additive increments (a Levy process); with continuous paths this implies u follows Brownian motion with drift du = a_u dt + b_u dW, ensuring limit r_bar exists and equals a_u",
+      "role": "Method",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Decision criterion: choose the stochastic process x(t) that maximizes the long-time limit of delta u over time, equivalently maximizing the time-average growth rate r_bar when u has the required stochastic properties",
+      "role": "Claim",
+      "parents": [
+        3,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Theorem: For any invertible u(x) satisfying smoothness, application of Ito's lemma to du = a_u dt + b_u dW yields a corresponding Ito SDE dx = a_x(x) dt + b_x(x) dW, so optimizing expected changes in u is equivalent to optimizing time-average growth under the induced dx",
+      "role": "Result",
+      "parents": [
+        4,
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Given a general Ito dynamic dx = a_x(x) dt + b_x(x) dW, necessary and sufficient consistency conditions for existence of a u(x) with constant a_u and b_u are bu = b_x(x) u'(x) and a_u = a_x(x) u'(x) + (1/2) b_x(x)^2 u''(x), from which u can be constructed when solvable",
+      "role": "Method",
+      "parents": [
+        6,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Examples mapping utilities to dynamics: linear u(x)=x -> additive Brownian motion; logarithmic u(x)=ln x -> geometric Brownian motion; square-root u(x)=sqrt(x) -> mixed additive-multiplicative SDE with drift and sqrt noise",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Example inverse mapping: dynamic dx = (a_u/b_u e^{-x} - 1/2 e^{-2x}) dt + e^{-x} dW is consistent and yields u(x) = b_u e^{x} + C, a convex (risk-seeking under EUT) utility whose u(t) is Brownian with drift",
+      "role": "Evidence",
+      "parents": [
+        4,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Wealth distribution derivation: since u(t) is normal N(a_u t, b_u^2 t), the induced wealth distribution P_x(x,t) is Pu(u(x),t) times du/dx, giving explicit time-dependent wealth distributions for the mapped dynamics",
+      "role": "Result",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Implication: because wealth dynamics are exogenous, the apparent utility function (and thus observed risk preferences) can be predicted a priori from dynamics, and preferences will change if dynamics change; experiments show dynamics strongly determine behavior",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        10,
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Formal requirement: utility functions should be unbounded for the dynamic interpretation because bounded invertible u(x) are inconsistent with u following Brownian motion with drift and would imply pathological finite-time singularities or bounded time",
+      "role": "Claim",
+      "parents": [
+        6,
+        8
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An agent's preferences can be axiomatized so they are represented by a unique ergodic transformation f that implies the agent maximizes the time-average growth rate of their wealth",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        6,
+        12,
+        14
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Ergodicity Economics (EE) claims agents maximize time-average growth and that observed subject behavior in experiments aligns with this objective, challenging classical expected utility theory",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Model setup: time is discrete infinite, agents face stochastic wealth processes (SWP) x_t adapted to a filtration, and preferences are defined over the space X of SWPs",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Axioms imposed on preferences: Consistency (complete preorder), Archimedean (continuity via mixtures), and Independence (mixture independence) on mixture space X",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Mixture Space Theorem: under axioms 3.1 and 3.3 the complete preorder on mixture space X is representable by a linear functional L such that x preferred to x' iff L(x) >= L(x')",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Adding Monotonicity and restricting to square-integrable monotonic functions L2(omega) allows interpretation of the linear functional Lt as an expectation operator Et[ f(x_t) ] for truncated finite-horizon SWPs",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Ergodicity axiom (EA): preferences rank SWPs according to the long-run time-average growth rate of a transformation f, i.e., x preferred to x' iff lim t->infinity (f(x_t)-f(x0))/t > corresponding limit for x'",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Ergodic vNM Theorem: Axioms 3.1-3.5 hold iff (1) x preferred to x' iff E[f(x_t)] >= E[f(x'_t)] and (2) E[f(x_t)] equals the time-average growth rate lim t->infinity (f(x_t)-f(x0))/t, so f is an ergodic transformation",
+      "role": "Result",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        11,
+        15
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Continuous-time method: represent wealth by an Ito process dx = a(x) dt + b(x) dW and seek a transformation f such that df(x) = alpha dt + beta dW with constants alpha,beta (a Levy process)",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Condition for existence of ergodic transformation for general dynamics: a(x) must satisfy a(x) = (alpha/beta) b(x) + (1/2) b(x) b'(x), linking drift and diffusion to f via Ito's lemma",
+      "role": "Claim",
+      "parents": [
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Constructed example: for dynamics with b(x)=x^gamma and appropriate drift, the ergodic transformation solves f'(x)=1/b(x) giving f(x) = x^{1-gamma}/(1-gamma)+C (gamma !=1), so power utility-like f emerges as ergodic transform",
+      "role": "Result",
+      "parents": [
+        9
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 11,
+      "text": "From an ergodic transformation one can recover a discounted-utility-like valuation: ergodicity and independent increments imply a Cauchy exponential functional equation whose solution yields exponential discounting V(f(x_{t+Delta})) = beta e^{-alpha Delta t}",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Copenhagen Experiment (CE) evidence: subjects exposed to multiplicative dynamics exhibited approximately logarithmic implied utility, and to additive dynamics exhibited implied utility equal to wealth, consistent with adapting utilities that render wealth ergodic",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Comparative claim: EE should be compared normatively to temporal/multi-period expected utility models and descriptively to dynamic ambiguity aversion; mapping CE into these frameworks requires additional assumptions about horizon, information resolution, and strategy representation",
+      "role": "Claim",
+      "parents": [
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitations and assumptions: the axiomatization assumes objective known dynamics, takes limits as t->infinity (pre-asymptotic life ignored), assumes no primitive preference for early resolution of uncertainty, and ignores model misspecification/ambiguity",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: The ergodicity axioms pin down an observable transformation f that makes time-average growth and expected value coincide; this transformation need not be interpreted as risk aversion per se (gamma is not intrinsically a risk-aversion parameter), though mappings to classical utility parameters are possible under additional constructions",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        10,
+        11,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

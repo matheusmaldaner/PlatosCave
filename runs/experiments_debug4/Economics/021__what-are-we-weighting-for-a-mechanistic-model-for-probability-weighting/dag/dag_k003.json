@@ -1,0 +1,178 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Probability weighting (inverse-S relation between decision weights and declared probabilities) can be mechanistically explained by decision makers having greater uncertainty about outcome distributions than disinterested observers, because DMs estimate probabilities from finite time series while DOs treat probabilities as known",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        6,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Empirical robust observation: plotting cumulative decision weights Fw versus cumulative declared probabilities Fp yields an inverse-S curve that lies above the diagonal for low cumulative probabilities and below it for high cumulative probabilities",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Interpretation claim: the inverse-S indicates a difference between two models (the DO's and the DM's) rather than necessarily a cognitive bias of the DM",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Mechanistic claim: if a DM assumes a larger scale (greater standard deviation) and/or different location for an outcome distribution than the DO, mapping the DM CDF against the DO CDF produces an inverse-S shape",
+      "role": "Claim",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method / analytic derivation for Gaussian case: for DO p(x) ~ N(mu, sigma^2) and DM w(x) ~ N(mu, (alpha sigma)^2) eliminating (x-mu)^2 yields w as a power-law function of p with exponent 1/alpha^2 and a normalisation prefactor, producing w(p) above diagonal for small p when alpha>1",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result (analytic): for unimodal distributions increasing DM scale alone produces an inverse-S in the CDF mapping; differing location plus scale can reproduce empirical fitted shapes",
+      "role": "Result",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Mechanism from estimation: when DM must estimate probabilities from finite time series counts n(x) ~ p(x) T delta_x, the standard error in the estimate scales as sqrt(p(x)/T delta_x) so relative error is proportional to 1/sqrt(p(x) T delta_x) and thus increases as p(x) decreases",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Formal prescription (method): a cautious DM constructs decision weight density w(x) by adding an uncertainty correction to the estimated density: w(x) proportional to ˆp(x) + epsilon[ˆp(x)] and then normalising (equations 13 and 14)",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Analytic claim: if relative uncertainty epsilon[p(x)]/p(x) is larger for small p than for large p, then adding the uncertainty term and normalising enhances small probabilities and reduces large ones, yielding an inverse-S mapping between w and p",
+      "role": "Claim",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence from simulation and numerical checks: applying the conservative correction to Gaussian and fat-tailed t reference densities and simulating finite-series counting yields inverse-S curves for both distributions, with a stronger effect for fat tails",
+      "role": "Evidence",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Model fitting method and result: Gaussian and t-distribution parameterisations derived from the mechanistic model (location and scale or shape) were fitted to experimental data (Tversky and Kahneman 1992; Tversky and Fox 1995) and produced fits of similar quality to standard phenomenological probability-weighting functions",
+      "role": "Result",
+      "parents": [
+        1,
+        5,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Assumption and conceptual point: DO and DM often adopt different optimization perspectives (DO: ensemble averages; DM: time evolution for a single agent), and many economic processes (e.g., multiplicative growth) are non-ergodic so the two perspectives disagree systematically",
+      "role": "Assumption",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Claim about normative interpretation: because DMs face time-series uncertainty and non-ergodic exposure to outcomes, their assigning higher weights to rare events can be a rational, precautionary response rather than a normative error",
+      "role": "Conclusion",
+      "parents": [
+        2,
+        6,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation / neutral observation: the inverse-S is a neutral indicator of model disagreement and by itself does not identify which model (DO or DM) is correct; context and aims matter",
+      "role": "Limitation",
+      "parents": [
+        10,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

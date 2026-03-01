@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.95,
+    "relevance": 0.9,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.5,
+    "reproducibility": 0.6,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Adam optimizer computes per-parameter adaptive learning rates using exponential moving averages of gradient and squared gradient with bias correction.",
+    "confidence_level": "high"
+  },
+  "2": {
+    "credibility": 0.95,
+    "relevance": 0.95,
+    "evidence_strength": 0.85,
+    "method_rigor": 0.8,
+    "reproducibility": 0.8,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "The claim describes the standard Adam update equation using bias-corrected first and second moment estimates, which is a widely accepted formulation of Adam in optimization literature.",
+    "confidence_level": "high"
+  },
+  "3": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general intuition about Adam's adaptive scaling and robustness to gradient conditioning, but explicit invariance to diagonal gradient rescaling and precise step magnitude bounds are not universally guaranteed and depend on implementation details; overall plausibility is moderate but not strongly confirmed.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.7,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.6,
+    "sources_checked": [],
+    "verification_summary": "Bias correction in adaptive optimizers like Adam uses bias correction by dividing by 1 minus beta raised to the t, which addresses initialization bias of moment estimates when starting from zero, especially for beta close to one.",
+    "confidence_level": "high"
+  },
+  "5": {
+    "credibility": 0.7,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states AdaMax is a stable Adam variant using infinity norm and that temporal averaging improves generalization, which aligns with common understanding but lacks empirical detail here.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.9,
+    "relevance": 0.9,
+    "evidence_strength": 0.8,
+    "method_rigor": 0.6,
+    "reproducibility": 0.6,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Adam updates first and second moment estimates with exponential moving averages and includes bias correction terms for both moments.",
+    "confidence_level": "high"
+  },
+  "7": {
+    "credibility": 0.72,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with standard understanding that bias correction in Adam helps correct early step size behavior, particularly when beta2 is near one, though details about divergence depending on gradient sparsity are nuanced.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Adam uses per parameter first and second moment estimates with elementwise updates; while computationally efficient, its memory footprint is not light due to storing two moments in addition to gradients, making the memory claim questionable.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.42,
+    "relevance": 0.72,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a bounded step size Delta_t in terms of alpha and moments bmt and bvt, suggesting a trust-region like effect; without external derivation or context, the bound |Delta_t| <= alpha is plausible under typical normalization but not guaranteed without specifying bmt and bvt behavior, so the claim remains uncertain and unverified from the provided text.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Adam is generally competitive with SGD variants and can handle sparse gradients, but the claim that it universally converges as fast or faster across logistic regression, sparse bag of words, multilayer networks, and convolutional networks is optimistic and not guaranteed.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.5,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No independent sources available; claim plausible but cannot verify without data from the cited empirical test.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the comparison among Adam, SGD with Nesterov momentum, and AdaGrad on MNIST and IMDB BOF is plausible but not verifiable without sources.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a specific empirical result for a two hidden layer network comparing Adam to other first order methods and SFO quasi newton, but no independent data or broader context is provided in the claim text.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on general knowledge that Adam and SGD with momentum often outperform AdaGrad on CNNs, with Adam adapting per layer learning rates and providing marginal gains over SGD momentum in deep CNN experiments.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim plausibly aligns with standard O sqrt T regret for convex optimization with decaying steps and adaptive methods, but relies on specific conditions for Adam which are not universally guaranteed.",
+    "confidence_level": "medium"
+  }
+}

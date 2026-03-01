@@ -1,0 +1,208 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning classifiers (KNN, Random Forest, SVM) can assist early detection of lung cancer from CT images, improving diagnostic accuracy and patient outcomes",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        13,
+        5,
+        6,
+        7,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset: LIDC-IDRI CT image dataset used for training and testing; additional samples obtained from AHRC and AIMS for validation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        14
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Image preprocessing methods applied: resizing, normalization, CLAHE, Wiener, adaptive Gaussian, Gaussian and Gabor filtering to reduce noise and standardize images",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Classifiers implemented and compared: K-Nearest Neighbors (KNN) with Euclidean distance, Support Vector Machine (SVM) with hyperplane separation, and Random Forest ensemble of decision trees",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Training and evaluation protocol: dataset sample of 500 images, images downsampled, 70% training 30% test split, and 5-fold cross-validation used for performance estimation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        13,
+        11,
+        14
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: SVM classifier achieved average accuracy 95.06% across 5-fold cross-validation (per-fold accuracies reported), with high precision, recall and F1",
+      "role": "Result",
+      "parents": [
+        0,
+        3,
+        4
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: KNN classifier achieved average accuracy 86.89% across 5-fold cross-validation with reported per-fold metrics",
+      "role": "Result",
+      "parents": [
+        0,
+        3,
+        4
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Result: Random Forest classifier achieved average accuracy 81.96% across 5-fold cross-validation with reported per-fold metrics",
+      "role": "Result",
+      "parents": [
+        0,
+        3,
+        4
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evidence: Confusion matrices presented and reported ROC-AUC values exceeding 0.99 for each class, indicating strong class discrimination",
+      "role": "Evidence",
+      "parents": [
+        5,
+        6,
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Claim: SVM outperforms KNN and Random Forest on this dataset due to better handling of complex, high-dimensional decision boundaries",
+      "role": "Claim",
+      "parents": [
+        5,
+        6,
+        7,
+        8,
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Conclusion: The proposed SVM-based diagnostic approach shows promise for earlier and more accurate lung cancer detection and could contribute to improved clinical outcomes if validated further",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        9
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evidence: Validation performed on small local sample sets from AHRC and AIMS under supervision of a radiologist to corroborate model outputs",
+      "role": "Evidence",
+      "parents": [
+        1,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Method detail: Image segmentation techniques included thresholding and marker-controlled watershed; image enhancement included contrast and color-space modifications",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Claim: Model evaluation used standard performance metrics including accuracy, precision, recall, F1-score, sensitivity, specificity, FAR and FRR",
+      "role": "Claim",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: Small experimental sample size (500 images) and limited external validation restrict generalizability of reported performance",
+      "role": "Limitation",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Future work: Expand and diversify dataset across populations and stages, and further improve model performance and reliability with larger multicenter data",
+      "role": "Claim",
+      "parents": [
+        14,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

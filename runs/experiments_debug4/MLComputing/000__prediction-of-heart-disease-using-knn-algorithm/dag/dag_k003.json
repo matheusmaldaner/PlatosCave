@@ -1,0 +1,157 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "K-nearest neighbors (KNN) algorithm can be used to accurately predict the presence of heart disease from clinical and demographic data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "KNN is an appropriate choice for this task because it is a non-parametric, instance-based classifier that uses distance (e.g., Euclidean) to infer labels from similar cases",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The study uses a clinical dataset with features including age, sex, chest pain type, resting blood pressure, cholesterol, fasting blood sugar, rest ECG, max heart rate, exercise angina, oldpeak, slope, ca, thal and a binary target indicating heart disease",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Preprocessing steps include feature selection, handling class imbalance via weighting strategies, feature scaling and repeated trials (repeats=3) with K set to 10 and averaging results",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Model evaluation employed cross-validation and performance metrics including sensitivity, specificity, accuracy, confusion matrix and AUC-ROC",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "KNN uses Euclidean distance to find K nearest neighbors, then assigns class by majority vote; choice of K affects bias-variance (odd K to avoid ties; small K risks overfitting, large K risks noise)",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Data visualization included histograms for numerical features and counts of affected individuals by sex, showing more male diagnoses associated with higher cholesterol and resting blood pressure",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The experimental setup repeated the modeling three times, used K=10, averaged trials, and computed KNN classifier scores for different K values using the Euclidean distance formula",
+      "role": "Method",
+      "parents": [
+        3,
+        5
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Confusion matrix results yield 38 true positives, 45 true negatives, 10 false positives, and 7 false negatives, producing an accuracy of 83%",
+      "role": "Result",
+      "parents": [
+        4,
+        7
+      ],
+      "children": [
+        11,
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Feature importance analysis was used to improve model interpretability and to identify key factors contributing to heart disease risk",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Evaluation reports included accuracy and AUC-ROC values; authors state KNN achieved high accuracy and promising AUC-ROC in heart disease prediction",
+      "role": "Result",
+      "parents": [
+        4,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "The study concludes that KNN is a promising, simple, and adaptable tool for heart disease prediction, aiding risk assessment, early detection and potentially improving clinical outcomes",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        8,
+        10,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "KNN has known limitations: it is computationally expensive at classification time, sensitive to choice of K, and requires careful preprocessing (scaling, missing data handling)",
+      "role": "Limitation",
+      "parents": [
+        1,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

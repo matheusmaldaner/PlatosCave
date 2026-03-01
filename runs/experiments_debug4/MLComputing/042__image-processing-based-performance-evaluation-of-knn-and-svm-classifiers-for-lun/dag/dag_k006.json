@@ -1,0 +1,193 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning classifiers applied to CT image data can enable accurate early detection of lung cancer, with SVM expected to outperform KNN and Random Forest",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Data used: 500 CT images sampled from the LIDC-IDRI dataset, supplemented by small sample sets from AHRC and AIMS for validation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Image preprocessing pipeline included resizing 512x512x3 to 256x, contrast enhancement (CLAHE), Wiener filtering, adaptive Gaussian filtering, Gaussian and Gabor filtering, normalization and segmentation using thresholding and marker-controlled watershed",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Classifiers evaluated: K-Nearest Neighbors using Euclidean distance, Support Vector Machine maximizing class margin, and Random Forest ensemble of decision trees with bootstrap sampling",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Training and evaluation protocol: 70% of images used for training, 30% for testing, 5-fold cross validation applied for performance estimation",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Labels: binary setup with abnormal images showing Non-Small Cell Lung Cancer (NSCLC) in various stages versus normal images without radiological abnormalities; radiologist supervision used for validation",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Feature extraction and segmentation produced inputs for classifiers after preprocessing and resizing; representative CT samples shown to illustrate data quality",
+      "role": "Method",
+      "parents": [
+        1,
+        2,
+        5
+      ],
+      "children": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "SVM achieved average accuracy 95.06% with average true positive rate 0.99, average false positive rate 0.26, average precision 0.95, average F1-score 0.98 using 5-fold cross validation",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        6
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "KNN achieved average accuracy 86.89% with average true positive rate 0.98, average false positive rate 0.38, average precision 0.84, average F1-score 0.91 using 5-fold cross validation",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        6
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Random Forest achieved average accuracy 81.96% with average true positive rate 0.98, average false positive rate 0.48, average precision 0.78, average F1-score 0.87 using 5-fold cross validation",
+      "role": "Result",
+      "parents": [
+        3,
+        4,
+        6
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Comparative claim: SVM outperformed KNN and Random Forest on this dataset and preprocessing pipeline, attributed to SVM handling complex decision boundaries and high-dimensional features",
+      "role": "Claim",
+      "parents": [
+        7,
+        8,
+        9
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "External comparison: proposed SVM model accuracy 95.05% exceeds reported accuracies of selected prior works (examples: Murphy 84.00%, Messay 82.66%, Gomathi 76.90%, Kumer 86.00%)",
+      "role": "Evidence",
+      "parents": [
+        7,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: The proposed image-processing pipeline combined with SVM classification can detect lung cancer with high accuracy and may aid early diagnosis and improved patient outcomes",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        10,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Validation: Small hospital sample sets from AHRC and AIMS were used under radiologist supervision to validate model outputs and support generalizability claims",
+      "role": "Evidence",
+      "parents": [
+        1,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitations and future work: study used a limited sample of 500 images and small local validation sets; authors propose expanding to larger, more diverse datasets to improve reliability and generalization",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

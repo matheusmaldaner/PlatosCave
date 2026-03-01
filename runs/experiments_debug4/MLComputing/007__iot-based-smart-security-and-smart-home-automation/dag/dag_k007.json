@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An IoT based system using Node MCU and related sensors can provide integrated smart security and smart home automation that overcomes range and reliability drawbacks of existing short range wireless methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing home automation methods (Bluetooth, ZigBee, GSM, voice systems) have limitations: short wireless range, unreliable message delivery, or sensitivity to noise",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We implement a prototype where Node MCU hosts sensors and relays, Arduino UNO handles the OV7670 camera, and the system communicates over Wi Fi or cellular (3G/4G) to the user",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The system combines dual functionality: smart security (intruder detection and image alert) and home automation (remote control of lights and fans), plus environment monitoring (temperature, humidity, air purity)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Primary hardware components include Node MCU (ESP8266 platform), Arduino UNO, IR motion sensor, OV7670 camera, MQ135 air quality sensor, DHT11 humidity and temperature sensor, relay board and smartphone interface",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Motivation for using Node MCU and internet is to overcome Bluetooth and ZigBee short range limits and GSM message unreliability by using Wi Fi or cellular internet",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Sensors and relays are connected to Node MCU; camera requires multiple analog pins so it is connected to Arduino UNO which interfaces with Node MCU and PC",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Relays (5V 4 channel) controlled by microcontroller switch household appliances allowing remote on/off control via the internet",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "System user interface uses smartphone apps and email: alerts and sensor readings are viewable on the Blink app or via email; owner can send simple commands (e.g., press '1') to actuate appliances",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "When IR sensor detects motion, it triggers the microcontroller to activate the camera which captures an image of the entrance",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Home automation is achieved by remote switching of lights and fans via internet connection, enabling long distance control and aiding handicapped and elderly users",
+      "role": "Claim",
+      "parents": [
+        3,
+        7,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Environment monitoring uses DHT11 and MQ135 to report temperature, humidity and air purity every second; high readings can trigger fans to remove contaminated air",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Captured images from OV7670 are stored on a PC folder and automatically sent to the predefined user email as an alert stating a possible intruder",
+      "role": "Result",
+      "parents": [
+        6,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Prototype results are visible on the Blink app and the captured images are successfully emailed to the user, demonstrating the integrated security and automation functionality",
+      "role": "Evidence",
+      "parents": [
+        12,
+        8
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Advantages of the system include low cost, minimal requirements, combined security and automation, long distance control, and utility for handicapped and aged people",
+      "role": "Conclusion",
+      "parents": [
+        13,
+        10,
+        11
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitation: The IoT home automation system requires internet connectivity (though cellular fallback is possible); future work could port the implementation to platforms like Raspberry Pi",
+      "role": "Limitation",
+      "parents": [
+        14
+      ],
+      "children": null
+    }
+  ]
+}

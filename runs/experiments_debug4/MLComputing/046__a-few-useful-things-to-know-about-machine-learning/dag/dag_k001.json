@@ -1,0 +1,202 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Successful machine learning in practice depends on a set of practical \"folk\" principles beyond textbook theory, summarized as key lessons about representation, evaluation, optimization, data, and methodology",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Learning decomposes into three interacting components: representation, evaluation, and optimization; choices in these determine what can be learned and the efficiency of learning",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The fundamental objective of learning is generalization to unseen data, not fitting the training set",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data alone is insufficient to guarantee generalization; learners must embody prior knowledge or assumptions (no free lunch)",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Overfitting arises when learned classifiers capture idiosyncrasies of training data and thus fail on test data; it involves bias and variance tradeoffs",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        11,
+        12,
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The curse of dimensionality undermines similarity-based reasoning and generalization in high-dimensional feature spaces, though nonuniform data distributions mitigate this",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Theoretical guarantees (sample complexity and asymptotic consistency) exist but are often loose or inapplicable in practice, so they are more useful for understanding than direct decision making",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Feature engineering is typically the most important determinant of project success and consumes most human effort in applied machine learning",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Given limited performance, the pragmatic options are to design better algorithms or gather more data; often more data with simpler methods is the quickest path to improved accuracy",
+      "role": "Claim",
+      "parents": [
+        7
+      ],
+      "children": [
+        9,
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Practical limitations include scalability and human effort: large datasets can be available but unusable due to time and computational constraints",
+      "role": "Limitation",
+      "parents": [
+        8,
+        5,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Model ensembles (bagging, boosting, stacking) empirically improve performance by reducing variance and combining diverse learners, and were central in successes like the Netflix competition",
+      "role": "Result",
+      "parents": [
+        1,
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Practical methods to combat overfitting include holding out test data, cross-validation, regularization, statistical significance tests, and ensemble methods, but none universally solve overfitting",
+      "role": "Method",
+      "parents": [
+        4,
+        10,
+        1
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical phenomenon: simple learners with strong assumptions (e.g., naive Bayes) can outperform more flexible learners with limited data because they reduce variance and require less data to generalize",
+      "role": "Evidence",
+      "parents": [
+        4,
+        6,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Representability of functions by a model class does not imply they are learnable in practice given finite data, compute, and search procedures; deeper or more compact representations can reduce required data for some functions",
+      "role": "Claim",
+      "parents": [
+        1,
+        6,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Correlation learned from observational data does not imply causation; learners typically extract correlations which can guide but not determine causal interventions without experiments",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Occam s razor and simplicity are useful practical heuristics but do not guarantee better generalization; simplicity should be valued for interpretability and parsimony rather than presumed accuracy",
+      "role": "Conclusion",
+      "parents": [
+        6,
+        11,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

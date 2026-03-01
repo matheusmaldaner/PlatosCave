@@ -1,0 +1,191 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests built from ensembles of randomized decision trees (random vectors per tree, voting) yield accurate, robust classification and regression predictors that do not overfit as the number of trees increases",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "As number of trees goes to infinity, the generalization error of a random forest converges almost surely to a limit given by comparing P over the tree randomness of correct class vote minus max other class vote",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "An upper bound on generalization error: PE* <= rho_bar (1 - s^2) / s^2, linking error to strength s (expected margin) and average correlation rho_bar between tree raw margins; lower correlation and higher strength improve ensemble error",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Method: Grow unpruned trees with two forms of random features—Forest-RI selects F random input variables at each node; Forest-RC selects F random linear combinations of L inputs at each node; bagging is used to sample training sets",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Method: Use out-of-bag estimates from bagging to compute ongoing estimates of generalization error, strength, correlation, and variable importance without separate test set",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Empirical claim: Random feature forests (Forest-RI and Forest-RC) achieve test errors comparable to or better than Adaboost across many benchmark data sets while being faster and more robust to output noise",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result: In multiple UCI and synthetic data experiments, Forest-RI and Forest-RC often matched or beat Adaboost test error (tables of errors across data sets), with Forest-RC especially strong on many cases",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Result: Forest-RI (F small) is much faster than full-variable methods (e.g., F=1 gives up to 40x speedup on zip-code data), enabling many more trees for stable out-of-bag estimation",
+      "role": "Result",
+      "parents": [
+        5,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Empirical claim: Random forests are substantially more robust than Adaboost to label noise (5% corrupted labels); Adaboost error often increases markedly while random forests show small or negligible increases",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence: Theoretical derivations (Strong Law of Large Numbers and raw-margin analysis) prove convergence and produce the strength/correlation bound and the c/s^2 measure guiding design",
+      "role": "Evidence",
+      "parents": [
+        1,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Claim: To minimize ensemble error one should inject randomness that reduces correlation between trees while maintaining individual tree strength; random feature selection accomplishes this tradeoff",
+      "role": "Claim",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        6,
+        7,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Method/Evidence: Out-of-bag procedure: for each training example, aggregate votes only from trees not trained on that example to estimate generalization error and to compute strength and correlation estimates",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6,
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Result: Experiments varying F show strength often plateaus quickly while correlation increases with F; optimal F is small in many small datasets (often F=1 or small), but larger data sets may benefit from larger F",
+      "role": "Result",
+      "parents": [
+        11,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Claim and method: Variable importance can be estimated internally by permuting an input m in out-of-bag examples and measuring increase in misclassification; these importance measures identify influential variables and interactions",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Evidence/Result: Permutation importance examples (diabetes, votes) show single variables can dominate prediction and that importance estimates match rerun experiments using selected variables, validating the internal importance measure",
+      "role": "Evidence",
+      "parents": [
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Random forests, via random feature selection and averaging, provide a practical, theoretically grounded ensemble method that balances tree strength and inter-tree correlation, giving strong, robust predictive performance and useful internal diagnostics",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        2,
+        6,
+        8,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

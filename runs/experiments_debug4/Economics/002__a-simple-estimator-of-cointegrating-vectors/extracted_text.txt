@@ -1,0 +1,3190 @@
+--- Page 1 ---
+Econometrica, Vol. 61, No. 4 (July, 1993), 783-820 
+A SIMPLE ESTIMATOR OF COINTEGRATING VECTORS 
+IN HIGHER ORDER INTEGRATED SYSTEMS 
+BY JAMES H. STOCK AND MARK W. WATSON1 
+Efficient estimators of cointegrating vectors are presented for systems involving deter- 
+ministic components and variables of differing, higher orders of integration. The estima- 
+tors are computed using GLS or OLS, and Wald Statistics constructed from these 
+estimators have asymptotic x2 distributions. These and previously proposed estimators of 
+cointegrating vectors are used to study long-run U.S. money (Ml) demand. Ml demand is 
+found to be stable over 1900-1989; the 95% confidence intervals for the income elasticity 
+and interest rate semielasticity are (.88,1.06) and (-.13, -.08), respectively. Estimates 
+based on the postwar data alone, however, are unstable, with variances which indicate 
+substantial sampling uncertainty. 
+KEYWORDS: Error correction models, unit roots, money demand. 
+1. INTRODUCTION 
+PARAMETERS DESCRIBING THE LONG-RUN RELATION between economic time 
+series, such as the long-run income and interest elasticities of money demand, 
+often play an important role in empirical macroeconomics. If these variables are 
+cointegrated as defined by Engle and Granger (1987), then the task of describ- 
+ing these long-run relations reduces to the problem of estimating cointegrating 
+vectors. Recent research on the estimation of cointegrating vectors has focused 
+on the case in which each series is individually integrated of order 1 (is I(1)), 
+typically with no drift term. Johansen (1988a) and Ahn and Reinsel (1990) 
+derived the asymptotic distribution of the Gaussian MLE when the cointegrated 
+system is parameterized as a vector error correction model (VECM), and 
+Johansen (1991) extended this result to the case of nonzero drifts. A series of 
+papers has considered other efficient estimators based on a different model for 
+cointegrated systems, the triangular representation. Phillips (1991a) studied 
+estimation in a cointegrated model with general I(O) errors; Phillips and Hansen 
+(1990) and Park (1992) considered two-step, frequency-zero seemingly unrelated 
+regression estimators; and Phillips (1991b) used spectral methods to compute 
+efficient estimators in the frequency domain. 
+This paper makes three main contributions. First, it develops two alternative, 
+computationally simple estimators of cointegrating vectors. These estimators, 
+which have been independently proposed and studied elsewhere in the case of 
+1The authors thank Manfred Deistler, Robert Engle, Peter Phillips, Danny Quah, Kenneth 
+West, and the participants in the NBER/FMME Summer Institute Workshop on New Econometric 
+Methods in Financial Time Series, July 17-20, 1989 for helpful comments on earlier drafts of this 
+paper. Helpful suggestions by a co-editor and two anonymous referees are gratefully acknowledged. 
+The authors also thank Robert Lucas for kindly providing the annual data analyzed in Section 7. 
+Gustavo Gonzaga and Graham Elliott provided able research assistance. This research was sup- 
+ported in part by the Sloan Foundation and National Science Foundation Grants SES-86-18984, 
+SES-89-10601, and SES-91-22463. 
+783 
+
+
+--- Page 2 ---
+784 
+J. H. STOCK AND M. W. WATSON 
+I(1) variates (Hansen (1988), Phillips (1991a), Phillips and Loretan (1991), and 
+Saikkonen (1991)), are developed here for cointegrating regressions among 
+general I(d) variables with general deterministic components. (For an applica- 
+tion of this estimator in the I(1) case, see King, Plosser, Stock, and Watson 
+(1991).) The estimators are motivated as Gaussian MLE's for a particular 
+parameterization of the triangular representation. However, under more gen- 
+eral conditions they are asymptotically efficient in Saikkonen's (1991) and 
+Phillips' (1991a) sense, having an asymptotic distribution that is a random 
+mixture of normals and producing Wald test statistics with asymptotic chi- 
+squared null distributions. In the I(1) case with a single cointegrating vector, 
+one simply regresses one of the variables onto contemporaneous levels of the 
+remaining variables, leads and lags of their first differences, and a constant, 
+using either ordinary or generalized least squares. The resulting "dynamic 
+OLS" (respectively GLS) estimators are asymptotically equivalent to the Jo- 
+hansen/Ahn-Reinsel estimator. 
+The second contribution is an examination of the finite sample performance 
+of these estimators in a variety of Monte Carlo experiments. Although all the 
+estimators perform well when the designs incorporate simple short-run dynam- 
+ics, for designs that mimic the dynamics in U.S. real money (Ml) balances, 
+income, and interest rates, there is considerable variation across the estimators 
+and associated confidence intervals. In these designs, the dynamic OLS estima- 
+tor performs well relative to the other asymptotically efficient estimators. 
+The third contribution is the use of these procedures to investigate the 
+long-run demand for money (Ml) in the U.S. from 1900 to 1989. Other 
+researchers (recently including Hafer and Jansen (1991), Hoffman and Rasche 
+(1991), Miller (1991), and Baba, Hendry, and Starr (1992)) have argued either 
+explicitly or implicitly that long-run money demand can be thought of as a 
+cointegrating relation among real balances, real income, and an interest rate in 
+postwar data. We find this characterization empirically plausible for the longer 
+annual data as well, and therefore use these estimators of cointegrating vectors 
+to examine Lucas' (1988) suggestion that there is a stable long-run Ml money 
+demand relation spanning the twentieth century. Based on the full sample, 95% 
+confidence intervals for the income elasticity and interest rate semielasticity are, 
+respectively, (0.88, 1.06) and (- 0.127, - 0.075). The postwar data are dominated 
+by a single long-run trend, reflected in growth in income and interest rates and 
+stable real money balances from 1946 to 1982; this results in imprecise estima- 
+tion of the long-run money demand parameters when only the postwar data are 
+used. 
+The paper is organized as follows. The model and estimators are introduced 
+in Section 2 for I(1) variables and are extended to 1(d) variables in Section 3. 
+The large-sample properties of the estimators and test statistics are summarized 
+in Section 4. In Section 5, the I(2) case is examined in detail. Monte Carlo 
+results are presented in Section 6. The application to long-run Ml demand is 
+given in Section 7. Section 8 concludes. Readers primarily interested in the 
+empirical results can skip Sections 3-5 with little loss of continuity. 
+
+
+--- Page 3 ---
+COINTEGRATING VECTORS 
+785 
+2. REPRESENTATION AND ESTIMATION IN I(1) SYSTEMS 
+Let y, denote a n-dimensional time series, whose elements are individually 
+I(1). Suppose that E(Ay,) = 0, and that the n X r matrix of r cointegrating 
+vectors is a = (- 0, Ir)" where 0 is the r X (n - r) submatrix of unknown 
+parameters to be estimated and Ir is the r X r identity matrix. We assume that 
+there are no additional restrictions on 0. The triangular representation for yt is 
+(2.1a) 
+Ay' = u' 
+(2.1b) 
+y2 = A+ oyl + u2 
+where yt is partitioned as (yl, y72), where yJ1 is (n - r) x 1 and y2 is r X 1, and 
+where u, = (ul, u,2')' is a stationary stochastic process, with full rank spectral 
+density matrix. This representation has been used extensively in theoretical 
+work by Phillips (1991a, 1991b), typically without parametric structure on the 
+I(O) process ut, and in applications by Campbell (1987) and Campbell and 
+Shiller (1987, 1989) (also see Bewley (1979)). For the moment, ut is assumed to 
+be Gaussian to permit the development of the Gaussian MLE for 0. 
+The parameterization that forms the basis for the proposed estimators is 
+obtained by making the error in (2.1b) independent of {ull, where {ull denotes 
+{u ,1 t = +, ? 1, + 2, ... .. When u, is Gaussian, stationary, and linearly regular, 
+E[u21{Ay)l] = E[u21{u,l] = d(L)AyJ1, where d(L) is two-sided in general. Thus 
+(2.1b) can be written 
+(2.2) 
+y, = / + Oy, + d(L)Ayl 
++ v, 
+where v2= U2 - E[u21{ull]. By construction, {Ay') and {v,2} are independent. 
+The two-sided triangular representation (2.1a) and (2.2) suggests an uncon- 
+ventional factorization of the conditional Gaussian likelihood for a sample of 
+size T. Assume: (i) the data are generated by (2.1), (ii) ut in (2.1) is Gaussian 
+and stationary with a bounded full rank spectral density matrix, (iii) d(L)= 
+ELq qdjL. The likelihood is conditioned on the required pre- and post-sample 
+values of Ay' (i.e., Aylq, ...,Ay 
+and Ay1,...,y1+). 
+Let A1 denote the 
+parameters of the margin7al 
+distribution of (u1, .. ., ul), let A2 denote ,u and the 
+parameters of d(L) and of the marginal distribution of (vl, ... ., v2), and let Yi 
+denote (y', ...., yr), i = 1, 2. Then the likelihood can be factored as 
+(2.3) 
+f(Yl Y210, A1l A2) =f(Y2lYl, 
+0, A2)f(Y'IA1). 
+This differs from the usual prediction-error factorization because the condi- 
+tional mean of y2 involves future as well as past values of y'. Assumptions (i) 
+and (ii) allow the triangular representation (2.1) to be represented by its 
+two-sided analogue, (2.2). 
+The representations (2.2) and (2.3) provide a framework for estimation and 
+inference in these Gaussian systems. If there are no restrictions between A1 and 
+[0, A2], then Y' is ancillary (in Engle, Hendry, and Richard's (1983) terminol- 
+ogy, weakly exogenous, extended to permit conditioning on both leads and lags 
+of Ay') for 0, so that inference can be carried out conditional on Yl. In this 
+case, the MLE of 0 (conditional on the initial and terminal values) can be 
+
+
+--- Page 4 ---
+786 
+J. H. STOCK AND M. W. WATSON 
+obtained by maximizing f(Y2lY1, 0, A2). This reduces to estimating the parame- 
+ters of the regression equation (2.2) by GLS. Because the regressor y' is I(1), as 
+is shown in Section 4 an asymptotically equivalent estimator of 0 can be 
+obtained by estimating 0 in (2.2) by OLS; this will be referred to as the dynamic 
+OLS (DOLS) estimator, to distinguish it from the static OLS (SOLS) estimator 
+obtained by regressing y2 on (1, y'). Similarly, the feasible GLS estimator of 0 
+in (2.2) will be referred to as the dynamic GLS (DGLS) estimator. 
+The representation (2.2) warrants three remarks. First, Sims' (1972) Theorem 
+2 implies that the projection d(L)Ay will involve only current and lagged 
+values of Ay ' if (and only if) u2 does not Granger-cause Ay'. If so, and if v2 
+has a finite order autoregressive representation, then (2.2) can be rewritten as 
+an r-dimensional error correction model, i.e. as a regression of Ay2 onto 
+(Ay, y 
+- 
+1 
+1, 
+A yt9 A 
+., Ayt_p, y71 
+- 
+6'y_1). In this case, the nonlinear least 
+squares estimator of 0 (with Ay' included as a regressor; see Stock (1987)) is 
+the Gaussian MLE. 
+Second, the large-sample properties of the OLS and GLS estimators of 0 are 
+readily deduced from the representation (2.2). Because v2 is uncorrelated with 
+the regressors at all leads and lags, conditional on Y' the GLS estimator has a 
+normal distribution and the Wald statistic testing the hypothesis that 6 = 00 has 
+a x2 distribution. Because y' is I(1), the conditional covariance matrix of the 
+GLS estimator differs across realizations of y, 
+even in large samples; thus 
+unconditionally the GLS estimator of 0 has a large-sample distribution that is a 
+random mixture of normals and the Wald statistic has a x2 distribution. Phillips 
+(1991a) and Saikkonen (1991) provide insightful discussions of the asymptotic 
+mixed normal property of the MLE of 0 and the local asymptotic mixed normal 
+(LAMN) behavior of test statistics. Also note that results apply even if some 
+rows of 0 are equal to zero, so that the corresponding elements of yt are I(0). 
+Third, although the interpretation of (2.2) as a factorization of the likelihood 
+(2.3) assumes Gaussianity, a two-sided triangular representation with EvAy4 y 
+0 for all t and d can be constructed under weaker conditions as discussed in the 
+next section. 
+3. REPRESENTATION 
+IN I(d) SYSTEMS 
+This section extends the framework of Section 2 to systems with maximum 
+order of integration d and with polynomial time trends. First, a linear triangular 
+representation for the n-dimensional time series yt is derived for the general 
+I(d) case under general conditions on the Wold representation for yt and the 
+error distribution. This representation is then used to motivate simple OLS and 
+GLS estimators of cointegrating vectors. Properties of these estimators and test 
+statistics based on the estimators are the subject of Section 4. 
+The maximum order of integration of any element of yt is assumed to be d. 
+The process yt is assumed to have the representation 
+(3.1) 
+Adyt = 
++ F(L)Et, 
+where ad = (1 - L)d is the dth differencing operator. The shocks Et and the 
+matrix lag polynomial F(L) are assumed to satisfy the following assumption. 
+
+
+--- Page 5 ---
+COINTEGRATING 
+VECTORS 
+787 
+AssUMPrION A: (i) {e,} is a n-dimensional martingale difference sequence, with 
+E(E,E'IEtI,_ 
+1E-2 
+...) 
+In; 
+(ii) F(L)= E=OFjLj, where F(L) is k-summable (that is, E10 
+Fjl < 00, 
+where IA I = maxij lAijI for a matrix A) for some k > d; 
+(iii) F(e @) is nonsingular for w # 0 (mod 2 7r); 
+(iv) rank(F(1)) = k1, 0 < k1 < n; and 
+(v) among all linear combinations of yt and its differences which include at least 
+one element of yt in levels, the lowest order of integration is zero. 
+The triangular representation for an I(d) process satisfying (3.1) and Assump- 
+tion A is derived in Appendix A and is: 
+(3.2) 
+Yt = , o 
+t 
+ad-lY 
+= /2,0 
++ 
+t2,1t 
++ OYtl(ady 
+) + ut, 
+ad 
+2 
+3= 
+0 + L3, 1t + L3,2t2 
++od-l(Ad-ly1) 
++ od2(Ad-2yl) 
++ od-2(Ad2y2) 
++ u3, 
+d 
+d 
+d 
+1r = 
+E 
+E od-ijAd-iyj) 
++ 
+d+l 
+j=0 
+j=1 i=j 
+where 
+ut =H(L)Et 
+for t = 1,..., T, where ut = (Ul', u,',. . ., ud+')' and where y,i, j=1,..., 
+d + 1, is 
+a ki X 1 vector, chosen so that yt can be partitioned as yt = (ytI Yt2',t 
+yd+1t ) 
+In addition, H(L) = E-j=OHjLj, H(eiw) is nonsingular for all w, and H(L) is 
+k - d summable for k defined in Assumption A(ii). 
+Assumption A(iv) ensures that there are at least n - k1 cointegrating vectors 
+in the system. Assumption A(v) serves to fix d, and is made without loss of 
+generality. In practice, A(v) can be achieved by redefining yt to be A - 1yt or Ayt 
+as needed for ut to be I(0) and not cointegrated. Finally, the normalization 
+E(EtE,) = In is made without loss of generality because Fo is not restricted to be 
+diagonal. The assumption of conditional homoskedasticity is made for conve- 
+nience and could be weakened to admit conditional heterskedasticity; see, for 
+example, Phillips and Solo (1992). 
+Note that not all elements of yt need to be I(d) for (3.2) to apply (see the 
+examples in Section 5 and the empirical application to long-run money demand 
+in Section 7). Moreover, some blocks of (3.2) might not appear. For example, 
+with d = 2 and n = 2, if yt is CI(2, 2) in Engle and Granger's (1987) terminol- 
+ogy, then k1 = 1, k2 = 0, and k3 = 1. 
+The triangular representation (3.2) partitions yt into components correspond- 
+ing to stochastic trends of different orders. Abstracting from the deterministic 
+components, y' is a k1-vector corresponding to the k1 I(d) stochastic trends in 
+the system. In the second block of k2 equations, y - 2od1 1y corresponds to the 
+
+
+--- Page 6 ---
+788 
+J. H. STOCK AND M. W. WATSON 
+k2 I(d - 1) stochastic trends; for rows of 2d,1 which equal zero, yt is I(d - 1), 
+while for nonzero rows of t4dy1, y2 is I(d) and (y1, y72) are CI(d, 1). The k3 
+equations in the third block describe the I(d - 2) components, and so forth. It is 
+straightforward to generalize the representation (3.2) to include higher order 
+polynomials in t, or to specialize it to the leading case in which higher-order 
+polynomials do not appear. 
+As in the I(1) case, we orthogonalize the errors in (3.2) by projecting onto 
+leads and lags of the errors in the preceding equations. This amounts to 
+premultiplying ut by an appropriate lower triangular matrix lag polynomial 
+D(L) which is in general two-sided. Let D(L)H(L) 
+= C(L), partitioned con- 
+formably with ut, and let vt = D(L)ut. Then, since ut = H(L)Et, 't = D(L)ut = 
+D(L)H(L)Et = C(L)Et, that is, 
+d2(L) 
+u 
+(3.3) 
+ut= 
+-2()I*- 
+O 
+u 
+-dd+lSl(L) 
+-dd+l 
+2(L) 
+- 
+I 
+d+ 
+c1(L) 
+C2(L) 
+Et. 
+Cd+l(L) 
+The matrix D(L) is chosen so that the cross spectrum between vu, and vu7, 
+c,(e`i)cm(eiW)', 
+is zero for all 1 O m. (Because H(e"") is nonsingular and 
+absolutely summable, Brillinger's (1980) Theorem 8.3.1 guarantees that such a 
+D(L) filter can be constructed.) The matrix polynomials {dim(L)} generalize 
+d(L) in (2.2) and are constructed from the projection of u$ onto {um} for 
+m = 1, ... 
+,1 - 1. For example, d2l(L) = h2(L)hl(L1)'[hl(L)hl(L1-)'1]-, 
+where 
+the rows of H(L) are partitioned conformably with ut, so 
+H(L) = [h4(L), h2( L),. 
+. ., hd+( 
+L) ]'. 
+More generally, vi<=u -Proj (u1j{u1,...,u1-'}), 
+where Proj(xtJ{zt}) denotes 
+the linear projection of xt onto {zt}. 
+Substitution of the /th equation in (3.3) into (3.2) yields 
+1-i 
+1-1 1-1 
+(3.4) 
+d-l+ly 
+E TI,,jti + E E od-i(Ad-iyJ) 
+j = 0 
+j=1 
+i=j 
++ E dlm(L) (Ad-m+lym) 
+- 
+E 
+od-J(Ad-yi) 
++ v 
+m=l 
+j = 
+i=j 
+
+
+--- Page 7 ---
+COINTEGRATING 
+VECTORS 
+789 
+where 
+1 
+j = O,... , / - 1) are functions of {djm(L), ,UM' j 
+= O, ..., m - 1, 
+m= 
+1,..l.2 
+The subspaces that cointegrate yt with (y',..., 
+y1t-1) and its differences are 
+determined by the matrices 07d `1 appearing in the second term on the right- 
+hand side of (3.4). In general the /th block of equations contains all of the 
+cointegrating vectors for m < 1, which appear in the higher order error correc- 
+tion terms making up the third term on the right-hand side of (3.4). For 
+example, in a system with d = 2 the equations describing cointegration in the 
+levels can contain cointegrating relations between the first differences. 
+We consider estimators of the cointegrating coefficients appearing in the /th 
+block of (3.2). Because the errors {vl) in (3.4) are uncorrelated with the 
+variables on the right-hand side of (3.4), (3.4) constitutes a correctly specified 
+regression equation. We therefore consider estimators based on this regression 
+equation. To construct a feasible estimator, we will assume that djm(L), m = 
+1,... ., - 1 are finitely parameterized. Specifically, we make the following as- 
+sumption. 
+ASSUMPTION 
+B: dlm(L)= Em_ 
+dlm,jLj, where qlm and '1m are finite and 
+known, for m= 1,...,l-1. 
+Under Assumption B, the block of k, equations in (3.4) can be rewritten as 
+(3.5) 
+Ad+ 
+lytl = (x't C) IkJ)3 + vt 
+where xt is the vector of regressors in (3.4) and 13 is the vector of the stacked 
+unknown regression coefficients in (3.4). Specifically, 13 consists of the elements 
+of (iJS 
+j=O,...,I-1; 
+od/7, j=1,...,1-1; 
+and dlm1j, m=1,...,l-1, 
+1= 
+-qlm,* 
+. ,qlm. It is assumed that xt is a linear combination of yl,y2,..., 
+wifh known nonrandom weights, where Yi = (y', y 
+. ... yT), i = 1, .. ., d + 1. In 
+this notation, Evlx' = 0 for all t and r. 
+Because the regressors in (3.5) in general have stochastic or deterministic 
+trends in common, they are asymptotically multicollinear. To obtain nondegen- 
+erate asymptotic results, the regressors are transformed to isolate these differ- 
+ent trends. This is accomplished by defining zt = Bxt, where B is an invertible 
+matrix of constants (possibly unknown), chosen so that zt are the canonical 
+regressors of Sims, Stock, and Watson (1990). (The choice of transformation 
+matrix B depends on the specific application.) Partition zt as (zl, z7,..., 
+"z2)I 
+where by construction z' is an 1(0) vector with mean zero (zl contains the 
+required leads and lags of {u7m, m < 1}, dictated by the polynomials {dm(L)}), 
+2 
+IiS Ij,Z 
+= t 
+so forth. 
+_ 
+Zt 
+1, z 
+(1), 4 
+t, Z is 1(2), Z6 
+t2, and so forth. In general E'1z'z7' is 
+O9(T'- 1) for i > 2. Using the approach in Sims, Stock, and Watson (1990, 
+2Johansen 
+(1988b, 1992) studied the restrictions on the coefficients of vector autoregressions 
+implied by the existence of cointegration in higher order systems. Johansen (1988b) examined 
+systems with, in Engle and Granger's (1987) terminology, cointegration of the form CI(d, b), where 
+d > b. As Johansen (1992) points out, this excludes cointegration of the general form (3.4), which 
+generalizes what Granger and Lee (1990) term "multicointegration." Johansen's (1992) results 
+complement ours, since both explicitly handle multicointegration: Johansen (1992) relates multicoin- 
+tegration to restrictions on the parameters of the levels VAR, whereas we consider the moving 
+average representation of the dth difference. 
+
+
+--- Page 8 ---
+790 
+J. H. STOCK AND M. W. WATSON 
+Section 2), write zt as zt = G(L)vt, where G(L) is a block lower triangular 
+matrix and vt = (eo?' 1, el' t, e 
+' 
+. . ., 
+1,, t'1),, where eo = Et and where (/ is 
+t 
+, 
+, 
+defined recursively by ei = 
+t= 
+1 for i > 1. Also, let gi denote the dimen- 
+sion of zi, and let g = E21gi be the dimension of zt. 
+With these definitions, the system (3.5) can be rewritten, 
+(3.6) 
+Ad-l+ Ytl = (Zt ? Ikl)8 + Vt 
+where E(v'lz) = 0 for all t and T. The regression coefficients 83 in (3.5) are 
+related to the coefficients 8 in the transformed regression (3.6) by /3= 
+(B' 
+I 0k1)8. Because the parameters of interest (the cointegrating parameters) 
+are the coefficients on the integrated elements of zt, it is convenient to partition 
+the gkl-vector 8 as 8 = (81 8'2, 
+81)', where Si is the gikl-vector of coeffi- 
+cients on z t. 
+4. ESTIMATION AND TESTING 
+This section examines the least squares estimation of the parameters 8 in 
+(3.6). There are two natural estimators of 8. Because the regressors zt are 
+uncorrelated with the errors vl, the first estimator is the OLS estimator in the 
+dynamic regression (3.6) (the DOLS estimator), which is 
+(4.1) 
+8OLS 
+[(EzTz) 
+?k] k 
+(Z t 
+k,)(AYt) 
+where these and subsequent summations run over the sample used for the 
+regression, leaving sufficient observations for initial and terminal conditions for 
+the leads and lags of the data in zt. 
+Because the error term in (3.6), vi - cl(L)et, is serially correlated and 
+uncorrelated with the regressors at all leads and lags, a second natural estimator 
+is the feasible GLS estimator of the dynamic regression (3.6) (the DGLS 
+estimator). Let P(L) be a k, x k, lag polynomial such that 
+0( L) cl( L) cl( L - 1)' 
+(L -1)' 
+= Ikl, 
+and let ?(L) be an estimator of P(L). Then the DGLS estimator is 
+(4.2) 
+8GLS [Eitjt 
+iAdE 
++ 1t] 
+where iZ = [O(LXz' ? Ikd1' and y 1 = O(L)yl. In principle ?(L) can always be 
+constructed as the inverse Fourier transform of the inverse of the Cholesky 
+factor of c1(e`i)c,(ei)Y. In general this will yield a two-sided polynomial ?(L). 
+In practice, a simple strategy is to model ?(L) as being one-sided and finite 
+order and this is the case studied in the formal analysis of the DGLS estimator 
+in this section. 
+Associated with the DGLS estimator is the Wald statistic testing the h 
+restrictions RS = r (where R and r have dimensions h x gkl and h X 1, respec- 
+tively), 
+(4.3) 
+WGLS =(RGLS- 
+r)[R( 
+Eiti;) 
+R'] -(RGLS-r) 
+Because the disturbance in (3.6) is serially correlated, the Wald statistic for AOLs 
+
+
+--- Page 9 ---
+COINTEGRATING 
+VECTORS 
+791 
+must be constructed using a modified covariance matrix. When the hypotheses 
+of interest do not involve the coefficients on the mean-zero stationary regressors 
+in (3.6), this is the spectral density matrix of vu at frequency zero, U,1= 
+cl(1)cl(1)', estimated by (say) U,,. That is, 
+(4.4) 
+WOLS= [R&OLS-r]'{R[(Eztz 
+)? 
+l]R'} 
+[ R OLS-r ] 
+The next four theorems, proven in Appendix A, summarize the asymptotic 
+distributions of these statistics. To prove these theorems, we strengthen some- 
+what Assumption A, which was used to derive the triangular representation. 
+ASSUMPTION 
+C: (i) max supt E(e4itet-Pet-2,...) 
+< oo. (ii) F(L) in (3.1) is 
+d + 2 summable. 
+Assumption C(i) strengthens A(i) to include finite fourth moments, and 
+Assumption C(ii) fixes k in A(ii) to be k = d + 2. Let the matrix Gmm(L) denote 
+the mth diagonal block of G(L) (where zt = G(L)vt) and let Em = Gmm(1)M', 
+for m = 3, 5,..., 21 - 1, where M is a (n - kl) X n matrix with rows that span 
+the null space of the rows of P(1)cl(l) and MM' = In-kl Also let [ I denote the 
+greatest lesser integer function and " = " denote weak convergence on D[O, 1]. 
+Finally, define the g x g scaling matrix TT to be a block diagonal matrix 
+partitioned conformably with zt, with diagonal blocks TIT= 
+T1/21g1 and TiT= 
+T('- 1 g2I for i > 2. 
+THEOREM 
+1: Suppose that yt has the representation (3.1), that Assumptions A, 
+B, and C hold, that ?P(L) is one-sided with known finite order q, and that P(L) 
+is a consistent estimator of P(L) (that is, 
+i 
+i = O, . . ., q). Then (TT? 
+1kl)(8GLS 
+- 6) 
+Q 
+*- 
+14, where after partitioning Q and 4 conformably with 8: 
+Qjj=Ef1f-', 
+where 21= [P(L)(z1'0Ikj)]v 
+Qlj=QS1=0, 
+j>2, 
+and 
+Qij=1Kj?U-71 for i,j> 2, where V22 =1, 
+Vm p = Fm [ft 
+Wl(m - 1)/2 (s) Wl(P - 1)/2 (s)' 
+dS ]rp, 
+m = 3,5,7,...,21- 
+1; p = 3,5,7,...,21- 
+1, 
+Vmp = Gmm(1) [s(m 
+- 2)/2 Wi(p - 1)/2 (s)' ds ]pf = Vp'm' 
+m = 2,4,6,...,21; 
+p = 3,5,6,...,21- 
+1, 
+Vmp = [2/(p 
++ m - 2)]Gmm(l)Gpp(l)', 
+m = 2,4,6,...,21; 
+p = 2,4,6,...,21, 
+4)1 N 0(, E I Zt Zt ]) 
+'km = fl(Gmm(1)(m-2)/2 
+s 
+P( 1)') dW2(s), 
+m = 2,4,6, ... v21, 
+0)m= (rWlm- 
+)/(s) 
+@ P(1)') 
+dW2(s) 
+m = 3 5, 7,... 
+1 -1 
+
+
+--- Page 10 ---
+792 
+J. H. STOCK AND M. W. WATSON 
+where W1 and W2 are independent standard Wiener processes of dimension 
+El'ikm 
+and k,, respectively, where Wi(m)(r)fJrWi(m-l)(s)ds 
+m=2,3,...,g 
+initialized with Wi1 = Wi for i = 1, 2, and where d? is independent of W1 and Om, 
+m > 1. 
+THEOREM 2: Suppose that yt has the representation (3.1) and that Assumptions 
+A, B, and C hold. Then: 
+(a) (TT ? 'k1)(6OLS 
+- 6) 
+[VW1 
+Ikl ]W where after partitioning V and w con- 
+formably with 6: 
+00 
+N(0 
+),where 
+E 
+[E(zlz"j) 
+E(vlv 
+) 
+J= -00 
+= f (Gmm(1) s(m 2)/2Q 
+2)dW2(s), 
+m=2,4,6, 
+... . 21, 
+&)M= Fl(M W,(m )/2(s)? 
+2)dW2(s), 
+m=3,5,7, 
+..., 21-1, 
+where a)1 is independent of W1 and wnmy m > 1, and where V= [Vij], i,= 
+1,2,...,21, 
+where V1, =E(zlz '), V1j=0, j>2, 
+and Vij, i,j>2 
+are given in 
+Theorem 1. 
+(b) Partition 6 = (61, '* ) so that 6, denotes the g1kl elements of 6 correspond- 
+ing to z1 and 6 * corresponds to the remaining (g - g1)k, elements of 8. Similarly 
+partition 6OLS' 6GLS' z =( (z1, 4*')', and TT 
+= 
+diag(T1r* 
+T 
+) 
+If in addition 
+?P(L) and P(L) satisfy the assumptions of Theorem 1, then (T* T 0 1k1)(6 * OLS 
+- 
+* GLS) A. 
+THEOREM 3: Under the conditions of Theorem 1, WGLS 
+Xh- 
+THEOREM 4: Suppose that the conditions of Theorem 2 hold, that the first g1kl 
+columns of R equal zero, and that Ql, A Qll. Then WOLS 
+Xh. If in addition the 
+p 
+conditions of Theorem 1 are satisfied, then WOLS - 
+WGLS ?b 0. 
+Note that P(L) must be finitely parameterized to implement the DGLS 
+estimator. Although this is not strictly needed to compute the DOLS estimator, 
+l,, = cl(1)cl(1)' must be consistently estimated to construct WOLS, which in 
+practice entails estimating a parametric or truncated approximation to Qll. 
+The asymptotic equivalence of the DOLS and DGLS estimators of 8 * 
+(Theorem 2(b)) is a consequence of the trends in zt: for m > 2 the GLS-trans- 
+formed regressors are asymptotically collinear with their untransformed coun- 
+terparts. This result extends the familiar result for the case of a constant and 
+polynomial time trend (Grenander and Rosenblatt (1957)). Results similar to 
+Theorems 1-4 are obtained by Phillips and Park (1988) for single equation 
+static OLS regressions with strictly exogenous I(1) regressors. 
+In practice, the coefficients of interest usually are the original coefficients X3 
+in (3.5) rather than 8. The distribution of A3GLS is obtained using (I3GL - 
+A3) 
+= 
+(B' ? Ik1X8GLS 
+- 8), and similarly for I3OLS (recall that 8 = (B' ? Ik,)8). More- 
+
+
+--- Page 11 ---
+COINTEGRATING 
+VECTORS 
+793 
+over, the Wald statistic testing RS = r equivalently tests Pf3 = r, where P = 
+R(B' 1 ( Ik,). Theorem 3 implies that WGLS is asymptotically x2 for all R, so 
+the Wald statistic testing Pf3 = r is asymptotically x2 for all P. When Pfl - r 
+places no restrictions on coefficients that can be written as coefficients on 
+mean-zero stationary regressors, Theorem 4 implies that the Wald test of 
+Pf3 = r based on J3OLS (with an autocorrelation-robust covariance matrix) is 
+asymptotically x2. Importantly, this result, that the Wald statistic testing restric- 
+tions on cointegrating vectors is asymptotically x2, applies whether or not the 
+integrated regressors have components that are polynomials in time. However, 
+the limiting distribution of the estimator itself will differ depending on whether 
+time (say) is included as a regressor and whether some of the regressors have a 
+time trend component; for specific examples in the I(1) case, see West (1988) 
+and Hansen (1989). 
+These theorems apply to models with a fixed number of regressors (Assump- 
+tion B). Conceptually, one could view these estimators as semiparametric by 
+embedding the parametric regression in a sequence of regressions where the 
+number of regressors increase as a function of the sample size. A formal 
+treatment of this extension would entail generalizing the univariate 1(0) results 
+of Berk (1974) and the univariate I(1) results of Said and Dickey (1984) to the 
+I(d), vector-valued case, an extension not undertaken here. In the d = 1 case, 
+this result was obtained by Saikkonen (1991) who showed that, if the number of 
+included leads and lags grows at rate TA, where 0 < A < 1/3, then the model 
+misspecification induced by the truncation of the dlm(L) polynomials vanishes 
+asymptotically so these theorems continue to hold. He also demonstrated that in 
+the d = 1 model, the DOLS and DGLS estimators are asymptotically efficient 
+and asymptotically equivalent to the Johansen (1988a)/Ahn and Reinsel (1990) 
+Gaussian MLE's constructed from a vector error correction model. For addi- 
+tional discussion of efficiency in the d = 1 case, see Phillips (1991a). 
+5. EXAMPLES 
+The following examples explore specification and inference with DOLS and 
+DGLS in I(2) systems. To simplify exposition, all deterministic terms are 
+omitted and their coefficients are taken to be zero. From (3.2), the general I(2) 
+model is 
+(5.la) 
+A2yl =ul 
+(5.lb) 
+Ay2 = 0,1,Ayl + u2, 
+1) 
+3=01 
+jY+ 
+0?0Y1+ 
+002Y 
++ U3 
+(5.1c) Yt 
+3It 
+3Iy 
++ut 
+. 
+Some of the 0's can have rows of zero, or be zero, and the second block of 
+equations might not be present at all (if so, k2 = 0). These possibilities are 
+examined here by considering a series of special cases with k2 = 0 or k2 = 1; 
+more general cases can be analyzed by combining these special cases. 
+
+
+--- Page 12 ---
+794 
+J. H. STOCK AND M. W. WATSON 
+Case 1: k2= 0. Then (5.lb) does not appear in the system and y2 does not 
+enter (5.lc). Elements of yt3 corresponding to rows of zeros in 00? and 031 are 
+1(0) (these variables do not enter any cointegrating relations), those correspond- 
+ing to rows of zeros in 03? 1 but not 01,1 are I(1), and the remaining elements are 
+1(2). The dynamic OLS and GLS estimators of (06 1, 0 1) are asymptotically 
+efficient and inference is x2. 
+Case 2: k2 = 1, 
+1 known. Then the estimation equation (3.4) becomes 
+(5.2) 
+3y = 0,1 
+Ayl 
++ 0? 
+y 
++ 00 
+y2 
++ d 31(L)2 jy 
++ d32(L)(Ay7 
+- 021Ayl) 
++ V3 
+where EVt3U 
+and Ev3u2' 
+are zero for all t, s. Because 0, 1 is known, the 
+regressors A2yl, Ay2 - 02 1Ay', and their leads and lags are I(0) with mean 
+zero, so these comprise zl. Because y' and yt are CI(2, 1), we can set 
+Z3 = (Aylt, 
+y2 - 0 
+Iyt 1Y) and z4 = y (other assignments of zt are possible but 
+they produce the same distributional results). The coefficients on Z3 and Z4 are 
+respectively 83 = (1',823)' 
+= (Ot'1, 
+03 2) 
+and 85 = 0+0 
+102 
+so 
+0 
+2=63, 
+and0 
+= 
+- 0 
+13. 
+Because (83 35) 
+converge at rates (T, T2) 
+1 
+032o 
+A2 ad3,1 
+= 6 
+2,1'2~ 
+T) 
+3,1, 
+3,2 
+and 
+A0 
+individually converge at the rate T. Jointly, (0Ao + 
+03,2 
+2 
+03,2 
+1) converge at rates (T2, T, T). The estimators are asymptotically 
+efficient and inference is x2. These results hold for 01 known, whether or not 
+1 = 0. 
+Case 3: k2 = 1, 02,1 unknown. In this case there are cross-equation restric- 
+tions between (5.lb) and (5.lc) so that in general the DOLS and DGLS 
+estimators are not efficient. Nonetheless, the dynamic OLS and GLS estimators 
+have desirable properties. With 0, 1 unknown, Ay 2 - 0'2 Ay, cannot be used as 
+a regressor and the estimation equation (5.2) becomes 
+(5.3) 
+yt3 = (01,1 - d32(1)021)Ayt 
++ d32(1),Ay2 
++ 0,lyl 
++ 
+2 
++ (d3l(L) -d*2(L)02, l)A2y 
+Y + d*2(L) A2y2 + V? 
+where d*2(L) = (1 - L)-(d32(L) 
+- d32(1)). Because A2yl is 1(0) and A2y2 is 
+either 1(0) (if 02 1 
+0 0) or I(- 1) (if 01 
+= 0), and because both have mean zero, 
+their presence does not affect the asymptotic distribution of the other estima- 
+tors and they will be ignored in this discussion. Whether or not 01, = 0, a valid 
+assignment 
+of 
+zt iS Zl = Ay2 
+y 
+01, ly 
+3 = (Aylt, 
+y2 - 02 1 
+and 
+5 = y . 
+Evidently 03 1 is not identified from (5.3) alone. Using a consistent estimator of 
+21 from (5.1b) to estimate 01,1 would in general result in loss of X2 inference 
+(although the resulting estimator would be consistent). However, 0, 1 and 0 2 
+are separately identified in (5.3) and individually converge at rate T. Together, 
+the coefficients on (Z3, Z4) have an asymptotic mixed normal distribution. 
+Moreover, the distribution Of (0? 
+3, A 32) iS the same as in Case 2, when the true 
+value of 02 1 is known. Thus (03 1, 0?,2) are asymptotically efficient even if 0O 1 is 
+
+
+--- Page 13 ---
+COINTEGRATING 
+VECTFORS 
+795 
+unknown, for general O3 .1 The exception to this is the special case of O3,1 
+known to be zero, in which case Ay 1 would not enter as a regressor in (5.2) 
+were 02 1 known. Even in this case, however, inference on (03, 1, 032) iS X 
+6. MONTE CARLO RESULTS 
+This section summarizes a study of the sampling properties of seven estima- 
+tors of cointegrating vectors in three bivariate probability models. The data 
+were generated by the model: 
+(6.1a) 
+Ay' = u, 
+(6.1b) 
+y2 = oy + u2, 
+with P(L)ut = 
+O, ?(L) = I2- 
+PL, vt NIID(O, L;), where ut = (ul, u2)'. The 
+true drift in the series is zero. Because ut follows a VAR(1), yt follows a 
+VAR(2). Under (6.1), T(O - 0) is invariant to 0 for all the estimators consid- 
+ered, so without loss of generality 0 is set to zero. This design, or variants with 
+moving average rather than autoregressive errors, forms the basis of several 
+previous Monte Carlo studies of estimators of cointegrating vectors (Banerjee et 
+al. (1986), Phillips and Loretan (1991), and Hansen and Phillips (1990)). 
+The six estimators considered are the static OLS estimator (SOLS; Engle and 
+Granger (1987), Stock (1987)), the dynamic OLS estimator 8OLS (DOLS), the 
+dynamic GLS estimator 8GLS (DGLS), the zero frequency band spectrum 
+estimator of Phillips (1991b) (PBSR), the fully modified estimator of Phillips 
+and Hansen (1990) (PHFM), and Johansen's (1988a) VECM maximum likeli- 
+hood estimator (JOH). Two serial correlation-robust estimators of the covari- 
+ance matrix of the DOLS estimator were considered, one using a weighted sum 
+of the autocovariances of the errors (DOLS1), the second using an autoregres- 
+sive spectral estimator (DOLS2). To make results invariant to initial conditions 
+for the level of yt, a constant was included in all estimation procedures. All of 
+the estimators relied on lead and lag lengths that depended only on sample size. 
+This makes it possible to examine the consequences of overparameterization 
+and truncation bias without the complications which would arise with data 
+dependent lag lengths. The details of the construction of the estimators are 
+given in the notes to Table I. 
+The design (6.1) parsimoniously nests several important special cases. First 
+(Case A), when all elements of P except 01P equal zero and L; is diagonal, ytJ 
+is strictly exogenous in (6.1b) and SOLS is the MLE (except that the zero 
+intercept is not imposed). In this case, all the efficient estimators are asymptoti- 
+cally equivalent to SOLS, although they estimate nuisance parameters that in 
+fact are zero. Second (Case B), if the second column of P is zero, but '21 A 0 
+or I, is not diagonal or both, then SOLS is no longer the MLE and does not 
+have an asymptotic mixed normal distribution, but the DOLS, DGLS, and JOH 
+estimators are correctly specified and are asymptotically MLE's (again except 
+for the estimation of some parameters which have true values zero). In this case, 
+PBSR and PHFM are efficient if interpreted semiparametrically. Third (Case 
+
+
+--- Page 14 ---
+796 
+J. H. STOCK AND M. W. WATSON 
+C), for general (P and L;, JOH with one lag of Ay, is the MLE and DOLS, 
+DGLS, PBSR, and PHFM are asymptotically efficient when interpreted semi- 
+parametrically. 
+Results for Cases A, B, and C are reported in the respective panels of Table I 
+for T = 100 and 300. Panel A verifies that the estimation of the nuisance 
+parameters in the asymptotically efficient estimators does not substantially 
+impair performance in the special case that OLS is the MLE. Panel B explores 
+the performance of the estimators in 22 models in which DOLS, DGLS, and 
+JOH are correctly specified. Even when 021 = 0, SOLS can have substantial 
+bias; for example, for T = 100 and 401 = -.90, the 5%, 50%, and 95% points of 
+the SOLS distribution are -.001, .076, and .196. The DOLS, DGLS, and JOH 
+estimators eliminate this bias. The DOLS t statistics tend to have heavier tails 
+than predicted by the asymptotic distribution theory, particularly when the 
+regressor is positively autocorrelated. The PBSR and PHFM estimators tend to 
+have biases comparable to SOLS, evident in Table I from the shift in the 
+distribution of their t statistics. When this bias is small (for example when 
+Oll = 021 = 0), their t statistics have approximately normal distributions. 
+Case C (i, X; unrestricted) introduces two additional parameters, and it is 
+beyond the scope of this investigation to explore all aspects of this case. Rather, 
+it is examined by generating data from a model relevant to the empirical 
+analysis in Section 7, specifically a bivariate model of log Ml velocity (v) and the 
+commercial paper rate (r), estimated using annual data from 1904-1989 (earlier 
+observations were used for initial lags) imposing a long-run interest semielastic- 
+ity of .10. The data are discussed in Section 7. While this simple model does not 
+provide a full characterization of these data-that is the subject of Section 7-it 
+is a useful way to calibrate the Monte Carlo design so that it informs our 
+subsequent empirical analysis. The estimated VAR(1) for the triangular system 
+(Avt, vt - .10rt) is reported in panel C of Table I. The results for this system 
+indicate large bias in SOLS and, to a lesser extent, in DGLS, PBSR, and 
+PHFM. DOLS exhibits less bias and, not surprisingly because it is the (over- 
+parameterized) MLE in this system, JOH is essentially unbiased. The dispersion 
+TABLE I 
+MONTE CARLO RESULTS 
+A 
+4t 
+0 O 
+1 
+] 
+T= 100 
+T = 300 
+Estimator 
+Bias(8) 
+o-(6) 
+t05 
+t95 
+P(W> 3,84) 
+Bias(8) 
+o-(O) 
+t05 
+t95 
+P(W> 3.84) 
+SOLS 
+.000 
+.021 
+-1.67 
+1.68 
+.054 
+.000 
+.007 
+-1.63 
+1.70 
+.052 
+DOLSi 
+.000 
+.023 
+- 1.86 
+1.87 
+.083 
+.000 
+.007 
+- 1.69 
+1.79 
+.062 
+DOLS2 
+.000 
+.023 
+-1.87 
+1.86 
+.087 
+.000 
+.007 
+-1.66 
+1.78 
+.061 
+DGLS 
+.000 
+.024 
+-1.80 
+1.76 
+.073 
+.000 
+.007 
+-1.64 
+1.75 
+.056 
+PBSR 
+.000 
+.021 
+-1.78 
+1.81 
+.073 
+.000 
+.007 
+-1.67 
+1.76 
+.060 
+PHFM 
+.000 
+.022 
+-1.88 
+1.88 
+.086 
+.000 
+.007 
+-1.71 
+1.81 
+.065 
+JOH 
+.000 
+.025 
+- 1.98 
+1.96 
+.077 
+.000 
+.007 
+- 1.84 
+1.67 
+.057 
+
+
+--- Page 15 ---
+COINTEGRATING 
+VECTORS 
+797 
+TABLE 1. (Continued) 
+B. 
+T= 100, 
+' = ['PI1 
+?I' 
+[ 
+1 .5] 
+SOLS 
+DOLS1 
+DOLS2 
+DGLS 
+PBSR 
+PHFM 
+JOH 
+'P21 
+'P11 
+bias(8) 
+t.05 
+t.95 
+t.O5 
+t,95 
+t 05 
+t 95 
+t 05 
+t 95 
+t.05 
+t.95 
+t.o5 
+t.95 
+0.0 -.90 
+.084 -1.80 
+1.84 -1.84 
+1.84 -1.77 
+1.77 -1.46 
+1.69 -1.06 
+2.98 -1.95 
+1.83 
+-.80 
+.092 - 1.81 1.84 - 1.85 1.86 - 1.77 1.76 - 1.49 1.74 - 1.17 2.74 - 1.95 1.83 
+-.70 
+.089 - 1.82 1.84 -1.84 
+1.85 - 1.77 1.76 - 1.52 1.77 - 1.25 2.55 - 1.95 1.83 
+-.60 
+.081 - 1.83 1.84 - 1.85 1.84 - 1.77 1.76 - 1.56 1.78 - 1.31 2.40 - 1.94 1.84 
+-.50 
+.071 - 1.83 1.84 - 1.84 1.84 - 1.77 1.76 - 1.58 1.79 - 1.38 2.32 - 1.95 1.86 
+.00 
+.026 - 1.85 1.83 -1.86 
+1.83 -1.77 
+1.77 - 1.76 1.72 - 1.67 2.05 - 1.97 1.90 
+.50 
+.000 - 1.87 1.89 -1.90 
+1.87 - 1.80 1.77 - 2.05 1.46 - 2.01 1.65 - 1.99 2.01 
+.60 -.002 
+- 1.88 1.89 -1.89 
+1.89 -1.81 
+1.80 - 2.15 1.34 - 2.11 1.55 - 1.97 2.01 
+.70 -.003 
+- 1.88 1.91 - 1.91 1.91 - 1.82 1.82 - 2.25 1.25 - 2.21 1.42 - 1.96 2.05 
+.80 -.003 
+- 1.92 1.94 - 1.91 1.94 - 1.81 1.82 - 2.36 1.13 - 2.33 1.28 - 1.97 2.04 
+.90 -.002 
+- 1.90 1.93 - 1.93 1.94 - 1.85 1.83 - 2.45 1.04 - 2.42 1.15 - 1.99 2.02 
+0.8 -.90 - 2.83 
+- 1.80 1.84 - 1.84 1.84 - 1.77 1.77 - 0.58 1.23 - 3.80 0.69 - 1.90 1.79 
+-.80 
+-.078 
+- 1.81 1.84 - 1.85 1.85 - 1.77 1.76 -0.77 
+1.46 - 1.80 1.34 - 1.90 1.79 
+-.70 
+.007 - 1.82 1.84 - 1.84 1.85 - 1.77 1.75 -0.86 
+1.62 - 1.31 1.75 - 1.91 1.79 
+-.60 
+.048 - 1.83 1.84 - 1.85 1.84 - 1.77 1.76 - 0.94 1.73 - 1.15 2.00 - 1.91 1.79 
+-.50 
+.068 - 1.83 1.84 -1.84 
+1.84 - 1.77 1.76 -0.98 
+1.82 - 1.09 2.13 - 1.92 1.79 
+.00 
+.065 - 1.85 1.83 - 1.86 1.83 - 1.77 1.77 -1.08 
+2.08 - 1.09 2.28 - 1.97 1.80 
+.50 
+.028 - 1.87 1.89 -1.89 
+1.87 - 1.80 1.77 - 1.14 2.18 - 1.16 2.30 - 2.00 1.84 
+.60 
+.021 - 1.88 1.89 - 1.89 1.89 - 1.81 1.80 - 1.15 2.20 - 1.18 2.30 - 2.01 1.85 
+.70 
+.015 -1.88 
+1.91 -1.91 
+1.91 -1.82 
+1.82 - 1.17 2.19 - 1.19 2.31 - 2.00 1.87 
+.80 
+.010 - 1.92 1.94 - 1.91 1.94 - 1.81 1.82 - 1.24 2.16 - 1.23 2.30 - 2.03 1.84 
+.90 
+.005 - 1.90 1.93 - 1.93 1.94 -1.85 
+1.83 - 1.45 2.18 - 1.38 2.36 - 1.98 1.87 
+[.-. 
+'103 
+-.0391 
+F951 
+49xi- 
+[-.062 
+.643] 
+4[.499 
+1.374] 
+T= 100 
+T = 300 
+Estimator 
+Bias(8) 
+o-(6) 
+t.05 
+t 95 
+P(W> 
+3.84) 
+Bias(8) 
+o-(b) 
+t.05 
+t.95 
+P(W> 
+3.84) 
+SOLS 
+.085 
+.120 
+- 1.95 5.16 
+.466 
+.033 .045 
+- 1.90 5.29 
+.483 
+DOLS1 
+.026 
+.125 
+- 2.10 2.71 
+.188 
+.007 .041 
+-1.79 
+2.32 
+.118 
+DOLS2 
+.026 
+.125 
+- 1.72 2.25 
+.111 
+.007 .040 
+- 1.55 1.97 
+.071 
+DGLS 
+.045 
+.131 
+- 1.52 2.35 
+.111 
+.012 .042 
+- 1.43 2.08 
+.076 
+PBSR 
+.039 
+.123 
+-1.83 
+2.79 
+.180 
+.012 .041 
+-1.64 
+2.41 
+.122 
+PHFM 
+.041 
+.122 
+- 1.91 3.01 
+.206 
+.011 .041 
+-1.69 
+2.46 
+.131 
+JOH 
+.003 
+.330 
+- 2.40 2.07 
+.095 
+- .001 .044 
+- 1.97 1.75 
+.064 
+Notes: Bias (6) and o-(b) are the Monte Carlo bias and standard deviation of 6, respectively. t.o5 and t.95 are the empirical 
+5% and 95% critical values of the t ratios, and P(W> 3.84) is the percent rejections at the asymptotic 5% level of the test 
+statistic testing 6 = 00 which, for all but JOH, is the square of the t statistic, and for JOH is the likelihood ratio statistic. 
+5000 Monte Carlo replications were used. The number of observations (100 and 300) refer to the span of the regressions; 
+100 startup observations, plus terminal conditions as needed, were also generated. All regressions included a constant in 
+addition to the terms listed below. The estimators are: 
+SOLS-Static 
+OLS regression of y2 on y . 
+DOLS1-Dynamic 
+OLS regression of y,2 on (ytl,AyYl, Ayl? 1. 
+A 
+.y1?k), 
+where k = 2 for T= 100, k = 3 for T= 300. 
+The covariance matrix is estimated by averaging the first r error autocovariances using the Bartlett kernel, where r = 5 for 
+T= 100, r= 8 for T= 300. 
+DOLS2-Same 
+as DOLS1 except that the covariance matrix is estimated by an autoregressive spectral estimator with 2 
+lags for T = 100, 3 lags for T = 300. 
+DGLS-Dynamic 
+GLS regression of y, on (Y1, Ayl,A yl ? 1, . 
+A y 
+k), where k = 2 for T = 100, k = 3 for T = 300. The 
+errors were modeled as an AR(2) for T = 100 and AR(3) for T= 300. 
+PBSR-Phillips 
+(1991b) band spectral regression, where the spectral density at frequency zero was estimated using the 
+Bartlett kernel with 5 lead and lags for T = 100 and 8 lead and lags for T = 300. 
+PHFM-Phillips-Hansen 
+(1990) fully modified estimator using the Bartlett kernel with 5 lead and lags for T = 100 and 8 
+lead and lags for T = 300. 
+JOH-Johansen 
+(1991) VECM MLE based on the estimated model yt = 
+y__ 
++ 
+Eyaky - 
+A,Ay 
++ a, where k = 4 for 
+T= 100 and k = 6 for T= 300. 
+The DOLS and DGLS standard errors were computed using a degrees-of-freedom 
+adjustment, specifically df = number 
+of periods in the regression minus number of regressors in the DGLS or DOLS regression minus number of autoregressive 
+lags in the GLS transform (DGLS) or AR spectral estimator (DOLS). The JOH standard errors were computed as 
+described in Watson (1992) with a degrees-of-freedom 
+adjustment (df = number of periods in the regression minus number 
+of regressors in a single equation of the VECM). The degrees-of-freedom 
+corrections are motivated by analogy to the 
+classical linear regression model. No adjustments were made for PBSR or PHFM. 
+
+
+--- Page 16 ---
+798 
+J. H. STOCK AND M. W. WATSON 
+of the distributions are comparable, except for the JOH estimator which has 
+some large outliers for T= 100. The x2 approximation to the Wald statistic 
+(testing 0 = .10) works best for JOH, next best for DOLS2 and DGLS, less well 
+for the remaining efficient estimators. 
+To interpret the DOLS and DGLS results, it is useful to write (6.1) in the 
+triangular form (2.1a) and (2.2). Write the VAR(1) for ut as I(L)ut = 
+t where 
+IF(L)= 
+- 1/2?(L) and Et =71/2;t, 
+so that E(EtEt)=I. 
+Then Ay' has a 
+univariate ARMA(2, 1) representation, say I W(L) 1Ay = K(L)a', where K(L) is 
+the first degree polynomial with its root outside the unit circle that solves 
+K(L)X11 K(L - l) = 122(L)t22(L - 1) + WI/L2(L)'I12(L-). The projection of y t 
+Oyl onto {Ay'} is d(L),Ayl; for this design d(L) = -[V21(L)1122(L-1) + 
+- 
+- 
+~~~~~~~~
+iI11(L)If2(L -1)][K(L)K(L- 
+1)]-1. Finally, the residual from this regression, Vt, 
+follows the AR(1) model K(L)vU = at. Thus K(L) dictates both how quickly the 
+coefficients on leads and lags of Ay' in the DOLS/DGLS regressions die out 
+and the degree of serial correlation in the regression error. In Cases A and B, 
+K(L) = 1, and the DOLS/DGLS regressions have no omitted variables. In Case 
+C, K(L)_ 1 -.66L 
+so the true d(L) is infinite order but the DOLS/DGLS 
+regressions include on 2(T = 100) or 3(T = 300) leads and lags of Aytl. 
+The results from the experiments can be summarized as follows. First, SOLS 
+is biased in almost all trials, with nonstandard distributions for the estimator 
+and test statistics. Second, DOLS and DGLS are unbiased for Cases A and B, 
+but exhibit bias in Case C, although this diminishes when the sample size 
+increases. The relatively large root of K(L) suggests that the bias is attributable 
+to the truncation of d(L) in the DOLS/DGLS regressions.3 Third, in results 
+not shown in the table, doubling the number of leads and lags for DOLS and 
+DGLS and the order of the AR correction for DGLS has little effect in Cases A 
+and B and reduces the bias in Case C. However, doubling the number of lags 
+and the AR order increased the dispersion of the DOLS and DGLS statistics. 
+Fourth, the PBSR and PHFM bias has the same sign as, but is somewhat less 
+than, the SOLS bias. A possible explanation is that both PBSR and PHFM rely 
+on initial biased SOLS estimates of 0, which results in inaccurate spectral 
+density estimates subsequently used to compute PBSR and PHFM. Fifth, for 
+Case C (where the error is highly serially correlated) the autoregressive spectral 
+estimator used in DOLS2 produces a more normally-distributed t statistic than 
+does the kernel estimator used in DOLS1. Sixth, tripling the sample size 
+noticeably improves the quality of the asymptotic approximations. 
+These results suggest four conclusions. First, each estimator (except the 
+correctly-specified JOH) has substantial bias in at least some of the simulations, 
+although the bias is in each case less than for SOLS: no single estimator is. a 
+panacea. Second, the distributions of the t ratios tend to be spread out relative 
+to the normal distribution, suggesting that the usual confidence intervals will 
+3This interpretation is supported by an additional Monte Carlo experiment in which Ay' was 
+replaced by [K(L)K(L-1)]Ay'. 
+(Of course in an empirical application K(L) would be unknown.) 
+This eliminates nearly all of the bias: for T = 100, the bias falls from .026 to -.006 for DOLS and 
+from .045 to -.008 for DGLS. 
+
+
+--- Page 17 ---
+COINTEGRATING 
+VECTORS 
+799 
+overstate precision. Third, in Case C each estimator has shortcomings: the 
+DGLS, PBSR, and PHFM estimators are substantially biased, and the JOH 
+estimator, while unbiased, has an empirical distribution with a much greater 
+dispersion than the other efficient estimators; DOLS has the lowest RMSE. 
+Fourth, of the autoregressive and kernel estimators used to compute the DOLS 
+covariance matrix, t statistics based on the former have distributions closer to 
+their asymptotic N(0, 1) approximation. The DOLS standard errors reported in 
+the empirical analysis in Section 7 therefore are based on the autoregressive 
+covariance estimator. 
+7. APPLICATION TO THE LONG-RUN DEMAND FOR MONEY IN THE U.S. 
+The long-run demand for money plays an important role in the quantitative 
+analysis of the effects of monetary policy. Unfortunately, estimates of long-run 
+income and interest elasticities obtained using postwar data have been sensitive 
+to the sample period and specification (see the reviews by Laidler (1977), Judd 
+and Scadding (1982), and Goldfeld and Sichel (1990)). In his review of this 
+research and of early work by Meltzer (1963), Lucas (1988) presented informal 
+but highly suggestive evidence that this apparent sensitivity resulted not from a 
+breakdown of the prewar long-run Ml demand relation, but from the lack of 
+low frequency variation in the postwar data. This section examines this interpre- 
+tation using the econometric techniques for the analysis of cointegrating rela- 
+tions developed in this paper and elsewhere. Our analysis focuses on the annual 
+data studied by Lucas (1988), extended to cover 1900-1989, although results for 
+postwar monthly data are also presented to permit a comparison with other 
+studies. This section addresses two questions. First, is there a stable long-run 
+Ml demand equation spanning 1900-1989 in the United States? Second, what 
+are the income elasticity and interest semielasticity, and how precisely are they 
+estimated?4 
+A. Results for annual data. The annual time series are Ml (in logarithms, m), 
+real net national product (in logarithms, y), the net national product price 
+deflator (in logarithms, p), and the commercial paper rate (in percent at an 
+annual rate, r). Data sources are given in Appendix B. Real Ml balances 
+(m -p, plotted with y in Figure la) grew strongly over the first half of the 
+century, but experienced almost no net growth over most of the postwar period. 
+Over the entire period, velocity (y - m + p) and r (plotted in Figure lb) exhibit 
+4Most empirical analyses of money demand predate the literature on cointegration. Exceptions 
+are Hoffman and Rasche (1991), who apply Johansen's (1991) estimator to monthly U.S. Ml data 
+from 1953 to 1987, and Johansen and Jeuslius (1990), who apply Johansen's procedure to the 
+long-run demand for money in Denmark and Finland. Baba, Hendry, and Starr (1992) focus on 
+short-run U.S. Ml demand (1960-1988, quarterly), but a preliminary step is their estimation of 
+long-run Ml demand using a single equation error correction model (the "NLLS" estimator). With 
+the same purpose and methodology, Hendry and Ericsson (1991) present results for the U.K. as well 
+as the U.S. Related results for the U.S. are reported in Miller (1991). Hafer and Jansen (1991) 
+investigate long-run money demand (Ml and M2) for the U.S. using Balke and Gordon's (1986) 
+quarterly data and Johansen's estimator. 
+
+
+--- Page 18 ---
+800 
+J. H. STOCK AND M. W. WATSON 
+4- 
+3- 
+2 
+Net Nioand Product 
+1 
+Red M1 
+0- 
+~ ~ ~ 
+- 
+1900 1910 1920 1930 1940 1950 1960 1970 1980 
+A. U.S. real net national product and real Ml, in logarithms, 1900-1989. 
+2.00 
+15.0 
+1.75- 
+/ 
+12.5 
+1.50 
+M l 
+'. 
+10.0 
+1.25 
+/ 
+75 
+1.00 
+~~~~~~~~~~~~~~~~5.0 
+Corn Pqxer Rate 
+0.75- 
+2.5 
+0.50 
+, 
+,,, 
+, 
+0.0 
+1900 1910 1920 1930 1940 1950 1960 1970 1980 
+B. Logarithm of U.S. Ml velocity (left scale), and short-term commercial paper rate (right scale), 
+1900-1989. 
+FIGURE 1 
+strikingly similar long-run trends, dropping from the 1920's to the 1930's, 
+growing from 1950 to 1980, then declining after 1981. 
+Inspection of these figures suggest that real balances, output, velocity, and 
+interest rates might be well modeled as being individually integrated, and 
+formal tests summarized in Appendix B support this view. Specifically, Dickey- 
+Fuller (1979) tests of one or two unit roots, augmented Dickey-Fuller tests for 
+cointegration, and Stock-Watson (1988) tests of the number of unit roots in 
+multivariate systems are consistent with the following specifications: m -p 
+is 
+I(1) with drift; r is I(1) with no drift; y is I(1) with drift; and (m -p), y, and r 
+are cointegrated. The tests also suggest that r - Ap is I(0). Whether p and m 
+are individually I(1) or 1(2) is unclear: the inference depends on the subsample 
+and the test specification. Because rt is nonnegative, characterizing rt as I(1) 
+
+
+--- Page 19 ---
+COINTEGRATING 
+VECTORS 
+801 
+raises conceptual difficulty. Our decision to do so is driven by the empirical 
+evidence that rt exhibits considerable persistence; in any event, this I(1) speci- 
+fication is consistent with interest rate specifications used by other researchers 
+(e.g., Campbell and Shiller (1987) and Hoffman and Rasche (1991)). 
+The applicability of the DOLS and DGLS estimators to I(1) and I(2) systems 
+makes it possible to estimate Op in the nominal Ml cointegrating relation, 
+m = Op P - Oy y - Orr, and to test whether Op = 1. Based on the foregoing charac- 
+terizations of the integration and cointegration properties of these series, we 
+consider three specifications. In each rt is modeled as I(1) and mt - opPt - 
+oyyt - Orrt is modeled as 1(0). First, if m and p are I(1), then (m, p, y, r) 
+constitute the I(1) system analyzed in Section 2 with one cointegrating vector, 
+extended to nonzero drifts, and inference on (0Y, Or, 09p) using DOLS or DGLS is 
+x . Second, if m and p are I(2) and (r, Ap) are not cointegrated, then this is an 
+I(2) system with y p=Pt, yt2= (yt,rtY, and y3 =mt' 
+where O' 
+o 
+= 
+1 =? 
+3 2=(OyOr), 
+and 0 1 = op. This is Case 2 in Section 5 (with 01 1 = 0), and 
+inference is x2. Third, if p is I(2) and if, as the evidence suggests, the real rate 
+r - zip is I(0), then this is an extension of Case 2 in Section 5, with yl =Pt, 
+2 = 
+I ol 
+00 
+=00 
+p and 00=( 
+Y hnA 
+t23(yt, A -1r)',01 
+1= (0,1)', 
+= 
+OrI 
+3 
+p, 
+rn 
+O2=(,0). 
+Then 
+, 
+-2A,1 
+O Ay=(yt,r 
+-Apt)'. 
+Following the discussion in Section 5, inference 
+based on DOLS or DGLS is x2. 
+Estimates for the four-variable system are reported in Table II for these three 
+specifications. The sample periods in Table II and subsequent tables refer to the 
+dates over which the regression are run, with earlier and later observations used 
+for initial and terminal leads and lags as necessary. The estimates of Op do not 
+differ from 1 at the 10% (two-sided) level in any of the specifications. In all 
+cases, OY is statistically indistinguishable from 1 at the 10% level. In most cases 
+OY is imprecisely estimated, with standard errors in the range 0.12-0.27. To be 
+consistent with economic theory and with the rest of the money demand 
+literature, we henceforth impose Op = 1 and study in more detail the estimation 
+of OY and Or. 
+Estimates of cointegrating vectors in the system (m - p, y, r) are presented in 
+panel A of Table III. The estimators are those studied in the Monte Carlo 
+experiment, plus the single-equation nonlinear least squares estimator (NLLS), 
+which is used by Baba, Hendry, and Starr (1992) to estimate their long-run Ml 
+demand equation. The full-sample estimates are similar across estimators and 
+none of the efficient estimators reject the hypothesis that Oy= 1 at the 10% 
+level.5 The remaining columns examine the stability of the estimates over two 
+subsamples, 1900-1945 and 1946-1989. The subsamples were chosen both 
+because of the natural break at the end of World War II and because they 
+divide the full sample nearly in two. Using only the first half of the sample, with 
+the exception of DGLS and JOH the efficient estimators provide smaller 
+5Our static OLS estimates differ slightly from those presented in Lucas (1988) because of 
+transcription errors in his original data set, now corrected. We thank Lucas for bringing these errors 
+to our attention. 
+
+
+--- Page 20 ---
+802 
+J. H. STOCK 
+AND 
+M. W. WATSON 
+TABLE II 
+ESTIMATED COINTEGRATING RELATIONS: 
+mt 
+= /, + Oppt + Oyyt + Orrt 
+Specifications: 
+I. Pt, r,, y,, I(1) and not cointegrated: 
+m, = ,u + opp, + oyy, + Otrr + dp(L)p, 
++ dy(L)Ay, + dr(L)Ar, + et. 
+II. p,I(2), r, and y,I(1), and (r,, A p,) not cointegrated: 
+mt = ,u + 0pp, + oyy, + ORr 
+r + dp(L) A2 
++ dy(L)Ay, + dr(L)Ar, + et. 
+III. For p, 1(2), r, and y, I(1), and r, - 
+p, I(0): 
+m, = ,u + opp, + oyy, 
++ Orrt + dp(L) A2pt + dy(L)Ay, 
++ dr(LXr, 
+- Ap,) 
++ et. 
+Estimates (Standard Errors) 
+Sample 
+No. Leads 
+Specification 
+Estimator 
+Period 
+and Lags 
+OP 
+OY 
+Or 
+I 
+DOLS 
+1903-1987 
+2 
+1.119 
+0.858 
+-0.114 
+(0.202) 
+(0.168) 
+(0.017) 
+DOLS 
+1904-1986 
+3 
+1.159 
+0.831 
+-0.122 
+(0.234) 
+(0.191) 
+(0.018) 
+DGLS 
+1903-1987 
+2 
+0.997 
+0.685 
+- 0.034 
+(0.194) 
+(0.237) 
+(0.015) 
+DGLS 
+1904-1986 
+3 
+1.105 
+0.890 
+- 0.115 
+(0.159) 
+(0.133) 
+(0.015) 
+II 
+DOLS 
+1904-1987 
+2 
+1.163 
+0.841 
+-0.114 
+(0.249) 
+(0.208) 
+(0.021) 
+DOLS 
+1905-1986 
+3 
+1.277 
+0.754 
+-0.125 
+(0.290) 
+(0.238) 
+(0.023) 
+DGLS 
+1904-1987 
+2 
+1.022 
+0.725 
+- 0.032 
+(0.205) 
+(0.241) 
+(0.016) 
+DGLS 
+1905-1986 
+3 
+1.140 
+0.723 
+- 0.062 
+(0.228) 
+(0.265) 
+(0.023) 
+III 
+DOLS 
+1904-1987 
+2 
+0.981 
+0.972 
+- 0.086 
+(0.190) 
+(0.158) 
+(0.017) 
+DOLS 
+1905-1986 
+3 
+1.051 
+0.922 
+- 0.095 
+(0.185) 
+(0.151) 
+(0.016) 
+DGLS 
+1904-1987 
+2 
+0.854 
+0.671 
+- 0.002 
+(0.217) 
+(0.263) 
+(0.014) 
+DGLS 
+1905-1986 
+3 
+1.087 
+0.917 
+- 0.098 
+(0.141) 
+(0.115) 
+(0.013) 
+Notes: di(L) = Sk 
+kdijLJ , where k is the number of leads and lags listed in the fourth column. Standard errors are in 
+parentheses. 
+An AR(2) error process was used to implement the GLS transformation for the DGLS estimator and to 
+estimate the DOLS covariance matrix when k = 2, and an AR(3) was used for k = 3. The shorter regression periods for 
+k = 3 than for k = 2, and for specifications II and III than for specification I, allow for necessary initial and terminal 
+conditions (leads and lags). 
+income elasticities and comparable interest elasticities than over the full sample, 
+but the differences are slight. In sharp contrast to the first-half estimates, the 
+postwar estimates in Table III differ greatly across estimators. The SOLS, 
+DOLS, PBSR, and PHFM estimates are close to zero, and the NLLS and 
+JOH(3) elasticities have the "wrong" sign. The JOH estimator is highly sensitive 
+to the number of lagged first differences used. (Likelihood ratio statistics testing 
+2 vs. 3 lags in the VECM reject for the full and postwar samples, and thus 
+suggest relying on the JOH(3) estimates.) 
+The final set of estimates refer to the system (m -p, y, r*), where r* is the 
+commercial paper rate passed through a low-pass filter; the results in Table III 
+
+
+--- Page 21 ---
+COINTEGRATING 
+VECTORS 
+803 
+TABLE III 
+MONEY DEMAND COINTEGRATING VECTORS: 
+ESTIMATES AND TESTS, ANNUAL DATA 
+Dynamic OLS/GLS 
+estimation equation: 
+mt 
+Pt = A + oyy, + Orr, + dy(L)Ayt + dr(L)Art + et. 
+A. Point Estimates (Standard Errors) 
+1903-1987 
+1903-1945 
+1946-1987 
+1946-1987 
+Estimator 
+0y 
+or 
+6y 
+or 
+0y 
+or 
+y 
+or* 
+SOLS 
+0.943 
+-0.083 
+0.919 
+- 0.085 
+0.192 
+-0.016 
+0.410 
+- 0.046 
+NLLS 
+0.856 
+-0.110 
+0.897 
+0.014 
+-0.435 
+0.082 
+0.297 
+- 0.023 
+DOLS 
+0.970 
+-0.101 
+0.887 
+-0.104 
+0.269 
+-0.027 
+0.410 
+- 0.047 
+(0.046) 
+(0.013) 
+(0.197) 
+(0.038) 
+(0.213) 
+(0.025) 
+(0.319) 
+(0.042) 
+DGLS 
+0.829 
+-0.051 
+1.166 
+-0.084 
+0.951 
+-0.020 
+1.170 
+-0.091 
+(0.135) 
+(0.015) 
+(0.199) 
+(0.031) 
+(0.307) 
+(0.009) 
+(0.131) 
+(0.013) 
+PBSR 
+0.965 
+-0.097 
+0.866 
+-0.098 
+0.216 
+-0.020 
+0.366 
+-0.042 
+(0.035) 
+(0.010) 
+(0.099) 
+(0.018) 
+(0.091) 
+(0.011) 
+(0.147) 
+(0.019) 
+PHFM 
+0.963 
+- 0.097 
+0.899 
+- 0.094 
+0.204 
+- 0.018 
+0.391 
+- 0.045 
+(0.034) 
+(0.009) 
+(0.083) 
+(0.015) 
+(0.054) 
+(0.006) 
+(0.106) 
+(0.014) 
+JOH(2) 
+0.975 
+-0.114 
+0.886 
+0.058 
+163.93 
+- 23.52 
+-2.174 
+0.316 
+(0.042) 
+(0.013) 
+(0.193) 
+(0.116) (38167.1) 
+(5479.1) 
+(4.024) 
+(0.568) 
+JOH(3) 
+0.994 
+-0.113 
+0.839 
+0.081 
+-3.140 
+0.472 
+-0.393 
+0.073 
+(0.040) 
+(0.012) 
+(0.220) 
+(0.160) 
+(12.63) 
+(1.860) 
+(0.559) 
+(0.082) 
+B. Tests for Breaks in the Cointegrating Vector Base on DOLS, 
+Break Date = 1946 
+Interest 
+No. Leads 
+X2 Wald statistics 
+Point Estimates (Standard Errors) 
+Rate 
+and Lags 
+(p-value) 
+0y 
+or 
+b5y 
+r 
+r 
+2 
+1.75 
+1.047 
+-0.090 
+-0.500 
+0.040 
+(0.42) 
+(0.164) 
+(0.034) 
+(0.413) 
+(0.045) 
+3 
+1.38 
+1.059 
+-0.090 
+- 0.525 
+0.040 
+(0.50) 
+(0.177) 
+(0.037) 
+(0.481) 
+(0.047) 
+r* 
+2 
+0.57 
+0.945 
+-0.116 
+-0.349 
+0.055 
+(0.75) 
+(0.183) 
+(0.043) 
+(0.597) 
+(0.081) 
+3 
+1.16 
+0.943 
+- 0.117 
+- 0.551 
+0.079 
+(0.56) 
+(0.180) 
+(0.042) 
+(0.582) 
+(0.079) 
+Notes: Panel A: NLLS is the nonlinear least squares estimator; the other estimators are defined in the notes to Table I 
+(DOLS here and in subsequent tables is DOLS2 in Table I). JOH(k) is the JOH estimator evaluated using k lagged first 
+differences. JOH(3) was computed over regression dates 1904-1987, 1904-1945, and 1946-1987. For the NLLS estimator, 
+A(m -p)t 
+was regressed on (m -p),ti,yt-1,r,ti, 
+and 2 lags each of A(m -p)t-i, 
+Ayt.-1, and Art- 1; Oy and Or were 
+estimated from the coefficients on the lagged levels. DOLS and DGLS used 2 leads and lags of the first differences in the 
+regressions and an AR(2) process for the error. The frequency zero spectral estimators required for PBSR and PHFM were 
+computed using a Bartlett kernel with 5 lags. All regressions included a constant. 
+Panel B: The statistics are based on the regression, (m -p)t = A + OyYt + O,rrt + -y(Yt-Y,)1(t 
+> T) + 8,(rt - r)1(t > T) 
++ dy(L)Ayt + d,(L)Art, 
+where 1(-) is the indicator function, dy(L) and d,(L) have the number of leads and lags stated in 
+the second column, and T = 1945. Regressions with k = 2 were run over 1903-1987, with k = 3, over 1904-1986. The Wald 
+statistic tests the hypothesis that 8b = 8 = 0 and has a X2 distribution. The covariance matrix was computed using an 
+AR(2) spectral estimator for k = 2 and an AR(3) estimator for k = 3. 
+refer to r* produced using a two-sided filter based on the Kalman smoothing 
+algorithm and are typical of results based on other low-pass filters.6 This 
+smoothed interest rate can be interpreted as a proxy for a long-term rate which, 
+6r* was constructed as the two-sided estimate of the permanent component of rt calculated 
+using the Kalman smoother for the model rt = r* + ,ult, Ar* = /2t, 
+with (lt, 
+A2d) independent and 
+var(Ault)/var(A2t) = 3. Other filters that yield similar results are a one-sided exponentially weighted 
+moving average filter with coefficient .95 and the Hodrick-Prescott filter. 
+
+
+--- Page 22 ---
+804 
+J. H. STOCK AND M. W. WATSON 
+under the risk-neutral theory of the term structure, is an average of current and 
+expected future short rates. The empirical money demand literature is inconclu- 
+sive on whether a long- or short-term interest rate is more appropriate. Because 
+there is no consistent risk-free long-term rate with constant tax treatment over 
+the full sample, using r* provides a way to compare specifications with 
+long-term and short-term rates. Although the full-sample estimates (not tabu- 
+lated here) change little using r*, using r* rather than r changes the postwar 
+estimates substantially. The postwar OLS, DOLS, DGLS, PBSR, and PHFM 
+elasticities and (except for DGLS) standard errors are all larger using r*. The 
+JOH and NLLS estimates are quite sensitive to using r* rather than r, and the 
+differences across estimators remain. 
+The differences between the prewar and postwar estimates raise the possibil- 
+ity that there has been a shift in the long-run money demand relation. To 
+evaluate this and to ascertain the source of the instability in the postwar point 
+estimates, we examine four related pieces of evidence. The first consists of 
+formal tests of the null hypothesis of a constant cointegrating relation, against 
+the alternative of different cointegrating vectors over 1900-1945 and 1946-1989, 
+under the maintained hypothesis that the parameters describing the short-run 
+relations are constant. These tests, implemented using the DOLS estimator and 
+summarized in panel B of Table III, fail to reject the null of no break at all 
+conventional significance levels. Although the point estimates of the changes, by 
+and br, are large-the income elasticity point estimates are 0.94-1.06 prewar 
+and 0.39-0.60 postwar-these shifts are imprecisely estimated and are not 
+statistically significant.8 
+The second piece of evidence concerns the properties of the cointegrating 
+residuals, it = (mO -Pr)- 0yYt 
+- Orrt, which are quite different for the prewar 
+and postwar point estimates. Residuals constructed using either the full-sample 
+or first-half point estimates are consistent with cointegration, while the residuals 
+based on the postwar estimates are not. For example, when ?t is constructed 
+using the prewar DOLS elasticities, the sum of the coefficients in a levels AR(3) 
+specification for it (with a constant) estimated over 1946-1989 is .49. In 
+contrast, the postwar DOLS elasticities yield residuals with greater persistence: 
+the corresponding sum of coefficients is .73. More formal evidence is obtained 
+by computing the detrended Dickey-Fuller r, statistic using postwar Zt, where 
+it is constructed using prewar DOLS elasticities. Because these elasticities are 
+estimated from data prior to those used for the test, under the null of 
+noncointegration this ?, statistic has the asymptotic univariate demeaned 
+Dickey-Fuller distribution. This ?, statistic is -3.29 (2 lagged first differences; 
+7 The results in Table III are robust to changes in the details of the computation of each of the 
+estimators, in particular: using a Bartlett kernel with 7 lags for PBSR and PHFM, using. 3 rather 
+than 2 leads and lags for DOLS and DGLS, and using 1 rather than 2 or 3 lags for JOH. The only 
+exception is the postwar instability of the JOH estimates, as discussed below. 
+8 The statistics in Table IIIB only consider the possibility of a break in 1946. Recently, Gregory 
+and Nason (1991) have computed sequential tests for the stability of the cointegrating coefficients 
+with these data, treating the break date as unknown. Using Monte Carlo critical values, they also 
+fail to reject the null hypothesis of constant coefficients. 
+
+
+--- Page 23 ---
+COINTEGRATING 
+VECTORS 
+805 
+with 4 lags, it is - 3.31), and so rejects at the 5% one-sided level, supporting the 
+view that the prewar money demand relation cointegrates the postwar series. In 
+short, the postwar cointegrating residuals based on the first-half estimates 
+exhibit less persistence than those computed using the postwar elasticities. 
+However, postwar cointegrating residuals have a smaller standard deviation 
+(0.054 over 1946-1987) when computed with the postwar DOLS elasticities than 
+they do when computed with the prewar DOLS elasticities (the standard 
+deviation is 0.166 over 1946-1987). 
+Third, 95% confidence regions for (OY, Or) estimated using DOLS over the full 
+sample, the first half, and the second half using r* overlap, and the DOLS 
+region computed using r over 1946-1987 nearly overlaps, near the full-sample 
+DOLS estimates of (.970, -.101). Because Wald statistics testing hypotheses 
+about (oy 1Or) using the efficient estimators have large-sample x2 distributions, 
+standard formulae can be used to construct confidence ellipses for (Oys or). The 
+estimators for the two subsamples are independent asymptotically (but not in 
+finite samples because of short-run dependence in the data and the presence of 
+initial and terminal leads and lags). Confidence sets for the subsamples in Table 
+III are plotted in Figure 2a-2d for, respectively, the DOLS, DGLS, PBSR, and 
+PHFM estimators. In almost all cases, the major axes of the prewar and postwar 
+ellipses are approximately orthogonal and the confidence region for the full 
+sample is much smaller than for either half. Comparing the DOLS with the 
+other confidence regions, however, produces two qualitative differences. First, 
+the postwar DGLS region computed using r has different axes and location 
+than the other postwar regions. This arises because the estimated GLS transfor- 
+mation for DGLS approximately differences the postwar data (the estimated 
+AR(2) filter is 1 - 1.39L + .41L2). In effect, this DGLS point estimate is 
+determined by covariances between first differences of the data, not their levels, 
+which leads us to conclude that this DGLS estimator is not estimating a 
+cointegrating relation. Second, although the DOLS confidence sets contain or 
+nearly contain (.970, -.101), 
+the postwar sets constructed using the other 
+estimators do not. This might correctly reflect better finite-sample precision of 
+these estimators relative to DOLS. Alternatively, because the postwar regions 
+are based on only 42 observations, the postwar regions for DGLS, PBSR, 
+PHFM, and perhaps DOLS, might overstate the precision of these estimators. 
+To investigate these possibilities, we performed an additional Monte Carlo 
+experiment to check the empirical confidence coefficient of asymptotic 95% 
+confidence intervals based on these estimators. Specifically, 42 observations of 
+Gaussian pseudo-data (plus initial conditions) were generated from a trivariate 
+VECM(2), estimated using the full sample with (m - p, y, r) (including a con- 
+stant) imposing the full-sample DOLS elasticities (.970, -.101). Wald statistics 
+testing these values of (Oy Or) were constructed using the same kernels, number 
+of lags, etc. as in Table III. For each of the estimators, the asymptotic X2 
+approximation was found to understate substantially the dispersion under the 
+null hypothesis: the Monte Carlo coverage rates for asymptotic 95% confidence 
+regions for (Oy Or) for the DOLS, DGLS, PBSR, PHFM, and JOH statistics are, 
+
+
+--- Page 24 ---
+806 
+J. H. STOCK AND M. W. WATSON 
+4-~~~~~
+0 
+-0 
+01_ 
+-l 
+a) 
+U1) 
+- 
+-_ 
+N 
+C, 
+, 
+i 
+, 
+| 
+1 
+t7 
+0 
+(/ 
+) 
+/(N 
+-~~~~~~ 
+(N 
+"K 
+~ 
+~ 
+~ 
+~ 
+~ 
+~ 
+~ ~ 
+~~~( 
+1 
+-0.2 
+0.2 
+0.6 
+1.0 
+1.4 
+1.8 
+1 
+-0.2 
+0.2 
+0.6 
+1.0 
+1.4 
+1.8 
+Income 
+Elasticity 
+Income 
+Elasticity 
+A. 
+PBSR 
+D. 
+DGFM 
+-D 
+04-0 
+0 
+0) 
+FIcU 
+me 
+2 
+50cnienergosfrteicmelasticity 
+I 
+ncomhe 
+inersselasticity 
+thA 
+DOte 
+.) 
+DGLS 
+0 
+P0 
+0it 
+0 
+-4- 
+-' 
+-4-- 
+C 
+CD0 
+0 
+- 
+. 
+. 
+. 
+. 
+. 
+. 
+0 
+002 
+02 
+06 
+1. 
+. 
+. 
+Incom 
+ElasicityIncom 
+Elasici/ 
+(NJ 
+/ 
+PSRD 
+PF 
+UIUE)95 
+ofdnc 
+einsfrteinoeeasiiy0an 
+h 
+ntrsU)ieatct 
+00 
+06~~~~~~~~~~~~~~~~~~~~~~~ 
+0 
+oetmtdoe 
+93197(oi 
+ie,10 
+04 
+dse) 
+9618 
+shr 
+ahs,ad 
+sn 
+PFesintomeEatciyIcmsEatct 
+
+
+--- Page 25 ---
+COINTEGRATING 
+VECTORS 
+807 
+respectively, 57%, 32%, 33%, 14%, and 61%. These large coverage distortions 
+diminish as the sample size, and with it the number of lags, increase. For the 
+sample size at hand, however, these results strongly suggest that the postwar 
+confidence regions in Figure 2-particularly the DGLS, PBSR, and PHFM 
+regions-considerably understate the true sampling variability.9 
+The fourth piece of evidence concerns the most extreme of the postwar 
+estimates, the JOH estimates, and the instability of the JOH estimator with 
+respect to the subsample. For example, for samples ending in 1987 and starting 
+in 1940, 1942, 1944, 1948, and 1950, the JOH(2) estimates of OY are respectively 
+0.04, -0.36, 0.89, 0.56, and 1.33. The postwar VECM likelihood for JOH(3) in 
+Table IIIA, concentrated to be a function of (Oys Or), is bimodal for both the 
+(m -p, y, r) and (m -p, y, r*) data sets. Inspection of the concentrated likeli- 
+hood, plotted in Figure 3 for the (m -p, y, r) data set, yields two conclusions: 
+that the JOH MLE's for 2 and 3 lags lie on a ridge that corresponds to the 
+major axis of the postwar confidence ellipses in Figure 2, and that the likelihood 
+is not well approximated as a quadratic. The shape of this surface is typical for 
+JOH estimators for starting dates ranging from 1940 to 1950. This ridge in the 
+likelihood therefore explains, in a mechanical sense, the sensitivity of the JOH 
+estimates in Table III to the lag length and to the precise subsample. 
+These four pieces of evidence lead us to conclude that, despite the large 
+differences between the prewar and postwar point estimates, the results support 
+Lucas' (1988) conclusion that long-run Ml demand has been stable over 
+1900-1989. Using the postwar data alone, the elasticities are imprecisely esti- 
+mated. The postwar data are dominated by the 1950-1980 trends in velocity and 
+interest rates; as Lucas (1988) pointed out, this requires the estimates to lie on 
+the "trend line" given by A( m - P) - Oy A - OrAj = 0 (where A53 is the aver- 
+age annual growth rate of yt, etc.). This line constitutes the major axis of the 
+postwar confidence ellipses in Figure 2 and the ridge in the postwar VECM 
+likelihood in Figure 3. To make this concrete, consider the estimator obtained 
+by solving the 1900-1945 and 1946-1989 trend lines uniquely for (Oyt or); the 
+resulting estimators are 1.00 and -.147, respectively, strikingly close to the 
+full-sample efficient estimates. This "trend line" analysis emphasizes three 
+conclusions from the more formal results. First, because the efficient estimators 
+of cointegrating vectors exploit this same low-frequency information, albeit in a 
+more sophisticated way, the sampling uncertainty of the full-sample estimates is 
+considerably less than that based on the prewar and especially the postwar data. 
+Second, several such trend lines (or low frequency movements) can be seen in 
+the prewar sample, resulting in tighter prewar than postwar confidence regions. 
+9 Increasing the number of lags and kernel length does not appreciably improve the coverage 
+rates, although increasing the number of observations does. For autoregressive lag length 4 and 
+kernel truncation lag 7 (Bartlett kernel) and 42 observations, the DOLS, DGLS, PBSR, PHFM, and 
+JOH coverage rates (for asymptotic 95% regions) are: 52%, 46%, 45%, 14%, and 53%. For 250 
+observations and the same lag lengths, the respective empirical coverage rates improve to: 83%, 
+62%, 61%, 44%, and 87%. These results are based on 1000 Monte Carlo replications. The low 
+coverage rates in this trivariate system, particularly for PHFM, are consistent with the size 
+distortions in the P(W> 3.84) columns of Table I, panel C, discussed in Section 6. 
+
+
+--- Page 26 ---
+808 
+J. H. STOCK AND M. W. WATSON 
+C-, 
+C-4 
+~ ~ 
+0 
+FIGURE 3. -Concentrated vector error correction model likelihood surface in (y,0,r) 
+space, 
+1946-1987 (JOH(3) estimator). 
+Third, because the postwar data are dominated by a single trend and because 
+the growth rate of real Ml balances is nearly zero postwar, a linear combination 
+involving y and r alone can eliminate much of their long-term trend; the JOH 
+estimator selects such a linear combination, placing small weight on m -p. 
+When normalized so that m - p has a unit coefficient, the resulting postwar 
+money demand relations are unstable, with the ratio oy/6r' 
+but not the individ- 
+ual elasticities, well determined. 
+B. Results for postwar monthly data. Cointegrating vectors estimated using 
+postwar monthly data on Ml, real personal income, the personal income price 
+deflator, and a variety of interest rates are reported in Table IV. Compared to 
+the postwar annual results, the income elasticities estimated over 1949:1-1988:6 
+are large and there is somewhat less disagreement across the efficient estima- 
+tors, with income elasticities ranging from .30 to .89 based on the commercial 
+
+
+--- Page 27 ---
+COINTEGRATING 
+VECTORS 
+809 
+TABLE IV 
+MONEY DEMAND COINTEGRATING VECTORS: ESTIMATES, POSTWAR MONTHLY DATA 
+Period: 
+49:1-88:6 
+49:1-88:6 
+60:1-88:6 
+60:1-88:6 
+60:1-88:6 
+Interest rate: 
+Comm. Paper 
+Comm. Paper* 
+Comm. Paper 
+90-day T-bill 
+10-yr T-bond 
+Estimator 
+OY 
+0, 
+OY 
+or 
+OY 
+6, 
+OY 
+6, 
+Oy 
+or 
+SOLS 
+.272 
+-.016 
+.398 
+-.035 
+.339 
+-.017 
+.362 
+-.021 
+.480 
+-.031 
+NLLS 
+.539 
+-.044 
+.259 
+.034 
+.570 
+-.030 
+-.483 
+-.026 
+.353 
+.012 
+DOLS 
+.326 
+-.025 
+.457 
+-.044 
+.398 
+-.027 
+.415 
+-.030 
+.529 
+-.037 
+(.187) 
+(.026) (.136) 
+(.019) 
+(.208) 
+(.025) 
+(.165) 
+(.020) 
+(.210) 
+(.023) 
+DGLS 
+.890 
+-.008 
+.525 
+-.026 
+1.139 
+-.009 
+1.196 
+-.011 
+1.046 
+-.019 
+(.203) 
+(.003) (.109) 
+(.007) 
+(.289) 
+(.003) 
+(.269) 
+(.003) 
+(.173) 
+(.003) 
+PBSR 
+.302 
+-.021 
+.404 
+-.036 
+.367 
+-.022 
+.389 
+-.025 
+.500 
+-.034 
+(.037) 
+(.005) (.045) 
+(.006) 
+(.053) 
+(.005) 
+(.049) 
+(.005) 
+(.052) 
+(.005) 
+PHFM 
+.302 
+- .021 
+.412 
+- .037 
+.370 
+- .022 
+.393 
+- .025 
+.511 
+- .035 
+(.033) 
+(.004) (.042) 
+(.006) 
+(.048) 
+(.004) 
+(.045) 
+(.004) 
+(.047) 
+(.005) 
+JOH 
+.561 
+- .068 
+.629 
+- .076 
+.520 
+- .075 
+.462 
+- .060 
+.631 
+- .067 
+(.199) 
+(.032) (.129) 
+(.020) 
+(.202) 
+(.039) 
+(.137) 
+(.024) 
+(.144) 
+(.021) 
+Notes: NLLS and JOH used 8 lagged differences of the variables; DOLS and DGLS used 8 leads and lags of the first 
+differences in the regressions. An AR(6) error was used for DGLS and for the calculation of the standard errors for DOLS. 
+The frequency zero spectral estimators required for PBSR and PHFM were computed using a Bartlett kernel with 18 
+(monthly) lags. All regressions included a constant. The "Commercial Paper* 
+rate was constructed using the Kalman filter 
+as described in footnote 6 in the text. 
+paper rate. The estimates are stable across the choice of interest rate (the 
+exception is the DGLS estimates, for which GLS effectively first-differences the 
+data, as in the postwar annual estimates). The point estimates agree closely with 
+Baba, Hendry, and Starr's (1992) NLLS estimate of .5 obtained over 1960-1988, 
+strikingly so since Baba, Hendry, and Starr (1992) used GNP rather than 
+personal income, quarterly rather than monthly data, and several additional 
+regressors designed to account for shifts in short-run money demand relation. 
+They are also comparable to Hoffman and Rasche's (1991) JOH results based 
+on Ml, personal income, and 90-day T-Bill data for 1953-1988; the difference 
+between their income elasticity of .78 and the JOH estimate in Table IV for 
+60:1-88:6 (.46) mainly arises from our use of levels and their use of logarithms 
+of the interest rate. 
+The relative stability of these estimates across estimators and initial dates 
+contrasts with the results based on postwar annual data. Further examination, 
+however, reveals that the monthly results are quite sensitive to the final 
+regression date. For example, JOH estimates of the income elasticity, estimated 
+over 60:1 to the last month in each quarter from March 1984 through June 1988 
+using the commercial paper rate (8 lags), range from - 3.00 to 3.54; for the 
+NLLS estimator, this range is .29 to 1.08. When computed over 60:1-78:12, the 
+JOH, NLLS, and DOLS income elasticities are -.27, -.13, and .11. Compara- 
+ble instability is present for each of the interest rates studied in Table IV, 
+whether in logarithms or in levels. Because we do not provide uniform critical 
+values for tests based on these "recursive" estimates, they do not provide formal 
+evidence on the stability of the cointegrating vector estimated with the postwar 
+data. Still, this sensitivity to terminal regression dates is consistent with our 
+conclusions from the annual data. That is, the data from 1950 to 1982 are 
+dominated by the single upward trend in real balances, income, and interest 
+
+
+--- Page 28 ---
+810 
+J. H. STOCK AND M. W. WATSON 
+rates, which results in income and interest elasticity estimates which are highly 
+negatively correlated and are imprecisely estimated, except that they must lie on 
+the trend line which determines their ratio. Only when the most recent data are 
+used-the data since 1982 follow a second trend (increasing income, declining 
+velocity, and interest rates)-are the estimates more precise with values that are 
+comparable across estimators. 
+C. Discussion and summary. Our analysis has relied heavily on asymptotic 
+distribution theory to construct formal confidence regions and tests, and the 
+estimation procedures typically entail the estimation of many nuisance parame- 
+ters relative to the sample size. This and the Monte Carlo evidence leads us to 
+suspect that the asymptotic standard errors reported here overstate the preci- 
+sion of the estimated elasticities, at least for the postwar data. Also, of course, 
+this work has not examined the long-run demand for other monetary quantity 
+aggregates. 
+Even with these caveats, these results suggest three conclusions. First, when 
+viewed over 1900-1989, there appears to be a stable long-run Ml demand 
+function. Estimated over the entire sample, 95% confidence intervals based on 
+the DOLS estimator are, for the income elasticity, (.88,1.06), and for the 
+interest semielasticity, (-.127, 
+-.075). 
+Qualitatively similar intervals are ob- 
+tained using the other efficient estimators over the full sample. 
+Second, these results are consistent with Lucas' (1988) suggestion that there is 
+a stable long-run money demand relation over the pre- and postwar periods. A 
+key piece of evidence for this is the apparent stationarity of the postwar 
+residuals computed using long-run elasticities estimated from the prewar data. 
+Third, in isolation the postwar evidence says little about the parameters of 
+the cointegrating vector: the estimates have large standard errors and moreover 
+are sensitive to the subsample and estimator used. The main reason for this is 
+that the postwar data are dominated by steadily rising income and interest rates 
+and effectively no growth in real balances. Only after 1982 is there a decline in 
+interest rates that reduces multicollinearity between interest rates and income 
+sufficiently to estimate the money demand relation, rather than simply the ratio 
+oy/lr. 
+We suspect that the postwar standard errors understate the sampling 
+variability, particularly for the monthly results, both because of the evident 
+sensitivity to terminal dates and because of Monte Carlo evidence in Sections 6 
+and 7A that the asymptotic distributions provide poor approximations to the 
+postwar sampling distributions in designs that approximate the empirical multi- 
+variate models. 
+8. CONCLUSIONS 
+As do other asymptotically efficient estimators of cointegrating vectors, the 
+procedures proposed here require at least partial knowledge of which variables 
+cointegrate and of the orders of integration of individual series. With currently 
+available techniques, this entails pretesting for unit roots or, when possible, 
+relying on economic theory for guidance. A plausible suspicion is that this 
+pretesting introduces additional sampling uncertainty, at least in finite samples, 
+
+
+--- Page 29 ---
+COINTEGRATING 
+VECTORS 
+811 
+beyond that which is formally studied here. It is worth emphasizing, however, 
+that one advantage of our estimators is that Wald statistics testing restrictions 
+on the cointegrating vectors will have asymptotic x2 distributions under a 
+variety of assumptions about the orders of integration of the various estimators. 
+This feature made it possible to perform inference on the price and interest 
+elasticities in long run nominal money demand, relating log nominal Ml to the 
+log price level, log income, and the interest rate, even though the evidence was 
+inconclusive about whether money and prices were individually integrated of 
+orders one or two. 
+Our emphasis has been on inference about the cointegrating relations, and 
+the proposed estimators treat the parameters describing the short-run dynamics 
+of the process as nuisance parameters. In many applications, however, the 
+short-run dynamics are of independent or even primary interest. For example, 
+much of the empirical money demand literature has focused on the search for a 
+stable short-run money demand function. In such cases, these efficient estima- 
+tors can be used in subsequent stages of the analysis by imposing the estimated 
+cointegrating vectors, for example in a variant of the triangular form (Campbell 
+(1987), Campbell and Shiller (1987, 1989)), in a VECM (King, Plosser, Stock 
+and Watson (1991)), or in a single-equation error correction framework (Hendry 
+and Ericsson (1991)). 
+A lesson suggested by the empirical investigation of Ml demand and by the 
+Monte Carlo results is that, when estimating cointegrating vectors, it can be 
+valuable to use more than one of the currently available asymptotically efficient 
+estimators. In the prewar data and in the full data set, the efficient estimators 
+produced qualitatively and statistically close estimates, but when only the 
+postwar annual data were used the estimates differed substantially. This diver- 
+gence signaled the need for further analysis of the postwar relations. The 
+postwar data contain a single dominant trend, which results in Oy/0r but not the 
+individual elasticities being well-determined. A Monte Carlo investigation sug- 
+gested that, in this application, the DOLS estimator was preferable to the other 
+estimators. 
+The empirical analysis suggests that the precise estimation of long-run Ml 
+demand requires a long span of data: estimates over the full 90 years are 
+considerably more precise than over the first half of the century alone, and 
+when used in isolation the data since 1946 contain quite limited information 
+about long-run Ml demand. Overall, the evidence is consistent with there being 
+a single stable long-run demand for money, with an income elasticity near one 
+and an interest semielasticity near - 0.10. 
+Kennedy School of Government, Harvard University, Cambridge, MA 02138, 
+U.S.A. 
+and 
+Dept. of Economics, Northwestern University, Evanston, IL 60208, U.S.A. 
+Manuscript received September, 1989; final revision received December, 1992. 
+
+
+--- Page 30 ---
+812 
+J. H. STOCK AND M. W. WATSON 
+APPENDIX A 
+Derivation of the I(d) Triangular Representation (3.2) 
+The triangular representation (3.2) is constructed under Assumption A by repeated application 
+of the following Lemma: 
+LEMMA A.1: Assume that the n x 1 vector xt is generated by Axt = E7j=o0Ujt1 
++ F(L)et, where 
+F(L) is I-summable and rank [F(1)] = k < n. Without loss of generality arrange x, so that the upper 
+k x n block of F(1) has full row rank. Then x, can be represented as: 
+m 
+AxIl= E sit'+ 
+JI(L)E,, 
+j=0 
+m+1 
+Xt2 = E ,uL2,jtj +Ox 
++ J2(L)E,, 
+j=O 
+wherex, = (xl', x2')', where xl is k x 1, X2 is (n - k) x 1, J(L) = [J1(L)', J2(L)']' is (I - 1) summable, 
+and J1(1) has full row rank k. When ,um lies in the column space of F(1), ,u2, m + 1 = ? 
+PROOF OF LEMMA A.1: The result holds trivially for k = n, so consider k < n. Order x, so that 
+F(L) can be partitioned as F(L) = [f1(L)', f2(L)']' where f1(L) is k x n, f2(L) is (n - k) x n, 
+and f1(1) has full row rank. The expression for Ax' follows by setting J1(L) =fj(L). 
+Because 
+rank[F(1)] = rank[f1(1)], f2(1) = Of1(1), for some (n - k) x k matrix 0. Now partition ,ui as 
+(1,u 1 ,u2, i)' so that 
+m 
+(A.1) 
+Ax 
+- OAxl = 
+(2,i 
+- 
+li)t' + [f2(L) - Ofl(L)]Et. 
+i=O 
+Accumulating (A.1) yields x, - Oxt = Em=+tlu 2 1t' + J2(L)Et, where {,u2,i1 are linear combinations of 
+(A2,i - OA1j, 
+J2(L) = f2*(L) - Of (L), where f.*(L) = (1 - L) 1(fi(L) - fi(l)), i = 1, 2, and where 
+/L2,0 subsumes the initial conditions of xl and x2. It is readily shown that, because f1(L) is 
+l-summable, f1*(L) is (1 - 1)-summable. If Ium lies in the column space of F(1), then /2, m - Ol,m 
+= 0 5O 
+so2 
+m+l = 0. The Lemma follows by setting Tt1l, = j,u (i = 0,..., m). 
+Q.E.D. 
+To construct the triangular representation (3.2) for Ady =,u + F(L)e?, apply Lemma A.1 to 
+xt =-d 
+lyt to yield the decomposition: 
+Ady = ,ul'o + F d 
+(L)Et, 
+a 
+t = t12,0 + /2,1t + O,1 a 
+'yt +, 
+where yt has been partitioned (and possibly reordered) into k1 x 1 and (n - k1) x 1 components yt 
+and y32 such that Fd- 1(l) has full row rank k1. Some or all rows of j d-1 can be rows of zeros. Let 
+H(L) = [hl(L)', h2 
+..... hd+1(L)']' where hm(L) is kmxfn, and set h1(L)=Flf 
+l(L). This 
+determines the first k1 equations in (3.2). Without loss of generality let 
+Fd-(1) 
+= 
+[Fild-(1)', F22(1)']' 
+have rankk1+k2< 
+n. Next, apply the lemma to xt=[Ad-lyt 
+(Ad2512- 
+O2d,ylAd-2y 
+1Y]t reordering as necessary the final n -k1 
+rows of xt; this determines the next k2 
+equations of (3.2). Continuing this process yields (3.2), with uj = h(L), 
+j =1...d 
++ 1, where 
+rank[hj(1)]=kj 
+for j=1. 
+d. Note that H=[h1(1)',h2(1)'. 
+Jhd()']' has full row rank by 
+construction, and assumption A(v) implies that hd+1(1) is linearly independent of the rows of H 
+and has full row rank. 
+By construction, ut = H(L)Et where H(1) has full rank, and so the spectrum of ut is nonsingular 
+at frequency zero. At frequencies other than zero, the spectrum of ut is nonsingular because ut is 
+F(L)Et passed through a linear filter which is nonsingular at frequencies W $ 0 (mod 2r), and 
+because F(eiW) is nonsingular at w # 0 (mod 2w) by Assumption A(iii). Finally, the assumed 
+k-summability of F(L) implies that H(L) is k - d summable for k > d. 
+
+
+--- Page 31 ---
+COINTEGRATING 
+VECTORS 
+813 
+The proofs of the theorems rely on an extension of Sims, Stock, and Watson's (1990) (SSW) 
+Lemma 1, which gives limiting properties of moment matrices involving general I(d) regressors. This 
+extension weakens one of the conditions of SSW Lemma 1. (The statement of this weaker condition 
+and the revised proof of SSW Lemma 1 which follows will use the notation of SSW.) Specifically, 
+replace SSW Condition 1 with the following condition. 
+CONDITION 1': (i) Let m 
+t be a n X 1 martingale difference sequence with E( t 
+t--, 
+72,7 
+t 
+) = 0, 
+E(,t7tr7t- 1, N.-2,**) 
+= Inx and max supt E(-q' Wt1-, nt-2, 
+... ) < X 
+(ii) E=0jIFmj,I < ??, m = 1, .... 
+Condition 1'(i) is the same as SSW Condition 1(i). Condition 1'(ii) weakens the g summability in 
+SSW Condition 1(i) to 1-summability. For completeness, we state the revised lemma: 
+LEMMA A.2: Lemma 1 of SSW holds under Condition (1'). 
+PROOF OF LEMMA A.2: SSW Lemma 1 contains parts (a)-(h). The proofs of parts (a)-(f) require 
+only 1-summability of F(L) and thus they hold under Condition 1' automatically. To prove part (g) 
+of the lemma, notice that the result follows if the last term in SSW equation (A.2) converges to 0 in 
+probability. In turn, this follows if T- 
+2tltF0 
+for kp 
+1, where F,*l(L)= 
+(1 - L) - '(F,, l(L) - F,,(1)). To show this, write: 
+T-1 
+T-1 
+T- 
+/E 
+T-P 
+E 
+t Fm*(L) 
+qt 
+< T-12- 
+EtEl 
+Fm*(L) 
+qtI 
+t=1 
+t=1 
+T 
+T- 1/2 T- (P-k- ')El Fm*,(L)-qt I 
+< T-1/2T-(P-k-1)( 
+E IFmll) El-qtl 
+0, 
+where the last line follows p - k - 1 > 0 and Condition 1', noting that the 1-summability of Fni(L) 
+implies the absolute summability of F,*1(L). Thus T- l/2tPE 
+ltkFn,t(L)71t2 
+by Markov's 
+inequality. 
+To prove part (h), notice that the result follows if the last term in SSW equation (A.6) converges 
+to 0 in probability. In turn, this follows if T-PE[t= t(F. 
+l(Lb7t_)' O20 
+for k <p-1. 
+To show 
+this, again use Markov's inequality and assume for notational convenience that (t and F,*1(L)-qt are 
+scalars. Then, 
+T 
+T 
+E|T-P o 
+k 
+-k*1L)B 
++) =1 
+P 
+/2)E 
+E (7-k+112(k 
+)F 
+LN 
+) 
+E 
+-E~1 
+l(L),7t-1) 
+= T-(P 
+)E 
+( 
+t-j)Fm*j(L)qt-j) 
+t=1 
+t=1 
+T 
+t=l 
+t=1 
+Tr 22]1/2 
+? T -(P -k+ 
+1/2) E [E(T -k+112(tk-1 
+~~~~~~~t 
+- 1 
+
+
+--- Page 32 ---
+814 
+J. H. STOCK AND M. W. WATSON 
+where the last line follows from T-ET=4[E(Tfk+l/2 
+)2]l/2 
+J1{E(Wk(s)2)}l/2ds<00; 
+from 
+F,m*(L) being absolutely summable (because Fmi(L) is 1-summable by Condition 1'); and from 
+k <p -1. 
+Q.E.D. 
+To apply Lemma A.2 in the proofs below, it must be shown that the canonical regressors have the 
+representation zt = G(L)vt, where G(L) and vt satisfy Condition 1'. (G(L) here corresponds to 
+F(L) in Lemma A.2, and so it must be shown that Gm,j(L) is 1-summable for all m, j.) Condition 
+1'(i) follows from Assumptions A(i) and C(i). To show that Condition 1'(ii) holds, it suffices to show 
+that G(L) can always be chosen so that Gmi(L) is 1-summable and Gmj(L) = Gmj for j > 2 and all 
+m. This result is straightforward for the canonical regressors dominated by deterministic terms. For 
+the canonical regressors dominated by stochastic components (zr', m = 1, 3,..., 21 - 1), it suffices to 
+show this for the canonical regressor with the highest possible order of integration. That regressor 
+has the representation z21-1 = M -Adyt 
+for some matrix M+. To simplify the expressions we 
+omit initial conditions and deterministic terms. Then, from (3.1), zt11 
+can be written 
+t 
+Sd-I 
+(A.2) 
+Z21-1 = 
+E M+F(L)Esd 
+Sl=1 
+Sd= l 
+= 
+M+F(1)-' 
++ M+F* 
+(1)(1-2 
++ 
++M+F*'(L)Et 
+= G21-1,21-1Ct 
+1 + G21-1,21-3ftl 
+-2 
++ 
++G21_1,1(L)Et 
+where F*l(L) has coefficients F,*'= 
+-E 
++1Fj*ll, 
+defined recursively with F*O(L) 
+F(L), and 
+where G21-1,211 =M F(1), G21-1,21-3=M+F*1(1),...,G21_1 
+1(L)=M+F*l(L). 
+It is readily 
+shown that the k-summability of F(L) (Assumption A(ii)) implies that F*l(L) is (k - )-summable. 
+By assumption C(ii), F(L) is (d + 2) summable. Because 1 < d + 1, F*l(L) and G21 -,1(L) 
+are (at 
+least) 1-summable for all 1. Thus Assumptions A and C imply that zt = G(L)vt can always be 
+chosen so that Condition 1' applies. In this construction all elements of G(L) except G1l(L) are 
+one-sided. G l(L) will be two-sided because zJ contains finitely many leads of u J, j < 1. 
+The following two lemmas are used in the proofs of the theorems. 
+LEMMA A.3: 
+T-1 /2Z3 
+T 3/2Z5 
+T-1 + 3/2Z 21 -1, T- l/2 
+i 
+(1)C (1)Et 
+t== 
+[r3w1(.),r5w12( ). 
+21-_vW(1-1)/2 
+W2( ) 
+where W(s) = (W1(sYW2(s)')' is standard n-dimensional Brownian motion and Tm = Gmm(1)M', where 
+M is a (n-kl)xn 
+matrix with rows that span the null space of the rows of 
+0(1)cj(l) and 
+MM' = In -k 
+PROOF OF LEMMA A.3: Let B(s) be defined as the limiting process T-1/2E[T1 
+=] 
+B(-); because 
+s is a martingale difference sequence and E(6E E) = In, B(s) is a n-dimensional standard Brownian 
+motion. Define M to be a fixed (n - kl) x n matrix with rows that span the null space of the rows of 
+N1)c1(1) and MM' = In-k,. 
+Also define W1(s) = MB(s), W2(s) = 
+(1)cj(1)B(s), 
+and W(s) = 
+(W1(sY,W2(sYY. Because MM'=In-kl'Mc1(1)P(1)' 
+= 0, and N(1)c1(1)cj(1)'N(1)'=Ik1, 
+W(s) is a 
+standard Brownian motion. 
+From the discussion following the proof of Lemma A.2, the mth canonical regressor can be 
+represented as 
+ztm = Gmi(L)(t? + Gm2 + Gm3ftj + * * + Gmm t /2(m- 1) 
+m = 3, 5,..., 21-1, 
+so that Gmj(1) = Gmj for 1 >2. Note that T-(m-2)/2 
+(.mj- 
+1)/2 
+B(m-1)/2(.), 
+where B1(s) = B(s) 
+and Bj(s) = Jrs=oBj- l(r) dr, for m = 3,5,..., 21 - 1. Because Gml(L) is at least 1-summable (this 
+follows from Assumption A as discussed following the proof of Lemma A.2), T-(m-2)/2z m.1 
+Gmm(1)B(m-1)/2(.). 
+Because Ezt+kV' = 0 for all t and k, the cross spectrum of vl and zt is 0 at 
+frequency 0 so that Gmm(1)cj(1Y'(1)' = 0, m = 3,5,...,21 
+- 1. Thus Gmm(1) can be written 
+Gmm(l) =FmM, 
+SO T-(m2 
+T2z(. 
+=* Gmm(l)B(m-1)2( 
+=FmMB(m1)/2() 
+= FmWlm-1)/2(.). 
+The 
+gm x (n - k1) matrix Em can be obtained (given M) as Fm = Gmm(1)M', m = 3,5,...,21 
+- 1. Q.E.D. 
+
+
+--- Page 33 ---
+COINTEGRATING 
+VECTORS 
+815 
+LEMMA A.4 (Beveridge-Nelson (1981) decomposition for two-sided filters): Suppose ;(L) = 
+E. 
+jLJ ism-summable. Then (L) = ;(1) + ;*(L)(1 - L), where ;*(L) is (m - 1)-summable and 
+vi* = 
+7_ 
+-=+ 
+1 ij 
+i > 0 and Vj* = EL _-oovj,iX < O. 
+PROOF OF LEMMA A.4: Write 
+-1 
+-1 
+;(L) = , 
+,Li + E ;,Li = ;(1) + , 
+j(Li - 1) + ,: Vj(Li - 1). 
+j= -r 
+j=0 
+j= -r 
+j=0 
+The results obtain by using Li - 1 = (L - 1)EdL-oL', j > 1, and collecting terms. 
+Q.E.D. 
+PROOF OF THEOREM 1: First consider the infeasible GLS estimator gGLS constructed using '1(L) 
+rather than Oi(L). Note that (T T?I)(G5 
+S- ') = QT1"T, where QT= (Tj1 ?I)EttZ(f'T 
+1I) 
+and 4T= (Tf' 
+? I)EtEtP(L)v 1, with Z = [1(LXz't ? I)]'. (Identity matrices have dimension k, x k, 
+unless otherwise stated.) The convergence of Q11T to Q11 follows from a standard application of 
+the weak law of large numbers. For QijT with i or j> 2, we use Lemma A.2. Note that Z = 
+-(T 
+?I) 
+[m=Oh= 
+h=O'h](7T 
+yq =K 
+(N')t'mN=) ) 
+=so 
+q 
+q 
+QijT 
+T 
+~~t 
+m 
+= OZ 
+he 
+=' O 
+) 
+Ei 
+E) 
+(()'() 
+= -i >, 
+"ph) 
+1T 
+where the last two lines follow from Lemma A.2 and h(1)'P(1) = 
+OmI,1. 
+For piT, i > 2, let q(L)c1(L) = 0(L) and use the two-sided Beveridge-Nelson decomposition 
+(Lemma A.4) to write P?(L)vt = ;(L)c1 = ;(1)c1 + ;* (L) Ac1, where ;* (L) is defined in Lemma 
+A.4. Because c1(L) = d1(L)H(L), where d1(L) is the lth block of rows of D(L), because H(L) is 
+2-summable (by Assumption C(ii)), and because d1(L) has finite order (Assumption B), c1(L) is 
+2-summable. Because 4i(L) has finite order by assumption, ;(L) is 2-summable, so by Lemma A.4, 
+;*(L) is 1-summable. Thus write PIT = PilT + 412Tx where 
+q 
+q 
+IT (iT 1 0 
+) 
+E (Z-jm >) 'o) 
+(T-(&l)+oP(1)6 
+t 
+m =O0h 
+V. 
+(Oi G 
+I) 
+0 (0Z- ) =) Vi (L 
+DUt 
+First consider 
+T. The limit of 
+wliT 
+follows from Lemmas A.2 and A.3: 
+f 
+JI( G 
+i 
+2)s(l-L)/c 
+= 
+(iL)') 
+dW (s) 
+i = 2, 
+4,B6,d 
+. .c.,21, 
+(LemmaA4 
+to 
+wre 
+(L)vl = 
+= 
+)t dW2(L) 
+iw 
+= 3, 
+5,L7 
+. . 
+in 
+21-1. 
+Next consider 42T. By telescoping arguments, 
+t1-1 [ 
+q 
+(A.3) B 
+u 
+c(LT = 
+I) H 
+hre ( AZ iom ?) m) 
+b (s)e 
+L 
+q 
++(Ti_ 
+1 eI) 
+, 
+i 
+{(t- 
+0 )?M) 
+*(1)CGEtl-Zim)m)*L6o 
+m =O 
+where the limits of the summation over t reflect a fixed number of initial and terminal observations 
+
+
+--- Page 34 ---
+816 
+J. H. STOCK AND M. W. WATSON 
+used as initial and terminal conditions. The second term in this expression A 0 by the Cauchy- 
+Schwartz inequality. To show that the first term A 0, first consider the case with i = 3. Then 
+AZ3 _m+1 = y(L)c1, where y(L) = (G33 + AG31(L))Lm from (A.2). Because G31(L) is 1-summable, 
+y(L) is 1-summable; also T-Tl = T-1 and ;*(L) is 1-summable. Thus, the first term in (A.3) is a 
+linear combination of finitely many terms of the form T-1E(y(L)EtX)*(L)Et). 
+The absolute 
+summability of y(L) and ;*(L), together with the assumed fourth moments of Et, imply that 
+T-1E(y(L)EtX)*(L)Et) A K, where K is a constant. But E4=3T E 
+T + E43T; because E43T = 0 
+and E4)3T 
+0, K = O, SO 3T - 0. 
+For i = 5, 7,..., 21 - 1, the first term in (A.3) is a linear combination of finitely many terms of the 
+form T-l/i-1)Tt1-1 
+Az,t-k(;i(L)st)', 
+for fixed k, where 
+i-k 
+iS the rth element of Z' -k and 
+vh*(L) is the hth row of ;*(L). These terms are readily shown to converge to zero in probability 
+using the Cauchy-Schwartz inequality and SSW Lemma 1(h) (modified in Lemma A.2) because Et 
+has finite fourth moments and ;*(L) is 1-summable. 
+For i = 2,4,...,21, 
+the result follows from SSW Lemma (g) (modified above). Thus 'i 
+O for 
+i= 1,2,...,21. 
+The joint convergence (QT, 
+PT) 
+W(Q, ) follows from SSW Lemmas 1 and 2. 
+To prove that the feasible GLS estimator has the same limit, let 
+QT ( T 
+) E [: 
+( t-M 
+'m) 
+Zt 
+[ 
+-h (&h) 
+t 
+_m=0 
+_h=0 
+q 
+( T1 
+( r&I ) 
+E 
+(Z t-m (9 OM 
+) ( L )vtlX 
+t 
+_m=0 
+so (TT ?' IXGLS-GLS) 
+=QT 1(4 
+XT-T) + (QT1 -Qil 
+)T. 
+Because 4?(L) has known finite 
+order q by assumption, Pj A 'Pj for 1, . 
+q, QT - Q -O 
+and XT - XT A O. Finally, since Q is 
+a.s. invertible, (Tf 1 IXSG 
+L 
+- 
+GLS) 
+0. 
+QE.D. 
+PROOF OF THEOREM 2: (a) Write (TT ? 
+-cOLS-) 
+= VT 'Wi-, where VT = [T 
+? I [(Et zt z) ? 
+IX[T- 1 ? I] and 0T = [T- 
+1 ? I][Et(zt ? I)v]. The proof that VT=* V follows from SSW Lemma 1. 
+The proof that Wj iT()Wi, 
+i 2 2 parallels the proof in Theorem 1: apply the 2-sided Beveridge- 
+Nelson decomposition to vi = cl(L)Et, apply SSW Lemma 1 to the term involving cl(l)Et, and use 
+the absolute summability of cl(L) 
+to show that the term involving Ac*(L)E converges to 0 in 
+probability. For i = 1, the result is a consequence of the central limit theorem for summable 
+processes. 
+(b) Theorems 1 and 2 imply that Tj-1E1 zlz*4'TT*1A 0. First consider the infeasible GLS 
+estimator gGLS, defined in the proof of Theorem 1. It is a consequence of the proof of Theorem 1 
+that 
+(r*Ts 
+I)(g* GLS- 
+*) = B* T(T 
+* 
+I) E (4 
+Z' (1)')'(1)c0(1)ct 
++ op(l) 
+where B* T = (T7 
+? IXEt(zt* ? '(1))'Xz*' ? 0())](T4 T I). Now 
+B* 
+T 
+(T*T 
+I)( 
+(g-g1)k1 
+? P(1)YP(1)) [ E (z*Z'?I) 
+(T 
+'( I) 
+so 
+B-1= 
+r,T.-10IZ(*0)(z'0 
+(- i0-- 
+[Io 
+
+
+--- Page 35 ---
+COINTEGRATING 
+VECTORS 
+817 
+Also, 
+MTO T 
+0 
+('* 
+OI,S-8*GLS) 
+= B* T(tT1 
+o I ) 
+x E(z* 
+(8 4P(lY4P(l))cj(L)E,tz 
+- E (Zt ? 
+P(1)'P(1))ci(1)ct} 
++ op(l) 
+= B* -K*T 
++ op(l) 
+where K* T= 
+(r*T 
+IEt(z* 
+0 0(1)'(1)) 
+Ac (L)Et) and where the final line uses the two-sided 
+Beveridge-Nelson decomposition, cl(L)Et = [cl(l) + Ac*(L)]Et. The lag polynomial cl(L) is 1-sum- 
+mable (since cl(L) is 2-summable). Telescoping arguments were used in the proof of Theorem 1 to 
+show that (T;T* @ I){Et(z* 0 (l)'N P(l)) Aj*(L)Et) A 0, and those arguments applied here show 
+that K* T 
+* 0. The result (T* T 0 IX(?OL - 
+OLS 
+GLS) - 0 follows from QijT 
+=* Q,j (from Theorem 
+1). 
+Q.E.D. 
+PROOF OF THEOREM 3: The result follows from Theorem 1, which provides a limiting representa- 
+tion for the estimated coefficients; Theorem 2 of SSW, which provides a limiting representation for 
+the Wald test statistic when the restrictions are on coefficients whose estimators converge at 
+different rates; and Johansen (1988a) or alternatively Phillips (1991a), who show that the resulting 
+limiting distributions are X 
+Q.E.D. 
+PROOF OF THEOREM 4: This follows from Theorem 3 and the proof of Theorem 2. 
+Q.E.D. 
+APPENDIX B 
+Data Sources 
+Money Supply (M1): The monthly Citibase Ml series (FM1) was used for 1959-1989; monthly 
+data for 1947-1958 were formed by splicing the Ml series reported in Banking and Monetary 
+Statistics, 1941-1970 (Board of Governors of the Federal Reserve System), to the Citibase data in 
+January 1959. The monthly data were averaged to obtain annual observations. Data prior to 1947 
+are those used by Lucas (1988); from 1900-1914 the data are from Historical Statistics, series X267 
+and from 1915-1946 they are from Friedman and Schwartz (1970, pp. 704-718, column 7). 
+Real Output: The annual data are U.S. Net National Product. For 1947-1989, they are the 
+Citibase series GNNP82. Prior to 1947, we used Lucas' (1988) data (Friedman and Schwartz real net 
+national product (1982, Table 4.8)). The Friedman and Schwartz series was linked to the annual 
+Citibase series in 1947. For the monthly data analyzed in Section 7B, we used real personal income 
+(Citibase Series GMPY82). 
+Prices: The annual data are the price deflator for U.S. Net National Product. For 1947-1989, 
+they are the Citibase Series GDNNP. Prior to 1947, we used Lucas' (1988) data (Friedman and 
+Schwartz (1982, Table 4.8)). The Friedman and Schwartz series was linked to the annual Citibase 
+Series in 1947. For the monthly data analyzed in Section 7B, we used the price deflator for real 
+personal income, formed as the ratio of the Citibase series GMPY to GMPY82. 
+Interest rates: The annual data are the rate on commercial paper. For 1947-1989, we used the 
+6-month commercial paper rate (Citibase Series FYCP). The monthly data were averaged to obtain 
+annual observations. Prior to 1947, we used Lucas' (1988) data (Friedman and Schwartz (1982, Table 
+4.8, column 6)). For our analysis of the postwar monthly data, we also used the 90-day U.S. Treasury 
+bill rate (Citibase Series FYGM3) and the 10-year U.S. Treasury bond rate (Citibase series 
+FYGT10). 
+
+
+--- Page 36 ---
+818 
+J. H. STOCK AND M. W. WATSON 
+Summary of Results from Unit Root and Cointegration Tests 
+Univariate Dickey-Fuller (1979) $, and $r' statistics, computed with 2 and 4 lags on the full data 
+set, fail to reject a single unit root in each of m, p, r, m - p, and the logarithm of velocity at the 10% 
+level; the unit root hypothesis is not rejected for y with 4 lags, but is rejected at the 10% (but not 
+5%) level with 2 lags. A unit root in Ay and Ar are each rejected at the 1% level, and a unit root in 
+Am - Ap is rejected at the 10% level. Similar inferences obtain for the 1900-1945 and 1946-1989 
+subsamples. Whether m and p have two unit roots is less clear: for m, two unit roots are rejected in 
+favor of one at the 10% level for the second but not the first subsample; for p, two unit roots are 
+rejected for neither subsample, but this null is rejected at the 10% level for the full sample. For 
+r - zip (zp in percentages), one unit root is rejected (vs. zero) for the full sample at the 10% level, 
+but not in either subsample using the $r' statistic; however, P rejects at 10% in both subsamples and 
+the full sample. 
+Turning to the evidence on cointegration, Johansen's (1991) JT(O) test of the null of at most zero 
+cointegrating vectors, against one or more cointegrating vector in the (m - p, y, r) system, rejects at 
+the 10% level using 1 or 2 lags over the full sample. Using the Stock-Watson (1988) qf(3, 2) test for 
+3 vs. 2 unit roots (with 2 lags), the evidence is less strong: the p-value is .43. However, the 
+Engle-Granger (1987) augmented detrended Dickey Fuller test (one lagged first difference) based 
+on the residual from regressing m - p on y and r rejects noncointegration at the 5% level over the 
+full sample. Finally, demeaned ADF tests of the residual from the regression of the logarithm of 
+velocity on r reject noncointegration at the 10% level (with one or two lagged first differences) over 
+the full sample. 
+Details of these results are available from the authors on request. 
+REFERENCES 
+AHN, S. K., AND G. C. REINSEL (1990): "Estimation for Partially Nonstationary Autoregressive 
+Models," Journal of the American Statistical Association, 85, 813-823. 
+BABA, Y., D. F. HENDRY, AND R. M. STARR (1992): "The Demand for Ml in the USA: 1960-1988," 
+The Review of Economic Studies, 59, 25-60. 
+BALKE, N. S., AND R. J. GORDON (1986): "Historical Data," in The American Business Cycle: 
+Continuity and Change, edited by R. J. Gordon. Chicago: University of Chicago Press, for the 
+NBER. 
+BANERJEE, A., J. J. DOLADO, D. F. HENDRY, AND G. W. SMITH (1986): "Exploring Equilibrium 
+Relations in Econometrics Through Static Models: Some Monte Carlo Evidence," Oxford 
+Bulletin of Economics and Statistics, 48, 253-277. 
+BERK, K. N. (1974): "Consistent Autoregressive Spectral Estimates," Annals of Statistics, 2, 
+489-502. 
+BEVERIDGE, 
+STEPHEN, AND CHARLES R. NELSON (1981): "A New Approach to Decomposition of 
+Time Series in Permanent and Transitory Components with Particular Attention to Measure- 
+ment of the 'Business Cycle'," Journal of Monetary Economics, 7, 151-174. 
+BEWLEY, R. A. (1979): "The Direct Estimation of the Equilibrium Response in a Linear Model," 
+Economic Letters, 3, 357-361. 
+BRILLINGER, 
+D. R. (1980): Time Series, Data Analysis and Theory, Expanded Edition. San Francisco: 
+Holden-Day. 
+CAMPBELL, 
+J. Y. (1987): "Does Savings Anticipate Labor Income? An Alternative Test of the 
+Permanent Income Hypothesis," Econometrica, 55, 1249-1274. 
+CAMPBELL, 
+J. Y., AND R. J. SHILLER (1987): "Cointegration and Tests of Present Value Models," 
+Journal of Political Economy, 95, 1062-1088. 
+(1989): "The Dividend-Price Ratio and Expectations of Future Dividends and Discount 
+Factors," The Review of Financial Studies, 1, 195-228. 
+DIcKEY, D. A., AND W. A. FULLER (1979): "Distribution of the Estimators for Autoregressive Time 
+Series with a Unit Root," Journal of the American Statistical Association, 74, 427-431. 
+ENGLE, R. F., AND C. W. J. GRANGER (1987): "Cointegration and Error Correction: Representation, 
+Estimation, and Testing," Econometrica, 55, 251-276. 
+ENGLE, R. F., D. F. HENDRY, 
+AND J. F. RICHARD (1983): "Exogeneity," Econometrica, 51, 277-304. 
+FRIEDMAN, 
+M., AND A. J. SCHWARTZ (1970): Monetary Statistics of the United States. New York: 
+Columbia University Press for the National Bureau of Economic Research. 
+
+
+--- Page 37 ---
+COINTEGRATING 
+VECTORS 
+819 
+FRIEDMAN, M., AND A. J. SCHWARTZ (1982): Monetary Trends in the United States and the United 
+Kingdom. Chicago: University of Chicago Press for the National Bureau of Economic Research. 
+GOLDFELD, S. M., AND D. E. SICHEL (1990): "The Demand for Money," Chapter 8 in Handbook of 
+Monetary Economics, Vol. 1, ed. by B. M. Friedman and F. H. Hahn. Amsterdam: North- 
+Holland, 299-356. 
+GRANGER, 
+C. W. J., AND T-H. LEE (1990): "Multicointegration," Advances in Econometrics, 8, 
+71-84. 
+GREGORY, 
+A. W., AND J. M. NASON 
+(1991): "Testing for Structural Breaks in Cointegrated 
+Relationships," Discussion Paper #827, Institute for Economic Research, Queen's University. 
+GRENANDER, 
+U., AND M. RoSENBLATr 
+(1957): Statistical Analysis of Stationary Time Series. New 
+York: John Wiley and Sons. 
+HAFER, R. W., AND D. W. JANSEN (1991): "The Demand for Money in the United States: Evidence 
+from Cointegration Tests," Journal of Money, Credit and Banking, 23, 155-168. 
+HANSEN, B. E. (1988): "Robust Inference in General Models of Cointegration," manuscript, Yale 
+University. 
+(1989): "Efficient Estimation of Cointegrating Vectors in the Presence of Deterministic 
+Trends," manuscript, University of Rochester. 
+HANSEN, B. E., AND P. C. B. PHILLIPS (1990): "Estimation and Inference in Models of Cointegra- 
+tion: A Simulation Study," Advances in Econometrics, 8, 225-248. 
+HENDRY, 
+D. F., AND N. R. ERICSSON (1991): "Modeling the Demand for Narrow Money in the 
+United Kingdom and the United States," European Economic Review, 35, 833-848. 
+HOFFMAN, 
+D., AND R. H. RASCHE (1991): "Long-Run Income and Interest Elasticities of Money 
+Demand in the United States," Review of Economics and Statistics, 73, 665-674. 
+JOHANSEN, S. (1988a): "Statistical Analysis of Cointegration Vectors," Journal of Economic Dynam- 
+ics and Control, 12, 231-255. 
+(1988b): "The Mathematical Structure of Error Correction Models," Contemporary Mathe- 
+matics, Vol. 80: Structural Inference from Stochastic Processes, ed. by N. U. Prabhu. Providence, 
+RI: American Mathematical Society. 
+(1991): "Estimation and Hypothesis Testing of Cointegrating Vectors in Gaussian Vector 
+Autoregression Models," Econometrica, 59, 1551-1580. 
+(1992): "A Representation of Vector Autoregressive Processes Integrated of Order 2," 
+Econometric Theory, 8, 188-202. 
+JOHANSEN, 
+S., AND K. JUSELIUS (1990): "Maximum Likelihood Estimation and Inference on 
+Cointegration-with 
+Applications to the Demand for Money," Oxford Bulletin of Economics and 
+Statistics, 52, 169-210. 
+JUDD, JOHN P., AND J. L. SCADDING (1982): "The Search for a Stable Demand Function: A Survey 
+of the Post-1973 Literature," Journal of Economic Literature, 20, 993-1023. 
+KING, R., C. PLOSSER, J. H. STOCK, AND M. W. WATSON (1991): "Stochastic Trends and Economic 
+Fluctuations," American Economic Review, 81, 819-840. 
+LAIDLER, D. E. W. (1977): The Demand for Money: Theories and Empirical Evidence. New York: 
+Dun-Donnelly. 
+LUCAS, R. E. (1988): "Money Demand in the United States: A Quantitative Review," Carnegie- 
+Rochester Conference Series on Public Policy, 29, 137-168. 
+MELTZER, A. H. (1963): "The Demand for Money: The Evidence from the Time Series," Journal of 
+Political Economy, 71, 219-246. 
+MILLER, STEPHEN (1991): "Monetary Dynamics: An Application of Cointegration and Error Correc- 
+tion," Journal of Money, Credit and Banking, 23, 139-154. 
+PARK, J. Y. (1992): "Canonical Cointegrating Regressions," Econometrica, 60, 119-144. 
+PHILLIPS, P. C. B. (1991a): "Optimal Inference in Cointegrated Systems," Econometrica, 59, 
+283-306. 
+(1991b): "Spectral Regression for Cointegrated Time Series," in Nonparametric and Semi- 
+parametric Methods in Economics and Statistics, ed. by W. Barnett. Cambridge: Cambridge 
+University Press, 413-436. 
+PHILLIPS, P. C. B., AND B. E. HANSEN 
+(1990): "Statistical Inference in Instrumental Variables 
+Regression with 1(1) Processes," Review of Economic Studies, 57, 99-125. 
+PHILLIPS, P. C. B., AND M. LORETAN (1991): "Estimating Long Run Economic Equilibria," The 
+Review of Economic Studies, 58, 407-436. 
+PHILLIPS, P. C. B., AND J. Y. PARK (1988): "Asymptotic Equivalence of OLS and GLS in Regression 
+with Integrated Regressors," Journal of the American Statistical Association, 83, 111-115. 
+
+
+--- Page 38 ---
+820 
+J. H. STOCK AND M. W. WATSON 
+PHILLIPS, P. C. B., AND V. SOLO (1992): "Asymptotics for Linear Processes," Annals of Statistics, 20, 
+971-1001. 
+SAID, S. E., AND D. A. DicKEY (1984): "Testing for Unit Roots in Autoregressive-Moving Average 
+Models of Unknown Order," Biometrika, 71, 599-608. 
+SAIKKONEN, P. (1991): "Asymptotically Efficient Estimation of Cointegrating Regressions," Econo- 
+metric Theory, 7, 1-21. 
+SIMs, C. A. (1972): "Money, Income and Causality," American Economic Review, 62, 540-552. 
+SIMs, C. A., J. H. STOCK, AND M. W. WATSON (1990): "Inference in Linear Time Series Models with 
+Some Unit Roots," Econometrica, 58, 113-144. 
+STOCK, J. H. (1987): "Asymptotic Properties of Least Squares Estimators of Cointegrating Vectors," 
+Econometrica, 55, 1035-1056. 
+STOCK, J. H., AND M. W. WATSON (1988): "Testing for Common Trends," Journal of the American 
+Statistical Association, 83, 1097-1107. 
+WATSON, M. W. (1992): "Vector Autoregressions and Cointegration," forthcoming, Handbook of 
+Econometrics, Volume IV. 
+WEST, K. D. (1988): "Asymptotic Normality when Regressors Have a Unit Root," Econometrica, 56, 
+1397-1418. 

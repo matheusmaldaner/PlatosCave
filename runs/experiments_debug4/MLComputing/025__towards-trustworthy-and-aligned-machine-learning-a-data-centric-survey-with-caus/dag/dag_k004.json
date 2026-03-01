@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Achieving trustworthy machine learning is best addressed from a data-centric perspective and can be unified under causality (Pearl's hierarchy), such that methods across robustness, adversarial robustness, interpretability, and fairness converge to common statistical/causal formulations",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many independently developed methods for robustness, adversarial defense, interpretability, and fairness converge to two central ERM-derived master formulations: (A) adversarial / worst-case data augmentation (min_theta E max_x') and (B) domain-invariant / adversarial representation learning (min_theta E - lambda loss on domain/classifier)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "A plug-in sample-weighting formulation (min_theta E alpha(x,y,theta) loss) complements the above master equations and corresponds to group-DRO or inverse-propensity weighting approaches",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Pearl's causal hierarchy (associational L1, interventional L2, counterfactual L3) provides a principled taxonomy to classify and interpret trustworthy ML methods and clarifies what each method can and cannot achieve",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Techniques map to levels of the causal ladder: data augmentation / randomized controlled trial ~ L2 intervention; backdoor adjustment, inverse probability weighting, and instrumental variables ~ L2 identification strategies; counterfactual data generation and treatment-effect analysis ~ L3 counterfactual reasoning",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "These master equations capture methods across topics: domain adaptation/generalization, adversarial training/TRADES/consistency, interpretability via perturbation/counterfactual generation, and fairness via adversarial removal or constraint weighting",
+      "role": "Claim",
+      "parents": [
+        1,
+        2,
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "In a structural causal model view, data-generating confounders ˜C create spurious associations between causal features C and inputs X; intervening (or simulating interventions) on ˜C removes confounding and yields models that rely on causal features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Practical implementations: (a) randomizing or augmenting confounders approximates do-operations (RCT-style) and yields invariance; (b) adversarial perturbation optimizes worst-case confounders; (c) representation-level invariance via adversarial domain classifiers approximates backdoor-like adjustments; (d) propensity/sample weighting implements inverse-propensity/backdoor correction",
+      "role": "Method",
+      "parents": [
+        4,
+        5,
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Large pretrained models can be connected to the ERM framework: fine-tuning, prompt tuning, and parameter-efficient tuning are ERM specializations (constrained hypothesis space) and thus the master equations and causal remedies apply to them",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Trustworthy interventions for large models: adapt master equations via parameter-efficient fine-tuning or prompt/adapter mechanisms, use data augmentation or representation alignment on embeddings, and combine with RLHF for human-alignment where statistical definitions are insufficient",
+      "role": "Method",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical evidence and results summarized: adversarial training (PGD, TRADES, ALP) and consistency losses improve robustness; DANN-like representation adversarial objectives improve domain adaptation/generalization; contrastive and generation-based augmentations provide counterfactual samples that improve interpretability and reduce reliance on spurious features",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Limitations and assumptions: causal methods require explicit causal assumptions or identifiable proxies (e.g., observed ˜C, good instrument Z, or decomposable representations); interventions via augmentation rely on valid counterfactual generators and may be impractical when C or ˜C are unobservable or entangled",
+      "role": "Limitation",
+      "parents": [
+        9,
+        10,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Applications: vision (robustness, medical imaging, dataset bias), language (hallucination, fairness, domain specialization), and vision-language tasks all benefit from data-centric causal remedies; medical imaging highlights high-stakes need and difficulty due to data scarcity and domain shifts",
+      "role": "Claim",
+      "parents": [
+        5,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: a unifying, causality-grounded, data-centric framework enables principled design of trustworthy ML methods, can be extended to large pretrained models, and suggests future directions in combining causal methods with human-feedback and model-efficient tuning to obtain multiple trustworthy properties simultaneously",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods for deep neural networks can provide mechanistic understanding, aid debugging and diagnostics, and thereby improve trustworthy deployment of AI",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We propose a taxonomy of inner interpretability methods organized by the network component they explain (weights, neurons, subnetworks, latent representations) and whether methods are intrinsic or post hoc",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Inner interpretability is important because test-set performance alone can miss deployment distribution issues, harmful biases, adversarial inputs, and it limits the ability to fix or assign accountability for failures",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Interpreting weights: intrinsic continual learning and post hoc weight-masking identify specialized weights or subnetworks, but many weights are frivolous (prunable) which complicates interpretation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Interpreting individual neurons: dataset-based analysis, feature synthesis, perturbation/ablation, and gradient-based attribution can characterize neuron roles but face limits from dataset coverage, polysemantic and frivolous neurons, and context-dependent effects",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Interpreting subnetworks: intrinsic sparsity and modularity and post hoc partitioning or circuits analysis can simplify reasoning about parts of networks, though modular partitioning has limited success and circuit analysis often requires intensive human effort",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Interpreting latent representations: self-explaining models, disentanglement, attention/token analyses, concept vectors, probing, and representation comparison offer routes to explain internal representations but suffer from faithfulness, stability, and scalability challenges",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The taxonomy organizes methods by target component because the targeted component affects engineering goals more than the intrinsic vs post hoc distinction",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Evidence: weight-masking methods can train masks to identify weight subsets causally specialized for subtasks; pruning results show networks can often be heavily pruned with little performance loss",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Evidence: dataset-based dissection aligns neurons to semantic concepts, feature synthesis produces maximally activating inputs, ablation and Shapley-value analyses reveal causal importance but Shapley values have explanatory limits",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evidence: sparsification/pruning and sparse attention can reduce model size and sometimes aid editability; modular architectures and soft modularity methods can induce specialization but do not always yield interpretable partitions",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Evidence: adversarial training improves some interpretability properties and robustness; probing reveals what embeddings encode but probes can mislead about usage; many representation-similarity measures disagree",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Hazards and limitations: polysemantic and frivolous units, dataset and label limitations, unfaithful explanations, cherry-picking best-case examples, scalability issues, and potential to accelerate risky capabilities are major constraints on interpretability",
+      "role": "Limitation",
+      "parents": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: current inner interpretability progress is promising but often hypothesis-generating rather than conclusive; methods must be evaluated with rigorous tests, uncertainty quantification, and benchmarks to be useful for engineers",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Recommendations / future work: prioritize diagnostics, debugging, adversarial and benchmark-based evaluation, scale methods to large models, automate human oversight, combine techniques, and study links with adversarial robustness, continual learning, modularity, compression, and human vision",
+      "role": "Claim",
+      "parents": [
+        13
+      ],
+      "children": null
+    }
+  ]
+}

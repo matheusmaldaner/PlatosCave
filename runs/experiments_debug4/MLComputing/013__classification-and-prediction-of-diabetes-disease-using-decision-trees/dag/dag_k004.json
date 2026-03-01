@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree based machine learning model can classify and predict diabetes from patient data",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We used the Pima Indians Diabetes dataset containing 768 patient instances and 9 attributes to develop the model",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Data preprocessing removed rows with zero values in BloodPressure, BMI, and Glucose because zeros are considered erroneous",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "A binary decision tree classifier was implemented in Python using Pandas and scikit-learn and visualized; training/testing splits were varied (70/30, 50/50, 30/70)",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Decision tree node splitting used information gain based on measures of heterogeneity: entropy, Gini index, and classification error as described",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Experiment 1 with 70% training and 30% testing produced classification results and a rendered decision tree (figures reported)",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Experiment 2 with 50% training and 50% testing produced classification results and a rendered decision tree (figures reported)",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Experiment 3 with 30% training and 70% testing produced classification results and a rendered decision tree (figures reported)",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "The best observed accuracy among tested splits was 0.71 for the 50% training / 50% testing split",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Model evaluation included accuracy estimate, classification report, and confusion matrix as implemented after prediction",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "There are outliers and erroneous zero values in some dataset columns, indicating data quality issues that required cleaning",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Decision tree analysis is a suitable predictive modeling tool for diabetes classification, offering fast learning, intuitive rules, nonparametric modeling and competitive accuracy",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        4,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Practical caveat: system outputs require a doctor consultation and more accurate diagnosis after model results because some dataset features may not be available to users",
+      "role": "Limitation",
+      "parents": [
+        11,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Claim: Allocating more data to training generally improves accuracy estimates, but in these experiments the 50/50 split gave the best observed accuracy",
+      "role": "Claim",
+      "parents": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Context: Diabetes prevalence has risen globally and accurate diagnostic tools are needed; prior ML methods (naive Bayes, SVM) reported lower or limited factor use",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": null
+    }
+  ]
+}

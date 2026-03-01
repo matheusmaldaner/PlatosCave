@@ -1,0 +1,177 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Principal Component Analysis using the eigenface approach provides a practical, fast, and relatively simple method for automatic face recognition",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We implemented an eigenface-based face recognition system in MATLAB following standard PCA steps (training set preparation, mean subtraction, covariance eigenanalysis, projection, and nearest neighbor classification)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Dimensionality reduction is achieved by computing eigenvectors of the covariance matrix and keeping only the K eigenvectors with largest eigenvalues to form the face space",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Classification is performed by projecting a test image into the K-dimensional eigenface space, computing its weight vector, and selecting the training face with minimum Euclidean distance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The published implementation uses a computational trick: compute eigenvectors of the M by M matrix (where M is number of training images) to obtain the M largest eigenvectors of the full covariance matrix efficiently",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Training images were converted from 2D images to vectors (example image size used: 200 by 149 pixels, yielding 29,800-dimensional vectors) and assembled into a training set",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The system computes the average face vector, subtracts it from each training vector, forms matrix A of mean-subtracted images, and computes covariance-related eigenvectors via the small M by M matrix L = A^T A",
+      "role": "Method",
+      "parents": [
+        1,
+        5
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Weights (feature vectors) for training and test images are computed as dot products between mean-subtracted images and the selected eigenfaces",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Keeping only the top K eigenfaces discards low-eigenvalue components that explain little characteristic facial variation",
+      "role": "Claim",
+      "parents": [
+        2,
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Recognition similarity is measured by Euclidean distance between weight vectors; the class with minimum distance is chosen",
+      "role": "Claim",
+      "parents": [
+        3,
+        7
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Experimental tests on the authors' dataset showed successful recognition, including cases with some pose variation and across image formats (BMP, PNG, JPEG)",
+      "role": "Result",
+      "parents": [
+        8,
+        9
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "The implementation was tested on RUET student image databases (examples: ETE-07 series), using a small dataset (reported 34 training images in procedure description; elsewhere 36 images of 18 persons), implemented in MATLAB",
+      "role": "Evidence",
+      "parents": [
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Authors conclude the eigenface PCA approach works well in constrained environments, is fast and simple, but has limitations handling variation in image size and large unconstrained variability",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitations include sensitivity to image size variation and reliance on constrained, mostly frontal or limited-pose images in the training set",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Future work proposed: extend to real-time video-based recognition, use much larger databases, handle different image sizes, and compare PCA performance with other face recognition methods",
+      "role": "Claim",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

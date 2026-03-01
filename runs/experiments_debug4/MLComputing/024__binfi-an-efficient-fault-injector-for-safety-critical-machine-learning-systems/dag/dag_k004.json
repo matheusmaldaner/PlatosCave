@@ -1,0 +1,183 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "BinFI can efficiently identify safety-critical bits and measure overall resilience of machine learning applications by exploiting monotonicity in ML error propagation",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Soft errors (hardware transient faults) are an important threat to safety-critical ML systems such as autonomous vehicles because they can cause silent data corruptions leading to safety violations",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Traditional protection techniques incur high overheads and it is desirable to selectively protect only the most safety-sensitive parts of ML systems",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Many common ML computations (convolution, matmul, ReLU, pooling, batch norm, softmax, data transforms) are monotonic or approximately monotonic, so composite error propagation functions are often (approximately) monotonic",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Monotonic or approximately monotonic error propagation implies faults at higher-order bits cause larger output deviations than faults at lower-order bits, enabling pruning of FI search space",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Some ML operations are non-monotonic (e.g., local response normalization and some activation functions), producing only approximate monotonicity and potential inaccuracy",
+      "role": "Assumption",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "BinFI is a binary-search like fault injection algorithm that searches per-operator, per-element bit fields separately for bits equal to 0 and 1 to find the SDC-boundary bit and estimate SDC rate",
+      "role": "Method",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Implementation: extended TensorFI to support DNN operators and added BinFI injection modes (single-bit random, binary FI, exhaustive FI) operating on operator outputs using a one-fault-per-execution model",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Evaluation was performed on 8 ML models and 6 datasets including AV steering models (Nvidia Dave, Comma.ai), VGG, AlexNet, LeNet, NN, kNN, using 32-bit fixed-point representation and 10 inputs per benchmark",
+      "role": "Method",
+      "parents": [
+        0,
+        7
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "BinFI identified an average of 99.56% of safety-critical bits with 99.63% precision across evaluated benchmarks, substantially outperforming random FI when using the same number of trials",
+      "role": "Evidence",
+      "parents": [
+        8,
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "BinFI estimates overall SDC probability closely matching exhaustive FI ground truth and yields about 5x speedup over exhaustive FI by performing approximately 20% of exhaustive FI trials",
+      "role": "Result",
+      "parents": [
+        8,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "When applied to non-monotonic functions BinFI's recall and precision can degrade (example: AlexNet with LRN showed high recall but low precision), indicating limitations under strong non-monotonicity",
+      "role": "Counterevidence",
+      "parents": [
+        5,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "BinFI's main limitation is that it is not guaranteed to find 100% of critical bits because approximate monotonicity can be violated, but missed proportion is small (under 0.5% reported) making the technique a practical trade-off",
+      "role": "Limitation",
+      "parents": [
+        9,
+        11,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Assumed fault model: single transient faults in processor data path mapped to operator outputs, single-bit flips sufficient to approximate multi-bit effects, memory protected by ECC, only inference phase considered",
+      "role": "Assumption",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: BinFI is an effective, lower-cost alternative to exhaustive FI for identifying most safety-critical bits and guiding selective protection of ML systems in safety-critical HPC domains",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        10,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

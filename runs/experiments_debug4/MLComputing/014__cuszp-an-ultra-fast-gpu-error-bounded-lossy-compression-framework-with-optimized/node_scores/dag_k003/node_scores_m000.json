@@ -1,0 +1,189 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.5,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "No external sources consulted; assessment based on the claim text and general GPU programming knowledge.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a four step per block pipeline with pre-quantization and Lorenzo prediction, fixed length encoding, hierarchical global synchronization, and block bit-shuffle, which are plausible components in advanced compression pipelines but lack external verification from the provided text alone.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines specific design trade offs for a GPU based compression system, including intra block Lorenzo prediction to reduce entropy, fixed length blocks rather than Huffman for higher throughput, and a hierarchical prefix sum to compute block offsets on the GPU.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states specific hardware, datasets, and metrics used for evaluation but no independent verification is provided.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that experimental evidence exists with A100 GPU testing across six datasets and multiple relative error bounds ranging from one tenth to one ten thousand comparing cuSZp against cuSZ, cuSZx, and cuZFP.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that moving all computations into a single GPU kernel removes CPU related overhead seen in prior GPU compressors; without empirical data or references, the assertion is plausible but not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the idea that fixed length per block with bit shuffle could be GPU friendly and efficient for smooth blocks is plausible but unverified; empirical CDFs of small ranges are not provided.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.56,
+    "relevance": 0.82,
+    "evidence_strength": 0.32,
+    "method_rigor": 0.42,
+    "reproducibility": 0.28,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a common quantization plus prediction technique (pre quantization mapping floats to integers with bounded error) and a Lorenzo style prediction storing per block differences to compress data; while plausible and aligned with general lossy compression and sequential differencing concepts, there is no specific evidence in the claim text to confirm formal guarantees or implementation details, so support is tentative.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a blockwise fixed width encoding where F_k is determined by the maximum absolute quantized value in a nonzero block, a sign map is stored, and the compressed block size is computed as (F_k plus one) times the block length divided by eight bytes.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.72,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a GPU based approach using per block sizes, hierarchical scan, and chained scan to produce global start offsets for concatenation.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.3,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a plausible data layout technique that reorganizes bits across block elements to align by bit-offset for regular parallel writes, but no empirical or methodological details are provided to assess validity.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.4,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that end to end throughput is measured from data in GPU memory to compressed bytes in GPU memory, implying single kernel equals end to end throughput; this is plausible in a scenario where the entire pipeline is implemented within one kernel but not universally guaranteed, as end to end could involve additional memory transfers or multiple kernels in other contexts.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim presents specific throughput values and speedup comparisons for cuSZp on A100, without accompanying methodological details or independent verification.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based only on the claim text and general knowledge, the assertion that cuSZp achieves the highest average compression ratio in 16 of 24 cases and that block smoothness analysis supports fixed length block encoding is plausible but not confirmable without external results or data.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.58,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "Based on claim text, the claim suggests cuSZp outperforms cuZFP in PSNR and SSIM at similar bitrates and reduces artifacts on several datasets; without external data, assessment remains tentative.",
+    "confidence_level": "medium"
+  },
+  "16": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, the assertion of a single kernel block wise GPU compressor achieving ultra fast throughput with good compression and data quality for inline HPC is plausible but unverified and relies on assumed methodology and results.",
+    "confidence_level": "medium"
+  }
+}

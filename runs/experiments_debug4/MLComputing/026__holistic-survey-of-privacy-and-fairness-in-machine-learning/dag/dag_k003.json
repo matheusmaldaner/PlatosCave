@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Investigate how privacy-preserving techniques and fairness objectives interact in machine learning and whether they can be integrated concurrently to produce trustworthy ML",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        4,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing literature is inconsistent about the privacy-fairness relationship: some works report alignment while others report trade-offs",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Empirical and theoretical studies report alignment: examples include DP post-processing or representation-noise improving fairness (papers such as Pannekoek et al., Maheshwari et al., Sarhan et al.)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Empirical and theoretical studies report trade-offs: DP-SGD and other DP mechanisms can degrade accuracy for underrepresented groups and hide rare examples (papers such as Bagdasaryan et al., Sanyal et al., Du et al.)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "We performed a holistic survey of ~200 recent studies across supervised, unsupervised, semi-supervised, and reinforcement learning to consolidate definitions, mechanisms, and interactions of privacy and fairness",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        15
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Compiled technical summaries: differential privacy (definitions, Laplace and exponential mechanisms, DP-SGD, DP-SVDD), homomorphic encryption (PHE, SHE, FHE), and 15 fairness notions across ML settings",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Architecture A: trusted centralized pipeline that first applies privacy sanitization to data and then applies fairness pre/in/post-processing on sanitized data",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Architecture B: single-model joint training that incorporates privacy and fairness objectives simultaneously via augmented loss, adversarial learning, or constrained optimization",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Architecture C: separate treatment of sensitive and non-sensitive attributes where sensitive attributes are privately sanitized before use in pipeline that still leverages them for fairness",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Architecture D: federated learning setup using local/global DP, secure aggregation and local debiasing to address privacy and group fairness in distributed data",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Architecture E: cryptographic auditing using secure multi-party computation or encrypted protocols so model owners and auditors can evaluate fairness without revealing raw data or model internals",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "The impact of privacy mechanisms on fairness is context-dependent: in some domains and settings privacy reduces bias, in others it amplifies harms for minorities or rare examples",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Evidence that DP training (e.g., DP-SGD) disproportionately reduces accuracy for underrepresented classes and reduces outlier detection ability (Bagdasaryan et al., Du et al., others)",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Evidence that certain DP mechanisms or noisy representations can improve group fairness or attribute privacy (e.g., DP post-processing via exponential mechanism, noisy encodings plus adversarial training in NLP) in specific experiments",
+      "role": "Evidence",
+      "parents": [
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: a few algorithms and frameworks (e.g., FairDP, FairFL, functional-mechanism constrained logistic regression, cryptographic auditing proposals) can jointly target privacy and fairness but empirical/theoretical trade-offs persist and more research on architectures, metrics, and LLM-era challenges is needed",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    }
+  ]
+}

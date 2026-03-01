@@ -1,0 +1,165 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network trained on ImageNet can achieve substantially better object classification performance than prior methods",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We trained a single CNN with eight learned layers (five convolutional, three fully-connected) and a final 1000-way softmax on the 1.2 million image ILSVRC subset",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        5,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The network architecture uses ReLU nonlinearities, local response normalization, overlapping max-pooling, and specific inter-layer connectivity across two GPUs",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Using Rectified Linear Units (ReLUs) accelerates training several times compared to saturating nonlinearities",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Local response normalization (with k=2, n=5, alpha=1e-4, beta=0.75) and overlapping pooling (size 3, stride 2) each reduce top-1 and top-5 error rates modestly",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "We implemented a highly optimized GPU convolution and trained the net across two GTX 580 GPUs with a parallelization that places parts of layers on each GPU and limits cross-GPU communication",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The two-GPU parallelization reduced top-1 and top-5 error rates by 1.7% and 1.2% respectively compared to a smaller one-GPU variant",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Training used stochastic gradient descent with batch size 128, momentum 0.9, weight decay 0.0005, learning rate schedule starting at 0.01, and approximately 90 epochs taking 5-6 days on two GPUs",
+      "role": "Method",
+      "parents": [
+        1,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "To reduce overfitting we used extensive data augmentation (random 224x224 crops and horizonal reflections; RGB PCA color augmentation) and dropout in the first two fully-connected layers",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Data augmentation and dropout substantially reduced overfitting: RGB PCA augmentation lowered top-1 error by over 1%, dropout prevented severe overfitting and roughly doubled convergence iterations",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "The trained single model achieved 37.5% top-1 and 17.0% top-5 error on ILSVRC-2010 test, and ensembles/pretraining variants achieved 15.3% top-5 on ILSVRC-2012 test (winning entry)",
+      "role": "Result",
+      "parents": [
+        0,
+        1,
+        2,
+        5,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Ablation and qualitative analyses show depth matters: removing any convolutional layer increased top-1 error by about 2%, and learned first-layer kernels include oriented and color-specific filters with specialization across GPUs",
+      "role": "Evidence",
+      "parents": [
+        10,
+        2
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: Deep, large-capacity CNNs trained with modern practices (ReLUs, GPU optimization, augmentation, dropout) set new state-of-the-art on large-scale image classification, and performance improves with larger networks, more data, and faster GPUs",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation: The network size and training speed are constrained by available GPU memory and training time (training took 5-6 days on two GTX 580 3GB GPUs)",
+      "role": "Limitation",
+      "parents": [
+        5,
+        7
+      ],
+      "children": null
+    }
+  ]
+}

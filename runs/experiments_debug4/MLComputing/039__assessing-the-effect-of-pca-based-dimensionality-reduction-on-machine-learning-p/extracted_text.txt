@@ -1,0 +1,452 @@
+--- Page 1 ---
+Assessing the Effect of PCA-Based Dimensionality Reduction on
+Machine Learning Performance in Hyperspectral Optical Imaging
+Parisa Parand1
+Mahmoud Samadpour2*
+1Dept. Statistics, Mathematics, and Computer Science, Allameh Tabataba’i University, Tehran, Iran
+2Physics Department, K.N. Toosi University of Technology, Tehran, Iran
+*samadpour@kntu.ac.ir
+Abstract
+Hyperspectral optical imaging provides rich spectral in-
+formation for estimating continuous environmental and
+material parameters; however, its high dimensionality
+and strong feature correlation pose significant chal-
+lenges for machine learning models, especially when
+ground-truth datasets are limited. In this study, we in-
+vestigate a hyperspectral dataset composed of 150 spec-
+tral bands with soil moisture as the target variable. To
+address the curse of dimensionality, Principal Compo-
+nent Analysis (PCA) was employed as a baseline dimen-
+sionality reduction technique. The optimal number of
+principal components was determined to be two, retain-
+ing more than 99% of the total variance. This selection
+was supported by the analysis of the covariance matrix,
+eigenvalue distribution, and the scree plot. Projecting
+the data onto the first two principal components en-
+abled improved visualization and interpretability com-
+pared to the original high-dimensional feature space.
+The reduced representation also revealed a clearer sepa-
+ration of target values, effectively decreasing data com-
+plexity. To evaluate the impact of dimensionality re-
+duction on predictive performance, a Random Forest
+regression model was trained to estimate soil moisture
+from the PCA-transformed data. The model achieved
+a coefficient of determination (R2) of 94.7 %, demon-
+strating that PCA-based feature reduction can enhance
+computational efficiency while preserving strong predic-
+tive capability in hyperspectral machine learning work-
+flows.
+Keywords— hyperspectral imaging, principal com-
+ponent analysis, Random Forest regression.
+1
+Introduction
+Optical imaging systems are increasingly capable of
+capturing large volumes of high-dimensional data, en-
+abling detailed characterization of materials and envi-
+ronmental conditions across scientific and engineering
+domains. Among such technologies, hyperspectral op-
+tical imaging provides dense spectral information by
+recording reflectance or radiance values across dozens
+to hundreds of contiguous wavelength bands [1]. These
+multidimensional datasets offer rich feature representa-
+tions but pose significant computational and analyti-
+cal challenges due to their size, redundancy, and strong
+band-to-band correlations [2].
+Machine learning (ML) methods have become essen-
+tial tools for extracting meaningful information from
+high-dimensional optical datasets, supporting tasks
+such as material identification, biomedical tissue anal-
+ysis, food quality monitoring, environmental assess-
+ment, geoscientific studies, precision agriculture, and
+industrial inspection [3, 4]. While a substantial body
+of research has focused on hyperspectral classification,
+where targets represent discrete categories [5], compa-
+rably fewer studies have explored hyperspectral regres-
+sion, in which the goal is to estimate continuous physi-
+cal or chemical parameters from imaging data [6,7].
+Hyperspectral regression problems are often im-
+pacted by the curse of dimensionality [8], a phenomenon
+in which the sparsity of data in high-dimensional fea-
+ture spaces increases the difficulty of model training
+and may require disproportionately large datasets for
+reliable generalization.
+Because hyperspectral bands
+exhibit strong correlations and redundant information,
+the intrinsic or virtual dimensionality of the data is fre-
+quently much lower than its nominal spectral resolu-
+tion [9]. Dimensionality reduction is therefore an es-
+sential step to enable efficient and robust hyperspectral
+machine learning pipelines.
+Among the available techniques, PCA remains one
+of the most widely used linear dimensionality reduction
+methods due to its simplicity, interpretability, and com-
+putational efficiency [10]. PCA orthogonally transforms
+the original feature space into a smaller set of uncor-
+related variables—principal components—ordered by
+their explained variance. By retaining only the most
+informative components, PCA facilitates noise reduc-
+tion, improves model interpretability, and may acceler-
+ate machine learning tasks.
+To demonstrate these concepts, this work investigates
+a hyperspectral optical imaging dataset with 150 spec-
+tral bands, in which soil moisture serves as an example
+of a continuous parameter of interest. After applying
+PCA to reduce the data dimensionality, a Random For-
+est regression model is used to evaluate the impact of di-
+mensionality reduction on predictive performance. The
+model achieves a coefficient of determination (R2) of
+94.7%, indicating that PCA-based dimensionality re-
+1
+arXiv:2512.15544v1  [physics.optics]  17 Dec 2025
+
+
+--- Page 2 ---
+Table 1: Structure of dataset. Spectral bands (features) range from 454 to 950 nm, and soil moisture is the
+target variable.
+Sample
+Soil Moisture (%)
+Soil Temp. (°C)
+Bands (nm)
+454
+458
+462
+. . .
+. . .
+950
+1
+33.51
+34.8
+0.0821
+0.0558
+0.0500
+. . .
+. . .
+0.1539
+2
+33.49
+35.2
+0.0795
+0.0553
+0.0491
+. . .
+. . .
+0.1567
+. . .
+. . .
+. . .
+. . .
+. . .
+. . .
+. . .
+. . .
+. . .
+679
+29.75
+39.7
+0.0976
+0.0654
+0.0560
+. . .
+. . .
+0.1659
+duction can produce efficient feature representations
+while preserving strong predictive capability.
+Overall, this study positions PCA as a baseline ap-
+proach for improving machine learning performance in
+high-dimensional optical imaging scenarios and pro-
+vides a template for integrating dimensionality reduc-
+tion within broader computational imaging workflows.
+2
+Research Methodology
+2.1
+Dataset Description
+The hyperspectral optical imaging dataset used in this
+study was introduced in [11] and contains 679 data sam-
+ples, each consisting of a continuous soil moisture value
+and 125 spectral bands. The dataset was acquired dur-
+ing a five-day field measurement campaign conducted
+in May 2017 in Karlsruhe, Germany.
+Measurements
+were performed on an undisturbed bare-soil sample col-
+lected near Waldbronn, Germany. A Cubert UHD 285
+hyperspectral snapshot camera was employed to cap-
+ture spatially resolved spectral information. The sys-
+tem records 50 × 50 pixel images across 125 contiguous
+spectral bands ranging from 450 nm to 950 nm, with an
+approximate spectral resolution of 4 nm. Reference soil
+moisture values were obtained using a TRIME-PICO
+Time-Domain Reflectometry sensor. Table 1 summa-
+rizes the dataset structure, which includes measurement
+soil moisture (%), soil temperature (°C), and hyperspec-
+tral bands from 454 nm to 950 nm.
+2.2
+Data Preparation
+The dataset was imported into Python using the
+pandas.read csv() function. The data were decom-
+posed into the feature matrix, X: 125 hyperspectral
+band values per sample (450–950 nm), and target vec-
+tor, y: soil moisture values (%).
+To
+ensure
+consistent
+reproducibility
+of
+experi-
+ments,
+a
+fixed
+random
+state
+(42)
+was
+set
+us-
+ing numpy.random.seed(),
+controlling the internal
+random
+number
+generator
+used
+later
+for
+dataset
+splitting and model initialization.
+Before analy-
+sis,
+the
+distribution
+of
+soil
+moisture
+values
+was
+inspected
+using
+a
+histogram
+generated
+with
+the
+DataFrame.hist() method from Pandas, which inter-
+nally calls matplotlib.pyplot.hist().
+2.3
+Dimensionality Reduction and Ma-
+chine Learning Model
+To address the high dimensionality and strong inter-
+band correlation inherent in hyperspectral data, PCA
+was applied. All spectral features were standardized us-
+ing sklearn.preprocessing.StandardScaler.
+PCA
+was implemented via sklearn.decomposition.PCA.
+The number of principal components was selected such
+that more than 99% of the total variance was retained.
+This threshold resulted in two principal components,
+confirmed through:
+• Examination of the covariance matrix
+• Eigenvalue distribution and cumulative variance
+analysis
+• A scree plot to visualize variance decay
+The resulting reduced representation enabled im-
+proved visualization and preserved the dominant struc-
+ture of the data in a low-dimensional subspace.
+To
+evaluate the impact of dimensionality reduction on
+predictive performance,
+a Random Forest Regres-
+sion model was trained on the PCA-transformed fea-
+ture space.
+The model was implemented using
+sklearn.ensemble.RandomForestRegressor.
+Test-
+size was selected to 0.3, random-state was fixed to 42,
+number of trees was set to 100, and performance was
+quantified using the R2 score.
+3
+Results and Discussion
+Figure 1 illustrates the distribution of soil moisture val-
+ues in the reference dataset. The measurements range
+from approximately 25% to 43%, with the majority of
+samples centered around 32%, indicating a moderately
+narrow distribution of soil moisture values across the
+measurement period.
+To explore the statistical relationships between spec-
+tral features and the target variable, a correlation
+heatmap was generated using the Seaborn library (Fig-
+ure 2).
+For demonstration, six hyperspectral bands
+were selected to highlight representative correlations
+with soil moisture. Several bands display strong inter-
+band correlations, notably at 642 nm and 742 nm, re-
+flecting spectral redundancy within the measured wave-
+length interval. Such behavior is typical in hyperspec-
+tral systems where adjacent bands often convey over-
+lapping information. This suggests that dimensionality
+2
+
+
+--- Page 3 ---
+Figure 1: Distribution of soil moisture in the reference
+dataset, showing most measurements concentrated near
+32%.
+reduction techniques can be applied to reduce computa-
+tional complexity without significant information loss,
+a key advantage for large-scale datasets.
+Figure 2: Correlation heatmap of sample hyperspectral
+bands and soil moisture (correlation scale: −1 to +1).
+Before model training, the dataset was standard-
+ized using StandardScaler from scikit-learn, and sub-
+sequently partitioned into training and test subsets via
+train test split(), with a test size of 0.3 and a fixed
+random state of 42 to ensure reproducibility. Figure 3
+compares the distribution of soil moisture in training
+and test samples, demonstrating that both subsets fol-
+low closely aligned distributions, supporting a reliable
+basis for supervised learning.
+3.1
+Dimensionality
+Reduction
+using
+PCA
+Since the dataset contains 125 spectral bands, it rep-
+resents a high-dimensional feature space that may im-
+pede model interpretability. Therefore, PCA was per-
+formed to reduce dimensionality while preserving max-
+imum spectral information.
+The explained variance ratios for the first four prin-
+cipal components are presented in Table 2.
+To pre-
+Figure 3: Distribution of soil moisture in train and test
+samples.
+serve at least 99% of the dataset’s variance, retaining
+only PC1 and PC2 is sufficient, while higher compo-
+nents contribute marginally and can be excluded with-
+out meaningful information loss.
+To further validate component selection, a scree plot
+was generated (Figure 4), showing a sharp drop in
+eigenvalue magnitude after PC2, confirming that ad-
+ditional components carry negligible variance and sup-
+porting the choice of a two-component representation.
+Figure 4: Scree plot showing dominant contribution of
+PC1 and PC2.
+3.2
+Visualization of Principal Compo-
+nents
+Figure 5 presents the projection of the dataset onto PC1
+and PC2, with a color gradient corresponding to the
+normalized soil moisture values. The plot reveals a clear
+clustering trend, indicating that the two-component
+PCA transformation effectively separates data samples
+according to their soil moisture levels.
+This demon-
+strates that PCA can significantly simplify the repre-
+sentation of hyperspectral structure while retaining key
+predictive information.
+Figure 5 also shows PC2 vs. PC3 projection, where
+a noticeably stronger overlap between data points is
+3
+
+
+--- Page 4 ---
+Table 2: Variance ratio and cumulative explained variance for first four principal components
+PC-1
+PC-2
+PC-3
+PC-4
+Variance ratio
+0.9889
+0.0064
+0.0023
+0.0016
+Cumulative variance ratio
+0.9889
+0.9953
+0.9976
+0.9992
+observable, consistent with the very low explained vari-
+ance of PC3 reported in Table 2. Therefore, compo-
+nents beyond PC2 do not provide meaningful discrimi-
+natory power.
+Figure 5: (a) PC1 vs.
+PC2 and (b) PC2 vs.
+PC3
+projections with soil moisture color mapping.
+Finally, a baseline regression experiment was con-
+ducted using the RandomForestRegressor, configured
+with 100 trees. The model achieved a coefficient of de-
+termination R2 = 0.947, indicating that approximately
+94.7% of the variation in soil moisture can be explained
+by the hyperspectral features. This result highlights the
+strong predictive potential of optical spectral signatures
+for soil moisture estimation.
+4
+Conclusion
+This study demonstrated that PCA-based dimensional-
+ity reduction can significantly enhance machine learn-
+ing performance in hyperspectral optical imaging. By
+compressing 125 spectral bands into only two principal
+components while retaining over 99% of the variance,
+PCA reduced redundancy, improved computational ef-
+ficiency, and enabled clearer separation of spectral pat-
+terns relevant to the target variable. The results con-
+firm that PCA is an effective strategy for simplifying
+high-dimensional hyperspectral datasets without com-
+promising predictive accuracy, and it supports the de-
+velopment of more interpretable and scalable machine
+learning models for optical imaging applications. Fu-
+ture work should evaluate alternative feature extraction
+methods and test the framework across diverse imaging
+scenarios and sensor platforms.
+References
+[1] Camps-Valls, G., Tuia, D., G´omez-Chova, L.,
+Jim´enez, S., & Malo, J. (2012). Remote sens-
+ing
+image
+processing.
+Synthesis
+Lectures
+on
+Image, Video, and Multimedia Processing, 12.
+https://doi.org/10.2200/S00392ED1V01Y201107IVM012
+[2] Gewali, U.B., Monteiro, S.T., & Saber, E. (2018).
+Machine learning based hyperspectral image anal-
+ysis: a survey. arXiv:1802.08701.
+[3] Ali, I., Greifeneder, F., Stamenkovic, J., Neumann,
+M., & Notarnicola, C. (2015). Review of machine
+learning approaches for biomass and soil moisture
+retrievals from remote sensing data. Remote Sens-
+ing, 7(12), 16398–16421.
+[4] Treitz, P.M., & Howarth, P.J. (1999). Hyperspec-
+tral remote sensing for estimating biophysical pa-
+rameters of forest ecosystems. Progress in Physical
+Geography, 23(3), 359–390.
+[5] Bioucas-Dias, J.M., Plaza, A., Camps-Valls, G.,
+Scheunders, P., Nasrabadi, N., & Chanussot, J.
+(2013). Hyperspectral remote sensing data anal-
+ysis and future challenges. IEEE Geoscience and
+Remote Sensing Magazine, 1(2), 6–36.
+[6] Bellman, R. (1961). Adaptive control processes: a
+guided tour. Princeton University Press.
+[7] Colini, L., et al. (2014). Hyperspectral spaceborne,
+airborne and ground measurements campaign on
+Mt. Etna. Quaderni di Geofisica, 119, 1–51.
+[8] Keller, S., Riese, F.M., St¨otzer, J., Maier, P.M.,
+& Hinz, S. (2018). Developing a machine learning
+framework for estimating soil moisture with VNIR
+hyperspectral data. arXiv:1804.09046.
+[9] Chang, C.I. (2018). A review of virtual dimension-
+ality for hyperspectral imagery. IEEE Journal of
+Selected Topics in Applied Earth Observations and
+Remote Sensing, 11(4), 1285–1305.
+4
+
+
+--- Page 5 ---
+[10] Pearson, K. (1901). On lines and planes of closest
+fit to systems of points in space. The London, Ed-
+inburgh, and Dublin Philosophical Magazine and
+Journal of Science, 2(11), 559–572.
+[11] Riese, F.M., & Keller, S. (2018). Introducing a
+framework of self-organizing maps for regression of
+soil moisture with hyperspectral data. In IGARSS
+2018 (pp. 6151–6154). IEEE.
+5

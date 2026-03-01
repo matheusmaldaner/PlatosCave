@@ -1,0 +1,152 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Bagging reduces error of classification learners; main question: does it work because it approximates Bayesian model averaging or because it effectively changes the learner's implicit model space/prior?",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Hypothesis 1: Bagging works because it better approximates the Bayesian model averaging classifier (voting models weighted by posterior) than selecting a single model.",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Hypothesis 2: Bagging works because it changes the effective model space and/or implicit prior of the learner towards models that better fit the domain (e.g., counteracts an excessive simplicity bias).",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Experimental setup: used C4.5 decision-tree learner, 26 UCI datasets, m bootstrap replicates (10,25,50,100 tested), error measured by ten-fold cross-validation; compared bagging (uniform vote) to posterior-weighted model averaging and tested meta-learning to approximate bagged ensemble as a single model.",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        6,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Test of Hypothesis 1a: weigh sampled models by their Bayesian posterior (using both uniform class-noise and region-based likelihoods) and compare to uniform bagging voting.",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Posterior-weighted averaging with a uniform prior performed worse than uniform bagging on a large majority of datasets (e.g., 19 out of 25) and worse on average across m values, contradicting Hypothesis 1a.",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Test of Hypothesis 1b: investigate whether bagging implicitly assumes a prior that offsets likelihood (i.e., favors models with higher training error) by examining correlation between in-bag (training) error and out-of-bag error.",
+      "role": "Method",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Evidence: Models are usually overfit (lower in-bag than out-of-bag error), but correlation between in-bag and out-of-bag error is positive in 22 of 26 databases (greater than 0.5 in half of those), so lower in-bag error generally corresponds to lower out-of-bag error; therefore an error-favoring prior would increase error and cannot explain bagging, contradicting Hypothesis 1b.",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Meta-learning method to test Hypothesis 2: generate a large synthetic training set labeled by the bagged ensemble, then learn a single decision-tree/rule model from that data using the same base learner and pruning biases to obtain a comparable single-model representation of the ensemble.",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result of meta-learning: In 22 databases where bagging improved over the single rule set, meta-learning also produced a rule set with lower error in all but four cases (statistically significant), typically recovering about 60% of bagging's error reduction.",
+      "role": "Result",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Evidence on complexity: The meta-learned single models that approximate the bagged ensemble are consistently more complex than the directly learned single models (typically 2x to 6x more complex); varying pruning and meta-train size shows error decreases as complexity increases.",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion from empirical results: Bagging is unlikely to work because it approximates Bayesian model averaging with a standard uninformed prior; empirical evidence instead supports that bagging partly works by shifting implicit prior/model space toward more complex models and counteracting an excessive simplicity bias.",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        7,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Implication: For unstable learners with high variance and strong simplicity bias (e.g., decision trees, neural networks), bagging's improvement can be interpreted as altering the learner's effective bias toward complexity, explaining when bagging helps and guiding algorithmic choices.",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    }
+  ]
+}

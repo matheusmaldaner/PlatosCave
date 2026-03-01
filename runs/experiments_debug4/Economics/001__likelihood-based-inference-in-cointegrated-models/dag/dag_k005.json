@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A likelihood-based analysis of vector autoregressive models with cointegration provides a coherent framework for modeling nonstationary multivariate economic time series and conducting inference on long-run relations and dynamics",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        4,
+        5,
+        9,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Definition: xt is I(1) if its differences are a linear process with nonzero sum of MA coefficients; xt is cointegrated if there exists nonzero beta such that beta' xt is stationary and the cointegration rank is the number of independent betas",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Model analyzed: the I(1) vector autoregressive error-correction model Delta xt = alpha (beta' xt-1 + Upsilon Dt) + sum_{i=1}^{k-1} Gamma_i Delta xt-i + Phi dt + epsilon_t with alpha and beta p x r, i.i.d. errors epsilon_t ~ (0, Omega)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Granger Representation Theorem: under unit roots and the I(1) condition rank(alpha_perp Gamma beta_perp) nonzero, xt has a moving-average representation with r stationary relations beta' xt and p-r common stochastic trends alpha_perp sum epsilon_i, with C = beta_perp (alpha_perp' Gamma beta_perp)^{-1} alpha_perp'",
+      "role": "Result",
+      "parents": [
+        2
+      ],
+      "children": [
+        9,
+        15
+      ]
+    },
+    {
+      "id": 4,
+      "text": "There are three parametric modeling approaches to cointegration: regression residual-based methods (Engle-Granger), autoregressive error-correction VAR formulation (Johansen), and unobserved components / state-space formulation (Kalman filter)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Maximum likelihood estimation and rank testing are implemented via reduced-rank regression (RRR): compute residuals, form sample moment matrices, solve eigenvalue problem Suw.z Suu.z^{-1} Suw.z to obtain beta estimates and eigenvalues lambda_i",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The likelihood ratio statistic for testing cointegration rank r versus full rank p is -T sum_{i=r+1}^p log(1 - lambda_i), where lambda_i are eigenvalues from the RRR",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Asymptotic distribution of the rank test depends on the number of common trends p-r and deterministic terms: limit laws are Dickey-Fuller type functionals of Brownian motion (family indexed by p-r and deterministic specification)",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Asymptotic distribution of estimators: the estimator of beta (cointegration vectors), scaled by T, is mixed Gaussian (conditional Gaussian given common trends); estimators of alpha and short-run parameters are asymptotically Gaussian and asymptotically independent of beta estimates, allowing Wald/LR chi-square inference for many hypotheses",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Interpretation: cointegrating coefficients represent long-run equilibrium relations; a coefficient can be interpreted as the effect of a long-run change in one variable on another holding other variables fixed in the long run using mapping C and long-run conditional expectation x_{infty|t}=C(xt - sum Gamma_i xt-i)",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Deterministic terms: Dt enters multiplied by alpha Upsilon so that Dt does not cumulate in levels (C alpha Upsilon = 0); dt cumulates with coefficient C Phi, and deterministic specification affects asymptotic distributions and normalization",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Weak exogeneity: if some rows of alpha are zero then the corresponding subprocesses produce common trends and are weakly exogenous for beta, allowing conditional maximum likelihood inference via the conditional model for the remaining variables",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "I(2) extension: when alpha_perp Gamma beta_perp has reduced rank the model can be reparametrized to an I(2) form (parametrizations with psi, tau, delta, zeta) yielding processes where second differences are stationary and allowing tests for multicointegration and I(2) rank via modified likelihood theory",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Model checking and limitations: Gaussian ML asymptotics require checking lag length, residual normality, autocorrelation, heteroscedasticity, and especially parameter constancy and structural breaks; autocorrelation and breaks can invalidate asymptotic results",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion and open problems: VAR cointegration tools are widely available in software, but important open issues remain including small-sample corrections, theory and methods for nonlinear cointegration, and integrating empirical nonstationary findings into economic theory",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Empirical examples and implications: Purchasing Power Parity and present value models imply testable cointegration vectors (e.g., PPP suggests cointegration vector (1,-1,1,0,0); present value model implies cointegration between price and dividend with beta = (1,-theta,0,...,0)), showing application of the framework",
+      "role": "Evidence",
+      "parents": [
+        1,
+        3,
+        9
+      ],
+      "children": null
+    }
+  ]
+}

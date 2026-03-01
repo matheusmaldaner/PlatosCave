@@ -1,0 +1,185 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A sequence transduction model built solely on attention mechanisms (the Transformer) can replace recurrent and convolutional layers to yield better translation quality while being more parallelizable and faster to train",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Recurrent and convolutional sequence models impose sequential computation or distance-dependent operations that limit parallelization and make learning long-range dependencies harder",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Self-attention can relate all positions in a sequence with a constant number of sequential operations and shorter maximum path lengths between positions, improving ability to model long-range dependencies",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Transformer architecture: stacked encoder and decoder of N=6 layers using multi-head self-attention, position-wise feed-forward networks, residual connections and layer normalization, with shared embeddings and sinusoidal positional encodings",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Self-attention layers have per-layer complexity O(n^2 · d) but allow O(1) sequential operations and constant maximum path length, making them faster than RNNs for typical sentence lengths and enabling greater parallelization",
+      "role": "Claim",
+      "parents": [
+        0,
+        1,
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Restricted or local self-attention can reduce complexity for very long sequences at the cost of increasing maximum path length, suggesting a trade-off for large-input tasks",
+      "role": "Assumption",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Scaled dot-product attention computes Attention(Q,K,V)=softmax(Q K^T / sqrt(dk)) V and scaling by 1/sqrt(dk) stabilizes gradients for large dk",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Multi-head attention linearly projects queries, keys and values into h parallel subspaces (h=8 with dk=dv=64 in base), performs attention in each, concatenates outputs and projects, allowing the model to attend to information from different representation subspaces",
+      "role": "Method",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Position-wise feed-forward networks apply two linear transforms with ReLU between them (dmodel=512, dff=2048 in base) to each position independently",
+      "role": "Method",
+      "parents": [
+        3,
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Training setup: byte-pair or word-piece tokenization, WMT 2014 EN-DE and EN-FR datasets, batching by approximate sequence length, trained on 8 P100 GPUs using Adam with warmup learning rate schedule and dropout and label smoothing regularization",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Empirical result EN-DE: Transformer big achieved BLEU=28.4 on WMT2014 English-to-German, improving over prior best results by over 2 BLEU (including ensembles) after 3.5 days on 8 P100 GPUs",
+      "role": "Result",
+      "parents": [
+        0,
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Empirical result EN-FR: Transformer big achieved BLEU=41.0 on WMT2014 English-to-French as a single model after 3.5 days on 8 P100 GPUs, establishing new single-model state of the art at a fraction of prior training cost",
+      "role": "Result",
+      "parents": [
+        0,
+        9
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Efficiency evidence: base Transformer trains in about 12 hours on 8 P100 GPUs for 100k steps with step time about 0.4s; measured training FLOPs show substantially lower training cost compared to prior models",
+      "role": "Evidence",
+      "parents": [
+        0,
+        9,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Ablation results: number of attention heads, attention key size dk, model size, and dropout substantially affect performance; single-head or too many heads and smaller dk reduce BLEU, larger models and dropout improve performance; learned positional embeddings perform similarly to sinusoids",
+      "role": "Evidence",
+      "parents": [
+        3,
+        9
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: The Transformer, relying entirely on attention, achieves state-of-the-art translation quality with faster training and greater parallelization than recurrent or convolutional architectures and is promising for other modalities and large-input tasks",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        2,
+        3,
+        10,
+        11,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

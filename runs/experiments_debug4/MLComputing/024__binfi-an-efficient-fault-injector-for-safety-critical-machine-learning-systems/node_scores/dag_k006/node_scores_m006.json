@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim posits that many common ML computations and their composition show monotonic or approximately monotonic error propagation, which is plausible given linear error accumulation in many deterministic pipelines and monotonic activation/loss properties, but lacks explicit universal proof and may vary with nonlinearity and numerical issues.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.68,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that random fault injection may miss clustered safety critical bits and lacks coverage guarantees, while exhaustive FI ensures coverage but is prohibitively expensive; this aligns with general understanding that random sampling may miss structure and exhaustive methods guarantee coverage at high cost, though specific applicability to the paper's context is not established here.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.62,
+    "relevance": 0.85,
+    "evidence_strength": 0.42,
+    "method_rigor": 0.4,
+    "reproducibility": 0.38,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that approximate monotonicity can prune fault injection space to locate an SDC boundary bit via a binary search style process; this is plausible in contexts where monotonic behavior with respect to fault locations or magnitude exists, but the degree of generality and practical effectiveness would depend on system specifics and the accuracy of the monotonicity assumption, making the claim plausible but not universally guaranteed.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.54,
+    "relevance": 0.8,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim overstates monotonicity: many basic ops like convolution and matrix multiplication can involve negative weights and interactions leading to nonmonotonic behavior; activations like ReLU and ELU are monotone; pooling and additive operations are monotone under input increases; SoftMax is not monotone in a vector sense; batch normalization is monotone given positive gamma but may be nonmonotone if gamma negative; overall monotonicity is not guaranteed for all listed operations.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim states that non monotonic local response normalization and some activations make composite EP functions only roughly monotonic, potentially causing small inaccuracies",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.72,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible because targeting protection to safety-critical bits can reduce overhead relative to blanket replication or instruction duplication, aligning with general fault-tolerance and reliability design principles, though explicit empirical support is not assumed here.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible fault injection approach that uses binary partitioning of bit indices and binary search to locate the highest order bit affecting a single event, consistent with known SDC localization ideas, but no direct evidence or references are provided within the claim text.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim, the method describes extending TensorFI to handle DNN operators, introducing Binary FI and exhaustive FI modes, and a one-fault-per-execution model with fault injection at operator outputs in TensorFlow graphs.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.5,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a specific fault model focusing on soft transient faults in datapath during inference, with protected memory and single bit flips as representative; given general knowledge of fault modeling this is plausible but not strongly evidenced within the claim itself.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes an evaluation setup with eight models across six datasets and comparison to exhaustive and random feature importance, but lacks methodological details, results, or context to assess rigor.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim plausibly links critical bit identification by BinFI to selective protection and adaptive voltage or error tradeoffs to cut cost, but it remains unverified within the text and would need empirical demonstration.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.45,
+    "relevance": 0.7,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim assigns a potential limitation to approximate monotonicity in BinFI causing missed critical bits due to non monotonic local behavior where a lower order fault leads to SDC while a higher order fault does not, but there is no direct evidence provided in the claim text to substantiate this behavior.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general background knowledge, no external verification or corroborating sources were consulted.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Assessment limited to the claim text; no external sources consulted; plausibility hinges on general principles and unknown specifics of BinFI and SDC rate estimation.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, BinFI is asserted to reduce fault injection trials to about twenty percent of exhaustive FI with roughly fivefold speedup and to scale cost logarithmically with data bit width, but no independent evidence is provided here.",
+    "confidence_level": "medium"
+  }
+}

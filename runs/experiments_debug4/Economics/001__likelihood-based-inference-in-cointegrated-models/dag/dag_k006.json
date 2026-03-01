@@ -1,0 +1,172 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A likelihood-based analysis of vector autoregressive (VAR) models provides a coherent framework to model, test and interpret cointegration among nonstationary economic time series",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Cointegration: nonstationary processes can have linear combinations that are stationary; the number of independent stationary combinations is the cointegration rank",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Three parametric formulations to model cointegration: regression residual approach (Engle-Granger), autoregressive error-correction VAR (Johansen), and unobserved components (state-space/Kalman) formulations",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The VAR error correction model used: Delta x_t = alpha (beta' x_{t-1} + Upsilon D_t) + sum_{i=1}^{k-1} Gamma_i Delta x_{t-i} + Phi d_t + epsilon_t, with alpha and beta p x r matrices and epsilon_t iid(0, Omega)",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Granger Representation Theorem: under the I(1) condition, the VAR error-correction model has a moving-average representation showing r stationary cointegrating relations beta' x_t and p-r stochastic trends C sum_{i=1}^t epsilon_i; formula C = beta_perp (alpha_perp' Gamma beta_perp)^{-1} alpha_perp'",
+      "role": "Result",
+      "parents": [
+        1,
+        3
+      ],
+      "children": [
+        5,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "I(1) condition: characteristic roots outside unit circle except z=1 and rank condition |alpha_perp' Gamma beta_perp| != 0 are required to ensure solutions are cointegrated I(1) processes and avoid I(2) or higher",
+      "role": "Assumption",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Likelihood estimation and inference via reduced rank regression (RRR): maximum likelihood estimation of VAR cointegration parameters reduces to RRR on residuals with eigenvalue problem and yields LR test statistic -T sum_{i=r+1}^p log(1-lambda_i) for cointegration rank",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Asymptotic distribution of the rank (likelihood ratio) test depends on number of common trends p-r and deterministic terms: limit is functional of Brownian motion (Dickey-Fuller family); tables or simulation required for critical values",
+      "role": "Result",
+      "parents": [
+        6,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Asymptotic distribution of estimators: estimator of beta (cointegrating vectors) is mixed Gaussian (rate T), estimators of alpha and short-run parameters are asymptotically Gaussian and asymptotically independent of beta estimate; Wald and LR tests on beta are asymptotically chi-square under identification",
+      "role": "Result",
+      "parents": [
+        6,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Interpretation of cointegrating coefficients: beta coefficients represent long-run relations; a coefficient can be interpreted as the long-run effect of a change in one variable on another holding other variables fixed in the long run via the C and Gamma mappings",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Economic hypotheses map to testable restrictions: examples include purchasing power parity, present value relations, interest parity and rational expectations which impose linear restrictions on beta and/or alpha and short-run dynamics",
+      "role": "Claim",
+      "parents": [
+        3,
+        9
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Practical model checking and limitations: Gaussian likelihood methods require checking lag length, residual normality, autocorrelation, heteroscedasticity and parameter constancy; autocorrelation and parameter breaks can invalidate asymptotic results",
+      "role": "Limitation",
+      "parents": [
+        6,
+        7,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Extensions and open problems: (1) I(2) and higher integration require extended parametrizations and nonstandard asymptotics; (2) nonlinear cointegration and regime changes need further theory; (3) small-sample corrections and integration with economic theory remain important research tasks",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        7,
+        8,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based system (SO-CAL) that uses hand-ranked multi-part-of-speech dictionaries plus linguistic handling of intensification, negation, irrealis, and text-level weighting can robustly and portably extract sentiment polarity and strength across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL uses hand-ranked dictionaries for adjectives, nouns, verbs, and adverbs with scores on a -5 to +5 prior-polarity scale and some multi-word entries",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "SO-CAL models intensification via a percentage-based modifier lexicon (amplifiers positive, downtoners negative) applied multiplicatively and recursively, and treats adjectival intensifiers separately when modifying nouns",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "SO-CAL implements negation primarily as a polarity shift (subtract fixed amount toward opposite polarity) with conservative backward search for scope, and irrealis blocking to ignore SO in non-factual contexts",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "text": "SO-CAL applies text-level features: increased weight for negative expressions, repetition downweighting (nth occurrence has 1/n weight), configurable positional/XML weighting, and supports multiple cut-offs for granular classing",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Dictionaries were created manually from diverse sources (Epinions, movie Polarity Dataset, General Inquirer), reviewed by multiple researchers, and multi-word expressions and part-of-speech distinctions were included to reduce noise",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "SO-CAL was evaluated on multiple corpora (Epinions 400, additional Epinions 400, Polarity movie reviews ~1900, Camera reviews 2400) and on shorter texts (MPQA sentences, MySpace comments, news/blog sentences, Affective headlines)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Linguistic features (intensification, negation shift, irrealis, repetition weighting, negative weighting) each contribute to improved polarity classification when combined with a fine-grained lexicon",
+      "role": "Claim",
+      "parents": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Polarity shift negation (shifting toward opposite polarity) better models human intuition and pragmatic effects of negation than a simple polarity flip in many cases",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Manual dictionaries with controlled inclusion (exclude ambiguous/neutral words, limit noisy rare words) produce better cross-domain performance than larger automatically-generated lexicons",
+      "role": "Claim",
+      "parents": [
+        1,
+        5
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Mechanical Turk validation: human judgments (single-word polarity and pairwise strength comparisons) largely correspond to the manual SO rankings, with higher agreement at stronger SO magnitudes and more disagreement near neutral/weak values",
+      "role": "Evidence",
+      "parents": [
+        5,
+        9
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "SO-CAL full system achieves substantially higher accuracy than basic word-counting or many automatic dictionaries across test corpora (overall ~78.7% with full features versus lower for alternatives), and performance is stable across seen and unseen review domains",
+      "role": "Result",
+      "parents": [
+        6,
+        7,
+        9,
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "On shorter or non-review texts SO-CAL classifies only texts that contain SO-carrying words; excluding SO-empty texts yields accuracies comparable to review-level performance (around 75–83%), while back-off for empty texts still outperforms majority baselines",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Mechanical Turk comparisons of negated positives versus negatives show mixed human judgments; overall MT data slightly favors the shift model over switch, but negation remains complex and neither model fully captures all cases",
+      "role": "Evidence",
+      "parents": [
+        8,
+        10
+      ],
+      "children": [
+        11,
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Compared to other lexicons (Google PMI automatic, SentiWordNet, Maryland, General Inquirer, Subjectivity lexicon), SO-CAL with hand-ranked multi-pos dictionaries plus linguistic features yields the best and most consistent cross-domain polarity results",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        13,
+        9
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Limitations and future work: negation modeling remains imperfect, sentence-level and short-text sparsity (SO-empty cases) limit direct application, and further gains expected by integrating discourse-level and topic/comment paragraph weighting, cross-linguistic dictionary building, and improved word-sense handling",
+      "role": "Limitation",
+      "parents": [
+        14,
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

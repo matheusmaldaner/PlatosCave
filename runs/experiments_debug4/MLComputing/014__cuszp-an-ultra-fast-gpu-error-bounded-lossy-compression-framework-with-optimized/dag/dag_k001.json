@@ -1,0 +1,207 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "cuSZp is an ultra-fast, error-bounded GPU lossy compression framework that achieves optimized end-to-end performance (high end-to-end throughput, high compression ratio, and high reconstructed data quality) on NVIDIA GPUs",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        10,
+        11,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "cuSZp implements the entire error-bounded compression and decompression pipeline inside a single GPU kernel to eliminate CPU-GPU data movement and CPU computations",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        14
+      ]
+    },
+    {
+      "id": 2,
+      "text": "cuSZp compression is a block-wise four-step pipeline: (S1) quantization and lightweight Lorenzo prediction, (S2) fixed-length encoding per block, (S3) global prefix-sum synchronization to compute block offsets, and (S4) block bit-shuffle to store encoded bits",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        10,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Global Synchronization is implemented hierarchically on GPU (thread-level, warp-level, device-level prefix-sum) to compute exclusive prefix-sum of per-block compressed lengths without CPU involvement",
+      "role": "Method",
+      "parents": [
+        2,
+        0
+      ],
+      "children": [
+        9,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "cuSZp uses fixed-length per-block encoding (store sign map + F bits per block) and a block bit-shuffle to align and store bits efficiently, chosen over Huffman to improve parallel throughput while exploiting intra-block smoothness",
+      "role": "Method",
+      "parents": [
+        2,
+        0
+      ],
+      "children": [
+        7,
+        8,
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "On NVIDIA A100 using 6 representative scientific datasets, cuSZp achieves average end-to-end throughput 93.63 GB/s (compression) and 120.04 GB/s (decompression), which are 95.53x and 55.18x faster than cuSZ and cuSZx respectively",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        3,
+        4,
+        11,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "cuSZp kernel throughput is comparable to state-of-the-art GPU compressors (around 100+ GB/s in most cases) since it runs entirely in one kernel",
+      "role": "Result",
+      "parents": [
+        1,
+        2,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "cuSZp obtains the highest compression ratios in most cases: highest average compression ratio on 16 out of 24 benchmark cases compared with cuSZ and cuSZx under tested error bounds",
+      "role": "Result",
+      "parents": [
+        2,
+        4,
+        11,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "cuSZp preserves high reconstructed data quality: improves rate-distortion (PSNR and SSIM) over cuZFP at similar bit rates and avoids artifacts (e.g., stripes) seen in cuSZx in visualization assessments",
+      "role": "Result",
+      "parents": [
+        2,
+        4,
+        10,
+        11,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "The hierarchical Global Synchronization component achieves on average 208.06 GB/s throughput (observed range 120.52 to 260.77 GB/s) on A100 across profiled datasets",
+      "role": "Evidence",
+      "parents": [
+        3,
+        11,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Quantization (pre-quantization) converts floating-point to integers using the user error bound and a 1D 1-layer Lorenzo prediction inside each block is applied as the only lossy step to reduce bit-entropy for encoding",
+      "role": "Method",
+      "parents": [
+        2,
+        0
+      ],
+      "children": [
+        4,
+        8
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Evaluation used NVIDIA Ampere A100 GPU and six real-world HPC datasets (Hurricane, NYX, QMCPack, RTM, HACC, CESM-ATM) and compared cuSZp to cuSZ, cuSZx, and cuZFP across multiple relative error bounds or fixed rates",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: cuSZp demonstrates that a single-kernel, block-wise fixed-length encoding design with hierarchical GPU prefix-sum and bit-shuffle can achieve ultra-fast end-to-end throughput while maintaining high compression ratios and reconstructed data quality; future work includes exploiting newer GPU hardware and integrating into scientific simulations",
+      "role": "Conclusion",
+      "parents": [
+        5,
+        6,
+        7,
+        8,
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Assumption: Scientific datasets exhibit high local smoothness within small blocks (empirically supported by CDF analyses) which justifies fixed-length per-block encoding and lightweight Lorenzo prediction",
+      "role": "Assumption",
+      "parents": [
+        2,
+        4,
+        0
+      ],
+      "children": [
+        4,
+        7
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: cuSZp performance varies with dataset characteristics (e.g., throughput decreases for denser snapshots with larger value range), and some competing compressors may yield higher CR on particular datasets at cost of artifacts or CPU involvement",
+      "role": "Limitation",
+      "parents": [
+        5,
+        7,
+        8,
+        0
+      ],
+      "children": null
+    }
+  ]
+}

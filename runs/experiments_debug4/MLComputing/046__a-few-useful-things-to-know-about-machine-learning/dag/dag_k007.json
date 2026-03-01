@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Summarize and communicate the practical \"folk knowledge\" (key lessons) that improves the success of machine learning applications",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Any learning system can be decomposed into three core components: representation, evaluation, and optimization",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 2,
+      "text": "Feature engineering is the most important practical factor for success; most project effort goes to gathering, cleaning, and designing features",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "The fundamental goal of learning is generalization to unseen data, not fitting training data",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        4,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Data alone, no matter how large, is insufficient without prior assumptions or knowledge; learners require inductive bias to generalize",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Overfitting occurs when models fit training quirks and thus perform poorly on test data; bias and variance decompose sources of generalization error",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "High dimensionality makes learning exponentially harder: similarity measures, intuition, and coverage of input space break down (curse of dimensionality)",
+      "role": "Claim",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Theoretical sample-complexity guarantees exist but are loose and often not practically decisive; asymptotic guarantees do not imply finite-data superiority",
+      "role": "Claim",
+      "parents": [
+        0,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Practically, more training data often yields bigger gains than more sophisticated algorithms: a simple algorithm with lots of data can beat a clever one with little data",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Combining multiple models (ensembles like bagging, boosting, stacking) reduces variance and typically improves predictive performance",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Simplicity (Occam's razor) is not a guaranteed predictor of accuracy; simpler hypotheses are preferred for parsimony but not because simplicity always generalizes better",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Representability of a function in a model class does not imply it can be learned given finite data, time, memory, or search procedures",
+      "role": "Claim",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Predictive correlations learned from observational data do not imply causation; causal conclusions require experimental data or restrictive assumptions",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Practical methods to improve generalization include holding out test data, cross-validation, regularization, statistical significance tests, and controlling multiple testing or false discovery rate",
+      "role": "Method",
+      "parents": [
+        2,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Empirical result: with limited examples naive Bayes can outperform a state-of-the-art rule learner even when the true classifier is a set of rules, illustrating bias-variance and data dependence",
+      "role": "Evidence",
+      "parents": [
+        5,
+        7,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: a mix of domain knowledge, careful feature engineering, appropriate methods to control overfitting, ensemble methods, and pragmatic use of data and computation are key to successful machine learning",
+      "role": "Conclusion",
+      "parents": [
+        1,
+        2,
+        3,
+        5,
+        8,
+        9,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

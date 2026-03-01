@@ -1,0 +1,200 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Temporal convolutional networks (generic TCNs) provide a better default architecture than canonical recurrent networks (e.g., LSTM, GRU) for general sequence modeling tasks",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We define a generic TCN architecture: 1D fully-convolutional network with causal convolutions, dilated convolutions (exponential dilation per layer) and residual blocks, using ReLU, weight normalization and spatial dropout",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        8
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We conducted a systematic empirical evaluation comparing generic TCNs to canonical recurrent architectures (LSTM, GRU, vanilla RNN) across a comprehensive suite of synthetic stress tests and real-world sequence tasks, keeping model sizes comparable and using standard regularization and optimizers",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        6,
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Across a broad range of sequence modeling tasks, the generic TCN consistently outperforms canonical recurrent architectures (LSTM, GRU, vanilla RNN) in accuracy and loss for the evaluated model sizes",
+      "role": "Result",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        5,
+        6,
+        15
+      ]
+    },
+    {
+      "id": 4,
+      "text": "In practice TCNs exhibit substantially longer effective memory than recurrent architectures of comparable capacity, enabling better performance on tasks that require long-range context",
+      "role": "Result",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        14,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Synthetic stress-test evidence: On the adding problem, copy memory, sequential MNIST and permuted MNIST, TCNs converged faster and to better solutions than LSTM/GRU/RNN; e.g., adding T=600 MSE near zero for TCN, copy memory T=1000 loss 3.5e-5 for TCN vs much worse for RNNs",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Real-data evidence: On polyphonic music (JSB, Nottingham), character-level (PTB, text8) and large-scale word-level corpora (Wikitext-103, LAMBADA) TCNs outperformed canonical recurrent baselines in NLL, bits-per-character, and perplexity in many settings (with some exceptions on small PTB where tuned LSTM beat TCN)",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3,
+        4
+      ],
+      "children": [
+        15,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "TCN architecture is simpler and clearer than many recurrent variants and some specialized convolutional models (no gating by default, no sequential state propagation), making it a convenient starting point",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Practical advantages of TCNs: support parallelism in training and evaluation, flexible and easily controlled receptive field via dilation and kernel size, stable gradients (avoid exploding/vanishing in temporal backprop), lower training memory than gated RNNs, and support for variable-length inputs",
+      "role": "Claim",
+      "parents": [
+        1,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Practical disadvantages of TCNs: at evaluation time TCNs may require storing raw input history up to the receptive field (higher evaluation memory), and transferring models across domains may require changing receptive-field parameters (kernel/dilation) to match new memory needs",
+      "role": "Claim",
+      "parents": [
+        1,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Conclusion: The empirical evidence supports reconsidering the default association of sequence modeling with recurrent networks and regarding convolutional networks (TCNs) as a natural starting point for sequence tasks",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        3,
+        4,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Limitation: State-of-the-art performance on some tasks still uses specialized architectures, heavy tuning, or external memory mechanisms; the generic TCN in this study was not exhaustively optimized and could benefit from similar community effort",
+      "role": "Limitation",
+      "parents": [
+        6,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Technical detail: dilated causal convolutions increase receptive field exponentially (effective history per layer ~ (k-1)*d), residual connections stabilize very deep TCNs, and optional 1x1 conv ensures matching widths for residual addition",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        8,
+        3
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Experimental protocol detail: used same TCN architecture across tasks varying depth and kernel to cover needed receptive field, exponential dilation d=2^i, Adam optimizer for TCN (lr 0.002), gradient clipping when helpful, and grid search for recurrent baselines to keep sizes comparable",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        3,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Copy-memory specific evidence: TCNs reached 100% accuracy on final recalled elements for sequence lengths up to and beyond T=1000 with small models (10K parameters), while LSTM/GRU of same size degenerated to near-random guessing as T grew",
+      "role": "Evidence",
+      "parents": [
+        5,
+        4
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Summative quantitative evidence: Table reports TCN outperforming LSTM/GRU on many benchmarks (e.g., permuted MNIST acc 97.2% vs LSTM 85.7%; char PTB bpc 1.31 vs LSTM 1.36; word PTB perplexity 88.68 vs LSTM 78.93 in some settings but TCN better on larger corpora)",
+      "role": "Evidence",
+      "parents": [
+        6,
+        3
+      ],
+      "children": [
+        10
+      ]
+    }
+  ]
+}

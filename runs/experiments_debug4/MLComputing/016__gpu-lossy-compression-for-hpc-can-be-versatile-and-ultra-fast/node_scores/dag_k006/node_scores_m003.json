@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.8,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with general HPC trends that large scale simulations generate massive data and that GPU sided lossy compression can reduce memory and bandwidth while allowing user specified error bounds.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible given known tendencies of GPU lossy compressors to struggle with generalization, memory footprint due to pre allocated worst case buffers, and inefficient random access to compressed regions, but requires empirical validation across diverse workloads.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general knowledge, the described design elements are plausible strategies for overcoming limitations, but no specific evidence or context is provided",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.62,
+    "relevance": 0.88,
+    "evidence_strength": 0.22,
+    "method_rigor": 0.42,
+    "reproducibility": 0.38,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a plausible multi stage compression pipeline combining lossy per block quantization with lossless delta encoding, fixed length encoding, and optional outlier preservation in a blockwise framework with a global prefix sum to join blocks, which is coherent but not verifiable from the claim alone and lacks external corroboration in this context.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text alone, there is no external verification; the statement asserts VGC supports three modes per dimension and supports 1D, 2D, 3D blocking, but no corroborating evidence is provided.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim presents a plausible GPU data encoding strategy but there is no provided evidence or references, so assessment relies on general plausibility rather than verified results.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.62,
+    "relevance": 0.92,
+    "evidence_strength": 0.28,
+    "method_rigor": 0.42,
+    "reproducibility": 0.38,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a memory efficient compression approach using per block size profiling, a global scan to compute total compressed size, then two kernel passes to allocate exact memory and write blocks with offsets, which is a plausible CUDA optimization but not verifiable from the claim alone.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.62,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a selective decompression technique with early stopping in a global prefix sum over metadata to locate needed blocks and support writes into a compressed array for homomorphic operations.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.58,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim appears plausible given the NVIDIA A100 bandwidth context and typical compression throughput expectations, but there is no external source verification provided here.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.4,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts VGC achieves about two times throughput over several baselines and better decompression than cuSZp2; no external sources were checked.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.45,
+    "relevance": 0.5,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text, the assertion is plausible but not verifiable from provided information.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Claim suggests that moving from one dimensional to three dimensional data representations with dimension aware blocking and deltas improves compression, evidenced by RTM field results where three dimensional VGC-O ratio is about fifty percent higher than one dimensional.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim links memory efficient compression to reduced GPU memory footprint and throughput retention; without external data its plausibility is moderate but not verifiable.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.35,
+    "relevance": 0.8,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts ultra fast throughput numbers for selective decompression but no independent sources are available to verify these figures within this task.",
+    "confidence_level": "low"
+  },
+  "15": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim presents two real world use cases with quantified memory savings and throughput, but no independent verification or methodological details are provided.",
+    "confidence_level": "medium"
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Principal Component Analysis (PCA) based eigenface method can provide a practical, efficient face recognition system suitable for constrained environments",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Face images are represented as vectors and a training set of centered, same-size face images defines a high dimensional space for PCA",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Eigenfaces are computed by subtracting the mean face, forming the covariance structure, and obtaining the principal eigenvectors; computational efficiency is improved by computing eigenvectors of the M x M matrix L rather than the full covariance matrix",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Recognition is performed by projecting images onto the K-dimensional eigenface subspace, computing weight vectors, and classifying by minimum Euclidean distance between feature weight vectors",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The implementation was developed in MATLAB and tested on an image database (ETE-07 series, RUET) composed of student face images of size 200 x 149 pixels",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Each training face image is converted to an MN by 1 vector; the mean face vector is computed and subtracted from each image to produce centered difference vectors",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "The M eigenvectors of the small matrix L correspond to the largest eigenvectors of the full covariance matrix and are used to form the eigenface basis; low-eigenvalue eigenfaces can be omitted",
+      "role": "Claim",
+      "parents": [
+        2,
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "A test face is projected into eigenface space to compute its weight vector and classified by finding the training weight vector with minimum Euclidean distance; this distance measures similarity",
+      "role": "Claim",
+      "parents": [
+        3,
+        6
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experimental setup used 36 face images of 18 persons from ETE-07 series, RUET for initial testing",
+      "role": "Assumption",
+      "parents": [
+        4
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "The implementation processed Bitmap, PNG, and JPEG images and was designed for centered frontal face images",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Experimental results show successful recognition when test and database images have the same pose (high accuracy in same-pose tests)",
+      "role": "Result",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Experimental results show the method yields good classification with some robustness to pose variation but has limitations with variations in image size",
+      "role": "Result",
+      "parents": [
+        7,
+        9
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "The eigenface PCA approach is fast, relatively simple, and provides a practical solution for face recognition in constrained environments",
+      "role": "Conclusion",
+      "parents": [
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Limitation: the method performs less well with variations in image size and is best suited to constrained, frontal or near-frontal face images",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Future work proposed: extend system to real-time video, enlarge database beyond 36 images, handle varying image sizes, and compare PCA performance with other recognition methods",
+      "role": "Claim",
+      "parents": [
+        13,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

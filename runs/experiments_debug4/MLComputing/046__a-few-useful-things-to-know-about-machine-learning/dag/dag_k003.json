@@ -1,0 +1,235 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning can automatically learn useful programs from data, but successful application depends on choices of representation, evaluation, optimization, data, features, prior knowledge, and proper validation",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Learning systems decompose into three core components: representation (hypothesis space and input features), evaluation (objective/scoring function), and optimization (search for high-scoring classifiers)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Choice of representation determines which classifiers can be learned and which kinds of prior knowledge are easily expressed (instance-based for similarity, graphical models for probabilistic dependencies, rules for preconditions)",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Optimization method affects efficiency and the produced classifier (e.g., greedy vs beam search trade bias and variance), so matching optimization to representation and evaluation matters",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Evaluation functions used internally may differ from external goals, and optimization may return local optima that generalize better than global optima",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The fundamental goal of learning is generalization: good test performance on unseen data, not just training accuracy",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Because training error is only a proxy for test error, strict separation of training and test data is required and cross-validation helps estimate generalization while avoiding contamination from tuning",
+      "role": "Method",
+      "parents": [
+        5,
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Overfitting occurs when models encode random quirks of training data and achieve low training error but poor test error; bias-variance decomposition clarifies forms of overfitting",
+      "role": "Claim",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Techniques to mitigate overfitting include cross-validation, regularization (penalizing complexity), statistical significance tests, and controlling false discovery rate, but no single method always solves it",
+      "role": "Method",
+      "parents": [
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical evidence shows simpler learners or those with strong (even false) assumptions can outperform more flexible learners with limited data because they reduce variance",
+      "role": "Evidence",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        11,
+        13
+      ]
+    },
+    {
+      "id": 10,
+      "text": "High dimensionality makes generalization exponentially harder: intuition and similarity notions break down (curse of dimensionality), but real data often lie near low-dimensional manifolds (blessing of non-uniformity)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Feature engineering is the most important practical factor: constructing informative features, cleaning and preprocessing data, and iterating designs often determines success more than the choice of learner",
+      "role": "Claim",
+      "parents": [
+        2,
+        9,
+        10
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Some representations are representationally compact for some functions but that does not imply learnability in practice given finite data, computation, and local optima; hence representable does not imply learnable",
+      "role": "Claim",
+      "parents": [
+        2,
+        11
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Pragmatically, more labeled data often yields larger gains than designing a more sophisticated algorithm; variable-size learners can exploit more data but may be limited by computation and optimization",
+      "role": "Claim",
+      "parents": [
+        11,
+        12,
+        9
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Combining many models into ensembles (bagging, boosting, stacking) typically reduces variance and improves accuracy; ensembles were key to successes like the Netflix prize",
+      "role": "Result",
+      "parents": [
+        13,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Correlations learned from observational data do not imply causation; when action effects are required, experimental data (controlled experiments A/B tests) should be used when possible",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Theoretical guarantees (sample complexity and asymptotic consistency) provide understanding but often give loose or impractical bounds and should not be the sole criterion for practical choices",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 17,
+      "text": "Occam's razor is useful as a preference for simplicity and interpretability, but simplicity does not necessarily imply better generalization in all settings",
+      "role": "Claim",
+      "parents": [
+        9,
+        16
+      ],
+      "children": null
+    },
+    {
+      "id": 18,
+      "text": "Conclusion: practitioners should focus on feature engineering, proper validation, exploring multiple learners and ensembles, exploiting more data, and incorporating domain knowledge to achieve robust machine learning systems",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        6,
+        14,
+        13,
+        15
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A systematic experimental comparison of commonly used feature selection methods yields practical guidance for choosing appropriate methods for text classification by balancing classification accuracy and computational efficiency",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "High-dimensional text data contain many noisy terms that reduce text classification performance; feature selection (FS) reduces noisy terms and can improve classification accuracy",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Many FS methods exist (supervised, unsupervised, optimization-based, information-theoretic, economics/neuroscience inspired), but recent studies rarely perform broad comparisons among many typical FS methods",
+      "role": "Context",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We summarize 20 typical FS methods and conduct systematic comparison experiments using four benchmark datasets, a decision tree classifier, accuracy metric and 10-fold cross validation",
+      "role": "Method",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Datasets used: CARR (car reviews), COMD (business descriptions, nine classes), IMDB (binary movie reviews), KDCN (Turkish news); chosen to cover multiple domains and prior use in literature",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Classifier and evaluation: Decision tree classifier evaluated by classification accuracy with 10-fold cross validation under varying numbers of selected terms",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 6,
+      "text": "Experimental result: MOR and MC-OR achieve the highest classification accuracies overall, with no significant difference between them; IGI ranks next (MOR = MC-OR > IGI)",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Experimental result: Unsupervised frequency/variance based methods TV, TVQ, TF and DF achieve relatively good performance and are especially attractive when computational efficiency is prioritized; TVQ performed best on IMDB",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experimental result: IG, GI and mutual information based methods produce the worst classification accuracies among the compared methods; MI max version outperforms MI average version",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Claim: There is a tradeoff between classification accuracy and computational complexity: top-performing supervised methods (MOR, MC-OR, IGI) require computing term-class distributions and are more complex than efficient unsupervised methods (TV, TVQ, TF, DF)",
+      "role": "Claim",
+      "parents": [
+        0,
+        6,
+        7,
+        8
+      ],
+      "children": [
+        10,
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Conclusion: MOR and MC-OR are recommended best choices for text classification accuracy; IGI is a practical alternative with simpler formula; TV, TVQ, TF and DF are recommended when efficiency is critical",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        6,
+        7,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Result and observation: ECE performs well generally but poorly when selecting small numbers of terms; AMGM, MM and MAD show unstable performance across datasets",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Comparison uses only four UCI datasets and a single classifier (decision tree), so results may not generalize to all text domains, dataset sizes, or classifiers",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Claim: The systematic comparison provides a guideline for researchers and practitioners to select FS methods for academic experiments or real-world text classification applications",
+      "role": "Claim",
+      "parents": [
+        0,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

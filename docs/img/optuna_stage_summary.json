@@ -1,0 +1,217 @@
+{
+  "bootstrap_samples": 5000,
+  "bootstrap_seed": 0,
+  "stages": [
+    {
+      "study": "dense",
+      "label": "Stage 1 dense",
+      "trials_total": 4096,
+      "trials_complete": 1147,
+      "trials_pruned": 2949,
+      "best_trial_number": 3457,
+      "best_value": 0.702485966319166,
+      "search_space_path": "experiments/search_spaces/optuna_debug4_dense_v1.json",
+      "trials_path": "runs/optuna_search_live/optuna_debug4_dense_v1/trials.csv",
+      "best_trial_path": "runs/optuna_search_live/optuna_debug4_dense_v1/best_trial.json",
+      "metrics": {
+        "auc_good_vs_bad": 0.702485966319166,
+        "spearman_good_neutral_bad": 0.313335952051413,
+        "graph_score_mean": 0.36491420418912146,
+        "grouped_good_bad_gap": 0.027922044307837124,
+        "grouped_good_neutral_gap": 0.03956265626581612,
+        "objective_papers": 103,
+        "grouped_rating_counts": {
+          "Good": 44,
+          "Neutral": 31,
+          "Bad": 29
+        },
+        "objective_rating_counts": {
+          "Good": 43,
+          "Neutral": 31,
+          "Bad": 29
+        },
+        "grouped_rating_means": {
+          "Good": 0.3844928737003482,
+          "Neutral": 0.34493021743453206,
+          "Bad": 0.35657082939251106
+        },
+        "score_sum_means": {
+          "Good": 23.99069832968158,
+          "Neutral": 21.494533886459177,
+          "Bad": 22.351601921229705
+        }
+      }
+    },
+    {
+      "study": "refine",
+      "label": "Stage 2 refine",
+      "trials_total": 4096,
+      "trials_complete": 2573,
+      "trials_pruned": 1523,
+      "best_trial_number": 3950,
+      "best_value": 0.7594226142742582,
+      "search_space_path": "experiments/search_spaces/optuna_debug4_refine_v1.json",
+      "trials_path": "runs/optuna_search_refine/optuna_debug4_refine_v1/trials.csv",
+      "best_trial_path": "runs/optuna_search_refine/optuna_debug4_refine_v1/best_trial.json",
+      "metrics": {
+        "auc_good_vs_bad": 0.7594226142742582,
+        "spearman_good_neutral_bad": 0.3945156246151466,
+        "graph_score_mean": 0.3695673764254558,
+        "grouped_good_bad_gap": 0.033007773885546154,
+        "grouped_good_neutral_gap": 0.03917531958469811,
+        "objective_papers": 103,
+        "grouped_rating_counts": {
+          "Good": 44,
+          "Neutral": 31,
+          "Bad": 29
+        },
+        "objective_rating_counts": {
+          "Good": 43,
+          "Neutral": 31,
+          "Bad": 29
+        },
+        "grouped_rating_means": {
+          "Good": 0.39044872594282576,
+          "Neutral": 0.35127340635812765,
+          "Bad": 0.3574409520572796
+        },
+        "score_sum_means": {
+          "Good": 24.361816006163075,
+          "Neutral": 21.877099542411443,
+          "Bad": 22.401343757325016
+        }
+      }
+    },
+    {
+      "study": "stage3",
+      "label": "Stage 3 sparse",
+      "trials_total": 4096,
+      "trials_complete": 3429,
+      "trials_pruned": 667,
+      "best_trial_number": 1011,
+      "best_value": 0.7658380112269446,
+      "search_space_path": "experiments/search_spaces/optuna_debug4_stage3_sparse_v1.json",
+      "trials_path": "runs/optuna_search_stage3/optuna_debug4_stage3_sparse_v1/trials.csv",
+      "best_trial_path": "runs/optuna_search_stage3/optuna_debug4_stage3_sparse_v1/best_trial.json",
+      "metrics": {
+        "auc_good_vs_bad": 0.7658380112269446,
+        "spearman_good_neutral_bad": 0.40142029279421365,
+        "graph_score_mean": 0.3668850740335994,
+        "grouped_good_bad_gap": 0.03291411440559594,
+        "grouped_good_neutral_gap": 0.038568831071914444,
+        "objective_papers": 103,
+        "grouped_rating_counts": {
+          "Good": 44,
+          "Neutral": 31,
+          "Bad": 29
+        },
+        "objective_rating_counts": {
+          "Good": 43,
+          "Neutral": 31,
+          "Bad": 29
+        },
+        "grouped_rating_means": {
+          "Good": 0.387559526735442,
+          "Neutral": 0.34899069566352753,
+          "Bad": 0.35464541232984603
+        },
+        "score_sum_means": {
+          "Good": 24.181510510895922,
+          "Neutral": 21.73455678260222,
+          "Bad": 22.22595266692772
+        }
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "key": "dense_to_refine",
+      "label": "Stage 1 dense -> Stage 2 refine",
+      "from": "dense",
+      "to": "refine",
+      "n_papers": 104,
+      "bootstrap_samples": 5000,
+      "summary": {
+        "auc_good_vs_bad": {
+          "mean": 0.056635954276082784,
+          "q05": 0.015591733749849847,
+          "q50": 0.055299539170506895,
+          "q95": 0.10374448024823972,
+          "p_gt_0": 0.9888
+        },
+        "spearman_good_neutral_bad": {
+          "mean": 0.08019350701120649,
+          "q05": 0.027442465245668672,
+          "q50": 0.07890143770115819,
+          "q95": 0.1370348644401995,
+          "p_gt_0": 0.9968
+        },
+        "graph_score_mean": {
+          "mean": 0.004643107547887332,
+          "q05": 0.0032488348193412397,
+          "q50": 0.004629401582045944,
+          "q95": 0.006141712371422081,
+          "p_gt_0": 1.0
+        }
+      }
+    },
+    {
+      "key": "refine_to_stage3",
+      "label": "Stage 2 refine -> Stage 3 sparse",
+      "from": "refine",
+      "to": "stage3",
+      "n_papers": 104,
+      "bootstrap_samples": 5000,
+      "summary": {
+        "auc_good_vs_bad": {
+          "mean": 0.0064306132323852195,
+          "q05": 0.0015151515151515804,
+          "q50": 0.0059549138804458335,
+          "q95": 0.013043478260869601,
+          "p_gt_0": 0.987
+        },
+        "spearman_good_neutral_bad": {
+          "mean": 0.00678720713194607,
+          "q05": -0.0003306986382540052,
+          "q50": 0.006453966813099898,
+          "q95": 0.014669394882115593,
+          "p_gt_0": 0.9404
+        },
+        "graph_score_mean": {
+          "mean": -0.002681716397947597,
+          "q05": -0.0028577131424846634,
+          "q50": -0.0026853297785894292,
+          "q95": -0.002494324382463392,
+          "p_gt_0": 0.0
+        }
+      }
+    }
+  ],
+  "assets": {
+    "optuna_stage_objective_histograms": [
+      "docs/img/optuna_stage_objective_histograms.png",
+      "docs/img/optuna_stage_objective_histograms.pdf",
+      "docs/img/optuna_stage_objective_histograms.svg"
+    ],
+    "optuna_stage_best_so_far": [
+      "docs/img/optuna_stage_best_so_far.png",
+      "docs/img/optuna_stage_best_so_far.pdf",
+      "docs/img/optuna_stage_best_so_far.svg"
+    ],
+    "optuna_stage_score_sum_by_rating": [
+      "docs/img/optuna_stage_score_sum_by_rating.png",
+      "docs/img/optuna_stage_score_sum_by_rating.pdf",
+      "docs/img/optuna_stage_score_sum_by_rating.svg"
+    ],
+    "optuna_stage3_key_param_histograms": [
+      "docs/img/optuna_stage3_key_param_histograms.png",
+      "docs/img/optuna_stage3_key_param_histograms.pdf",
+      "docs/img/optuna_stage3_key_param_histograms.svg"
+    ],
+    "optuna_stage_bootstrap_deltas": [
+      "docs/img/optuna_stage_bootstrap_deltas.png",
+      "docs/img/optuna_stage_bootstrap_deltas.pdf",
+      "docs/img/optuna_stage_bootstrap_deltas.svg"
+    ]
+  }
+}

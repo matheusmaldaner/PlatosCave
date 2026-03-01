@@ -1,0 +1,194 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A large, deep convolutional neural network trained with current supervised techniques can substantially improve object classification performance on the ImageNet Large-Scale Visual Recognition Challenge",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Deep convolutional networks with increased depth and capacity are necessary to learn thousands of object categories from millions of images because they encode useful image priors (stationarity and locality) while remaining trainable",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We designed and trained an 8-layer network (5 conv layers, 3 fully connected, ~60 million parameters, 650k neurons) with specific architecture choices: first conv 96 11x11x3 stride 4, later conv layers of sizes 5x5x48, 3x3x256/192, and two 4096-unit FC layers feeding a 1000-way softmax",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 3,
+      "text": "To prevent overfitting in this very large model we employed multiple regularization techniques (dropout in FC layers and two forms of data augmentation) and local response normalization and overlapping pooling as architectural regularizers",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10,
+        11,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The trained network achieves substantially lower top-1 and top-5 error rates on ImageNet than prior state-of-the-art methods, demonstrating the hypothesis",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "children": [
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The practical limits on network size and training come from GPU memory and acceptable training time (network trained 5-6 days on two GTX 580 3GB GPUs), implying scalability is constrained by hardware",
+      "role": "Limitation",
+      "parents": [
+        0,
+        2
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Using Rectified Linear Unit (ReLU) activations (f(x)=max(0,x)) accelerates training several times compared to saturating nonlinearities, enabling practical training of very large CNNs",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "We implemented a highly optimized GPU 2D convolution and parallelized the model across two GPUs, partitioning kernels across GPUs and limiting cross-GPU communication in some layers to fit the model and speed training",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "We applied Local Response Normalization (LRN) after certain ReLU layers with hyperparameters k=2, n=5, alpha=1e-4, beta=0.75, which implements a form of lateral inhibition and reduced top-1/top-5 errors by ~1.4% and ~1.2% respectively",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "We used overlapping max-pooling (pool size 3, stride 2) across pooling layers, which modestly reduced overfitting and improved top-1/top-5 errors by about 0.4% and 0.3%",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "We used dropout (p=0.5) in the first two fully-connected layers to reduce co-adaptation of feature detectors, which was necessary to prevent substantial overfitting and approximates model averaging at test time",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "We used two data augmentation schemes: random 224x224 crops and horizontal reflections (increasing effective training set by factor 2048 for transforms) and RGB intensity perturbation via PCA on pixel RGB values, the latter reducing top-1 error by >1%",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "On ILSVRC-2010 test set the single trained CNN achieved top-1 error 37.5% and top-5 error 17.0%, outperforming prior best published results (e.g., sparse coding 47.1%/28.2%, SIFT+FVs 45.7%/25.7%)",
+      "role": "Result",
+      "parents": [
+        4,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "On ILSVRC-2012 the single CNN achieved validation top-5 18.2%; ensembles and pretraining on larger ImageNet variants produced improved results culminating in a 7-model ensemble top-5 test error 15.3%, compared to second-best 26.2%",
+      "role": "Result",
+      "parents": [
+        4,
+        2,
+        7,
+        10,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Qualitative analyses show learned first-layer kernels capture edge, color, and orientation features with specialization across the two GPU partitions, and nearest-neighbor search in the 4096-dim last hidden layer retrieves semantically similar images",
+      "role": "Evidence",
+      "parents": [
+        4,
+        2,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Training time and memory requirements grow with network size; training the reported model required manual learning-rate scheduling, ~90 training epochs, and took 5-6 days on two GTX 580 GPUs, indicating practical constraints on model scaling",
+      "role": "Evidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    }
+  ]
+}

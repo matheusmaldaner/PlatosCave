@@ -1,0 +1,153 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Protego hypothesis: an input-aware selective instruction duplication (SID) framework can adapt protection to runtime inputs and significantly reduce silent data corruption (SDC) coverage loss compared to existing input-agnostic SID methods while remaining lightweight at runtime",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        3,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing SID techniques are input-agnostic and derive instruction vulnerability profiles from a default reference input, which fails to generalize across diverse runtime inputs and causes substantial SDC coverage loss",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Empirical evidence across 10 HPC applications shows static SID plans derived from a reference input produce large SDC coverage variability across inputs and can reduce offered coverage (example: expected coverage 43% drops to 29% for Pathfinder; similar drops for other apps)",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Protego method overview: one-time offline FI-guided input search to discover diverse SDC vulnerability inputs, cluster inputs into few groups with similar SID protection patterns, pre-generate representative SID-protected executables per group, and at runtime map input to group using lightweight input-argument features and an MLP",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "One-time SDC vulnerability-guided search: start from seeds, apply mutation and crossover to generate inputs, evaluate each candidate via fault injection, prioritize inputs that maximally deviate from existing vulnerability profiles, and stop after 500 unique inputs",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Input grouping: using the 500 evaluated inputs, form a small number of input groups by grouping inputs whose mutual SDC coverage loss (applying one representative's SID plan to others) is below a threshold (adopted 10% threshold), and choose median-SDC input as group representative",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Lightweight runtime mapping: extract transformed argument-level features (select top 5 via mutual information), feed 5-feature vector into a trained MLP (architecture: hidden layers 512,256,128,64,32; ReLU; Adam) to predict overall SDC vulnerability and map to closest representative group, then return pre-generated SID-protected executable",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Protego result: across 10 HPC applications Protego substantially reduces average SDC coverage loss when compared to existing SID baselines (reported reduction in average SDC coverage loss from about 21% to about 10% across diverse inputs; detailed per-application improvements also reported)",
+      "role": "Result",
+      "parents": [
+        4,
+        5
+      ],
+      "children": [
+        8,
+        13
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Case-study evidence for high SDC-prone inputs: for inputs with high SDC vulnerability, existing SID average coverage loss was 22.89% while Protego's loss was 6.41%, demonstrating Protego's particular effectiveness under high-risk inputs",
+      "role": "Evidence",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "MLP prediction accuracy evidence: MLP yields low mean absolute error between predicted and ground-truth overall SDC rates across evaluated applications (observed MAE values range per app from about 0.03% to 6.14%), enabling reliable group mapping without runtime FI",
+      "role": "Evidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Runtime performance result: Protego selects an appropriate SID-protected executable in about 0.05 seconds on average per input, compared to about 5 seconds for full duplication deployment, achieving approximately 100x runtime speedup over full duplication",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Fault injection methodology used in study: LLVM IR-level datapath fault model injecting random bit-flips into destination registers; 1000 random faults for overall SDC rate per input and 100 faults per instruction for instruction-level SDC probability; confidence intervals consistent with prior work",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Offline cost and limitation: Protego requires a one-time offline cost dominated by the guided input search and FI campaigns (average input search about 3500 minutes and representative SID evaluation about 880 minutes across applications), though model training is negligible (~6 seconds); this offline cost is required per application",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: Protego enables adaptive, input-aware SID by leveraging a one-time vulnerability-guided offline analysis and a lightweight runtime mapping, providing improved SDC coverage robustness across inputs and low runtime overhead without requiring runtime fault injection or dynamic profiling",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        10
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A systematic, lifecycle-based assurance approach is required to generate evidence that machine learning components are sufficiently safe for use in safety-critical systems",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "ML methods are increasingly applied to domains (healthcare, transportation, defence) where occasional ML errors would be unacceptable, motivating higher assurance requirements",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The machine learning lifecycle can be defined as four stages: Data Management, Model Learning, Model Verification, and Model Deployment, and assurance methods should be structured by these stages",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        5,
+        7,
+        9,
+        13
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Data Management stage produces training and verification data via collection, preprocessing, augmentation and analysis, and data sets should be Relevant, Complete, Balanced and Accurate; methods exist (EDA, experimental design, GANs, bias mitigation, provenance, config management) to help achieve these desiderata",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Open challenges for Data Management include detecting data backdoors, demonstrating synthetic data appropriateness, detecting data leakage, measuring completeness for operational/failure/adversarial domains, finding small disjuncts and verifying complex simulations",
+      "role": "Limitation",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "Model Learning stage covers model selection, training, hyperparameter tuning and transfer learning; desired model properties are Performant, Robust, Reusable and Interpretable, and methods (ensembles, regularization, augmentation, transfer, automated hyperparameter search) address these",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Open challenges for Model Learning include selecting evaluation measures tied to operational context, multi-objective runtime evaluation, context-informed hyperparameter tuning, understanding hyperparameter impacts, decoupling perturbation effects, contextual robustness inference, identifying context similarity for transfer, and ensuring transferred models are fault-free and globally interpretable",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Model Verification stage transforms requirements into tests and formal properties and performs test-based and formal verification; verification evidence should be Comprehensive, Contextually Relevant and Comprehensible; available methods include coverage metrics, formal SMT/abstract interpretation for neural nets, simulation-based testing and counterexample-guided augmentation",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Open challenges for Model Verification include cataloguing typical ML errors, defining test coverage measures with theoretical and empirical justification, extending formal verification beyond neural networks, mapping requirements to model features and RL states, general frameworks for synthetic/contextual test generation, and producing comprehensible counterexamples that inform remediation",
+      "role": "Limitation",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Model Deployment stage involves integration, monitoring and updating of verified models; deployed models should be Fit-for-Purpose, Tolerated and Adaptable and methods include on-target testing, monitoring for distribution shift, built-in tests, safety architectures (monitors, aggregators, switches), logging for incident investigation and update management",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Open challenges for Model Deployment include timely detection of distribution shift (especially in high-dimensional data), defining recorded information to support incident investigations, deriving reliable confidence measures, designing sufficiently flexible safety monitors, understanding achievable independence among models trained on the same data, and managing fleet-wide update diversity",
+      "role": "Limitation",
+      "parents": [
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Assurance must integrate evidence across lifecycle stages so that data, learning, verification and deployment artefacts and their assumptions are traceable and aligned to system-level requirements",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        5,
+        7,
+        9,
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "This paper provides the first comprehensive survey organized around the four-stage ML lifecycle, defining stage-specific assurance desiderata, surveying methods, and listing open research challenges",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Survey methodology: define ML lifecycle and stages, derive assurance desiderata per stage, review existing methods for each desideratum including assumptions and limitations, and identify remaining open challenges",
+      "role": "Method",
+      "parents": [
+        2,
+        12
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Conclusion: substantial research is still needed across all stages to meet assurance requirements for safety-critical ML; existing ML, software engineering and assurance methods provide foundations but gaps remain",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Context: ML components often serve in MAPE control loops in autonomous/self-adaptive systems and therefore their assurance affects monitoring, analysis, planning and execution activities within deployed systems",
+      "role": "Context",
+      "parents": [
+        1,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

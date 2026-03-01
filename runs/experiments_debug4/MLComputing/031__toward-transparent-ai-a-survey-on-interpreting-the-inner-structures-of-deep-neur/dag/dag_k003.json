@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Inner interpretability methods for deep neural networks can provide mechanistic understanding that helps detect flaws, guide debugging and manual modification, and make AI systems more trustworthy",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We organize inner interpretability methods by the part of the network they explain (weights, neurons, subnetworks, latent representations) and by whether they are intrinsic (during training) or post hoc (after training)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Surveyed literature: over 300 works on inner interpretability were reviewed and synthesized into a taxonomy and discussion of connections to other research areas",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Inner interpretability techniques enable open-ended evaluation, showcasing failure modes, fixing bugs, and determining accountability beyond standard test-set evaluation",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "There are meaningful connections between interpretability and adversarial robustness, continual learning, modularity, compression, and modeling the human visual system which can improve interpretability or robustness",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Many interpretability methods produce hypotheses rather than validated conclusions and are vulnerable to cherrypicking, limited data, unfaithfulness, polysemantic or frivolous units, and scalability issues",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Practical utility requires interpretability tools that scale to large models, quantify uncertainty, enable efficient human oversight, and are evaluated via rigorous benchmarks and debugging tasks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Future research should emphasize diagnostics, debugging, adversarial methods, benchmarking, combining techniques, automation, and interdisciplinary study to produce engineer-usable interpretability tools",
+      "role": "Conclusion",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Weight-focused methods include intrinsic continual-learning approaches that encourage weight specialization and post hoc weight-masking to identify causal subsets of weights for tasks, but many weights are frivolous/prunable",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Neuron-, subnetwork-, and representation-focused methods include dataset-based neuron characterization, feature synthesis, perturbation/ablation, gradient attribution, sparsity and modularity for subnetworks, circuits analysis, self-explaining models, disentanglement, attention/token analysis, concept vectors, probing, and representation comparison",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        5,
+        4
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Interpretability methods have been used to discover biases, design adversaries for testing, edit learned facts, and guide model improvements or debiasing in examples from the literature",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Adversarial training often yields representations that are more interpretable and robust, while interpretability tools can facilitate adversary design and adversarial data generation for debugging",
+      "role": "Claim",
+      "parents": [
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Hazards and failure modes include polysemantic neurons (units encoding multiple unrelated features), frivolous units, unfaithful attention or explanations, and methods that only succeed on a subset of examples or on toy models",
+      "role": "Counterevidence",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Empirical and theoretical limits: dataset-based methods are limited by dataset diversity; unsupervised disentanglement is provably impossible without inductive biases; gradient and attribution methods have locality limits for causal claims",
+      "role": "Limitation",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Recommendations for evaluation: benchmark interpretability by human rediscovery of implanted flaws, measure method usefulness for engineers (debugging, editing, adversary discovery), and report computational and scalability requirements",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Practical directions: automate interpretation generation and validation, combine intrinsic and post hoc methods, build datasets and weak supervision tools to reduce expert labor, and create benchmarks and competitions to drive progress",
+      "role": "Claim",
+      "parents": [
+        6
+      ],
+      "children": [
+        7
+      ]
+    }
+  ]
+}

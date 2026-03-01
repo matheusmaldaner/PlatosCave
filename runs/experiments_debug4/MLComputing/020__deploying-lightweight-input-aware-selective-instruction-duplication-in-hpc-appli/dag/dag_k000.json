@@ -1,0 +1,192 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An input-aware selective instruction duplication (SID) framework that adapts protection to runtime inputs can significantly reduce silent data corruption (SDC) coverage loss compared to existing input-agnostic SID methods while remaining lightweight at runtime",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing SID methods derive instruction vulnerability from fault injection under a default reference input and assume vulnerability profiles are input-invariant",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Input variations change control flow and execution frequencies, causing shifts in SDC propagation and resulting in substantial SDC coverage loss when using static SID plans",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Protego: a two-phase approach — one-time offline SDC vulnerability-guided input exploration and grouping, plus a lightweight online input-to-group mapping to select precomputed SID-protected executables",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Protego offline phase performs an optimization-guided search generating 500 unique inputs via mutation and crossover, evaluates each with fault injection to obtain instruction-level SDC profiles, and prioritizes inputs that deviate most from existing profiles",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Protego online phase extracts five lightweight features from input arguments, uses a trained MLP to estimate overall SDC vulnerability, maps the input to a precomputed input group, and returns the representative SID-protected executable for that group",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Fault injection methodology used: inject faults at LLVM IR level; 1000 random faults to measure overall application SDC probability per input and 100 random faults per instruction to estimate instruction-level SDC probability; this yields 95% confidence error bars consistent with prior work",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Because static SID plans are optimized for a single reference input, when applied to different inputs they can overprotect inactive regions and underprotect newly active vulnerable regions, lowering SDC coverage",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Empirical observation: across 30 inputs for each of 10 HPC applications, SDC coverage produced by reference-input SID often falls substantially below expected coverage, confirming non-generalizability",
+      "role": "Evidence",
+      "parents": [
+        2,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Input grouping: cluster the 500 explored inputs into a small number of groups by allowing at most 10% maximum SDC coverage loss within a group; select the median-SDC-rate input as representative and generate its SID-protected executable",
+      "role": "Method",
+      "parents": [
+        3,
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Feature selection and model: derive candidate transforms from input arguments, pick top-5 features by mutual information, train an MLP (five hidden layers 512-256-128-64-32, ReLU, Adam, batch size 8, 10000 iterations) to predict overall SDC rate",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Offline cost: average input search time ~3500 minutes and representative SID evaluation time ~880 minutes across evaluated applications; model training time is negligible (~6 seconds)",
+      "role": "Evidence",
+      "parents": [
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 12,
+      "text": "MLP prediction accuracy evidence: low mean absolute error between predicted and ground-truth overall SDC rates across evaluated applications (per-application MAE values reported), enabling reliable input-group selection",
+      "role": "Evidence",
+      "parents": [
+        5,
+        10
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Runtime efficiency evidence: Protego selects and returns an appropriate SID-protected executable in about 0.05 seconds on average per input, achieving ~100x speedup over full duplication runtime deployment",
+      "role": "Result",
+      "parents": [
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Effectiveness results: across 10 HPC applications and 100 unseen online inputs, Protego reduces mean SDC coverage loss compared to baseline static SID (baseline average losses at 10%,30%,50%,70% were 23.81%,18.76%,16.36%,13.14%; Protego reduced these to 15.18%,12.71%,11.62%,8.43%)",
+      "role": "Result",
+      "parents": [
+        9,
+        11,
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Case study on high SDC-prone inputs: for inputs with high intrinsic SDC vulnerability, existing SID methods show large coverage loss (average 22.89%) while Protego limits coverage loss (average 6.41%), demonstrating particular advantage under high-risk inputs",
+      "role": "Evidence",
+      "parents": [
+        14
+      ],
+      "children": null
+    },
+    {
+      "id": 16,
+      "text": "Limitation and future opportunity: the one-time offline FI-guided search and SID evaluations are costly; later-stage inputs often repeat profiles suggesting potential to reduce offline cost by reusing profiles and conditionally skipping FI",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": null
+    }
+  ]
+}

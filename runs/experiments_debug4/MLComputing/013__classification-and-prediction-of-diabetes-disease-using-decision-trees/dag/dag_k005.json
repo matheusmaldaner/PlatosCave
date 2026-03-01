@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A decision tree based machine learning model can classify and predict diabetes status of patients using the Pima Indians Diabetes dataset",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        8,
+        11
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Decision tree classification is an appropriate algorithmic approach for medical diagnosis tasks because it creates interpretable if-then rule hierarchies and supports classification trees",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We used binary decision trees with split quality measured by information gain derived from entropy, Gini index, and classification error for node evaluation and pruning considerations",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Implementation used Python (Spyder), Pandas for data handling, and Scikit-learn DecisionTreeClassifier for model training, prediction, evaluation and visualization",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Data preprocessing removed samples with zero values in BloodPressure, BMI, or Glucose fields (identified 35 such samples) as these zeros were treated as erroneous measurements",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "The Pima Indians Diabetes Database used contains 768 instances and 9 attributes describing individual patients",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Feature importance and presence of outliers were assessed; some columns contained outliers and zero-value measurement errors which motivated removal of specific records before training",
+      "role": "Claim",
+      "parents": [
+        5,
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Data splitting strategies were evaluated across three experiments: 70% train/30% test, 50%/50%, and 30%/70% to measure impact of training set size on predictive performance",
+      "role": "Method",
+      "parents": [
+        0,
+        6
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Experimental result: using a 50% training and 50% testing split produced the highest reported accuracy of 0.71",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Experimental result: a 70% training and 30% testing split produced model outputs and visualization reported in the paper (figures provided) but no numeric accuracy explicitly stated in text",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Experimental result: a 30% training and 70% testing split produced model outputs and visualization reported in the paper (figures provided) but no numeric accuracy explicitly stated in text",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: Decision tree analysis is a fast, interpretable, nonparametric predictive modeling tool with prediction accuracy comparable to other methods and is suitable for diabetes diagnosis support",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        1,
+        2,
+        8
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Claim: Increasing the proportion of data allocated to training generally improves the accuracy estimate of the decision tree model",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Advantages identified for the constructed diagnostic model include fast learning, rule generation where experts cannot formalize knowledge, intuitive classification, and high prediction accuracy comparable to statistics and neural networks",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Limitation: Final diagnostic decisions still require a doctor's consultation and more precise diagnostics because the system's outputs are not sufficient alone",
+      "role": "Limitation",
+      "parents": [
+        4,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

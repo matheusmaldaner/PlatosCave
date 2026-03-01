@@ -1,0 +1,198 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Investigate how privacy and fairness objectives interact in machine learning and identify methods and architectures to achieve both concurrently with minimal utility loss",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Privacy and fairness are two central pillars of trustworthy ML and must be integrated across supervised, unsupervised, semi-supervised, and reinforcement learning",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The interrelation between privacy and fairness is not well-understood: some works report trade-offs while others report alignment",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Diﬀerential privacy (DP), including mechanisms like Laplace, Exponential, and DP-SGD, is a primary technique for protecting individual data during ML training and release",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Homomorphic encryption (HE) schemes (PHE, SHE, FHE) allow computation on encrypted data and provide an orthogonal privacy approach applicable to ML",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Fairness in ML is defined by many notions (statistical parity, equalized opportunity/odds, calibration, counterfactual and individual fairness) and requires pre-, in-, and post-processing mitigation strategies",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Mitigation strategies for fairness include pre-processing (reweighting, representation learning, label alteration), in-processing (regularizers, adversarial learning), and post-processing (thresholding, calibration, transformation)",
+      "role": "Method",
+      "parents": [
+        3,
+        4,
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Common system architectures for combining privacy and fairness include: (A) privacy-first then fairness training, (B) joint private-fair training, (C) sanitizing sensitive attributes then pipeline, (D) federated learning with local privacy and fairness steps, and (E) cryptographic auditing (MPC) for private fairness audits",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Specific application domains (healthcare, NLP, computer vision, spatial data) exhibit domain-dependent privacy-fairness interactions and require tailored solutions (e.g., synthetic healthcare data, DP census impacts on spatial fairness)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Evidence that differential privacy can harm fairness: DP-SGD and other DP mechanisms often reduce accuracy more for underrepresented or rare classes and can hide rare/outlier examples, amplifying bias (empirical results in language models, vision, and outlier detection)",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Evidence that privacy and fairness can align: studies show DP or DP-like mechanisms (e.g., exponential mechanism, privatized representations) can reduce bias in some settings and that individual fairness notions can imply DP under specific metrics",
+      "role": "Evidence",
+      "parents": [
+        2,
+        3,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Algorithms and frameworks aiming to achieve both objectives: examples include FairDP (adaptive clipping + bilevel program), FairFL/FairFed approaches for federated learning, private logistic regression with decision-boundary fairness, and joint DP+fairness methods using functional mechanisms or sanitized representations",
+      "role": "Method",
+      "parents": [
+        6,
+        7,
+        8
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Large language models and modern API-based deployment increase practical risks and create new research needs for combined privacy and fairness (e.g., private fair reward-models, logic-aware models, and API-side checks)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Empirical and theoretical results indicate there is no universal compatibility: some selection or prediction problems allow mechanisms (e.g., exponential mechanism) to improve fairness while providing DP, but other settings make simultaneous perfect fairness and DP impossible without utility loss",
+      "role": "Result",
+      "parents": [
+        11,
+        9,
+        10
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Open challenges and limitations include: lack of unified theory connecting diverse fairness notions to privacy, domain-specific impacts (e.g., spatial and healthcare), practicality of cryptographic solutions for fairness constraints, and fairness of privacy protection across subpopulations",
+      "role": "Limitation",
+      "parents": [
+        12,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Future research should develop principled architectures, theoretical frameworks, and practical algorithms that jointly consider privacy and multiple fairness notions across ML paradigms and application domains",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        7,
+        11,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "An efficient binary-search based fault injection technique can identify safety-critical bits in ML applications by leveraging monotonicity of ML error-propagation functions, reducing cost compared to exhaustive fault injection while accurately estimating resilience",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Many common ML operations and their compositions exhibit monotonic or approximately monotonic behavior in how input deviations map to output deviations (error propagation functions)",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 2,
+      "text": "BinFI applies a binary-search like fault injection on operator outputs by converting data to bits, separating bit lists for 0 and 1, and searching for an SDC-boundary bit where higher-order bit flips cause SDCs and lower-order bits are masked",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "BinFI is implemented by extending the open-source TensorFI tool to support DNN operators and the binary FI algorithm (TensorFI-BinaryFI)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Under a fault model assuming rare one-fault-per-execution soft errors in processor data path (pipeline registers and ALUs), injecting faults at operator outputs is representative for resilience analysis",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 5,
+      "text": "BinFI can both identify safety-critical bits and estimate overall SDC probability for ML applications",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 6,
+      "text": "BinFI trades minor inaccuracy for large cost savings: it misses a small proportion of critical bits due to approximate monotonicity but dramatically reduces FI trials",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Surveyed ML computations (Conv/MatMul, Add, ReLu, ELu, Max/Average-pool, BatchNorm, SoftMax, data transform) are monotonic or approximately monotonic in inference, justifying modeling EP functions as (approx.) monotonic",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "Binary-search FI algorithm (detSDCBound) bisects bit positions per operator output, injects faults at middle bits and narrows to find highest-order bit index that causes SDC, computing per-element sdcRate",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "BinFI treats positive and negative deviations separately by indexing bits of 0 and 1 because sign of deviation affects SDC likelihood",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Implementation changes: added DNN operator support and fixed customized-operator parameter extraction in TensorFI; added modes for single-bit random FI, Binary FI, exhaustive FI; published as TensorFI-BinaryFI",
+      "role": "Evidence",
+      "parents": [
+        3
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Residual blocks, some activations (e.g., Swish) and other components can be only approximately monotonic, so EP functions may violate strict monotonicity in small intervals",
+      "role": "Assumption",
+      "parents": [
+        1
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Evaluation on 8 ML models and 6 datasets (including steering models, traffic-sign and ImageNet variants) shows BinFI identifies 99.56% of critical bits with 99.63% precision and accurately estimates overall SDC probability close to exhaustive FI",
+      "role": "Result",
+      "parents": [
+        5,
+        3,
+        8
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Inaccuracy due to approximate monotonicity is small: BinFI misses less than 0.5% of critical bits in evaluation and errors occur mainly when non-monotonic behavior arises for small-magnitude faults",
+      "role": "Limitation",
+      "parents": [
+        6,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Non-monotonic operators (e.g., LRN) can reduce BinFI precision; experiments show high recall but lower precision when strong non-monotonicity is present",
+      "role": "Counterevidence",
+      "parents": [
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "BinFI reduces FI trials to about 20% of exhaustive FI (speedup about 5X) and its cost scales logarithmically with data bitwidth, making it practical for safety-critical ML resilience assessment and selective protection",
+      "role": "Conclusion",
+      "parents": [
+        12,
+        6
+      ],
+      "children": null
+    }
+  ]
+}

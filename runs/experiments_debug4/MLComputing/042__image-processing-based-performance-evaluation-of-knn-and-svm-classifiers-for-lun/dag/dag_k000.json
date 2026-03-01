@@ -1,0 +1,160 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Machine learning classifiers applied to CT images can detect early-stage lung cancer and SVM will achieve superior accuracy compared to KNN and Random Forest",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Dataset: 500 CT images drawn from LIDC-IDRI plus small validation samples from AHRC and AIMS were used, with 70% for training and 30% for testing",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4,
+        6
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Preprocessing: images resized from 512x512x3 to 256x, normalized and denoised using CLAHE, Wiener, Adaptive Gaussian, Gaussian and Gabor filtering; segmentation used thresholding and marker-controlled watershed",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Model training: implemented in MATLAB with multi-stage image-processing pipeline and trained classifiers KNN, SVM, and Random Forest using extracted features; KNN uses Euclidean distance, SVM builds max-margin hyperplane, Random Forest ensembles decision trees",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Evaluation: 5-fold cross-validation used; performance metrics computed per class include accuracy, precision, recall, F1-score, TPR, FPR, AUC, FAR and FRR",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result SVM: average accuracy 95.06%, average precision 0.95, average recall 0.99, average F1-score 0.98, average TPR 0.99 and average FPR 0.26 across folds; ROC-AUC > 0.99 per class",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Result KNN and Random Forest: KNN average accuracy 86.89%, precision 0.84, recall 0.98, F1 0.91; Random Forest average accuracy 81.96%, precision 0.78, recall 0.98, F1 0.87",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Comparison: SVM outperforms KNN and Random Forest on this dataset likely due to handling complex, high-dimensional decision boundaries better",
+      "role": "Claim",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "External validation: small sample sets from AHRC and AIMS were used with radiologist supervision to confirm results from the primary dataset",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Conclusion: The proposed image-processing and classification pipeline successfully detects lung cancer from CT images with SVM achieving highest accuracy (95.05%), suggesting potential for aiding early diagnosis",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        8
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Claim about generalizability: Results suggest the approach could improve early detection and patient outcomes but require testing on larger, more diverse datasets",
+      "role": "Claim",
+      "parents": [
+        9
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Limitation: Study used a relatively small sample of 500 images and limited external validation samples, so performance estimates may not generalize across populations and imaging conditions",
+      "role": "Limitation",
+      "parents": [
+        1,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Future work: expand and diversify data collection across demographics and cancer stages to improve model performance and reliability",
+      "role": "Claim",
+      "parents": [
+        10,
+        11
+      ],
+      "children": null
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "State-level economic policy uncertainty can be quantified using local newspaper text and these state-level EPU measures are meaningful predictors of state economic performance, exhibit distinct state vs national sources, spill across borders, and shifted toward state/local sources during COVID-19",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        10
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Method: Construct three monthly state-level EPU indexes (EPU-S for state/local sources, EPU-N for national/international sources, EPU-C composite) from digital archives of about 3,500 local newspapers by flagging articles that contain economy terms, uncertainty terms, and policy-term sets; normalize raw ratios to 100 over a baseline period",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Method detail: Use Access World News Newsbank archives, median 49 papers per state-month, state-specific policy term sets to distinguish state/local vs national policy mentions, and compute raw fractions of articles then normalize by state 2006-2019 averages",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Evidence: Substantial share of composite EPU articles discuss state/local matters (pre-COVID roughly 50% national-only, 30% state-only, 20% both; March 2020-June 2021 state-only share rose to 40% and national-only fell to 38%)",
+      "role": "Evidence",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Result: EPU-S and EPU-N respond to political events differently — EPU-S rises around own-state gubernatorial elections and state episodes, EPU-N rises around presidential elections and national/international shocks (9-11, debt-ceiling, wars, Brexit, government shutdowns)",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Result: Close elections (winning margin under 4 percent) produce large EPU increases: close presidential elections raise EPU-N about 60% and close gubernatorial elections raise EPU-S about 35%, controlling for economic conditions and fixed effects",
+      "role": "Result",
+      "parents": [
+        0,
+        4
+      ],
+      "children": [
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Method: Fit panel VARs on pre-COVID data (44 states, monthly) using ln(EPU-C) and state activity (unemployment or log employment) with six lags and Cholesky identification to estimate dynamic responses of activity to EPU shocks",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Assumption and data scope: Newspaper-based EPU is suitable for monthly state-level measurement because newspapers are frequent, topical, have long archives, and averaging many local papers reduces idiosyncratic bias; sample covers states back to 1985 for some states and all states since 2006",
+      "role": "Assumption",
+      "parents": [
+        1,
+        2
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Result / Evidence: Major national and state episodes produce large heterogeneous EPU spikes across states (examples: California electricity crisis and 2003 gubernatorial recall increased California EPU-S; Kansas tax experiment raised Kansas EPU-S; Katrina raised Louisiana EPU-S and EPU-N)",
+      "role": "Evidence",
+      "parents": [
+        0,
+        3,
+        4,
+        5
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Result: Upward innovations in own-state ln(EPU-C) foreshadow weaker state economic performance: VARs show statistically significant hump-shaped responses with peak higher unemployment (~0.10 percentage point) and lower employment (about -0.13 log points) roughly one year after a one standard deviation ln(EPU-C) shock; results robust to filtering and specifications and larger in bigger states",
+      "role": "Result",
+      "parents": [
+        0,
+        6
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Result: COVID-19 pandemic produced huge increases in policy uncertainty and shifted the main locus toward state/local sources (cross-state average EPU-N rose to 2.7 times pre-COVID peak, EPU-S to over four times prior peak; cross-state mean EPU-S/EPU-N rose from 0.65 pre-pandemic to 1.1 Mar 2020-Jun 2021)",
+      "role": "Result",
+      "parents": [
+        0,
+        3,
+        8
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Result: Spatial spillovers — upward EPU shocks in neighboring states also raise own-state unemployment; own-state and border-state EPU shocks of equal size have similar unemployment effects, though border shocks are typically smaller in realized magnitude",
+      "role": "Result",
+      "parents": [
+        0,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Evidence / Result during pandemic: Lockdown stringency strongly associated with larger increases in state EPU; regressions show states with stricter government-mandated lockdowns (shelter-in-place, business, restaurant, school closure orders combined into an index) experienced larger EPU-C increases relative to 2019",
+      "role": "Evidence",
+      "parents": [
+        0,
+        10
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Result: Lockdowns, EPU and unemployment during pandemic — states with stricter lockdowns experienced larger unemployment increases conditional on pandemic severity; larger increases in EPU-C during the pandemic are also associated with larger unemployment increases, though causal interpretation requires caution",
+      "role": "Result",
+      "parents": [
+        0,
+        10,
+        12,
+        9
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: VAR estimates use pre-COVID samples to characterize typical dynamics and avoid atypical COVID responses; newspaper measures may be noisier in less populous states and results may attenuate for small states due to sampling noise and fewer papers",
+      "role": "Limitation",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: State-level EPU indexes are a useful new tool — they reveal distinct state vs national uncertainty sources, election and event drivers, cross-border spillovers, and pandemic-era shifts that motivate further research on political polarization, subnational policy uncertainty, firm responses, and policy-category-specific uncertainty measures",
+      "role": "Conclusion",
+      "parents": [
+        0,
+        3,
+        4,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

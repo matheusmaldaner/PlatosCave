@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Replacing neural network segment classifiers with support vector machines (SVM) will improve handwritten numeral recognition performance and can be integrated into an SVM/HMM hybrid word recognizer",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SVMs offer better generalization via structural risk minimization and large margin classification compared to empirical risk minimization used by neural networks",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We implemented SVM classifiers for isolated character recognition using one-versus-rest multi-class strategy and SVM formulations from statistical learning theory",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Feature extraction used moment invariants (7 original + 7 thinned = 14), affine moment invariants (4), and online spatially resampled local features resulting in 350 input feature values for SVM experiments",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Datasets used include UCI Optdigits (8x8 and 32x32 formats), IRONOFF, UNIPEN, and a collected Assamese character dataset of 8235 samples from 45 writers",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "SVM experimental configuration: used RBF kernel for final experiments, performed grid search to select hyperparameters, and chose C = 8 and gamma = selected value",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "SVM classification runs were performed in training and testing phases with disjoint training and test sets; a test application was used to load Optdigits data and run analyses",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Theoretical SLT argument: minimizing empirical error and model capacity (VC dimension) together via SRM yields better generalization, which underlies SVM design",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 8,
+      "text": "SVM was applied as a binary classifier extended to multi-class by one-versus-rest and also described in linear and kernelized formulations to maximize margin and identify support vectors",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Preprocessing and feature extraction pipeline: filtration, normalization, segmentation to character units, then feature computation (moments, affine invariants, resampled local features)",
+      "role": "Method",
+      "parents": [
+        2,
+        3,
+        4
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 10,
+      "text": "For image-based features 18 moment-related features were used for SVM; for online-resampled experiments each character produced 350 feature values as SVM input",
+      "role": "Claim",
+      "parents": [
+        3,
+        9
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Experimental result: the test application classification correctly identified 98% of the testing data (disjoint test set) using the described SVM setup",
+      "role": "Result",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Comparative experiments across datasets show SVM outperforms Hidden Markov Model (HMM) on isolated character recognition in all three evaluated databases",
+      "role": "Result",
+      "parents": [
+        6,
+        4
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: SVMs are a promising solution for handwriting recognition and integrating SVM character classifiers into HMM-based word recognizers is expected to improve word recognition rates",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        12,
+        0
+      ],
+      "children": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Limitation: SVM models require substantially more parameter storage (memory proportional to number of support vectors times feature dimensionality) compared to HMM weight-sharing schemes",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Mitigation and future work: reduce number of support vectors via finer C and gamma grid search and reduced set selection; implement hybrid SVM/HMM word recognizer with preprocessing and normalization",
+      "role": "Claim",
+      "parents": [
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

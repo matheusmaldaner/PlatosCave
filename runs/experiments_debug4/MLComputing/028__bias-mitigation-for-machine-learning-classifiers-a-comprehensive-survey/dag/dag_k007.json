@@ -1,0 +1,199 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A comprehensive survey of bias mitigation methods for machine learning classifiers identifies practices, datasets, metrics, benchmarking and open challenges to support practitioners and guide future research",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        9,
+        11,
+        13
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Survey methodology: systematic literature search (preliminary, repository search across six sources, three-stage manual screening, backward snowballing, author feedback)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Selected publications: 341 papers collected (preliminary 100, repository searches, snowballing 78, author feedback added 32)",
+      "role": "Result",
+      "parents": [
+        1
+      ],
+      "children": [
+        3,
+        9
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Taxonomy of mitigation types: methods categorized by intervention stage into pre-processing (123 publications), in-processing (212 publications), post-processing (56 publications)",
+      "role": "Claim",
+      "parents": [
+        2,
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Pre-processing major approaches: relabelling/perturbation, sampling/reweighing/SMOTE/generative sampling, latent variable augmentation, representation learning (e.g., adversarial, VAE, optimization)",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "In-processing major approaches: regularization and constraints on loss, adversarial learning, compositional (ensembles/decoupled classifiers), adjusted learning (algorithmic/training changes)",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Post-processing approaches are least frequent and include input correction (rare), classifier correction (e.g., calibrated thresholds, label flipping) and output correction (reject-option, thresholding)",
+      "role": "Claim",
+      "parents": [
+        3
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Many works combine methods across stages: 70 publications apply multiple stages; 86% of combined works include in-processing, 54% pre-processing, 31% post-processing",
+      "role": "Result",
+      "parents": [
+        4,
+        5,
+        6
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 8,
+      "text": "In-processing methods commonly modify the learning objective and can provide theoretical guarantees or constraints (meta-algorithms, DRO, fairness regularizers, constraint solvers)",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical evaluation summary: experiments in 324 papers, average 2.7 datasets per publication, 81 unique real datasets identified, 56 publications used synthetic data",
+      "role": "Result",
+      "parents": [
+        2,
+        7
+      ],
+      "children": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Dataset concentration and cautions: Adult used by 77% of empirical papers, COMPAS by 51%, many datasets used rarely (59% used once); reliance on few benchmarks raises external validity concerns",
+      "role": "Claim",
+      "parents": [
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Fairness metrics and measurement: 109 unique metrics found, grouped into six categories (dataset-label, predicted outcome parity, predicted vs actual outcomes, predicted probabilities, similarity/individual fairness, causal), average of two metrics per paper but 45% use only one",
+      "role": "Result",
+      "parents": [
+        0
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Most-used metrics and trade-offs: Statistical Parity / Disparate Impact and Equality of Opportunity / Equalized Odds are most common; metric multiplicity creates evaluation difficulty and accuracy-fairness trade-offs",
+      "role": "Claim",
+      "parents": [
+        11,
+        9
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Benchmarking and reproducibility: common baseline is original (unmitigated) model (used in 82% of experiments); many papers benchmark against prior mitigation methods (popular benchmarks include Hardt 2016, Kamiran & Calders, Zafar et al.); 56% of papers provide source code",
+      "role": "Result",
+      "parents": [
+        8,
+        10,
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "text": "Challenges identified: lack of consensus on fairness metrics, dataset limitations and missing protected attributes, transfer to real-world deployments, need for fairness guarantees and broader experimental evaluation",
+      "role": "Claim",
+      "parents": [
+        11,
+        10,
+        13
+      ],
+      "children": [
+        15
+      ]
+    },
+    {
+      "id": 15,
+      "text": "Recommendations and best practices distilled: check prior work, evaluate on at least three diverse datasets, report protected attributes and data-splits, use multiple fairness metrics plus a performance metric, benchmark against original model and similar methods, test across multiple classifiers, repeat experiments (e.g., 10 runs), and share code and numerical results",
+      "role": "Conclusion",
+      "parents": [
+        14,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

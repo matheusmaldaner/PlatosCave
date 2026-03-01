@@ -1,0 +1,169 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Random forests, ensembles of tree predictors grown using independent identically distributed random vectors, improve prediction accuracy and avoid overfitting by averaging many randomized trees",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Definition: A random forest is a classifier formed by a collection of tree-structured classifiers h(x, theta_k) where theta_k are iid random vectors and each tree casts a unit vote for the most popular class at input x",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Theorem (convergence): As the number of trees increases, the generalization error converges almost surely to a limit given by the probability that the expected vote margin is negative, explaining why random forests do not overfit as trees are added",
+      "role": "Claim",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Randomization strategies studied include bagging (bootstrap sampling), random input selection at each split (Forest-RI), and random linear combinations of inputs as candidate features (Forest-RC); trees are grown to maximum size without pruning",
+      "role": "Method",
+      "parents": [
+        0,
+        1
+      ],
+      "children": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Theoretical bound: An upper bound for classification generalization error is proportional to the mean correlation of raw margins divided by the square of the strength (PE* <= rho_bar(1 - s^2)/s^2), identifying strength and correlation as key factors",
+      "role": "Claim",
+      "parents": [
+        2
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Out-of-bag estimates: Using bagging, out-of-bag samples (about one-third left out per bootstrap) provide ongoing unbiased estimates of generalization error, classifier strength, correlation, and variable importance without separate test sets",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Forest-RI: at each node randomly select F input variables and choose the best split among them (experiments tried F=1 and F=int(log2 M +1)); Forest-RC: at each node generate F random linear combinations of L inputs (used L=3) and select best split",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        7,
+        9,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Empirical result: Random forests with random feature selection achieve test errors comparable to or better than Adaboost on many benchmark datasets, while being faster and more robust to noise",
+      "role": "Result",
+      "parents": [
+        3,
+        5,
+        6
+      ],
+      "children": [
+        8,
+        12
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Empirical sensitivity: Generalization error is relatively insensitive to the chosen number of candidate features F; often F=1 or small F gives near-optimal accuracy, because strength plateaus early while correlation increases with F",
+      "role": "Result",
+      "parents": [
+        6,
+        7
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Variable importance method: Permute (noise) a single input's values in out-of-bag examples and measure the percent increase in misclassification to obtain an importance ranking; verifying importance by rerunning forests on selected variables",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        7
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Robustness to output noise: In experiments injecting 5% random label noise, Adaboost's error increased markedly while Forest-RI and Forest-RC showed much smaller changes, indicating greater robustness of random forests to mislabeled outputs",
+      "role": "Result",
+      "parents": [
+        7,
+        5
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Regression theory: For regression forests the generalization MSE of the averaged forest converges to the MSE of the expected tree predictor, and an upper bound shows forest error <= rho_bar * tree_error, so low residual correlation and low tree error are required",
+      "role": "Claim",
+      "parents": [
+        2,
+        6
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Empirical regression results: Random-feature forests often reduce MSE compared to bagging and sometimes approach or beat adaptive bagging, with optimal performance balancing decreased tree error and increased residual correlation as number of features varies",
+      "role": "Result",
+      "parents": [
+        11,
+        6,
+        5
+      ],
+      "children": null
+    }
+  ]
+}

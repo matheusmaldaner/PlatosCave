@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Lexicon-based sentiment analysis using the Hedonometer produces sentiment scores that differ from a machine-learning based approach (Microsoft Azure Text Analytics), and these differences can be analyzed to determine whether specific Hedonometer lexical entries systematically cause outlier disagreements across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "We computed sentiment for more than 150,000 English-language texts from four domains (Finance, News, Social Media, IMDB reviews) using Hedonometer and Azure and compared their outputs",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "We modelled differences between Hedonometer and Azure sentiment scores per document using linear regression, treating Hedonometer lexical entries as independent variables and examining p-values to identify words contributing to score differences",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "We limited analysis to Hedonometer words that appear in at least three of the four domains to identify words consistently acting as outliers across domains",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": [
+        6
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Dataset composition: Finance ~5,000 phrases, News ~50,000 articles, Social Media ~40,000 tweets, IMDB reviews 50,000 reviews; overall 3,810 distinct Hedonometer words appeared across the datasets out of the 10,222-word lexicon",
+      "role": "Context",
+      "parents": [
+        1
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Distribution of Hedonometer coverage varies by domain (e.g., News had far fewer Hedonometer words while IMDB and Social Media had many), which may affect domain-specific comparisons",
+      "role": "Claim",
+      "parents": [
+        1,
+        4
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 6,
+      "text": "We used Azure sentiment (range 0 to 1) as the target and linear regression p-values to rank Hedonometer words by their contribution to differences between methods; words with smallest p-values are candidates for weight adjustment",
+      "role": "Method",
+      "parents": [
+        2,
+        3
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "We removed words with p-values equal to zero when computing correlations between Hedonometer happiness rankings and regression p-value rankings",
+      "role": "Method",
+      "parents": [
+        6
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Regression results show different words are most influential in different domains; no single Hedonometer lexical entry stands out as a universal outlier across domains",
+      "role": "Result",
+      "parents": [
+        6
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Empirical observation: differences between Hedonometer and Azure scores vary by domain — Finance and News show approximate agreement in the middle range, Social Media shows greater differences, and IMDB reviews show extreme differences with few agreed scores",
+      "role": "Evidence",
+      "parents": [
+        5,
+        8
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Spearman correlations between Hedonometer happiness ranking and p-value ranking are small and domain-dependent: Finance -0.1126, News -0.1206, Social Media 0.2949, IMDB 0.3300, indicating only weak association",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Conclusion: The importance of specific Hedonometer words in explaining differences versus Azure depends on domain, and there are no major consistent outlier words that systematically cause differences across domains",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Limitation: Analysis covered only 3,810 Hedonometer words present in the datasets (of 10,222 total), used linear regression with many independent variables raising multiple hypothesis testing concerns, and may be sensitive to corpus coverage",
+      "role": "Limitation",
+      "parents": [
+        11
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Practical implication: Given absence of universal outlier words and imperfect inter-annotator agreement on sentiment, adjusting Hedonometer lexical weights is unlikely to substantially change overall sentiment outcomes when tools are used consistently",
+      "role": "Claim",
+      "parents": [
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Future work: target texts containing specific Hedonometer words to increase coverage, consider multiple hypothesis testing corrections or replace regression with non-parametric ML models to use feature importance measures",
+      "role": "Conclusion",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}

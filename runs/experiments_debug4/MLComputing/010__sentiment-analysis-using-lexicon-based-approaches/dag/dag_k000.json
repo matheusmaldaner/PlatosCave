@@ -1,0 +1,183 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "A lexicon-based method that combines hand-ranked multi-part-of-speech dictionaries with linguistic handling of intensification, negation, irrealis, repetition, and text-level weighting can robustly extract semantic orientation (sentiment polarity and strength) across domains",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "SO-CAL uses hand-built dictionaries of adjectives, nouns, verbs, adverbs and multi-word expressions with SO scores on a -5 to +5 scale, created and reviewed by researchers",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        5,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 2,
+      "text": "SO-CAL implements intensification as percentage modifiers applied recursively and applied to appropriate parts of speech, plus adjectival intensifiers and other genre features (caps, exclamations, but)",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": 3,
+      "text": "SO-CAL implements negation using a polarity shift model (shift values toward opposite polarity by a fixed amount) with conservative scope search and irrealis blocking instead of simple sign flip",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "SO-CAL aggregates word-level SO values with repetition damping (nth occurrence weighted 1/n), negative-term up-weighting, optional XML or positional weighting, and supports multiple cutoffs for finer-grained classification",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Dictionaries were built manually from multiple sources (Epinions, Polarity Dataset, General Inquirer), hand-ranked −5 to +5, committee-reviewed, and include ~2,252 adjectives, 1,142 nouns, 903 verbs, 745 adverbs and intensifiers",
+      "role": "Method",
+      "parents": [
+        1
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Linguistic features (negation shift, intensifiers, irrealis blocking, repetition and negative weighting) each contribute to improved polarity classification accuracy when enabled together in SO-CAL",
+      "role": "Claim",
+      "parents": [
+        2,
+        3,
+        4
+      ],
+      "children": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "text": "On multiple review corpora (Epinions 1, Epinions 2, Polarity movie reviews, Camera reviews) SO-CAL with full features achieved ~78.7% overall accuracy, significantly outperforming ablated or simpler dictionary variants",
+      "role": "Result",
+      "parents": [
+        6,
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "SO-CAL supports multi-word expressions, POS-specific handling, lemmatization, and separate adjectival intensifier dictionary to handle constructions like 'total failure' or 'act funny'",
+      "role": "Method",
+      "parents": [
+        1,
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Mechanical Turk elicited human judgments support the relative ordering and granularity of the hand-ranked adjective dictionary: higher agreement for extreme SO values and predicted distributions across positive/neutral/negative and pairwise comparisons",
+      "role": "Evidence",
+      "parents": [
+        5,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Comparisons show that manually ranked, POS-specific, moderately-sized dictionaries outperform fully automatic large-coverage lexicons (Google PMI, Maryland thesaurus-derived, SentiWordNet averages) within SO-CAL, because excess coverage and coarse granularity introduce noise",
+      "role": "Claim",
+      "parents": [
+        5
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "Across short-text domains (news sentences, blog sentences, headlines, MySpace comments) SO-CAL attains comparable accuracy on non-empty texts (texts containing dictionary words) and outperforms most baselines when backoff strategies are used",
+      "role": "Result",
+      "parents": [
+        7,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "SO-CAL demonstrates better cross-domain robustness than supervised classifiers trained in a single domain, because lexicon-based SO and explicit contextual rules generalize to unseen domains",
+      "role": "Conclusion",
+      "parents": [
+        7,
+        11,
+        10
+      ],
+      "children": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitations include remaining challenges in modeling complex negation/NPIs, scope detection without full parsing, sentence-level short-texts with many SO-empty items, and occasional word-sense ambiguities in dictionaries",
+      "role": "Limitation",
+      "parents": [
+        3,
+        5,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Future work proposed: integrate discourse and genre-level modules (topic/comment detection, rhetorical relations), improve sense-disambiguation and scope parsing, and adapt SO-CAL to other languages and combined hybrid systems",
+      "role": "Claim",
+      "parents": [
+        12,
+        13
+      ],
+      "children": null
+    }
+  ]
+}

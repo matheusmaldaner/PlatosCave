@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Input-aware selective instruction duplication (SID) that adapts protection to runtime inputs can substantially reduce silent data corruption (SDC) coverage loss compared to existing input-agnostic SID techniques while remaining lightweight and practical for HPC deployment",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing SID methods derive vulnerability profiles from a single default reference input and assume input-invariant SDC propagation, causing underprotection or overprotection when inputs vary",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Empirical evaluation across 30 inputs for 10 HPC applications shows large ranges of SDC coverage when using reference-input-based SID (coverage often falls well below reference), demonstrating substantial coverage loss across inputs",
+      "role": "Evidence",
+      "parents": [
+        1
+      ],
+      "children": null
+    },
+    {
+      "id": 3,
+      "text": "Protego: a two-phase input-aware SID framework consisting of a one-time offline vulnerability-guided input exploration and grouping, plus a lightweight runtime classifier that selects a precomputed representative SID-protected executable based on input-argument features",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12
+      ]
+    },
+    {
+      "id": 4,
+      "text": "One-time SDC vulnerability-guided search: generate and evaluate 500 informative inputs via mutation and crossover, prioritize inputs that maximize diversity in instruction-level SDC vulnerability profiles using fault injection (FI)",
+      "role": "Method",
+      "parents": [
+        3
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Input grouping analysis: cluster the explored inputs into a small number of input groups by minimizing maximum allowable SDC coverage loss within groups (selecting a 10% threshold) and pick a representative input and its SID-protected executable per group",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Feature selection and model training: derive candidate transformations of input arguments, select top 5 features using mutual information, and train an MLP (five hidden layers 512-256-128-64-32, ReLU, Adam) on the 500-input dataset to predict overall SDC vulnerability from input features",
+      "role": "Method",
+      "parents": [
+        5
+      ],
+      "children": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Runtime deployment: extract the preselected top-5 argument-derived features from an unseen input, use the trained MLP to estimate overall SDC vulnerability, map the estimate to the nearest input group, and return the group's precomputed representative SID-protected executable without runtime FI or dynamic profiling",
+      "role": "Method",
+      "parents": [
+        5,
+        6
+      ],
+      "children": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Protego reduces mean SDC coverage loss across diverse inputs compared to baseline SID: evaluation on 10 HPC applications shows substantially lower average coverage loss (evaluation reports reductions in mean loss across protection budgets; e.g., per-paper summary: average loss reduced from around 21% to 10% across inputs)",
+      "role": "Result",
+      "parents": [
+        3,
+        6,
+        7
+      ],
+      "children": [
+        9
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Per-application example: LU application mean SDC coverage loss at 10%, 30%, 50%, 70% overheads drops from baseline values 13.33%, 11.29%, 7.09%, 4.94% to Protego values 4.88%, 4.35%, 3.73%, 1.84%; overall across 10 apps baseline averages 23.81%, 18.76%, 16.36%, 13.14% vs Protego 15.18%, 12.71%, 11.62%, 8.43%",
+      "role": "Evidence",
+      "parents": [
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Protego achieves low runtime overhead: selecting a representative protected executable at runtime takes about 0.05 seconds on average vs about 5 seconds for full duplication deployment, yielding roughly 100x speedup compared to full duplication",
+      "role": "Result",
+      "parents": [
+        3,
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Case study on high SDC-prone inputs: Protego substantially outperforms static SID under high-risk inputs (average coverage loss across apps for baseline 22.89% vs Protego 6.41%), showing particular effectiveness when inputs activate regions unseen by reference input",
+      "role": "Result",
+      "parents": [
+        7,
+        8
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Offline cost and limitation: the one-time vulnerability-guided search and FI are expensive (reported average offline search time ~3500 minutes and SID evaluation ~880 minutes across applications), although this cost is incurred only once per application",
+      "role": "Limitation",
+      "parents": [
+        3,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Conclusion: Precomputing a small set of representative SID-protected executables via guided FI and using lightweight input-argument features plus an MLP to choose among them at runtime provides a practical trade-off that mitigates input-induced SDC coverage loss while avoiding expensive runtime FI or dynamic profiling",
+      "role": "Conclusion",
+      "parents": [
+        8,
+        10,
+        11,
+        12
+      ],
+      "children": null
+    }
+  ]
+}

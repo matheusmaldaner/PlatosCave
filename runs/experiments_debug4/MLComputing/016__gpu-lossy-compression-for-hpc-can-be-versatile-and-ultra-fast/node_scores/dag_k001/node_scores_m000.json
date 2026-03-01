@@ -1,0 +1,189 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.72,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim aligns with common known limitations of GPU lossy compressors, including preallocation preventing actual memory reduction, generalization challenges across diverse HPC data, and difficulty enabling dimension aware random access.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a design with multiple compression modes and advanced features; plausibility exists but specifics and validation are not provided, so assessment remains uncertain.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.65,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts a specific CUDA based implementation plan with several optimizations; without empirical data it's plausible but not verifiable from the text alone",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.65,
+    "relevance": 0.85,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general knowledge of lossy quantization schemes, VGC claiming support for error bounded lossy quantization and standard compatible outputs is plausible but unverifiable from provided information.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.65,
+    "relevance": 0.75,
+    "evidence_strength": 0.35,
+    "method_rigor": 0.4,
+    "reproducibility": 0.35,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text and general HPC knowledge, diverse data modalities exhibit different spatial patterns necessitating adaptive methods and dimension awareness, but specifics and empirical validation are not provided here.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Dimension aware delta encoding that does register level fused passes to preserve locality and enable coalesced access is plausible but not verifiable from the claim alone; its novelty and specifics are uncertain.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.6,
+    "relevance": 0.85,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a two kernel approach where a first kernel computes per block compressed sizes, performs a prefix sum to obtain total compressed size, allocates exact GPU memory, then a second kernel writes blocks with synchronized offsets, a plausible and commonly used pattern in GPU pipelines for memory efficiency.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.65,
+    "relevance": 0.6,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim outlines a method for selective decompression with early stopping using block metadata and prefix sums to locate and decompress a region of interest and to allow writing back to the compressed array.",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.4,
+    "relevance": 0.5,
+    "evidence_strength": 0.0,
+    "method_rigor": 0.0,
+    "reproducibility": 0.0,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim is a high level statement about three algorithms per dimensionality for certain data types; no evidence or methodological details are provided in the claim text, and there is no cited literature in this assessment.",
+    "confidence_level": "low"
+  },
+  "10": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based on the given claim text, the evaluation uses CUDA implementation of about 15000 lines, block sizes 32 for 1D, 8x8 for 2D, and 4x4x4 for 3D; tested on NVIDIA A100 with 13 real world HPC datasets and comparisons to cuZFP, FZ-GPU, cuSZp1, cuSZp2, PFPL under REL error mode; no external sources checked.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.52,
+    "relevance": 0.85,
+    "evidence_strength": 0.25,
+    "method_rigor": 0.25,
+    "reproducibility": 0.25,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim, it asserts that only integer quantization is lossy while later stages are lossless, yielding reconstruction within quantization bounds; without additional methodological details this remains plausible but not verifiable from general knowledge alone.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.58,
+    "relevance": 0.85,
+    "evidence_strength": 0.45,
+    "method_rigor": 0.45,
+    "reproducibility": 0.4,
+    "citation_support": 0.35,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that memory efficient compression yields an exact compressed size and substantially reduces GPU memory usage (SCALE fields from hundreds of MB to single-digit MB) while maintaining about seventy percent throughput compared to standard mode; without actual data or citations, this remains plausible but unverified and requires empirical results.",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.55,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text, the reported throughputs are exceptionally high but plausible for selective decompression; without details or data, assessment remains uncertain.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.45,
+    "relevance": 0.9,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim text and general knowledge, the numbers seem plausible for high end GPU memory bandwidth but require source verification.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.55,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Based on the claim text only, VGC-O reportedly achieves top or near top compression ratios on most datasets with PSNR/SSIM comparable to other methods; no external verification available.",
+    "confidence_level": "medium"
+  },
+  "16": {
+    "credibility": 0.5,
+    "relevance": 0.85,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim reports quantitative benefits of VGC-N 1D KV cache compression and inter-node transfer speedups, but no methodological details are provided here.",
+    "confidence_level": "medium"
+  }
+}

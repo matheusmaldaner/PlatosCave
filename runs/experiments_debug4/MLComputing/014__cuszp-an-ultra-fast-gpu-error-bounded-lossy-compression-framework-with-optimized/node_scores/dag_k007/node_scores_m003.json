@@ -1,0 +1,178 @@
+{
+  "0": {
+    "credibility": 0.5,
+    "relevance": 0.5,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.5,
+    "sources_checked": [],
+    "verification_summary": "hypothesis_not_verified",
+    "confidence_level": "n/a"
+  },
+  "1": {
+    "credibility": 0.55,
+    "relevance": 0.85,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.2,
+    "reproducibility": 0.2,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a four step blockwise GPU kernel pipeline but there is no external evidence provided; plausibility is moderate given common GPU data compression workflows, but specifics are uncertain.",
+    "confidence_level": "medium"
+  },
+  "2": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes plausible standard steps in a lossy to lossless compression workflow (pre quantization with error bound, followed by a simple one dimensional predictor to reduce entropy) but cannot be verified without sources.",
+    "confidence_level": "medium"
+  },
+  "3": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.2,
+    "method_rigor": 0.3,
+    "reproducibility": 0.25,
+    "citation_support": 0.15,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a per block fixed length encoding based on maximum absolute quantized integer, sign map storage, and block size formula (fixed_length plus one) times L divided by eight.",
+    "confidence_level": "medium"
+  },
+  "4": {
+    "credibility": 0.55,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that cuSZp performs hierarchical intra kernel synchronization to compute exclusive prefix sums of per-block sizes, enabling concatenation of variable length outputs without CPU involvement, which is plausible but not verifiable from the claim alone without sources.",
+    "confidence_level": "medium"
+  },
+  "5": {
+    "credibility": 0.6,
+    "relevance": 0.7,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim describes a plausible method for reorganizing per block bits into aligned bytes to enable parallel writes, but no evidence or methodology is provided within the text to assess rigor or reproducibility.",
+    "confidence_level": "medium"
+  },
+  "6": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible in principle since combining steps on the GPU can remove host side overheads, but in practice end to end throughput may still be limited by GPU kernel efficiency, device memory bandwidth, and any remaining data movement or synchronization costs; thus the assertion is context-dependent and not universally guaranteed.",
+    "confidence_level": "medium"
+  },
+  "7": {
+    "credibility": 0.55,
+    "relevance": 0.72,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.2,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "Based solely on the claim and general knowledge, fixed length per block can be effective for locally smooth scientific data, but evidence is not established here.",
+    "confidence_level": "medium"
+  },
+  "8": {
+    "credibility": 0.72,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "Assessing claim that hierarchical prefix sum on NVIDIA A100 reduces global memory traffic and achieves high synchronization throughput; based on general parallel prefix sum practices and A100 architecture, but no external sources consulted",
+    "confidence_level": "medium"
+  },
+  "9": {
+    "credibility": 0.6,
+    "relevance": 0.9,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.3,
+    "citation_support": 0.2,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that a combination of quantization, fixed length encoding, hierarchical sync, and bit shuffle enables high kernel parallelism and reduces control overheads in cuSZp; without external data, plausibility depends on general benefits of these techniques but no direct evidence from the claim text is provided.",
+    "confidence_level": "medium"
+  },
+  "10": {
+    "credibility": 0.45,
+    "relevance": 0.75,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.25,
+    "sources_checked": [],
+    "verification_summary": "The claim states measured global synchronization throughput on A100 averaged 208.06 GB per second across datasets with a range from 120.52 to 260.77 GB per second, attributed to the efficiency of an in kernel prefix sum; without external data the plausibility depends on hardware specifics and measurement methodology.",
+    "confidence_level": "medium"
+  },
+  "11": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim provides specific end-to-end throughputs and speedups for compression and decompression on NVIDIA A100, but no independent verification is available from provided text, leaving credibility moderate and reproducibility uncertain.",
+    "confidence_level": "medium"
+  },
+  "12": {
+    "credibility": 0.55,
+    "relevance": 0.6,
+    "evidence_strength": 0.3,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that cuSZp achieves high kernel throughput comparable to or exceeding state of the art while attaining the best compression ratios on the majority of benchmarks, but without external verification or broader context this remains plausibly optimistic and requires empirical validation",
+    "confidence_level": "medium"
+  },
+  "13": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.5,
+    "method_rigor": 0.5,
+    "reproducibility": 0.5,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim asserts that cuSZp at same bit rates preserves higher PSNR and SSIM and avoids block constant artifacts compared to cuZFP and cuSZx, yielding better visualization and iso surface quality across datasets.",
+    "confidence_level": "medium"
+  },
+  "14": {
+    "credibility": 0.6,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.4,
+    "reproducibility": 0.4,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim is plausible as a statement about tradeoffs in lossy compression: some methods may yield higher ratios on specific datasets at large error bounds while causing visual artifacts and degraded quality, which is a common concern when pushing compression ratios, though the exact datasets and methods are not independently verifiable here.",
+    "confidence_level": "medium"
+  },
+  "15": {
+    "credibility": 0.65,
+    "relevance": 0.8,
+    "evidence_strength": 0.4,
+    "method_rigor": 0.3,
+    "reproducibility": 0.3,
+    "citation_support": 0.3,
+    "sources_checked": [],
+    "verification_summary": "The claim that cuSZp performance depends on dataset characteristics and GPU memory bandwidth, with throughput and compression gains varying across datasets and over time in time-varying simulations, is plausible given general data dependent and hardware bandwidth considerations, though specific empirical backing is not provided in the text.",
+    "confidence_level": "medium"
+  }
+}

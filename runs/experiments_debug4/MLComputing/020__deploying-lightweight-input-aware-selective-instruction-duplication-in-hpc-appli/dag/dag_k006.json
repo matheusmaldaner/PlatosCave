@@ -1,0 +1,177 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "Protego, an input-aware selective instruction duplication (SID) framework, can mitigate SDC coverage loss across diverse runtime inputs while remaining lightweight enough for practical deployment in HPC applications",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Existing SID techniques are input-agnostic: they derive instruction vulnerability profiles from a single default reference input and deploy a fixed SID plan at runtime",
+      "role": "Claim",
+      "parents": [
+        0
+      ],
+      "children": [
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Because SDC propagation and exercised instruction sets are input-dependent, static SID plans can underprotect active vulnerable regions for other inputs, causing significant SDC coverage loss",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Empirical evaluation across 10 HPC applications and multiple inputs shows large variability in SDC coverage when applying a SID plan derived from a reference input to other inputs, demonstrating coverage ranges well below expected coverage",
+      "role": "Evidence",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 4,
+      "text": "Protego design: one-time offline vulnerability-guided input search to discover a small set of informative inputs, cluster them into a few input groups with similar SID protection patterns, generate representative SID-protected executables per group, and a lightweight runtime classifier using argument-derived features to select the appropriate executable",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Offline guided input search algorithm: start from seeds, apply mutation and crossover to generate candidates, score candidates by how much their instruction-level SDC vulnerability profile deviates from existing profiles, and stop after collecting 500 unique inputs for FI evaluation",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Input grouping: cluster the 500 explored inputs by minimizing maximum allowable SDC coverage loss within each group (selected threshold 10%), choose representative input per group (median SDC rate), and precompute/store the representative SID-protected executable",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Runtime classification: extract five lightweight features from input arguments (various transformations), feed to a pre-trained MLP regression model to predict overall SDC vulnerability, map predicted vulnerability to closest input group, and retrieve the corresponding representative protected executable",
+      "role": "Method",
+      "parents": [
+        4
+      ],
+      "children": [
+        14
+      ]
+    },
+    {
+      "id": 8,
+      "text": "Assumption: the FI fault model focuses on datapath faults at LLVM IR instruction destinations (flip a bit in destination register) and excludes memory, cache, instruction-encoding, and control-logic faults because of ECC and other defenses",
+      "role": "Assumption",
+      "parents": [
+        0
+      ],
+      "children": null
+    },
+    {
+      "id": 9,
+      "text": "Result: Protego reduces average SDC coverage loss (compared to existing SID using reference input) across evaluated inputs and applications (reported reduction from 21% mean loss to 10% in abstract summary; evaluation across 10 apps shows consistent lower mean loss at multiple protection budgets)",
+      "role": "Result",
+      "parents": [
+        0,
+        4
+      ],
+      "children": null
+    },
+    {
+      "id": 10,
+      "text": "Result: Protego achieves low MLP prediction error for overall SDC rate (low mean absolute error across evaluated applications) enabling accurate mapping to input groups",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 11,
+      "text": "Result: Protego runtime selection is lightweight (approx. 0.05 seconds per online input on evaluated hardware) and provides about 100x speedup over deploying full duplication at runtime",
+      "role": "Result",
+      "parents": [
+        7
+      ],
+      "children": null
+    },
+    {
+      "id": 12,
+      "text": "Cost: offline one-time analysis includes guided input search (dominant: average ~3500 minutes), SID evaluation for representative groups (~880 minutes average), and fast MLP training (~seconds); these offline costs are amortized over runtime use",
+      "role": "Limitation",
+      "parents": [
+        5,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 13,
+      "text": "Evidence: the guided search and grouping empirical analysis found that a small number of input groups suffices (sharp decline in group count as allowable within-group coverage loss increases; 10% threshold yields few groups across applications)",
+      "role": "Evidence",
+      "parents": [
+        5,
+        6
+      ],
+      "children": null
+    },
+    {
+      "id": 14,
+      "text": "Case study evidence: for high SDC-prone inputs Protego markedly outperforms static SID—average SDC coverage loss for such inputs is 6.41% with Protego vs 22.89% for existing SID, showing Protego is particularly effective under high-risk inputs",
+      "role": "Evidence",
+      "parents": [
+        9,
+        11
+      ],
+      "children": null
+    },
+    {
+      "id": 15,
+      "text": "Conclusion: Protego provides a practical tradeoff by adapting SID protection to runtime inputs without runtime FI or heavy profiling, significantly reducing SDC coverage loss across diverse inputs while keeping runtime overhead low, at the expense of a one-time offline FI-guided analysis",
+      "role": "Conclusion",
+      "parents": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "children": null
+    }
+  ]
+}

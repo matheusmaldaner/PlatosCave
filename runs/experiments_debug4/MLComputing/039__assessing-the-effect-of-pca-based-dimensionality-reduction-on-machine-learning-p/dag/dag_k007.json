@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "text": "PCA-based dimensionality reduction can improve machine learning performance for hyperspectral optical imaging regression tasks (soil moisture estimation) while preserving predictive capability",
+      "role": "Hypothesis",
+      "parents": null,
+      "children": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "text": "Hyperspectral optical imaging produces high-dimensional, highly correlated spectral data that challenge machine learning due to the curse of dimensionality",
+      "role": "Context",
+      "parents": [
+        0
+      ],
+      "children": [
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "text": "The study dataset contains 679 samples with 125 hyperspectral bands (450-950 nm) and reference soil moisture measurements collected with a TRIME-PICO sensor from bare soil",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Dimensionality reduction was performed using PCA after standardizing spectral features with StandardScaler; the number of components was chosen to retain >99% cumulative variance",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Predictive performance was evaluated by training a Random Forest regressor (100 trees) on PCA-transformed data, using a 30% test split and fixed random state for reproducibility, and scoring with R2",
+      "role": "Method",
+      "parents": [
+        0
+      ],
+      "children": [
+        10
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Adjacent hyperspectral bands show strong inter-band correlations and redundancy, implying lower intrinsic dimensionality than nominal spectral resolution",
+      "role": "Claim",
+      "parents": [
+        1
+      ],
+      "children": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Dataset acquisition details: Cubert UHD 285 snapshot camera, 50x50 pixel images across 125 contiguous bands (~4 nm resolution), five-day campaign in May 2017 near Waldbronn/Karlsruhe, Germany",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": null
+    },
+    {
+      "id": 7,
+      "text": "Data preparation included importing into Python, splitting features X and target y, fixing numpy random seed 42, inspecting soil moisture distribution, and standardizing features",
+      "role": "Method",
+      "parents": [
+        2
+      ],
+      "children": [
+        4
+      ]
+    },
+    {
+      "id": 8,
+      "text": "PCA results: PC1 explains 98.89% variance, PC2 explains 0.64% variance; cumulative variance after two PCs is 99.53%, and scree plot shows sharp eigenvalue drop after PC2",
+      "role": "Result",
+      "parents": [
+        3
+      ],
+      "children": [
+        9,
+        11
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Retaining only the first two principal components enabled improved visualization and clearer separation of samples by soil moisture, while higher components contributed negligible discriminatory power",
+      "role": "Evidence",
+      "parents": [
+        8,
+        3
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 10,
+      "text": "Random Forest trained on PCA-transformed features achieved coefficient of determination R2 = 0.947 (94.7% explained variance) for soil moisture prediction",
+      "role": "Result",
+      "parents": [
+        4
+      ],
+      "children": [
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "text": "The combined evidence indicates PCA reduced dimensionality from 125 to 2 components while preserving predictive accuracy and enabling computational efficiency",
+      "role": "Claim",
+      "parents": [
+        8,
+        9,
+        10
+      ],
+      "children": [
+        12
+      ]
+    },
+    {
+      "id": 12,
+      "text": "Conclusion: PCA is an effective baseline strategy to reduce redundancy, improve interpretability, and maintain strong predictive performance for hyperspectral regression tasks like soil moisture estimation",
+      "role": "Conclusion",
+      "parents": [
+        11,
+        0
+      ],
+      "children": [
+        13
+      ]
+    },
+    {
+      "id": 13,
+      "text": "Limitation and future work: Results are demonstrated on one dataset and PCA only; further evaluation across diverse sensors, scenarios, and alternative feature extraction methods is recommended",
+      "role": "Limitation",
+      "parents": [
+        12
+      ],
+      "children": null
+    }
+  ]
+}
