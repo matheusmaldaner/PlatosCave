@@ -191,6 +191,17 @@ def _suggest_value(optuna_trial, name: str, spec: Dict[str, Any]) -> Any:
     raise AblationError(f"Unhandled distribution type '{dtype}'.")
 
 
+def _full_params_for_trial(trial, search_space: Dict[str, Any]) -> Dict[str, Any]:
+    params = dict(trial.params)
+    full = {}
+    for name, spec in search_space["params"].items():
+        if spec["type"] == "fixed":
+            full[name] = spec["value"]
+        else:
+            full[name] = params[name]
+    return full
+
+
 def _paper_cache_key(paper: Dict[str, Any]) -> str:
     return str(paper["paper_dir"].resolve())
 
@@ -285,7 +296,7 @@ def _trial_row_from_frozen(trial, search_space: Dict[str, Any]) -> Dict[str, Any
     }
     summary = dict(trial.user_attrs.get("summary", {}) or {})
     row.update(summary)
-    params = dict(trial.params)
+    params = _full_params_for_trial(trial, search_space)
     row["params_json"] = json.dumps(params, sort_keys=True, ensure_ascii=False)
     for pname in sorted(search_space["params"].keys()):
         row[f"param__{pname.replace('.', '_')}"] = params.get(pname, "")
@@ -427,7 +438,7 @@ def run_optuna_search(
             {
                 "trial_number": t.number,
                 "value": t.value,
-                "params": dict(t.params),
+                "params": _full_params_for_trial(t, search_space),
                 "summary": dict(t.user_attrs.get("summary", {}) or {}),
             }
         )
@@ -438,7 +449,7 @@ def run_optuna_search(
         best_payload = {
             "trial_number": best.number,
             "value": best.value,
-            "params": dict(best.params),
+            "params": _full_params_for_trial(best, search_space),
             "summary": dict(best.user_attrs.get("summary", {}) or {}),
         }
         _json_dump(search_dir / "best_trial.json", best_payload)
@@ -452,7 +463,7 @@ def run_optuna_search(
                     "config_index": t.number,
                     "config_id": f"trial_{t.number:06d}",
                     "config_hash": f"trial_{t.number:06d}",
-                    "params": dict(t.params),
+                    "params": _full_params_for_trial(t, search_space),
                 }
                 _, per_paper_rows = _evaluate_config_on_papers(
                     papers=papers,

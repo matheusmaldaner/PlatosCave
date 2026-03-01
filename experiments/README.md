@@ -327,28 +327,69 @@ Headline deltas:
 - Refine -> stage 3 sparse: `+0.006415` AUC, while prune rate dropped from `37.2%` to `16.3%`.
 - Dense -> stage 3 sparse: `+0.063352` AUC overall.
 
+Objective-metric note:
+
+- `auc_good_vs_bad` and `spearman_good_neutral_bad` are computed on the `103` papers whose labels are exactly `Good`, `Neutral`, or `Bad`.
+- The paper-facing score histogram below folds the single `Good (theory)` paper into `Good` for readability, so that figure is intentionally broader than the optimization metric.
+
 Objective distributions by stage:
 
-![Optuna objective histograms](../docs/img/optuna_stage_objective_histograms.svg)
+![Optuna objective histograms](../docs/img/optuna_stage_objective_histograms.png)
+
+Paper-ready versions: [PDF](../docs/img/optuna_stage_objective_histograms.pdf) | [SVG](../docs/img/optuna_stage_objective_histograms.svg)
 
 Best-so-far improvement across the three searches:
 
-![Optuna best-so-far](../docs/img/optuna_stage_best_so_far.svg)
+![Optuna best-so-far](../docs/img/optuna_stage_best_so_far.png)
+
+Paper-ready versions: [PDF](../docs/img/optuna_stage_best_so_far.pdf) | [SVG](../docs/img/optuna_stage_best_so_far.svg)
 
 Raw per-paper total scores for each stage's best trial, split by paper label
 (`Good (theory)` is folded into `Good`):
 
-![Best-trial total score by rating](../docs/img/optuna_stage_score_sum_by_rating.svg)
+![Best-trial total score by rating](../docs/img/optuna_stage_score_sum_by_rating.png)
+
+Paper-ready versions: [PDF](../docs/img/optuna_stage_score_sum_by_rating.pdf) | [SVG](../docs/img/optuna_stage_score_sum_by_rating.svg)
 
 `score_sum` is the raw total score accumulated across a paper's cached trial
 rows for a given configuration. It complements `graph_score_mean`: the mean is
 the normalized ranking metric used in summaries, while `score_sum` makes the
 absolute separation between `Good`, `Neutral`, and `Bad` papers easier to see.
 
+Bootstrap evidence for stage-level behavior:
+
+![Bootstrap delta histograms](../docs/img/optuna_stage_bootstrap_deltas.png)
+
+Paper-ready versions: [PDF](../docs/img/optuna_stage_bootstrap_deltas.pdf) | [SVG](../docs/img/optuna_stage_bootstrap_deltas.svg)
+
 Stage-3 concentration of the surviving live parameters in the top `250`
 completed trials:
 
-![Stage-3 key parameter histograms](../docs/img/optuna_stage3_key_param_histograms.svg)
+![Stage-3 key parameter histograms](../docs/img/optuna_stage3_key_param_histograms.png)
+
+Paper-ready versions: [PDF](../docs/img/optuna_stage3_key_param_histograms.pdf) | [SVG](../docs/img/optuna_stage3_key_param_histograms.svg)
+
+Best-trial diagnostics:
+
+| Stage | AUC | Spearman | Mean `graph_score_mean` | Grouped Good-Bad gap | Grouped Good-Neutral gap |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Stage 1 dense | `0.702486` | `0.313336` | `0.364914` | `0.027922` | `0.039563` |
+| Stage 2 refine | `0.759423` | `0.394516` | `0.369567` | `0.033008` | `0.039175` |
+| Stage 3 sparse | `0.765838` | `0.401420` | `0.366885` | `0.032914` | `0.038569` |
+
+Bootstrap comparison of successive stages (`5000` paper-level resamples):
+
+| Comparison | AUC delta | Spearman delta | Mean `graph_score_mean` delta |
+| --- | --- | --- | --- |
+| Dense -> refine | `+0.0566` median, `90% [+0.0156, +0.1037]`, `P(>0)=0.9888` | `+0.0789` median, `90% [+0.0274, +0.1370]`, `P(>0)=0.9968` | `+0.0046` median, `90% [+0.0032, +0.0061]`, `P(>0)=1.0000` |
+| Refine -> stage 3 sparse | `+0.0060` median, `90% [+0.0015, +0.0130]`, `P(>0)=0.9870` | `+0.0065` median, `90% [-0.0003, +0.0147]`, `P(>0)=0.9404` | `-0.0027` median, `90% [-0.0029, -0.0025]`, `P(>0)=0.0000` |
+
+Interpretation:
+
+- Stage 2 behaves like a real improvement pass rather than a narrow benchmark fit: it improves the tuned AUC, the ordinal label correlation, and the mean paper score at the same time, and the bootstrap intervals stay safely above zero across all three metrics.
+- Stage 3 behaves differently. It still squeezes out a small AUC gain on the exact tuned objective, but the Spearman gain is marginal and the mean paper score drops in every bootstrap replicate.
+- The grouped class gaps also stop improving in stage 3: the grouped Good-Bad gap slips from `0.033008` to `0.032914`, and the grouped Good-Neutral gap slips from `0.039175` to `0.038569`.
+- Taken together, this is evidence of objective overfitting in stage 3 on the fixed benchmark: it improves the exact optimization target without improving the broader score profile. Stage 2 does not show that failure mode and is the safer general refinement.
 
 What mattered:
 
@@ -390,7 +431,7 @@ Replay the fixed best configuration:
   --verbose
 ```
 
-Regenerate the SVG report assets and machine-readable summary:
+Regenerate the matplotlib report assets and machine-readable summary:
 
 ```bash
 .venv-exp/bin/python experiments/generate_optuna_report_assets.py
@@ -398,8 +439,9 @@ Regenerate the SVG report assets and machine-readable summary:
 
 Generated files:
 
-- [../docs/img/optuna_stage_objective_histograms.svg](../docs/img/optuna_stage_objective_histograms.svg)
-- [../docs/img/optuna_stage_best_so_far.svg](../docs/img/optuna_stage_best_so_far.svg)
-- [../docs/img/optuna_stage_score_sum_by_rating.svg](../docs/img/optuna_stage_score_sum_by_rating.svg)
-- [../docs/img/optuna_stage3_key_param_histograms.svg](../docs/img/optuna_stage3_key_param_histograms.svg)
+- [../docs/img/optuna_stage_objective_histograms.png](../docs/img/optuna_stage_objective_histograms.png), [PDF](../docs/img/optuna_stage_objective_histograms.pdf), [SVG](../docs/img/optuna_stage_objective_histograms.svg)
+- [../docs/img/optuna_stage_best_so_far.png](../docs/img/optuna_stage_best_so_far.png), [PDF](../docs/img/optuna_stage_best_so_far.pdf), [SVG](../docs/img/optuna_stage_best_so_far.svg)
+- [../docs/img/optuna_stage_score_sum_by_rating.png](../docs/img/optuna_stage_score_sum_by_rating.png), [PDF](../docs/img/optuna_stage_score_sum_by_rating.pdf), [SVG](../docs/img/optuna_stage_score_sum_by_rating.svg)
+- [../docs/img/optuna_stage_bootstrap_deltas.png](../docs/img/optuna_stage_bootstrap_deltas.png), [PDF](../docs/img/optuna_stage_bootstrap_deltas.pdf), [SVG](../docs/img/optuna_stage_bootstrap_deltas.svg)
+- [../docs/img/optuna_stage3_key_param_histograms.png](../docs/img/optuna_stage3_key_param_histograms.png), [PDF](../docs/img/optuna_stage3_key_param_histograms.pdf), [SVG](../docs/img/optuna_stage3_key_param_histograms.svg)
 - [../docs/img/optuna_stage_summary.json](../docs/img/optuna_stage_summary.json)
