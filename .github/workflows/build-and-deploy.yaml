@@ -51,8 +51,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            GATSBY_API_URL=${{ secrets.GATSBY_API_URL }}
 
   build-backend:
     name: Build Backend
@@ -158,12 +156,12 @@ jobs:
           REMOTE_BROWSER_CDP_PUBLIC_URL: ${{ secrets.REMOTE_BROWSER_CDP_PUBLIC_URL }}
           REMOTE_BROWSER_NOVNC_PUBLIC_URL: ${{ secrets.REMOTE_BROWSER_NOVNC_PUBLIC_URL }}
           SUPPRESS_LOGS: ${{ secrets.SUPPRESS_LOGS }}
-          GATSBY_API_URL: ${{ secrets.GATSBY_API_URL }}
+
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          envs: BROWSER_USE_API_KEY,EXA_API_KEY,REMOTE_BROWSER_CDP_PUBLIC_URL,REMOTE_BROWSER_NOVNC_PUBLIC_URL,SUPPRESS_LOGS,GATSBY_API_URL
+          envs: BROWSER_USE_API_KEY,EXA_API_KEY,REMOTE_BROWSER_CDP_PUBLIC_URL,REMOTE_BROWSER_NOVNC_PUBLIC_URL,SUPPRESS_LOGS
           script: |
             cd /home/deploy/platos-cave
 
