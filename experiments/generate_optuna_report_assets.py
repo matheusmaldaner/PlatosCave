@@ -51,8 +51,8 @@ def _configure_matplotlib() -> None:
         plt.style.use("default")
     matplotlib.rcParams.update(
         {
-            "figure.facecolor": "#fbfaf7",
-            "axes.facecolor": "#f7f4ed",
+            "figure.facecolor": "#ffffff",
+            "axes.facecolor": "#ffffff",
             "axes.edgecolor": "#bcb5aa",
             "axes.labelcolor": "#2f2b26",
             "axes.titlecolor": "#211d18",
@@ -71,7 +71,7 @@ def _configure_matplotlib() -> None:
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
             "savefig.dpi": 240,
-            "savefig.facecolor": "#fbfaf7",
+            "savefig.facecolor": "#ffffff",
             "axes.spines.top": False,
             "axes.spines.right": False,
         }
