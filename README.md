@@ -1,5 +1,5 @@
 <div align="center">
-<img src="docs/img/banner.png" alt="Plato's Cave Logo">
+<img src="docs/img/repobanner.png" alt="Plato's Cave Logo">
 
  *A Human-Centered Agentic System for Validating Research Papers*
 
@@ -44,7 +44,7 @@ Like emerging from Plato’s allegorical cave into enlightenment, this tool illu
 
 <div align="center">
 
-![Green Cave](https://github.com/matheusmaldaner/PlatosCave/blob/main/green_cave.gif)
+![Green Cave](docs/img/green_cave.gif)
 
 </div>
 
