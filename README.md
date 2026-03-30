@@ -1,143 +1,120 @@
 <div align="center">
 <img src="docs/img/repobanner.png" alt="Plato's Cave Logo">
 
- *A Human-Centered Agentic System for Validating Research Papers*
+*A human-centered agentic system for validating research papers*
 
-[![1st Place](https://img.shields.io/badge/⭐%201st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
-[![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/)
-![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
+[![1st Place](https://img.shields.io/badge/1st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
+[![arXiv](https://img.shields.io/badge/arXiv-2603.23526-b31b1b.svg)](https://arxiv.org/abs/2603.23526)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-platoscave.matheus.wiki-blue)](https://platoscave.matheus.wiki/)
+[![YouTube](https://img.shields.io/badge/Demo%20Video-red?logo=youtube)](https://www.youtube.com/watch?v=wvmJdUhuj4s)
 
 </div>
-
----
-
-### 📹 Watch the Demo
-
-We developed Plato's Cave as part of the University of Florida's AI Days Hackathon, and therefore had to keep the video within the time limit:
 
 <div align="center">
-  <a href="https://www.youtube.com/watch?v=wvmJdUhuj4s" target="_blank">
-    <img src="https://img.youtube.com/vi/wvmJdUhuj4s/maxresdefault.jpg"
-      alt="Watch the demo video"
-      width="600"
-      style="border-radius: 8px;"
-    />
-  </a>
-
-  <br><br>
-
-  <a href="https://www.youtube.com/watch?v=wvmJdUhuj4s" target="_blank">
-    <img
-      src="https://img.shields.io/badge/%20Watch%20Demo%20Video-red?logo=youtube"
-      alt="Watch on YouTube"
-    />
-  </a>
+  <img src="docs/img/system_design.png" alt="System overview of Plato's Cave" width="100%">
+  <br>
+  <sub><b>System Overview.</b> (a) The user provides a PDF, URL, or natural-language query. (b) A web-surfer agent browses for the paper. (c) Text and images are extracted. (d) An LLM converts the content into a role-labeled DAG. (e) The frontend renders an interactive graph. (f) Web agents verify each node using external sources. (g) Trust-gated propagation flows along dependency edges. (h) The scorer aggregates signals into an overall paper-level score.</sub>
 </div>
 
----
 
-### 🧠 Overview
+## Overview
 
-Plato’s Cave helps you **comprehend dense academic material** by analyzing PDFs and URLs using progressive AI assistance.  
-Like emerging from Plato’s allegorical cave into enlightenment, this tool illuminates the **shadows of academic literature**, uncovering key insights, visualizations, and summaries.  
-
+Plato's Cave helps you **comprehend dense academic material** by analyzing PDFs and URLs using progressive AI assistance. Like emerging from Plato's allegorical cave into enlightenment, this tool illuminates the shadows of academic literature, uncovering key insights, visualizations, and summaries.
 
 <div align="center">
-
-![Green Cave](docs/img/green_cave.gif)
-
+  <img src="docs/img/deployed_system.png" alt="Plato's Cave deployed interface showing a DAG with integrity score" width="100%" style="border-radius: 8px;">
+  <br>
+  <sub><b>Deployed interface.</b> Plato's Cave showing a finalized run with the visualized DAG and Integrity Score.</sub>
 </div>
 
-## Quick Start
+## How It Works
 
-You have to run the frontend, backend and docker image on **three** separate terminal sessions. Follow the commands below:
+Plato's Cave runs a multi-stage pipeline to evaluate the integrity of a research paper:
 
-### (1) 🪶 Frontend Setup
+1. **Validate** -- accepts a PDF upload or URL, extracts the full text
+2. **Decompose** -- breaks the paper into atomic claims using an LLM
+3. **Build Knowledge Graph** -- structures claims as a directed acyclic graph (DAG) with role-aware nodes (Hypothesis, Evidence, Method, Conclusion)
+4. **Organize Agents** -- dispatches browser-based AI agents to independently verify each claim against external sources
+5. **Compile Evidence** -- aggregates agent findings, scoring each node on six dimensions (credibility, relevance, evidence strength, method rigor, reproducibility, citation support)
+6. **Evaluate Integrity** -- propagates trust through the graph using role-aware edge confidences and trust gating, producing a final integrity score
+
+The scoring mathematics are documented in detail [here](https://github.com/matheusmaldaner/PlatosCave/blob/main/graph_app/README.md).
+
+## Architecture
+
+<div align="center">
+  <img src="docs/img/architecture.png" alt="System architecture: Frontend, Backend, and Browser Automation deployed via AWS EC2" width="100%">
+  <br>
+  <sub><b>System Architecture.</b> Gatsby.js + React frontend, Python scoring backend, and Docker containers with browser-use verification agents, deployed via AWS EC2.</sub>
+</div>
+
+## Getting Started
+
+Try the live deployment at **[platoscave.matheus.wiki](https://platoscave.matheus.wiki/)**, or run it locally:
+
+### Prerequisites
+
+- Node.js and npm
+- Python 3.10+
+- [uv](https://docs.astral.sh/uv/) (Python package manager)
+- Docker
+- API keys for [Browser-Use](https://cloud.browser-use.com/#settings/api-keys/new) and [Exa](https://dashboard.exa.ai/home)
+
+### 1. Frontend
 
 ```bash
 cd frontend
 npm install
-gatsby develop  # If command not found, try: npx gatsby develop
+gatsby develop
 ```
 
-If you see
-Module not found: Can't resolve 'lucide-react':
-```bash
-npm install lucide-react
-```
+If `gatsby` is not found, use `npx gatsby develop`. The dev server starts at `http://localhost:8000`.
 
-This will start the development server at `http://localhost:8000`
+### 2. Backend
 
-### (2) 🖥️ Backend Setup
-
-On a separate terminal, while the frontend is still running, run the following commands:
+In a separate terminal:
 
 ```bash
-# install uv 
-# curl -LsSf https://astral.sh/uv/install.sh | sh
 cd backend
 uv sync
 source .venv/bin/activate
-uvx playwright install chromium --with-deps
 ```
 
-Create a .env file
-```
-touch .env
-```
+Create a `.env` file in the `backend/` directory with your API keys:
 
-Add your BROWSER_USE_API_KEY to the file (get $10 free [here](https://cloud.browser-use.com/#settings/api-keys/new))<br>
-Add your EXA_API_KEY to the file (get $10 free [here](https://dashboard.exa.ai/home))
 ```
-nano .env  # Open the file and add the line below
 BROWSER_USE_API_KEY="bu_YOURKEY"
 EXA_API_KEY="YOURKEY"
 ```
 
+Then start the server:
+
 ```bash
-# install VNC server
-sudo apt-get install x11vnc
-
-# start VNC server
-x11vnc -display :0 -forever -shared
-
-sudo apt update
-sudo apt install chromium-browser
-google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
-
 python server.py
 ```
 
-### (3) 🐳 Docker Image for Web Agent
+### 3. Remote Browser (Docker)
 
-Also an "image" here is not to be interpreted as a picture. You can think of a Docker image as a package that has everything you need to run some software (it has the libraries, code, envs, configs...)
+In a third terminal:
 
-```bash 
-# start the docker service (open Docker Desktop if on Windows -> Resources -> WSL Integration -> Enable Integration)
+```bash
 cd backend
 docker compose -f docker-compose.browser.yaml up --build remote-browser
-# alternatively you can run it detached:
-# docker compose -f docker-compose.browser.yaml up -d
 ```
 
-Once you have all three separate terminals running, you can access the application at `http://localhost:8000`
-
-
-<hr style="border: 0.5px solid #e5e5e5; margin: 20px 0;">
-
-## 🔢 Full Details Of The Math Can Be Found [Here](https://github.com/matheusmaldaner/PlatosCave/blob/main/graph_app/README.md)
-
-### 📚 Citation
+Once all three services are running, open `http://localhost:8000`.
+ 
+## Citation
 
 If you use this software in academic research, please cite:
 
 ```bibtex
-@software{maldaner2025platoscave,
-  author = {Maldaner, Matheus Kunzler and Valle, Raul and Wormald, Stephen and O'Connor, Kristian and Woelke, James},
-  title = {Plato's Cave: A Trust-Propagating Knowledge Graph System for Academic Research Verification},
-  year = {2025},
-  institution = {University of Florida},
-  note = {Winner: 1st Place, UF AI Days GatorHack},
-  url = {https://github.com/matheusmaldaner/PlatosCave}
+@article{maldaner2026platoscave,
+  author = {Maldaner, Matheus Kunzler and Valle, Raul and Kim, Junsung and Sultan, Tonuka and Bhargava, Pranav and Maloni, Matthew and Courtney, John and Nguyen, Hoang and Sawant, Aamogh and O'Connor, Kristian and Wormald, Stephen and Woodard, Damon L.},
+  title = {Plato's Cave: A Human-Centered Research Verification System},
+  year = {2026},
+  eprint = {2603.23526},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/abs/2603.23526}
 }
 ```
