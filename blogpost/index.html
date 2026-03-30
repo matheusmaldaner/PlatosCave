@@ -23,9 +23,9 @@
   <style>
     /* ── TEMPLATE: edit these variables to adapt for a new paper ── */
     :root {
-      --accent: #2563eb;
-      --accent-light: #dbeafe;
-      --accent-dark: #1e40af;
+      --accent: #16a34a;
+      --accent-light: #dcfce7;
+      --accent-dark: #15803d;
       --text: #1a1a2e;
       --text-secondary: #555;
       --bg: #ffffff;
@@ -231,7 +231,7 @@
 
     @media (min-width: 640px) {
       .steps {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
       }
     }
 
@@ -484,28 +484,38 @@
   <section class="bg-alt">
     <div class="container">
       <h2 class="fade-in">How It Works</h2>
-      <p class="fade-in">Plato's Cave operates as a four-step pipeline, transforming a raw PDF into an auditable integrity score.</p>
+      <p class="fade-in">Plato's Cave operates as a six-stage pipeline, transforming a raw PDF into an auditable integrity score.</p>
 
       <div class="steps fade-in">
         <div class="step">
           <div class="step__number">1</div>
-          <h3>Structure Extraction</h3>
-          <p>An LLM parses the paper into a DAG where each node is a semantic unit (Hypothesis, Claim, Evidence, Method, Result, etc.) and each edge represents a logical dependency with a confidence score.</p>
+          <h3>Validate</h3>
+          <p>Accepts a PDF upload or URL, extracts the full text from the document.</p>
         </div>
         <div class="step">
           <div class="step__number">2</div>
-          <h3>Node Verification</h3>
-          <p>Multi-agent web searchers run in Docker containers with live browser sessions, evaluating each node across six metrics: credibility, relevance, evidence strength, method rigor, reproducibility, and citation support.</p>
+          <h3>Decompose</h3>
+          <p>Breaks the paper into atomic claims using an LLM, identifying each semantic unit for downstream analysis.</p>
         </div>
         <div class="step">
           <div class="step__number">3</div>
-          <h3>Trust Propagation</h3>
-          <p>A belief-propagation-inspired message-passing algorithm propagates trust through the graph. A trust gate prevents weak evidence from inflating strong claims downstream.</p>
+          <h3>Build Knowledge Graph</h3>
+          <p>Structures claims as a directed acyclic graph (DAG) with role-aware nodes (Hypothesis, Evidence, Method, Conclusion) and dependency edges.</p>
         </div>
         <div class="step">
           <div class="step__number">4</div>
-          <h3>Paper-Level Scoring</h3>
-          <p>Six interpretable graph components (bridge coverage, path reliability, redundancy, fragility, coherence, role coverage) are aggregated into a final integrity score.</p>
+          <h3>Organize Agents</h3>
+          <p>Dispatches browser-based AI agents running in Docker containers to independently verify each claim against external sources.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">5</div>
+          <h3>Compile Evidence</h3>
+          <p>Aggregates agent findings, scoring each node on six dimensions: credibility, relevance, evidence strength, method rigor, reproducibility, and citation support.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">6</div>
+          <h3>Evaluate Integrity</h3>
+          <p>Propagates trust through the graph using role-aware edge confidences and trust gating, producing a final integrity score.</p>
         </div>
       </div>
     </div>
@@ -546,10 +556,6 @@
         <div class="metric">
           <div class="metric__value">0.759</div>
           <div class="metric__label">Good vs Bad AUROC</div>
-        </div>
-        <div class="metric">
-          <div class="metric__value">~$0.15</div>
-          <div class="metric__label">API Cost per Paper</div>
         </div>
       </div>
 
