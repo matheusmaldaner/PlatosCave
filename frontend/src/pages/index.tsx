@@ -10,7 +10,7 @@ import ProgressBar from "../components/ProgressBar";
 import ParticleBackground from "../components/ParticleBackground";
 import NodeDetailPanel from "../components/NodeDetailPanel";
 import { ProcessStep, Settings, DEFAULT_SETTINGS } from "../types";
-import platosCaveLogo from "../images/platos-cave-logo.png";
+import platosCaveLogo from "../images/platos-cave-logo.svg";
 
 const API_URL = "";
 
@@ -229,11 +229,14 @@ const IndexPage = () => {
         <header className="relative z-10 grid w-full grid-cols-[auto,1fr,auto] items-center gap-3 border-b border-gray-200 bg-[#f8f7f4] px-4 py-3 sm:px-6 sm:py-4">
           <button
             onClick={() => window.location.reload()}
-            className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity duration-200"
+            className="flex items-center cursor-pointer hover:opacity-70 transition-opacity duration-200"
             aria-label="Return to home"
           >
-            <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-5 w-5 opacity-80" />
-            <span className="text-sm font-medium tracking-wide text-gray-900">Plato&apos;s Cave</span>
+            <img
+              src={platosCaveLogo}
+              alt="Plato's Cave"
+              className="block h-8 w-auto"
+            />
           </button>
 
           {/* Center search / query bar */}
