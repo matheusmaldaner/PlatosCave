@@ -747,8 +747,9 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
 async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False, browser_lock: asyncio.Lock = None, browser_ref: list = None):
     """
     Verify a node using a two-step approach:
-    1. Fast LLM-only verification using Exa sources (no browser needed) - SKIP if use_browser_verification is True
-    2. Fall back to browser agent only if LLM verification fails
+    1. Fast LLM-only verification using Exa sources (no browser needed)
+    2. If visible verification is enabled, run a browser pass as a best-effort supplement
+    3. If the browser pass fails, preserve the LLM result instead of failing the flow
 
     browser_lock: asyncio.Lock to serialize browser access across concurrent tasks
     browser_ref: mutable [browser] list so reconnection propagates to sibling tasks
@@ -781,6 +782,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
     # If use_browser_verification is enabled, LLM result is kept but we still
     # fall through to browser as a supplementary verification step.
     verification_result = None
+    llm_result = None
     llm_succeeded = False
 
     print(f"[MAIN.PY DEBUG] Attempting fast LLM-only verification...", file=sys.stderr, flush=True)
@@ -818,6 +820,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
             print(f"[MAIN.PY DEBUG] ✅ Fast LLM verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
             for source_idx, source in enumerate(sources[:3], 1):
                 print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')[:50]}", file=sys.stderr, flush=True)
+            llm_result = verification_result
             llm_succeeded = True
             # Return immediately ONLY if browser verification is not requested
             if not use_browser_verification:
@@ -839,6 +842,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
                 if verification_result:
                     sources = verification_result.get('sources_checked', [])
                     print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                    llm_result = verification_result
                     llm_succeeded = True
                     if not use_browser_verification:
                         return verification_result
@@ -905,9 +909,9 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
             except Exception as reconnect_error:
                 print(f"[MAIN.PY DEBUG] ❌ Browser reconnection failed: {reconnect_error}", file=sys.stderr, flush=True)
                 # If LLM already succeeded, return that result instead of failing
-                if llm_succeeded and verification_result:
+                if llm_succeeded and llm_result:
                     print(f"[MAIN.PY DEBUG] Returning LLM result (browser unavailable)", file=sys.stderr, flush=True)
-                    return verification_result
+                    return llm_result
                 return {
                     "credibility": 0.2,
                     "relevance": 0.5,
@@ -941,7 +945,11 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
         print(f"[MAIN.PY DEBUG] Starting browser agent with max_steps=10...", file=sys.stderr, flush=True)
 
         try:
-            history = await verification_agent.run(max_steps=10)  # Reduced from 30
+            # A visible-browser pass should never block the overall flow indefinitely.
+            history = await asyncio.wait_for(
+                verification_agent.run(max_steps=10),  # Reduced from 30
+                timeout=90
+            )
             result_text = history.final_result() or ""
             print(f"[MAIN.PY DEBUG] Agent result (first 300 chars): {result_text[:300]}...", file=sys.stderr, flush=True)
 
@@ -968,8 +976,9 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
                     print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
                 else:
                     print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed", file=sys.stderr, flush=True)
-                    if llm_succeeded and verification_result:
+                    if llm_succeeded and llm_result:
                         print(f"[MAIN.PY DEBUG] Returning LLM result (browser parse failed)", file=sys.stderr, flush=True)
+                        verification_result = llm_result
                     else:
                         print(f"[MAIN.PY DEBUG] Using fallback scores", file=sys.stderr, flush=True)
                         verification_result = {
@@ -988,7 +997,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
             print(f"[MAIN.PY DEBUG] ❌ Browser agent error: {error_msg}", file=sys.stderr, flush=True)
 
             # If LLM already succeeded, keep that result instead of overwriting with failure
-            if not (llm_succeeded and verification_result):
+            if not (llm_succeeded and llm_result):
                 verification_result = {
                     "credibility": 0.3,
                     "relevance": 0.5,
@@ -1001,6 +1010,7 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
                 }
             else:
                 print(f"[MAIN.PY DEBUG] Returning LLM result (browser agent errored)", file=sys.stderr, flush=True)
+                verification_result = llm_result
 
     return verification_result
 
