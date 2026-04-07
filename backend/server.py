@@ -34,11 +34,11 @@ BROWSER_COMPOSE_FILE = Path(__file__).parent / 'docker-compose.browser.yaml'
 
 # Separate internal (for health checks) and public (for client access) URLs
 # Internal URLs: used by server.py to check Docker container health
-BROWSER_CDP_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_CDP_INTERNAL_URL', 'http://localhost:9222')
+BROWSER_CDP_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_CDP_INTERNAL_URL', 'http://localhost:9322')
 BROWSER_NOVNC_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_NOVNC_INTERNAL_URL', 'http://localhost:7900')
 
 # Public URLs: sent to frontend and used by main.py to connect
-BROWSER_CDP_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_CDP_PUBLIC_URL', 'http://localhost:9222')
+BROWSER_CDP_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_CDP_PUBLIC_URL', 'http://localhost:9322')
 BROWSER_NOVNC_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_NOVNC_PUBLIC_URL', 'http://localhost:7900/vnc.html?autoconnect=1&resize=scale')
 
 # Construct health check URLs from internal bases
@@ -64,7 +64,7 @@ def build_ws_url(base_http_url: str, ws_path: str) -> Optional[str]:
         return None
     parsed_base = urlparse(base_http_url)
     hostname = parsed_base.hostname or "localhost"
-    port = parsed_base.port or 9222
+    port = parsed_base.port or 9322
     ws_scheme = "wss" if parsed_base.scheme == "https" else "ws"
     ws_netloc = f"{hostname}:{port}"
     return urlunparse((ws_scheme, ws_netloc, ws_path, "", "", ""))
@@ -428,21 +428,8 @@ def ensure_remote_browser_service() -> Optional[dict]:
     if public_ws_url:
         print(f"[SERVER DEBUG] Public WebSocket URL: {public_ws_url}", flush=True)
 
-    browser_payload = {
-        'type': 'BROWSER_ADDRESS',
-        'novnc_url': BROWSER_NOVNC_PUBLIC_URL,
-        'cdp_url': BROWSER_CDP_PUBLIC_URL,
-        'cdp_websocket': public_ws_url
-    }
-    print(f"[SERVER DEBUG] About to emit BROWSER_ADDRESS: {browser_payload}", flush=True)
-    emit_json_message(browser_payload)
-    print(f"[SERVER DEBUG] BROWSER_ADDRESS emitted!", flush=True)
-
-    emit_json_message({
-        'type': 'UPDATE',
-        'stage': 'Browser',
-        'text': 'Remote browser is ready.'
-    })
+    # Don't emit BROWSER_ADDRESS here — main.py will emit it only when browser is actually needed
+    print(f"[SERVER DEBUG] Browser ready (address will be sent to frontend on demand)", flush=True)
 
     print("[SERVER DEBUG] ========== ensure_remote_browser_service COMPLETED ==========", flush=True)
     return {
@@ -478,6 +465,10 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
         '--evidence-threshold', str(settings.get('evidenceThreshold', 0.8))
     ]
 
+    # Add flag to force browser-based verification if enabled
+    if settings.get('useBrowserForVerification', False):
+        command.append('--use-browser-verification')
+
     # Set environment to suppress browser-use logs
     env = os.environ.copy()
     env['SUPPRESS_LOGS'] = 'true'
@@ -496,6 +487,9 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
         novnc_url = browser_info.get('novnc_url')
         if novnc_url:
             env['REMOTE_BROWSER_NOVNC_URL'] = novnc_url
+        # Public URLs for main.py to emit BROWSER_ADDRESS to frontend on demand
+        env['BROWSER_NOVNC_PUBLIC_URL'] = BROWSER_NOVNC_PUBLIC_URL
+        env['BROWSER_CDP_PUBLIC_URL'] = BROWSER_CDP_PUBLIC_URL
     else:
         # Ensure remote browser env vars are not set for local browser fallback
         env.pop('REMOTE_BROWSER_CDP_URL', None)
@@ -517,15 +511,7 @@ def run_script_and_stream_output(filepath: str, settings: dict[str, Any]) -> Non
     print(f"[SERVER DEBUG] Subprocess started with PID: {process.pid}", flush=True)
     # Note: stderr is now merged into stdout, no separate streaming needed
 
-    # Re-emit browser info to ensure frontend WebSocket has connected and receives it
-    # Same as URL mode - this makes the browser viewer appear in the frontend
-    if browser_info and browser_info.get('cdp_url'):
-        print(f"[SERVER DEBUG] Re-emitting BROWSER_ADDRESS to frontend: {browser_info}", flush=True)
-        socketio.emit('status_update', {'data': json.dumps(browser_info)})
-        socketio.sleep(0.1)  # Small delay to ensure delivery # type: ignore
-        print("[SERVER DEBUG] BROWSER_ADDRESS re-emitted!", flush=True)
-    else:
-        print("[SERVER DEBUG] Using local browser, no BROWSER_ADDRESS to emit", flush=True)
+    # Don't emit BROWSER_ADDRESS eagerly — main.py will emit it only when browser fallback is needed
 
     for line in process.stdout:
         line = line.strip()
@@ -637,6 +623,9 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
         novnc_url = browser_info.get('novnc_url')
         if novnc_url:
             env['REMOTE_BROWSER_NOVNC_URL'] = novnc_url
+        # Public URLs for main.py to emit BROWSER_ADDRESS to frontend on demand
+        env['BROWSER_NOVNC_PUBLIC_URL'] = BROWSER_NOVNC_PUBLIC_URL
+        env['BROWSER_CDP_PUBLIC_URL'] = BROWSER_CDP_PUBLIC_URL
     else:
         # Ensure remote browser env vars are not set for local browser fallback
         env.pop('REMOTE_BROWSER_CDP_URL', None)
@@ -663,15 +652,7 @@ def run_url_analysis_and_stream_output(url, settings, session_id=None) -> None:
         active_processes[session_id] = process
         print(f"[SERVER DEBUG] Tracking process {process.pid} for session {session_id}", flush=True)
 
-    # Re-emit browser info to ensure frontend WebSocket has connected and receives it
-    # Only emit if we have actual remote browser info
-    if browser_info and browser_info.get('cdp_url'):
-        print(f"[SERVER DEBUG] Re-emitting BROWSER_ADDRESS to frontend: {browser_info}", flush=True)
-        socketio.emit('status_update', {'data': json.dumps(browser_info)})
-        socketio.sleep(0.1)  # Small delay to ensure delivery
-        print("[SERVER DEBUG] BROWSER_ADDRESS re-emitted!", flush=True)
-    else:
-        print("[SERVER DEBUG] Using local browser, no BROWSER_ADDRESS to emit", flush=True)
+    # Don't emit BROWSER_ADDRESS eagerly — main.py will emit it only when browser fallback is needed
 
     print("[SERVER DEBUG] Starting to read subprocess stdout...", flush=True)
     for line in process.stdout:
@@ -714,7 +695,8 @@ def upload_file() -> (tuple[dict[str, str], int]) | (tuple[str, int]):
     settings = {
         'maxNodes': request.form.get('maxNodes', 10),
         'agentAggressiveness': request.form.get('agentAggressiveness', 5),
-        'evidenceThreshold': request.form.get('evidenceThreshold', 0.8)
+        'evidenceThreshold': request.form.get('evidenceThreshold', 0.8),
+        'useBrowserForVerification': request.form.get('useBrowserForVerification', 'false').lower() == 'true'
     }
 
     if file and file.filename:

@@ -8,6 +8,7 @@ import BrowserViewer from "../components/BrowserViewer";
 import SettingsPopover from "../components/SettingsPopover";
 import ProgressBar from "../components/ProgressBar";
 import ParticleBackground from "../components/ParticleBackground";
+import NodeDetailPanel from "../components/NodeDetailPanel";
 import { ProcessStep, Settings, DEFAULT_SETTINGS } from "../types";
 import platosCaveLogo from "../images/platos-cave-logo.png";
 
@@ -17,7 +18,7 @@ const INITIAL_STAGES: ProcessStep[] = [
   { name: "Validate", displayText: "Pending...", status: "pending" },
   { name: "Decomposing PDF", displayText: "Pending...", status: "pending" },
   {
-    name: "Building Knowledge Graph",
+    name: "Building Logic Tree",
     displayText: "Pending...",
     status: "pending",
   },
@@ -53,6 +54,17 @@ const IndexPage = () => {
   // Edge confidence updates (real-time as verification progresses)
   // Map of "source->target" to confidence value
   const [edgeUpdates, setEdgeUpdates] = useState<Record<string, number>>({});
+
+  // Track which nodes have been verified (set of node IDs like "1", "2", etc.)
+  const [verifiedNodeIds, setVerifiedNodeIds] = useState<Set<string>>(new Set());
+
+  // Node detail panel state (selected node)
+  const [selectedNode, setSelectedNode] = useState<{
+    nodeId: string;
+    role: string;
+    text: string;
+    integrityScorePct: number | null;
+  } | null>(null);
 
   // Settings state - only 3 settings that actually work
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
@@ -95,6 +107,20 @@ const IndexPage = () => {
             ...prev,
             [edgeKey]: update.confidence
           }));
+        } else if (update.type === "METRIC_UPDATE") {
+          // Mark this node as verified in the graph
+          if (update.node_id) {
+            setVerifiedNodeIds(prev => new Set(prev).add(update.node_id));
+          }
+        } else if (update.type === "VERIFICATION_PROGRESS") {
+          // Update progress text with verification counter
+          setProcessSteps((prev) =>
+            prev.map((s) =>
+              s.name === "Compiling Evidence"
+                ? { ...s, displayText: `Verified ${update.current}/${update.total}: ${update.node_text}`, status: "active" }
+                : s
+            )
+          );
         } else if (update.type === "DONE") {
           setFinalScore(update.score);
           setIsAnalyzing(false);
@@ -118,6 +144,7 @@ const IndexPage = () => {
     formData.append("maxNodes", settings.maxNodes.toString());
     formData.append("agentAggressiveness", settings.agentAggressiveness.toString());
     formData.append("evidenceThreshold", settings.evidenceThreshold.toString());
+    formData.append("useBrowserForVerification", settings.useBrowserForVerification.toString());
 
     setProcessSteps(INITIAL_STAGES);
     setFinalScore(null);
@@ -125,6 +152,7 @@ const IndexPage = () => {
     setUploadedFile(file);
     setSubmittedUrl(null);
     setIsAnalyzing(true);
+    setSelectedNode(null);
 
     // Reset browser state
     setIsBrowserOpen(false);
@@ -132,6 +160,7 @@ const IndexPage = () => {
     setBrowserCdpUrl(undefined);
     setBrowserCdpWebSocket(undefined);
     setEdgeUpdates({});
+    setVerifiedNodeIds(new Set());
 
     try {
       await axios.post(`${API_URL}/api/upload`, formData);
@@ -148,6 +177,7 @@ const IndexPage = () => {
     setSubmittedUrl(url);
     setUploadedFile(null);
     setIsAnalyzing(true);
+    setSelectedNode(null);
 
     // Reset browser state
     setIsBrowserOpen(false);
@@ -155,6 +185,7 @@ const IndexPage = () => {
     setBrowserCdpUrl(undefined);
     setBrowserCdpWebSocket(undefined);
     setEdgeUpdates({});
+    setVerifiedNodeIds(new Set());
 
     try {
       await axios.post(`${API_URL}/api/analyze-url`, {
@@ -162,6 +193,7 @@ const IndexPage = () => {
         maxNodes: settings.maxNodes,
         agentAggressiveness: settings.agentAggressiveness,
         evidenceThreshold: settings.evidenceThreshold,
+        useBrowserForVerification: settings.useBrowserForVerification,
       });
     } catch (error) {
       console.error("Error analyzing URL:", error);
@@ -169,47 +201,58 @@ const IndexPage = () => {
     }
   };
 
+  const formatScorePct = (score: number) => {
+    // Backend may send either 0..1 or 0..100. Display as an integer percent.
+    const pct = score <= 1 ? score * 100 : score;
+    return `${Math.round(pct)}%`;
+  };
+
   return (
     <>
       {!uploadedFile && !submittedUrl && <ParticleBackground />}
 
-      <main className="flex min-h-screen flex-col bg-gradient-to-b from-white via-gray-50 to-white font-sans">
+      <main className="flex min-h-screen flex-col bg-[#f8f7f4] font-sans">
         {/* Header */}
-        <header className="relative z-10 flex w-full items-center justify-between border-b border-gray-100 bg-white/50 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5">
+        <header className="relative z-10 grid w-full grid-cols-[auto,1fr,auto] items-center gap-3 border-b border-gray-200 bg-[#f8f7f4] px-4 py-3 sm:px-6 sm:py-4">
           <button
             onClick={() => window.location.reload()}
-            className="cursor-pointer hover:opacity-70 transition-opacity duration-200"
+            className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity duration-200"
             aria-label="Return to home"
           >
-            <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-9" />
+            <img src={platosCaveLogo} alt="Plato's Cave Logo" className="h-5 w-5 opacity-80" />
+            <span className="text-sm font-medium tracking-wide text-gray-900">Plato&apos;s Cave</span>
           </button>
 
-          <div className="flex items-center gap-4">
-            {/* Show file/URL name during analysis */}
-            {(uploadedFile || submittedUrl) && (
-              <>
-                {finalScore !== null && (
-                  <div className="text-left sm:text-right">
-                    <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                      Integrity Score
-                    </span>
-                    <p className="text-2xl font-semibold text-transparent bg-gradient-to-r from-green-500 to-green-600 bg-clip-text sm:text-3xl">
-                      {finalScore.toFixed(2)}
-                    </p>
-                  </div>
-                )}
-                <span className="max-w-full truncate font-mono text-xs text-gray-600 sm:max-w-md sm:text-sm">
-                  {uploadedFile ? uploadedFile.name : submittedUrl}
-                </span>
-              </>
+          {/* Center search / query bar */}
+          <div className="flex items-center justify-center">
+            {(uploadedFile || submittedUrl) ? (
+              <div className="relative w-full max-w-2xl">
+                <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <input
+                  value={uploadedFile ? uploadedFile.name : (submittedUrl || "")}
+                  readOnly
+                  className="w-full rounded-md border border-gray-200 bg-white px-10 py-2 text-xs text-gray-700 shadow-sm outline-none placeholder:text-gray-400 sm:text-sm"
+                />
+              </div>
+            ) : (
+              <div className="h-[34px] w-full max-w-2xl" />
+            )}
+          </div>
+
+          {/* Right controls */}
+          <div className="flex items-center gap-3 justify-self-end">
+            {finalScore !== null && (
+              <div className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 shadow-sm">
+                <span className="text-gray-500">Score:</span>{" "}
+                <span className="font-semibold text-gray-900">{formatScorePct(finalScore)}</span>
+              </div>
             )}
 
-            {/* Settings gear icon - always visible, disabled during analysis */}
-            <SettingsPopover
-              settings={settings}
-              onSettingsChange={setSettings}
-              disabled={isAnalyzing}
-            />
+            <SettingsPopover settings={settings} onSettingsChange={setSettings} disabled={isAnalyzing} />
           </div>
         </header>
 
@@ -238,18 +281,43 @@ const IndexPage = () => {
               />
 
               <div
-                className="flex-grow p-4"
+                className="relative flex-grow p-4"
                 style={{ height: "calc(100vh - 150px)" }}
               >
-                <XmlGraphViewer
-                  graphmlData={graphmlData}
-                  activeNodeId={activeNodeId}
-                  edgeUpdates={edgeUpdates}
-                  onBrowserClick={() => {
-                    setIsBrowserOpen(true);
-                    setBrowserExpandTrigger(prev => prev + 1);
-                  }}
-                />
+                <div className="relative h-full w-full overflow-hidden">
+                  <div
+                    className="h-full transition-[padding-right] duration-300"
+                    style={{
+                      paddingRight: selectedNode ? "var(--detail-panel-w)" : 0,
+                      // single source of truth for panel width
+                      ["--detail-panel-w" as any]: "360px",
+                    }}
+                  >
+                    <XmlGraphViewer
+                      graphmlData={graphmlData}
+                      activeNodeId={activeNodeId}
+                      edgeUpdates={edgeUpdates}
+                      verifiedNodeIds={verifiedNodeIds}
+                      onBrowserClick={() => {
+                        setIsBrowserOpen(true);
+                        setBrowserExpandTrigger(prev => prev + 1);
+                      }}
+                      onNodeSelect={(payload) => {
+                        setSelectedNode(payload);
+                      }}
+                    />
+                  </div>
+
+                  <NodeDetailPanel
+                    isOpen={!!selectedNode}
+                    node={selectedNode}
+                    onClose={() => setSelectedNode(null)}
+                    onViewSource={() => {
+                      setIsBrowserOpen(true);
+                      setBrowserExpandTrigger((prev) => prev + 1);
+                    }}
+                  />
+                </div>
               </div>
             </>
           )}
