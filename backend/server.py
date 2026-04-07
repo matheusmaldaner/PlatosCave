@@ -698,7 +698,8 @@ def upload_file() -> (tuple[dict[str, str], int]) | (tuple[str, int]):
         'maxNodes': request.form.get('maxNodes', 10),
         'agentAggressiveness': request.form.get('agentAggressiveness', 5),
         'evidenceThreshold': request.form.get('evidenceThreshold', 0.8),
-        'useBrowserForVerification': request.form.get('useBrowserForVerification', 'false').lower() == 'true'
+        'useBrowserForVerification': request.form.get('useBrowserForVerification', 'false').lower() == 'true',
+        'analysisMode': request.form.get('analysisMode', 'academic')
     }
 
     if file and file.filename:

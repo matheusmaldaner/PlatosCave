@@ -156,6 +156,7 @@ const IndexPage = () => {
     );
     formData.append("evidenceThreshold", settings.evidenceThreshold.toString());
     formData.append("useBrowserForVerification", settings.useBrowserForVerification.toString());
+    formData.append("analysisMode", settings.analysisMode);
 
     setProcessSteps(INITIAL_STAGES);
     setFinalScore(null);
@@ -205,6 +206,7 @@ const IndexPage = () => {
         agentAggressiveness: settings.agentAggressiveness,
         evidenceThreshold: settings.evidenceThreshold,
         useBrowserForVerification: settings.useBrowserForVerification,
+        analysisMode: settings.analysisMode,
       });
     } catch (error) {
       console.error("Error analyzing URL:", error);
