@@ -16,7 +16,7 @@ from prompts import build_url_paper_analysis_prompt, build_fact_dag_prompt, buil
 from verification_pipeline import run_verification_pipeline
 import logging
 from exa_py import Exa
-from typing import Optional, Callable, Dict, Any
+from typing import Optional, Callable, Dict, Any, List
 from dataclasses import dataclass
 import textwrap
 
@@ -602,14 +602,14 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
     else:
         return await pdf_missing(browser=browser, llm=llm, is_pdf_mode=is_pdf_mode, url=url, pdf_path=pdf_path)
 
-async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int = 10):
+async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int = 10, mode: str = "academic"):
     # Stage 3: Building Logic Tree (generating DAG)
     print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
     send_update("Building Logic Tree", "Analyzing paper structure...")
 
     # we got all the info about the paper stored in url (all text), extract payload later
     print(f"[MAIN.PY DEBUG] Building DAG prompt from extracted text ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
-    dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text, max_nodes=max_nodes)
+    dag_task_prompt = build_fact_dag_prompt(raw_text=extracted_text, max_nodes=max_nodes, mode=mode)
 
     # create the dag from the raw text of the paper, need to pass Message objects
     user_message = UserMessage(content=dag_task_prompt)
@@ -1005,9 +1005,9 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
     return verification_result
 
 
-async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False):
-       # Convert DAG JSON to GraphML for frontend visualization
-        try:
+async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False) -> Dict[str, Dict[str, float]]:
+    """
+    Run verification for frontend visualization and return verification results.
     
             # Convert to GraphML
             graphml_output = dag_to_graphml(dag_json)
@@ -1028,33 +1028,28 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
     
             send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
 
-            # Stage 4 & 5: Verify Claims with Browser Agents
-            # Run browser agents to verify each claim and collect verification results
-            # Browser is already initialized (same for both URL and PDF modes)
+        # Stage 6: Run Verification Pipeline (Pure Data Processing)
+        # This will handle:
+        # - Converting DAG to KGScorer
+        # - Applying pre-computed verification results
+        # - Calculating edge and graph scores
 
-            print(f"[MAIN.PY DEBUG] ========== STAGE 4-5: CLAIM VERIFICATION ==========", file=sys.stderr, flush=True)
-            send_update("Organizing Agents", "Preparing claim verification agents...")
+        print(f"[MAIN.PY DEBUG] ========== STAGE 6: GRAPH SCORING PIPELINE ==========", file=sys.stderr, flush=True)
+        kg_scorer, verification_summary = run_verification_pipeline(
+            dag_json=dag_json,
+            verification_results=verification_results,
+            send_update_fn=None  # Use default progress updates
+        )
+        print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
 
-            # Collect all nodes that need verification (skip Hypothesis)
-            nodes_to_verify = [
-                node for node in dag_json["nodes"]
-                if node["role"] != "Hypothesis"  # Hypothesis doesn't need web verification
-            ]
+        # Get final integrity score from verification pipeline
+        integrity_score = verification_summary['graph_score']
 
-            # Set default scores for Hypothesis nodes
-            hypothesis_nodes = [node for node in dag_json["nodes"] if node["role"] == "Hypothesis"]
-            verification_results = {}
+        print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
+        send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
 
-            for hyp_node in hypothesis_nodes:
-                print(f"[MAIN.PY DEBUG] Setting default scores for hypothesis node {hyp_node['id']}", file=sys.stderr, flush=True)
-                verification_results[str(hyp_node["id"])] = {
-                    "credibility": 0.75,      # Assume hypothesis is well-formed
-                    "relevance": 1.0,         # Hypothesis is always 100% relevant to itself
-                    "evidence_strength": 0.5, # Neutral - to be determined by children
-                    "method_rigor": 0.5,      # Neutral
-                    "reproducibility": 0.5,   # Neutral
-                    "citation_support": 0.5   # Neutral
-                }
+        # Re-send GraphML with verification metrics and edge confidences embedded
+        print(f"[MAIN.PY DEBUG] Re-generating GraphML with verification metrics", file=sys.stderr, flush=True)
 
             total_nodes = len(nodes_to_verify)
             print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
@@ -1146,12 +1141,48 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
             send_update("Evaluating Integrity", error_msg)
             send_final_score(0.0)
         except Exception as e:
-            send_update("Evaluating Integrity", f"Error in verification pipeline: {e}")
-            print(f"[MAIN.PY DEBUG] Full error: {e}", file=sys.stderr, flush=True)
-            import traceback
-            traceback.print_exc(file=sys.stderr)
-            send_final_score(0.0)
- 
+            print(f"[MAIN.PY DEBUG] Warning: Could not extract edge confidences: {e}", file=sys.stderr, flush=True)
+
+        graphml_with_metrics = dag_to_graphml(dag_json, verification_results, edge_confidences)
+        send_graph_data(graphml_with_metrics)
+        print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics and edge weights", file=sys.stderr, flush=True)
+
+        # Send final score
+        print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
+        send_final_score(integrity_score)
+        print(f"[MAIN.PY DEBUG] ========== MAIN() COMPLETED SUCCESSFULLY ==========", file=sys.stderr, flush=True)
+
+        # Debug: Print verification summary (only to stderr if logs enabled)
+        print(f"✅ Verification complete: {verification_summary['total_nodes_verified']} nodes verified", file=sys.stderr)
+        print(f"   Graph score: {integrity_score:.3f}", file=sys.stderr)
+        for key, value in verification_summary['graph_details'].items():
+            print(f"   - {key}: {value:.3f}", file=sys.stderr)
+
+        return verification_results
+
+    except json.JSONDecodeError as e:
+        error_msg = f"Error parsing DAG JSON: {e}"
+        print(f"[MAIN.PY DEBUG] {error_msg}", file=sys.stderr, flush=True)
+        print(f"[MAIN.PY DEBUG] Problematic JSON (first 500 chars): {dag_json_str[:500]}", file=sys.stderr, flush=True)
+
+        # Save the problematic JSON for debugging
+        if DEBUG:
+            with open('failed_dag.json', 'w', encoding='utf-8') as f:
+                f.write(dag_json_str)
+            print(f"[MAIN.PY DEBUG] Full problematic JSON saved to failed_dag.json", file=sys.stderr, flush=True)
+
+        send_update("Evaluating Integrity", error_msg)
+        send_final_score(0.0)
+        return {}
+    except Exception as e:
+        send_update("Evaluating Integrity", f"Error in verification pipeline: {e}")
+        print(f"[MAIN.PY DEBUG] Full error: {e}", file=sys.stderr, flush=True)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        send_final_score(0.0)
+        return verification_results  # Return whatever we collected
+
+
 async def clean_up(browser: Browser | None):
     # Clean up browser resources
     if browser is not None:
@@ -1176,8 +1207,12 @@ async def clean_up(browser: Browser | None):
             print(f"[MAIN.PY DEBUG] ⚠️ Error during browser cleanup: {cleanup_error}", file=sys.stderr, flush=True)
 
 
-async def main(url=None, pdf_path=None, max_nodes=10, use_browser_verification=False):
+async def main(url=None, pdf_path=None, max_nodes=10, mode="academic", use_browser_verification=False,
+               show_flawed_nodes=False, flawed_threshold=0.5, flawed_json=False):
     print(f"[MAIN.PY DEBUG] ========== MAIN() STARTED ==========", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Analysis mode: {mode}", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Use browser verification: {use_browser_verification}", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Show flawed nodes: {show_flawed_nodes}", file=sys.stderr, flush=True)
 
     # Validate input - need either URL or PDF path
     if not url and not pdf_path:
@@ -1203,13 +1238,17 @@ async def main(url=None, pdf_path=None, max_nodes=10, use_browser_verification=F
             return
 
         # Stage 3: Building Logic Tree (generating DAG)
-        dag_json, dag_json_str = await stage_three(extracted_text=extracted_text, llm=llm, max_nodes=max_nodes)
+        dag_json, dag_json_str = await stage_three(extracted_text=extracted_text, llm=llm, max_nodes=max_nodes, mode=mode)
 
         # Convert DAG JSON to GraphML for frontend visualization
         # Stage 4 & 5: Verify Claims with Browser Agents
         # Stage 6: Run Verification Pipeline (Pure Data Processing)
-        await frontend_vis_chat_verification(dag_json=dag_json, dag_json_str=dag_json_str, browser=browser, llm=llm, use_browser_verification=use_browser_verification)
+        verification_results = await frontend_vis_chat_verification(dag_json=dag_json, dag_json_str=dag_json_str, browser=browser, llm=llm, use_browser_verification=use_browser_verification)
 
+        # Show flawed nodes report if requested
+        if show_flawed_nodes and verification_results:
+            flawed_nodes = identify_flawed_nodes(dag_json, verification_results, threshold=flawed_threshold)
+            print_flawed_nodes_report(flawed_nodes, output_json=flawed_json)
 
     except Exception as e:
         # Handle any unexpected errors in the main try block
@@ -1400,6 +1439,95 @@ async def analyze_paper(
             os.chdir(original_cwd)
 
 
+def identify_flawed_nodes(
+    dag_json: Dict[str, Any],
+    verification_results: Dict[str, Dict[str, float]],
+    threshold: float = 0.5
+) -> List[Dict[str, Any]]:
+    """
+    Identify nodes with low verification scores (flawed nodes).
+    
+    Args:
+        dag_json: The DAG JSON with node definitions
+        verification_results: Dict mapping node_id -> verification metrics
+        threshold: Average score below which a node is considered flawed (default: 0.5)
+    
+    Returns:
+        List of flawed nodes with their scores and reasons
+    """
+    flawed_nodes = []
+    
+    for node in dag_json["nodes"]:
+        node_id = str(node["id"])
+        metrics = verification_results.get(node_id, {})
+        
+        if not metrics:
+            continue
+        
+        # Calculate average score across all metrics
+        score_keys = ["credibility", "relevance", "evidence_strength", 
+                      "method_rigor", "reproducibility", "citation_support"]
+        scores = [metrics.get(k, 0.5) for k in score_keys]
+        avg_score = sum(scores) / len(scores)
+        
+        # Identify specific weaknesses
+        weaknesses = []
+        if metrics.get("credibility", 1.0) < 0.4:
+            weaknesses.append(f"low credibility ({metrics.get('credibility', 0):.2f})")
+        if metrics.get("evidence_strength", 1.0) < 0.4:
+            weaknesses.append(f"weak evidence ({metrics.get('evidence_strength', 0):.2f})")
+        if metrics.get("citation_support", 1.0) < 0.4:
+            weaknesses.append(f"poor citations ({metrics.get('citation_support', 0):.2f})")
+        if metrics.get("reproducibility", 1.0) < 0.4:
+            weaknesses.append(f"low reproducibility ({metrics.get('reproducibility', 0):.2f})")
+        
+        # Node is flawed if average is below threshold OR has critical weaknesses
+        if avg_score < threshold or len(weaknesses) >= 2:
+            flawed_nodes.append({
+                "id": node_id,
+                "role": node.get("role", "Unknown"),
+                "text": node.get("text", "")[:100] + ("..." if len(node.get("text", "")) > 100 else ""),
+                "avg_score": round(avg_score, 3),
+                "weaknesses": weaknesses,
+                "metrics": {k: round(metrics.get(k, 0), 3) for k in score_keys}
+            })
+    
+    # Sort by average score (worst first)
+    flawed_nodes.sort(key=lambda x: x["avg_score"])
+    
+    return flawed_nodes
+
+
+def print_flawed_nodes_report(flawed_nodes: List[Dict[str, Any]], output_json: bool = False):
+    """Print a formatted report of flawed nodes to stderr."""
+    if not flawed_nodes:
+        print("\n✅ No flawed nodes detected! All claims passed verification.", file=sys.stderr)
+        return
+    
+    if output_json:
+        # Output as JSON for programmatic use
+        print(json.dumps({"flawed_nodes": flawed_nodes}, indent=2), file=sys.stderr)
+        return
+    
+    print("\n" + "="*70, file=sys.stderr)
+    print("⚠️  FLAWED NODES REPORT", file=sys.stderr)
+    print("="*70, file=sys.stderr)
+    print(f"Found {len(flawed_nodes)} node(s) with verification issues:\n", file=sys.stderr)
+    
+    for i, node in enumerate(flawed_nodes, 1):
+        print(f"[{i}] Node {node['id']} ({node['role']}) - Score: {node['avg_score']:.2f}", file=sys.stderr)
+        print(f"    Text: {node['text']}", file=sys.stderr)
+        if node['weaknesses']:
+            print(f"    Issues: {', '.join(node['weaknesses'])}", file=sys.stderr)
+        print(f"    Metrics: cred={node['metrics']['credibility']:.2f}, "
+              f"evid={node['metrics']['evidence_strength']:.2f}, "
+              f"cite={node['metrics']['citation_support']:.2f}, "
+              f"repr={node['metrics']['reproducibility']:.2f}", file=sys.stderr)
+        print(file=sys.stderr)
+    
+    print("="*70, file=sys.stderr)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze research papers from URL or PDF file.")
     parser.add_argument("--url", type=str, help="URL to analyze (e.g., arXiv paper)")
@@ -1407,7 +1535,15 @@ if __name__ == "__main__":
     parser.add_argument("--max-nodes", type=int, default=10, help="Maximum number of nodes in the knowledge graph (default: 10)")
     parser.add_argument("--agent-aggressiveness", type=int, default=5, help="Number of verification agents to use")
     parser.add_argument("--evidence-threshold", type=float, default=0.8, help="Evidence quality threshold")
+    parser.add_argument("--mode", type=str, default="academic", choices=["academic", "journal", "finance"],
+                        help="Analysis mode: academic (general), journal (peer-reviewed), finance (financial docs)")
     parser.add_argument("--use-browser-verification", action="store_true", help="Force browser-based verification (slower but visible)")
+    parser.add_argument("--show-flawed-nodes", action="store_true", 
+                        help="Output a report of nodes that failed verification checks")
+    parser.add_argument("--flawed-threshold", type=float, default=0.5,
+                        help="Score threshold below which nodes are considered flawed (default: 0.5)")
+    parser.add_argument("--flawed-json", action="store_true",
+                        help="Output flawed nodes as JSON instead of formatted report")
 
     args = parser.parse_args()
 
@@ -1418,7 +1554,16 @@ if __name__ == "__main__":
         parser.error("Cannot specify both --url and --pdf. Choose one.")
 
     # TODO: Use args.agent_aggressiveness and args.evidence_threshold in future
-    asyncio.run(main(url=args.url, pdf_path=args.pdf, max_nodes=args.max_nodes, use_browser_verification=args.use_browser_verification))
+    asyncio.run(main(
+        url=args.url, 
+        pdf_path=args.pdf, 
+        max_nodes=args.max_nodes, 
+        mode=args.mode, 
+        use_browser_verification=args.use_browser_verification,
+        show_flawed_nodes=args.show_flawed_nodes,
+        flawed_threshold=args.flawed_threshold,
+        flawed_json=args.flawed_json
+    ))
     # Examples:
     # python main.py --url "https://arxiv.org/abs/2305.10403"
     # python main.py --pdf "/path/to/paper.pdf"

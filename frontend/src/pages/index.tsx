@@ -12,7 +12,7 @@ import NodeDetailPanel from "../components/NodeDetailPanel";
 import { ProcessStep, Settings, DEFAULT_SETTINGS } from "../types";
 import platosCaveLogo from "../images/platos-cave-logo.png";
 
-const API_URL = process.env.GATSBY_API_URL || "http://localhost:5001";
+const API_URL = "";
 
 const INITIAL_STAGES: ProcessStep[] = [
   { name: "Validate", displayText: "Pending...", status: "pending" },
@@ -41,9 +41,15 @@ const IndexPage = () => {
 
   // Browser viewer state
   const [isBrowserOpen, setIsBrowserOpen] = useState(false);
-  const [browserNovncUrl, setBrowserNovncUrl] = useState<string | undefined>(undefined);
-  const [browserCdpUrl, setBrowserCdpUrl] = useState<string | undefined>(undefined);
-  const [browserCdpWebSocket, setBrowserCdpWebSocket] = useState<string | undefined>(undefined);
+  const [browserNovncUrl, setBrowserNovncUrl] = useState<string | undefined>(
+    undefined,
+  );
+  const [browserCdpUrl, setBrowserCdpUrl] = useState<string | undefined>(
+    undefined,
+  );
+  const [browserCdpWebSocket, setBrowserCdpWebSocket] = useState<
+    string | undefined
+  >(undefined);
 
   // Active node being verified (for NodeToolbar indicator)
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
@@ -103,9 +109,9 @@ const IndexPage = () => {
         } else if (update.type === "EDGE_UPDATE") {
           // Real-time edge confidence update from verification
           const edgeKey = `${update.source}->${update.target}`;
-          setEdgeUpdates(prev => ({
+          setEdgeUpdates((prev) => ({
             ...prev,
-            [edgeKey]: update.confidence
+            [edgeKey]: update.confidence,
           }));
         } else if (update.type === "METRIC_UPDATE") {
           // Mark this node as verified in the graph
@@ -124,9 +130,9 @@ const IndexPage = () => {
         } else if (update.type === "DONE") {
           setFinalScore(update.score);
           setIsAnalyzing(false);
-          setActiveNodeId(null);  // Clear active node when complete
+          setActiveNodeId(null); // Clear active node when complete
           setProcessSteps((prev) =>
-            prev.map((s) => ({ ...s, status: "completed" }))
+            prev.map((s) => ({ ...s, status: "completed" })),
           );
           socket.disconnect();
         }
@@ -135,14 +141,19 @@ const IndexPage = () => {
       }
     });
 
-    return () => { socket.disconnect(); };
+    return () => {
+      socket.disconnect();
+    };
   }, [uploadedFile, submittedUrl]);
 
   const handleFileUpload = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("maxNodes", settings.maxNodes.toString());
-    formData.append("agentAggressiveness", settings.agentAggressiveness.toString());
+    formData.append(
+      "agentAggressiveness",
+      settings.agentAggressiveness.toString(),
+    );
     formData.append("evidenceThreshold", settings.evidenceThreshold.toString());
     formData.append("useBrowserForVerification", settings.useBrowserForVerification.toString());
 
