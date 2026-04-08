@@ -1016,34 +1016,94 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
 
 
 async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False) -> Dict[str, Dict[str, float]]:
-    """
-    Run verification for frontend visualization and return verification results.
-    
-            # Convert to GraphML
-            graphml_output = dag_to_graphml(dag_json)
-    
-            # Save GraphML file for frontend
-            if DEBUG:
-                with open('final_dag.graphml', 'w', encoding='utf-8') as f:
-                    f.write(graphml_output)
-    
-            # Send GraphML data to frontend via WebSocket
-            print(f"[MAIN.PY DEBUG] Sending GraphML data ({len(graphml_output)} bytes)", file=sys.stderr, flush=True)
-            send_graph_data(graphml_output)
-    
-            # Debug: confirm GraphML was sent (only to stderr if logs enabled)
-            print(f"[MAIN.PY DEBUG] ✅ GraphML sent successfully", file=sys.stderr, flush=True)
-            if os.environ.get('SUPPRESS_LOGS') != 'true':
-                print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
-    
-            send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
+    """Run verification for frontend visualization and return verification results."""
+    # Convert DAG JSON to GraphML for frontend visualization
+    verification_results: Dict[str, Dict[str, float]] = {}
+    try:
+
+        # Convert to GraphML
+        graphml_output = dag_to_graphml(dag_json)
+
+        # Save GraphML file for frontend
+        if DEBUG:
+            with open('final_dag.graphml', 'w', encoding='utf-8') as f:
+                f.write(graphml_output)
+
+        # Send GraphML data to frontend via WebSocket
+        print(f"[MAIN.PY DEBUG] Sending GraphML data ({len(graphml_output)} bytes)", file=sys.stderr, flush=True)
+        send_graph_data(graphml_output)
+
+        # Debug: confirm GraphML was sent (only to stderr if logs enabled)
+        print(f"[MAIN.PY DEBUG] ✅ GraphML sent successfully", file=sys.stderr, flush=True)
+        if os.environ.get('SUPPRESS_LOGS') != 'true':
+            print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
+
+        send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
+
+        # Stage 4 & 5: Verify Claims with Browser Agents
+        print(f"[MAIN.PY DEBUG] ========== STAGE 4-5: CLAIM VERIFICATION ==========", file=sys.stderr, flush=True)
+        send_update("Organizing Agents", "Preparing claim verification agents...")
+
+        # Collect all nodes that need verification (skip Hypothesis)
+        nodes_to_verify = [
+            node for node in dag_json["nodes"]
+            if node["role"] != "Hypothesis"
+        ]
+
+        # Set default scores for Hypothesis nodes
+        hypothesis_nodes = [node for node in dag_json["nodes"] if node["role"] == "Hypothesis"]
+
+        for hyp_node in hypothesis_nodes:
+            print(f"[MAIN.PY DEBUG] Setting default scores for hypothesis node {hyp_node['id']}", file=sys.stderr, flush=True)
+            verification_results[str(hyp_node["id"])] = {
+                "credibility": 0.75,
+                "relevance": 1.0,
+                "evidence_strength": 0.5,
+                "method_rigor": 0.5,
+                "reproducibility": 0.5,
+                "citation_support": 0.5
+            }
+
+        total_nodes = len(nodes_to_verify)
+        print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
+        send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
+
+        # Parallel verification using asyncio.gather with a semaphore.
+        # When browser verification is enabled, we MUST serialize because
+        # a single browser instance can't handle parallel agents.
+        # Otherwise, the fast LLM path (Exa + LLM) doesn't need the browser,
+        # so verifications can safely run concurrently.
+        VERIFICATION_CONCURRENCY = 1 if use_browser_verification else 4
+        sem = asyncio.Semaphore(VERIFICATION_CONCURRENCY)
+        browser_lock = asyncio.Lock()  # Protects browser access for fallback path
+        send_update("Compiling Evidence", f"Starting claim verification (concurrency={VERIFICATION_CONCURRENCY})...")
+        browser_needs_reset = False
+        completed_count = 0
+
+        # Mutable container so browser reconnection propagates across tasks
+        browser_ref = [browser]
+
+        async def _verify_node(idx: int, node: dict) -> tuple:
+            nonlocal completed_count
+            node_id = str(node["id"])
+            async with sem:
+                send_node_active(node_id)
+                send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node['text'][:60]}...")
+                result = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser_ref[0], llm, use_browser_verification, browser_lock=browser_lock, browser_ref=browser_ref)
+                completed_count += 1
+                print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id} ({completed_count}/{total_nodes})", file=sys.stderr, flush=True)
+                return node_id, result
+
+        results = await asyncio.gather(
+            *[_verify_node(idx, node) for idx, node in enumerate(nodes_to_verify, start=1)]
+        )
+        for node_id, result in results:
+            verification_results[node_id] = result
+
+        send_node_active("")  # Clear active node when verification complete
+        send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
 
         # Stage 6: Run Verification Pipeline (Pure Data Processing)
-        # This will handle:
-        # - Converting DAG to KGScorer
-        # - Applying pre-computed verification results
-        # - Calculating edge and graph scores
-
         print(f"[MAIN.PY DEBUG] ========== STAGE 6: GRAPH SCORING PIPELINE ==========", file=sys.stderr, flush=True)
         kg_scorer, verification_summary = run_verification_pipeline(
             dag_json=dag_json,
@@ -1052,117 +1112,25 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
         )
         print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
 
-        # Get final integrity score from verification pipeline
         integrity_score = verification_summary['graph_score']
-
         print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
         send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
 
         # Re-send GraphML with verification metrics and edge confidences embedded
         print(f"[MAIN.PY DEBUG] Re-generating GraphML with verification metrics", file=sys.stderr, flush=True)
-
-            total_nodes = len(nodes_to_verify)
-            print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
-            send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
-
-            # Parallel verification using asyncio.gather with a semaphore.
-            # When browser verification is enabled, we MUST serialize because
-            # a single browser instance can't handle parallel agents.
-            # Otherwise, the fast LLM path (Exa + LLM) doesn't need the browser,
-            # so verifications can safely run concurrently.
-            VERIFICATION_CONCURRENCY = 1 if use_browser_verification else 4
-            sem = asyncio.Semaphore(VERIFICATION_CONCURRENCY)
-            browser_lock = asyncio.Lock()  # Protects browser access for fallback path
-            send_update("Compiling Evidence", f"Starting claim verification (concurrency={VERIFICATION_CONCURRENCY})...")
-            browser_needs_reset = False
-            completed_count = 0
-
-            # Mutable container so browser reconnection propagates across tasks
-            browser_ref = [browser]
-
-            async def _verify_node(idx: int, node: dict) -> tuple:
-                nonlocal completed_count
-                node_id = str(node["id"])
-                async with sem:
-                    send_node_active(node_id)
-                    send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node['text'][:60]}...")
-                    result = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser_ref[0], llm, use_browser_verification, browser_lock=browser_lock, browser_ref=browser_ref)
-                    completed_count += 1
-                    print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id} ({completed_count}/{total_nodes})", file=sys.stderr, flush=True)
-                    return node_id, result
-
-            results = await asyncio.gather(
-                *[_verify_node(idx, node) for idx, node in enumerate(nodes_to_verify, start=1)]
-            )
-            for node_id, result in results:
-                verification_results[node_id] = result
-
-            send_node_active("")  # Clear active node when verification complete
-            send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
-
-            # Stage 6: Run Verification Pipeline (Pure Data Processing)
-            # This will handle:
-            # - Converting DAG to KGScorer
-            # - Applying pre-computed verification results
-            # - Calculating edge and graph scores
-
-            print(f"[MAIN.PY DEBUG] ========== STAGE 6: GRAPH SCORING PIPELINE ==========", file=sys.stderr, flush=True)
-            kg_scorer, verification_summary = run_verification_pipeline(
-                dag_json=dag_json,
-                verification_results=verification_results,
-                send_update_fn=None  # Use default progress updates
-            )
-            print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
-    
-            # Get final integrity score from verification pipeline
-            integrity_score = verification_summary['graph_score']
-
-            print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
-            send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
-
-            # NOTE: Skipping redundant second dag_to_graphml() call.
-            # Edge confidences are already streamed to the frontend in real-time
-            # via EDGE_UPDATE websocket messages from the verification pipeline's
-            # edge callback (registered in verification_pipeline.py:184).
-
-            # Send final score
-            print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
-            send_final_score(integrity_score)
-            print(f"[MAIN.PY DEBUG] ========== MAIN() COMPLETED SUCCESSFULLY ==========", file=sys.stderr, flush=True)
-    
-            # Debug: Print verification summary (only to stderr if logs enabled)
-            # if os.environ.get('SUPPRESS_LOGS') != 'true':
-            print(f"✅ Verification complete: {verification_summary['total_nodes_verified']} nodes verified", file=sys.stderr)
-            print(f"   Graph score: {integrity_score:.3f}", file=sys.stderr)
-            for key, value in verification_summary['graph_details'].items():
-                print(f"   - {key}: {value:.3f}", file=sys.stderr)
-
-        except json.JSONDecodeError as e:
-            error_msg = f"Error parsing DAG JSON: {e}"
-            print(f"[MAIN.PY DEBUG] {error_msg}", file=sys.stderr, flush=True)
-            print(f"[MAIN.PY DEBUG] Problematic JSON (first 500 chars): {dag_json_str[:500]}", file=sys.stderr, flush=True)
-
-            # Save the problematic JSON for debugging
-            if DEBUG:
-                with open('failed_dag.json', 'w', encoding='utf-8') as f:
-                    f.write(dag_json_str)
-                print(f"[MAIN.PY DEBUG] Full problematic JSON saved to failed_dag.json", file=sys.stderr, flush=True)
-
-            send_update("Evaluating Integrity", error_msg)
-            send_final_score(0.0)
+        try:
+            edge_confidences = verification_summary.get('edge_confidences', {})
+            graphml_with_metrics = dag_to_graphml(dag_json, verification_results, edge_confidences)
+            send_graph_data(graphml_with_metrics)
+            print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics and edge weights", file=sys.stderr, flush=True)
         except Exception as e:
             print(f"[MAIN.PY DEBUG] Warning: Could not extract edge confidences: {e}", file=sys.stderr, flush=True)
-
-        graphml_with_metrics = dag_to_graphml(dag_json, verification_results, edge_confidences)
-        send_graph_data(graphml_with_metrics)
-        print(f"[MAIN.PY DEBUG] ✅ Updated GraphML sent with metrics and edge weights", file=sys.stderr, flush=True)
 
         # Send final score
         print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
         send_final_score(integrity_score)
         print(f"[MAIN.PY DEBUG] ========== MAIN() COMPLETED SUCCESSFULLY ==========", file=sys.stderr, flush=True)
 
-        # Debug: Print verification summary (only to stderr if logs enabled)
         print(f"✅ Verification complete: {verification_summary['total_nodes_verified']} nodes verified", file=sys.stderr)
         print(f"   Graph score: {integrity_score:.3f}", file=sys.stderr)
         for key, value in verification_summary['graph_details'].items():
@@ -1175,7 +1143,6 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
         print(f"[MAIN.PY DEBUG] {error_msg}", file=sys.stderr, flush=True)
         print(f"[MAIN.PY DEBUG] Problematic JSON (first 500 chars): {dag_json_str[:500]}", file=sys.stderr, flush=True)
 
-        # Save the problematic JSON for debugging
         if DEBUG:
             with open('failed_dag.json', 'w', encoding='utf-8') as f:
                 f.write(dag_json_str)

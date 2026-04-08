@@ -12,7 +12,7 @@ import NodeDetailPanel from "../components/NodeDetailPanel";
 import { ProcessStep, Settings, DEFAULT_SETTINGS } from "../types";
 import platosCaveLogo from "../images/platos-cave-logo.svg";
 
-const API_URL = "";
+const API_URL = process.env.GATSBY_API_URL || "";
 
 const INITIAL_STAGES: ProcessStep[] = [
   { name: "Validate", displayText: "Pending...", status: "pending" },
