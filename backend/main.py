@@ -70,6 +70,44 @@ def send_node_active(node_id: str, flush: bool = True) -> None:
     message = json.dumps({"type": "NODE_ACTIVE", "node_id": node_id})
     print(message, flush=flush)
 
+# Track whether we've already sent browser address to frontend this session
+_browser_address_sent = False
+
+def send_browser_address() -> None:
+    """Emit BROWSER_ADDRESS to frontend so the browser viewer appears.
+    Only emits once per session — subsequent calls are no-ops."""
+    global _browser_address_sent
+    if _browser_address_sent:
+        return
+
+    novnc_url = os.environ.get('BROWSER_NOVNC_PUBLIC_URL', '')
+    cdp_url = os.environ.get('BROWSER_CDP_PUBLIC_URL', '')
+    cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS', '')
+
+    if not novnc_url and not cdp_url:
+        print("[MAIN.PY DEBUG] No public browser URLs available, skipping BROWSER_ADDRESS", file=sys.stderr, flush=True)
+        return
+
+    # Build public websocket URL from CDP public URL if cdp_ws uses internal address
+    from urllib.parse import urlparse, urlunparse
+    if cdp_url and cdp_ws:
+        parsed_public = urlparse(cdp_url)
+        parsed_ws = urlparse(cdp_ws)
+        ws_scheme = "wss" if parsed_public.scheme == "https" else "ws"
+        public_ws = urlunparse((ws_scheme, parsed_public.netloc, parsed_ws.path, "", "", ""))
+    else:
+        public_ws = cdp_ws
+
+    payload = json.dumps({
+        "type": "BROWSER_ADDRESS",
+        "novnc_url": novnc_url,
+        "cdp_url": cdp_url,
+        "cdp_websocket": public_ws
+    })
+    print(payload, flush=True)
+    _browser_address_sent = True
+    print(f"[MAIN.PY DEBUG] BROWSER_ADDRESS emitted to frontend", file=sys.stderr, flush=True)
+
 def extract_text_from_pdf(pdf_path: str) -> str:
     """
     Extract text content from a PDF file using PyMuPDF.
@@ -415,7 +453,6 @@ async def stage_one(browser: Browser | None, is_pdf_mode: bool, url: str | None 
         send_update("Validate", "PDF file validated.")
     else:
         send_update("Validate", f"Validating URL: {url}")
-    await asyncio.sleep(0.5)
 
     # Initialize browser for BOTH modes (same way as before)
     # In PDF mode: browser stays idle during extraction, used later for verification
@@ -458,8 +495,6 @@ async def stage_one(browser: Browser | None, is_pdf_mode: bool, url: str | None 
     # analysis_llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0) # for scoring
 
     send_update("Validate", "Browser and LLM initialized.")
-    await asyncio.sleep(0.5)
-    
     return browser, llm
 
 
@@ -471,22 +506,17 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
         send_update("Decomposing PDF", f"Extracting text from PDF file: {pdf_path}")
         extracted_text = ""
         try:
-            # TODO: find a different way to establish connection
-            # HACKY: Create a dummy browser agent to establish connection (same as URL mode)
-            # This ensures browser pops up and connects properly
-            print(f"[MAIN.PY DEBUG] Creating dummy browser agent to establish connection", file=sys.stderr, flush=True)
-            dummy_agent = Agent(
-                task="Navigate to google.com and return the word 'ready'",
-                llm=llm,
-                browser=browser,
-                vision_detail_level='low',
-                generate_gif=False,
-                use_vision=False
-            )
-            dummy_history = await dummy_agent.run(max_steps=3)
-            print(f"[MAIN.PY DEBUG] Browser connection established", file=sys.stderr, flush=True)
+            # Warm the browser connection with a lightweight CDP call instead of
+            # spinning up a full Agent + LLM round-trip to google.com.
+            print(f"[MAIN.PY DEBUG] Warming browser connection via CDP...", file=sys.stderr, flush=True)
+            try:
+                await browser.start()
+                await browser.get_pages()
+                print(f"[MAIN.PY DEBUG] Browser connection established via CDP", file=sys.stderr, flush=True)
+            except Exception as browser_warm_err:
+                print(f"[MAIN.PY DEBUG] Browser warm-up failed (non-fatal): {browser_warm_err}", file=sys.stderr, flush=True)
 
-            # Now extract text from PDF
+            # Extract text from PDF (PyMuPDF - instant, no browser needed)
             extracted_text = extract_text_from_pdf(pdf_path)
             send_update("Decomposing PDF", "PDF content extracted successfully.")
 
@@ -509,7 +539,20 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
         send_update("Decomposing PDF", "Navigating to paper and extracting content...")
         history = None
         extracted_text = ""
-        exa_text = await extract_text(url)
+
+        # Run Exa extraction and browser warm-up concurrently so the
+        # browser is ready immediately if Exa falls short.
+        async def _warm_browser():
+            try:
+                await browser.start()
+                await browser.get_pages()
+            except Exception:
+                pass  # non-fatal; browser will retry when Agent uses it
+
+        exa_text, _ = await asyncio.gather(
+            extract_text(url),
+            _warm_browser(),
+        )
 
         if exa_text and len(exa_text) > 2000:
             extracted_text = exa_text
@@ -521,7 +564,7 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
             print(f"[MAIN.PY DEBUG] Creating agent with vision_detail_level='low', generate_gif=False", file=sys.stderr, flush=True)
             agent_kwargs = dict(
             task=browsing_url_prompt,
-            browser=browser, # Added!
+            browser=browser,
             llm=llm,
             vision_detail_level='low',    # Optimized: 'high' → 'low' for 2-3x speedup
             generate_gif=False,            # Optimized: disabled to reduce overhead
@@ -529,10 +572,9 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
             )
 
             agent = Agent(**agent_kwargs)
-            print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=100", file=sys.stderr, flush=True)
+            print(f"[MAIN.PY DEBUG] Agent created, starting run with max_steps=30", file=sys.stderr, flush=True)
 
-            # TODO: make sure it shows interactive elements during the browsing
-            history = await agent.run(max_steps=100)
+            history = await agent.run(max_steps=30)  # Reduced from 100; papers found within 10-15 steps
             send_update("Decomposing PDF", "Paper content extracted successfully.")
             extracted_chunks = [chunk for chunk in history.extracted_content() if chunk]
             extracted_text = "\n\n".join(extracted_chunks)
@@ -563,9 +605,7 @@ async def stage_two(browser: Browser | None, llm: ChatBrowserUse, is_pdf_mode: b
 async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int = 10, mode: str = "academic"):
     # Stage 3: Building Logic Tree (generating DAG)
     print(f"[MAIN.PY DEBUG] ========== STAGE 3: BUILDING LOGIC TREE ==========", file=sys.stderr, flush=True)
-    print(f"[MAIN.PY DEBUG] Analysis mode: {mode}", file=sys.stderr, flush=True)
-    send_update("Building Logic Tree", f"Analyzing paper structure ({mode} mode)...")
-    await asyncio.sleep(0.5)
+    send_update("Building Logic Tree", "Analyzing paper structure...")
 
     # we got all the info about the paper stored in url (all text), extract payload later
     print(f"[MAIN.PY DEBUG] Building DAG prompt from extracted text ({len(extracted_text)} chars)", file=sys.stderr, flush=True)
@@ -585,10 +625,37 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
     dag_json = ""
     dag_json_str = ""
     last_error = None
+
+    # Heartbeat messages so the frontend knows the LLM is still working
+    _HEARTBEAT_MESSAGES = [
+        "LLM is analyzing the paper structure...",
+        "Identifying hypotheses and claims...",
+        "Mapping evidence relationships...",
+        "Building directed acyclic graph...",
+        "Structuring node roles and edges...",
+        "Extracting methodology and results...",
+        "Finalizing knowledge graph structure...",
+        "Still processing — large papers take longer...",
+    ]
+
+    async def _heartbeat(attempt: int):
+        """Send periodic updates while the LLM call is in flight."""
+        idx = 0
+        while True:
+            await asyncio.sleep(5)
+            msg = _HEARTBEAT_MESSAGES[idx % len(_HEARTBEAT_MESSAGES)]
+            if attempt > 0:
+                msg = f"(retry {attempt + 1}) {msg}"
+            send_update("Building Logic Tree", msg)
+            idx += 1
+
     for attempt in range(max_retries):
         try:
             # Invoke LLM with retry feedback if needed
             print(f"[MAIN.PY DEBUG] Invoking LLM for DAG generation (attempt {attempt + 1}/{max_retries})", file=sys.stderr, flush=True)
+
+            # Start heartbeat so frontend sees progress during the LLM call
+            heartbeat_task = asyncio.create_task(_heartbeat(attempt))
 
             # Try to use structured output if supported by the LLM
             try:
@@ -602,6 +669,8 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
                 # Fallback: LLM doesn't support response_format parameter
                 print(f"[MAIN.PY DEBUG] ⚠️ Structured output not supported, using standard mode: {e}", file=sys.stderr, flush=True)
                 response = await llm.ainvoke(messages=[user_message])
+            finally:
+                heartbeat_task.cancel()
 
             print(f"[MAIN.PY DEBUG] LLM response received", file=sys.stderr, flush=True)
 
@@ -675,11 +744,15 @@ async def stage_three(extracted_text: str, llm: ChatBrowserUse, max_nodes: int =
     send_update("Building Logic Tree", "Logic tree constructed.")
     return dag_json, dag_json_str
 
-async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False):
+async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser: Browser, llm: ChatBrowserUse, use_browser_verification: bool = False, browser_lock: asyncio.Lock = None, browser_ref: list = None):
     """
     Verify a node using a two-step approach:
-    1. Fast LLM-only verification using Exa sources (no browser needed) - SKIP if use_browser_verification is True
-    2. Fall back to browser agent only if LLM verification fails
+    1. Fast LLM-only verification using Exa sources (no browser needed)
+    2. If visible verification is enabled, run a browser pass as a best-effort supplement
+    3. If the browser pass fails, preserve the LLM result instead of failing the flow
+
+    browser_lock: asyncio.Lock to serialize browser access across concurrent tasks
+    browser_ref: mutable [browser] list so reconnection propagates to sibling tasks
     """
     total_nodes = len(nodes_to_verify)
     node_id = str(node["id"])
@@ -705,197 +778,239 @@ async def node_verification(idx, node, nodes_to_verify, browser_needs_reset, bro
         claim_context=claim_context
     )
 
-    # Step 2: Try fast LLM-only verification first (no browser needed)
-    # SKIP this step if use_browser_verification is enabled (user wants to see browser work)
+    # Step 2: Always try fast LLM-only verification first (no browser needed)
+    # If use_browser_verification is enabled, LLM result is kept but we still
+    # fall through to browser as a supplementary verification step.
     verification_result = None
+    llm_result = None
+    llm_succeeded = False
 
-    if use_browser_verification:
-        print(f"[MAIN.PY DEBUG] Visible verification mode enabled, skipping fast LLM path...", file=sys.stderr, flush=True)
-    else:
-        print(f"[MAIN.PY DEBUG] Attempting fast LLM-only verification...", file=sys.stderr, flush=True)
-
-    if not use_browser_verification:
-        try:
-            # Wrap prompt with strong JSON-forcing instructions
-            json_forcing_prompt = (
-                "CRITICAL INSTRUCTION: Output ONLY a raw JSON object. Nothing else.\n"
-                "- Do NOT use done() or any function calls\n"
-                "- Do NOT wrap in ```json``` code blocks\n"
-                "- Do NOT include any explanation text\n"
-                "- Start with { and end with }\n"
-                "- Output the JSON directly, like: {\"credibility\": 0.9, ...}\n\n"
-                f"{verification_prompt}"
-            )
-            user_message = UserMessage(content=json_forcing_prompt)
-
-            # Try structured JSON output if supported
-            try:
-                response = await llm.ainvoke(
-                    messages=[user_message],
-                    response_format={"type": "json_object"}
-                )
-            except (TypeError, AttributeError):
-                response = await llm.ainvoke(messages=[user_message])
-
-            result_text = response.completion.strip()
-            print(f"[MAIN.PY DEBUG] LLM response (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
-
-            # Parse verification result
-            verification_result = parse_verification_result(result_text)
-
-            if verification_result:
-                sources = verification_result.get('sources_checked', [])
-                print(f"[MAIN.PY DEBUG] ✅ Fast LLM verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
-                for source_idx, source in enumerate(sources[:3], 1):
-                    print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')[:50]}", file=sys.stderr, flush=True)
-                return verification_result
-            else:
-                # Check if response contains JSON-like content that could be repaired
-                if '{' in result_text and '}' in result_text:
-                    print(f"[MAIN.PY DEBUG] ⚠️ LLM returned malformed JSON, attempting repair...", file=sys.stderr, flush=True)
-                    import json
-                    try:
-                        json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
-                        error_msg = "Unknown parsing error"
-                    except json.JSONDecodeError as e:
-                        error_msg = str(e)
-
-                    verification_result = await attempt_json_repair(result_text, error_msg, llm)
-                    if verification_result:
-                        sources = verification_result.get('sources_checked', [])
-                        print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
-                        return verification_result
-                    else:
-                        print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, falling back to browser", file=sys.stderr, flush=True)
-                else:
-                    print(f"[MAIN.PY DEBUG] ⚠️ LLM returned text (not JSON), falling back to browser", file=sys.stderr, flush=True)
-
-        except Exception as e:
-            print(f"[MAIN.PY DEBUG] ⚠️ Fast LLM verification failed: {e}, trying browser fallback", file=sys.stderr, flush=True)
-
-    # Step 3: Fall back to browser agent only if LLM verification failed
-    print(f"[MAIN.PY DEBUG] Using browser agent fallback for node {node_id}...", file=sys.stderr, flush=True)
-
-    # Check browser connection
-    try:
-        await browser.get_pages()
-        print(f"[MAIN.PY DEBUG] ✅ Browser connection is alive", file=sys.stderr, flush=True)
-
-        if browser_needs_reset:
-            print(f"[MAIN.PY DEBUG] 🔄 Forcing browser reset due to previous CDP errors", file=sys.stderr, flush=True)
-            raise Exception("Forced browser reset")
-
-    except Exception as e:
-        print(f"[MAIN.PY DEBUG] ⚠️ Browser connection issue: {e}", file=sys.stderr, flush=True)
-        # Try to reconnect
-        try:
-            await browser.stop()
-        except:
-            pass
-
-        fallback_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
-        fallback_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
-        original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (fallback_cdp_ws or fallback_cdp_url or "")
-        original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
-
-        try:
-            browser = await create_browser_with_retry(
-                cdp_url=original_cdp_url,
-                headless=False,
-                is_local=original_is_local,
-                keep_alive=True,
-                max_retries=3,
-                initial_delay=2.0
-            )
-            await browser.get_pages()
-            print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
-        except Exception as reconnect_error:
-            print(f"[MAIN.PY DEBUG] ❌ Browser reconnection failed: {reconnect_error}", file=sys.stderr, flush=True)
-            return {
-                "credibility": 0.2,
-                "relevance": 0.5,
-                "evidence_strength": 0.2,
-                "method_rigor": 0.2,
-                "reproducibility": 0.2,
-                "citation_support": 0.2,
-                "verification_summary": f"Verification failed: Browser unavailable - {reconnect_error}",
-                "confidence_level": "failed"
-            }
-
-    # Create browser agent with vision DISABLED for faster verification
-    # We already have Exa sources, agent just needs to analyze them
-    # Add JSON-forcing prefix to the task
-    browser_task = (
-        "CRITICAL: When you are done, call done() with ONLY a raw JSON object as the text parameter.\n"
-        "The JSON must have these exact keys: credibility, relevance, evidence_strength, method_rigor, reproducibility, citation_support, sources_checked, verification_summary, confidence_level\n"
-        "Example: done(text='{\"credibility\": 0.9, \"relevance\": 1.0, ...}')\n\n"
-        f"{verification_prompt}"
-    )
-    agent_kwargs = {
-        'task': browser_task,
-        'llm': llm,
-        'vision_detail_level': 'low',
-        'generate_gif': False,
-        'use_vision': False,  # Disabled - we have Exa sources, no need to screenshot
-        'browser': browser
-    }
-
-    verification_agent = Agent(**agent_kwargs)
-    print(f"[MAIN.PY DEBUG] Starting browser agent with max_steps=10...", file=sys.stderr, flush=True)
+    print(f"[MAIN.PY DEBUG] Attempting fast LLM-only verification...", file=sys.stderr, flush=True)
 
     try:
-        history = await verification_agent.run(max_steps=10)  # Reduced from 30
-        result_text = history.final_result() or ""
-        print(f"[MAIN.PY DEBUG] Agent result (first 300 chars): {result_text[:300]}...", file=sys.stderr, flush=True)
+        # Wrap prompt with strong JSON-forcing instructions
+        json_forcing_prompt = (
+            "CRITICAL INSTRUCTION: Output ONLY a raw JSON object. Nothing else.\n"
+            "- Do NOT use done() or any function calls\n"
+            "- Do NOT wrap in ```json``` code blocks\n"
+            "- Do NOT include any explanation text\n"
+            "- Start with { and end with }\n"
+            "- Output the JSON directly, like: {\"credibility\": 0.9, ...}\n\n"
+            f"{verification_prompt}"
+        )
+        user_message = UserMessage(content=json_forcing_prompt)
 
+        # Try structured JSON output if supported
+        try:
+            response = await llm.ainvoke(
+                messages=[user_message],
+                response_format={"type": "json_object"}
+            )
+        except (TypeError, AttributeError):
+            response = await llm.ainvoke(messages=[user_message])
+
+        result_text = response.completion.strip()
+        print(f"[MAIN.PY DEBUG] LLM response (first 200 chars): {result_text[:200]}...", file=sys.stderr, flush=True)
+
+        # Parse verification result
         verification_result = parse_verification_result(result_text)
 
         if verification_result:
             sources = verification_result.get('sources_checked', [])
-            print(f"[MAIN.PY DEBUG] ✅ Browser agent verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+            print(f"[MAIN.PY DEBUG] ✅ Fast LLM verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+            for source_idx, source in enumerate(sources[:3], 1):
+                print(f"[MAIN.PY DEBUG]   {source_idx}. {source.get('url', 'N/A')} - {source.get('finding', 'N/A')[:50]}", file=sys.stderr, flush=True)
+            llm_result = verification_result
+            llm_succeeded = True
+            # Return immediately ONLY if browser verification is not requested
+            if not use_browser_verification:
+                return verification_result
+            else:
+                print(f"[MAIN.PY DEBUG] Browser verification enabled — continuing to browser fallback for visual verification", file=sys.stderr, flush=True)
         else:
-            # Try to repair the malformed JSON
-            print(f"[MAIN.PY DEBUG] ⚠️ Failed to parse browser agent result, attempting repair...", file=sys.stderr, flush=True)
-            import json
-            try:
-                # Get the parse error for context
-                json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
-                error_msg = "Unknown parsing error"
-            except json.JSONDecodeError as e:
-                error_msg = str(e)
+            # Check if response contains JSON-like content that could be repaired
+            if '{' in result_text and '}' in result_text:
+                print(f"[MAIN.PY DEBUG] ⚠️ LLM returned malformed JSON, attempting repair...", file=sys.stderr, flush=True)
+                import json
+                try:
+                    json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
+                    error_msg = "Unknown parsing error"
+                except json.JSONDecodeError as e:
+                    error_msg = str(e)
 
-            verification_result = await attempt_json_repair(result_text, error_msg, llm)
+                verification_result = await attempt_json_repair(result_text, error_msg, llm)
+                if verification_result:
+                    sources = verification_result.get('sources_checked', [])
+                    print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                    llm_result = verification_result
+                    llm_succeeded = True
+                    if not use_browser_verification:
+                        return verification_result
+                    else:
+                        print(f"[MAIN.PY DEBUG] Browser verification enabled — continuing to browser fallback", file=sys.stderr, flush=True)
+                else:
+                    print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, falling back to browser", file=sys.stderr, flush=True)
+            else:
+                print(f"[MAIN.PY DEBUG] ⚠️ LLM returned text (not JSON), falling back to browser", file=sys.stderr, flush=True)
+
+    except Exception as e:
+        print(f"[MAIN.PY DEBUG] ⚠️ Fast LLM verification failed: {e}, trying browser fallback", file=sys.stderr, flush=True)
+
+    # Step 3: Fall back to browser agent only if LLM verification failed
+    # Use lock to serialize browser access — only one task can use the browser at a time
+    print(f"[MAIN.PY DEBUG] Using browser agent fallback for node {node_id}...", file=sys.stderr, flush=True)
+
+    # Notify frontend to show browser viewer (only emits once)
+    send_browser_address()
+
+    _lock = browser_lock or asyncio.Lock()
+
+    async with _lock:
+        # Use browser_ref if available so reconnections propagate across tasks
+        if browser_ref is not None:
+            browser = browser_ref[0]
+
+        # Check browser connection
+        try:
+            await browser.get_pages()
+            print(f"[MAIN.PY DEBUG] ✅ Browser connection is alive", file=sys.stderr, flush=True)
+
+            if browser_needs_reset:
+                print(f"[MAIN.PY DEBUG] 🔄 Forcing browser reset due to previous CDP errors", file=sys.stderr, flush=True)
+                raise Exception("Forced browser reset")
+
+        except Exception as e:
+            print(f"[MAIN.PY DEBUG] ⚠️ Browser connection issue: {e}", file=sys.stderr, flush=True)
+            # Try to reconnect
+            try:
+                await browser.stop()
+            except:
+                pass
+
+            fallback_cdp_ws = os.environ.get('REMOTE_BROWSER_CDP_WS')
+            fallback_cdp_url = os.environ.get('REMOTE_BROWSER_CDP_URL')
+            original_cdp_url = browser.cdp_url if hasattr(browser, 'cdp_url') else (fallback_cdp_ws or fallback_cdp_url or "")
+            original_is_local = browser.is_local if hasattr(browser, 'is_local') else False
+
+            try:
+                browser = await create_browser_with_retry(
+                    cdp_url=original_cdp_url,
+                    headless=False,
+                    is_local=original_is_local,
+                    keep_alive=True,
+                    max_retries=3,
+                    initial_delay=2.0
+                )
+                await browser.get_pages()
+                # Propagate reconnected browser to sibling tasks
+                if browser_ref is not None:
+                    browser_ref[0] = browser
+                print(f"[MAIN.PY DEBUG] ✅ Browser reconnected successfully", file=sys.stderr, flush=True)
+            except Exception as reconnect_error:
+                print(f"[MAIN.PY DEBUG] ❌ Browser reconnection failed: {reconnect_error}", file=sys.stderr, flush=True)
+                # If LLM already succeeded, return that result instead of failing
+                if llm_succeeded and llm_result:
+                    print(f"[MAIN.PY DEBUG] Returning LLM result (browser unavailable)", file=sys.stderr, flush=True)
+                    return llm_result
+                return {
+                    "credibility": 0.2,
+                    "relevance": 0.5,
+                    "evidence_strength": 0.2,
+                    "method_rigor": 0.2,
+                    "reproducibility": 0.2,
+                    "citation_support": 0.2,
+                    "verification_summary": f"Verification failed: Browser unavailable - {reconnect_error}",
+                    "confidence_level": "failed"
+                }
+
+        # Create browser agent with vision DISABLED for faster verification
+        # We already have Exa sources, agent just needs to analyze them
+        # Add JSON-forcing prefix to the task
+        browser_task = (
+            "CRITICAL: When you are done, call done() with ONLY a raw JSON object as the text parameter.\n"
+            "The JSON must have these exact keys: credibility, relevance, evidence_strength, method_rigor, reproducibility, citation_support, sources_checked, verification_summary, confidence_level\n"
+            "Example: done(text='{\"credibility\": 0.9, \"relevance\": 1.0, ...}')\n\n"
+            f"{verification_prompt}"
+        )
+        agent_kwargs = {
+            'task': browser_task,
+            'llm': llm,
+            'vision_detail_level': 'low',
+            'generate_gif': False,
+            'use_vision': False,  # Disabled - we have Exa sources, no need to screenshot
+            'browser': browser
+        }
+
+        verification_agent = Agent(**agent_kwargs)
+        print(f"[MAIN.PY DEBUG] Starting browser agent with max_steps=10...", file=sys.stderr, flush=True)
+
+        try:
+            # A visible-browser pass should never block the overall flow indefinitely.
+            history = await asyncio.wait_for(
+                verification_agent.run(max_steps=10),  # Reduced from 30
+                timeout=90
+            )
+            result_text = history.final_result() or ""
+            print(f"[MAIN.PY DEBUG] Agent result (first 300 chars): {result_text[:300]}...", file=sys.stderr, flush=True)
+
+            verification_result = parse_verification_result(result_text)
 
             if verification_result:
                 sources = verification_result.get('sources_checked', [])
-                print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                print(f"[MAIN.PY DEBUG] ✅ Browser agent verification successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
             else:
-                print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed, using fallback scores", file=sys.stderr, flush=True)
+                # Try to repair the malformed JSON
+                print(f"[MAIN.PY DEBUG] ⚠️ Failed to parse browser agent result, attempting repair...", file=sys.stderr, flush=True)
+                import json
+                try:
+                    # Get the parse error for context
+                    json.loads(result_text[result_text.find("{"):result_text.rfind("}") + 1])
+                    error_msg = "Unknown parsing error"
+                except json.JSONDecodeError as e:
+                    error_msg = str(e)
+
+                verification_result = await attempt_json_repair(result_text, error_msg, llm)
+
+                if verification_result:
+                    sources = verification_result.get('sources_checked', [])
+                    print(f"[MAIN.PY DEBUG] ✅ JSON repair successful! Sources: {len(sources)}", file=sys.stderr, flush=True)
+                else:
+                    print(f"[MAIN.PY DEBUG] ⚠️ JSON repair failed", file=sys.stderr, flush=True)
+                    if llm_succeeded and llm_result:
+                        print(f"[MAIN.PY DEBUG] Returning LLM result (browser parse failed)", file=sys.stderr, flush=True)
+                        verification_result = llm_result
+                    else:
+                        print(f"[MAIN.PY DEBUG] Using fallback scores", file=sys.stderr, flush=True)
+                        verification_result = {
+                            "credibility": 0.5,
+                            "relevance": 0.7,
+                            "evidence_strength": 0.5,
+                            "method_rigor": 0.5,
+                            "reproducibility": 0.5,
+                            "citation_support": 0.5,
+                            "verification_summary": "Verification completed but parsing failed",
+                            "confidence_level": "low"
+                        }
+
+        except Exception as e:
+            error_msg = str(e)
+            print(f"[MAIN.PY DEBUG] ❌ Browser agent error: {error_msg}", file=sys.stderr, flush=True)
+
+            # If LLM already succeeded, keep that result instead of overwriting with failure
+            if not (llm_succeeded and llm_result):
                 verification_result = {
-                    "credibility": 0.5,
-                    "relevance": 0.7,
-                    "evidence_strength": 0.5,
-                    "method_rigor": 0.5,
-                    "reproducibility": 0.5,
-                    "citation_support": 0.5,
-                    "verification_summary": "Verification completed but parsing failed",
-                    "confidence_level": "low"
+                    "credibility": 0.3,
+                    "relevance": 0.5,
+                    "evidence_strength": 0.3,
+                    "method_rigor": 0.3,
+                    "reproducibility": 0.3,
+                    "citation_support": 0.3,
+                    "verification_summary": f"Verification failed: {error_msg[:100]}",
+                    "confidence_level": "failed"
                 }
-
-    except Exception as e:
-        error_msg = str(e)
-        print(f"[MAIN.PY DEBUG] ❌ Browser agent error: {error_msg}", file=sys.stderr, flush=True)
-
-        verification_result = {
-            "credibility": 0.3,
-            "relevance": 0.5,
-            "evidence_strength": 0.3,
-            "method_rigor": 0.3,
-            "reproducibility": 0.3,
-            "citation_support": 0.3,
-            "verification_summary": f"Verification failed: {error_msg[:100]}",
-            "confidence_level": "failed"
-        }
+            else:
+                print(f"[MAIN.PY DEBUG] Returning LLM result (browser agent errored)", file=sys.stderr, flush=True)
+                verification_result = llm_result
 
     return verification_result
 
@@ -904,88 +1019,24 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
     """
     Run verification for frontend visualization and return verification results.
     
-    Returns:
-        Dict mapping node_id -> verification metrics dict
-    """
-    verification_results = {}
-    # Convert DAG JSON to GraphML for frontend visualization
-    try:
-        # Convert to GraphML
-        graphml_output = dag_to_graphml(dag_json)
-
-        # Save GraphML file for frontend
-        if DEBUG:
-            with open('final_dag.graphml', 'w', encoding='utf-8') as f:
-                f.write(graphml_output)
-
-        # Send GraphML data to frontend via WebSocket
-        print(f"[MAIN.PY DEBUG] Sending GraphML data ({len(graphml_output)} bytes)", file=sys.stderr, flush=True)
-        send_graph_data(graphml_output)
-
-        # Debug: confirm GraphML was sent (only to stderr if logs enabled)
-        print(f"[MAIN.PY DEBUG] ✅ GraphML sent successfully", file=sys.stderr, flush=True)
-        if os.environ.get('SUPPRESS_LOGS') != 'true':
-            print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
-
-        # Small delay to ensure WebSocket transmission completes
-        await asyncio.sleep(0.5)
-
-        send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
-
-        # Stage 4 & 5: Verify Claims with Browser Agents
-        # Run browser agents to verify each claim and collect verification results
-        # Browser is already initialized (same for both URL and PDF modes)
-
-        print(f"[MAIN.PY DEBUG] ========== STAGE 4-5: CLAIM VERIFICATION ==========", file=sys.stderr, flush=True)
-        send_update("Organizing Agents", "Preparing claim verification agents...")
-
-        # Collect all nodes that need verification (skip Hypothesis)
-        nodes_to_verify = [
-            node for node in dag_json["nodes"]
-            if node["role"] != "Hypothesis"  # Hypothesis doesn't need web verification
-        ]
-
-        # Set default scores for Hypothesis nodes
-        hypothesis_nodes = [node for node in dag_json["nodes"] if node["role"] == "Hypothesis"]
-        verification_results = {}
-
-        for hyp_node in hypothesis_nodes:
-            print(f"[MAIN.PY DEBUG] Setting default scores for hypothesis node {hyp_node['id']}", file=sys.stderr, flush=True)
-            verification_results[str(hyp_node["id"])] = {
-                "credibility": 0.75,      # Assume hypothesis is well-formed
-                "relevance": 1.0,         # Hypothesis is always 100% relevant to itself
-                "evidence_strength": 0.5, # Neutral - to be determined by children
-                "method_rigor": 0.5,      # Neutral
-                "reproducibility": 0.5,   # Neutral
-                "citation_support": 0.5   # Neutral
-            }
-
-        total_nodes = len(nodes_to_verify)
-        print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
-        send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
-
-        # Sequential verification loop using the same browser from paper extraction
-        # NOTE: Browser context management is critical here. CDP "top-level targets" errors
-        # occur when the browser gets stuck in iframe contexts. We reset context before
-        # each verification and force reconnection if CDP errors are detected.
-        send_update("Compiling Evidence", "Starting sequential claim verification...")
-        browser_needs_reset = False
-
-        for idx, node in enumerate(nodes_to_verify, start=1):
-            # Store verification result
-            node_id = str(node["id"])
-            node_text = node["text"]
-            # Send progress update BEFORE highlighting node (so text updates first)
-            send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node_text[:60]}...")
-            send_node_active(node_id)  # Notify frontend which node is being verified
-            verification_results[node_id] = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser, llm, use_browser_verification)
-            print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id}", file=sys.stderr, flush=True)
-
-            # Small delay between verifications
-            await asyncio.sleep(0.5)
-
-        send_node_active("")  # Clear active node when verification complete
-        send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
+            # Convert to GraphML
+            graphml_output = dag_to_graphml(dag_json)
+    
+            # Save GraphML file for frontend
+            if DEBUG:
+                with open('final_dag.graphml', 'w', encoding='utf-8') as f:
+                    f.write(graphml_output)
+    
+            # Send GraphML data to frontend via WebSocket
+            print(f"[MAIN.PY DEBUG] Sending GraphML data ({len(graphml_output)} bytes)", file=sys.stderr, flush=True)
+            send_graph_data(graphml_output)
+    
+            # Debug: confirm GraphML was sent (only to stderr if logs enabled)
+            print(f"[MAIN.PY DEBUG] ✅ GraphML sent successfully", file=sys.stderr, flush=True)
+            if os.environ.get('SUPPRESS_LOGS') != 'true':
+                print(f"✅ GraphML sent ({len(graphml_output)} bytes)", file=sys.stderr)
+    
+            send_update("Building Logic Tree", "Logic tree constructed and sent to frontend.")
 
         # Stage 6: Run Verification Pipeline (Pure Data Processing)
         # This will handle:
@@ -1010,17 +1061,95 @@ async def frontend_vis_chat_verification(dag_json: dict, dag_json_str: str, brow
         # Re-send GraphML with verification metrics and edge confidences embedded
         print(f"[MAIN.PY DEBUG] Re-generating GraphML with verification metrics", file=sys.stderr, flush=True)
 
-        # Extract edge confidences from KGScorer
-        edge_confidences = {}
-        try:
-            edge_features = kg_scorer.export_edge_features()
-            for ef in edge_features:
-                # Convert node IDs to match DAG format (remove 'n' prefix if present)
-                u = ef['u'].replace('n', '') if isinstance(ef['u'], str) else str(ef['u'])
-                v = ef['v'].replace('n', '') if isinstance(ef['v'], str) else str(ef['v'])
-                # Use confidence (final gated value) rather than confidence_raw
-                edge_confidences[f"{u}->{v}"] = ef['confidence']
-            print(f"[MAIN.PY DEBUG] Extracted {len(edge_confidences)} edge confidences", file=sys.stderr, flush=True)
+            total_nodes = len(nodes_to_verify)
+            print(f"[MAIN.PY DEBUG] Total nodes to verify: {total_nodes}", file=sys.stderr, flush=True)
+            send_update("Organizing Agents", f"Verifying {total_nodes} claims...")
+
+            # Parallel verification using asyncio.gather with a semaphore.
+            # When browser verification is enabled, we MUST serialize because
+            # a single browser instance can't handle parallel agents.
+            # Otherwise, the fast LLM path (Exa + LLM) doesn't need the browser,
+            # so verifications can safely run concurrently.
+            VERIFICATION_CONCURRENCY = 1 if use_browser_verification else 4
+            sem = asyncio.Semaphore(VERIFICATION_CONCURRENCY)
+            browser_lock = asyncio.Lock()  # Protects browser access for fallback path
+            send_update("Compiling Evidence", f"Starting claim verification (concurrency={VERIFICATION_CONCURRENCY})...")
+            browser_needs_reset = False
+            completed_count = 0
+
+            # Mutable container so browser reconnection propagates across tasks
+            browser_ref = [browser]
+
+            async def _verify_node(idx: int, node: dict) -> tuple:
+                nonlocal completed_count
+                node_id = str(node["id"])
+                async with sem:
+                    send_node_active(node_id)
+                    send_update("Compiling Evidence", f"Verifying claim {idx}/{total_nodes}: {node['text'][:60]}...")
+                    result = await node_verification(idx, node, nodes_to_verify, browser_needs_reset, browser_ref[0], llm, use_browser_verification, browser_lock=browser_lock, browser_ref=browser_ref)
+                    completed_count += 1
+                    print(f"[MAIN.PY DEBUG] Stored verification result for node {node_id} ({completed_count}/{total_nodes})", file=sys.stderr, flush=True)
+                    return node_id, result
+
+            results = await asyncio.gather(
+                *[_verify_node(idx, node) for idx, node in enumerate(nodes_to_verify, start=1)]
+            )
+            for node_id, result in results:
+                verification_results[node_id] = result
+
+            send_node_active("")  # Clear active node when verification complete
+            send_update("Compiling Evidence", f"All {total_nodes} claims verified. Processing results...")
+
+            # Stage 6: Run Verification Pipeline (Pure Data Processing)
+            # This will handle:
+            # - Converting DAG to KGScorer
+            # - Applying pre-computed verification results
+            # - Calculating edge and graph scores
+
+            print(f"[MAIN.PY DEBUG] ========== STAGE 6: GRAPH SCORING PIPELINE ==========", file=sys.stderr, flush=True)
+            kg_scorer, verification_summary = run_verification_pipeline(
+                dag_json=dag_json,
+                verification_results=verification_results,
+                send_update_fn=None  # Use default progress updates
+            )
+            print(f"[MAIN.PY DEBUG] Verification pipeline completed", file=sys.stderr, flush=True)
+    
+            # Get final integrity score from verification pipeline
+            integrity_score = verification_summary['graph_score']
+
+            print(f"[MAIN.PY DEBUG] Final integrity score: {integrity_score:.2f}", file=sys.stderr, flush=True)
+            send_update("Evaluating Integrity", f"Final integrity score: {integrity_score:.2f}")
+
+            # NOTE: Skipping redundant second dag_to_graphml() call.
+            # Edge confidences are already streamed to the frontend in real-time
+            # via EDGE_UPDATE websocket messages from the verification pipeline's
+            # edge callback (registered in verification_pipeline.py:184).
+
+            # Send final score
+            print(f"[MAIN.PY DEBUG] Sending DONE message with score", file=sys.stderr, flush=True)
+            send_final_score(integrity_score)
+            print(f"[MAIN.PY DEBUG] ========== MAIN() COMPLETED SUCCESSFULLY ==========", file=sys.stderr, flush=True)
+    
+            # Debug: Print verification summary (only to stderr if logs enabled)
+            # if os.environ.get('SUPPRESS_LOGS') != 'true':
+            print(f"✅ Verification complete: {verification_summary['total_nodes_verified']} nodes verified", file=sys.stderr)
+            print(f"   Graph score: {integrity_score:.3f}", file=sys.stderr)
+            for key, value in verification_summary['graph_details'].items():
+                print(f"   - {key}: {value:.3f}", file=sys.stderr)
+
+        except json.JSONDecodeError as e:
+            error_msg = f"Error parsing DAG JSON: {e}"
+            print(f"[MAIN.PY DEBUG] {error_msg}", file=sys.stderr, flush=True)
+            print(f"[MAIN.PY DEBUG] Problematic JSON (first 500 chars): {dag_json_str[:500]}", file=sys.stderr, flush=True)
+
+            # Save the problematic JSON for debugging
+            if DEBUG:
+                with open('failed_dag.json', 'w', encoding='utf-8') as f:
+                    f.write(dag_json_str)
+                print(f"[MAIN.PY DEBUG] Full problematic JSON saved to failed_dag.json", file=sys.stderr, flush=True)
+
+            send_update("Evaluating Integrity", error_msg)
+            send_final_score(0.0)
         except Exception as e:
             print(f"[MAIN.PY DEBUG] Warning: Could not extract edge confidences: {e}", file=sys.stderr, flush=True)
 
@@ -1257,16 +1386,31 @@ async def analyze_paper(
                 "citation_support": 0.5
             }
 
-        # Verify each node
+        # Verify nodes in parallel (same pattern as frontend_vis_chat_verification)
+        VERIFICATION_CONCURRENCY = 1 if use_browser_verification else 4
+        sem = asyncio.Semaphore(VERIFICATION_CONCURRENCY)
+        browser_lock = asyncio.Lock()
+        browser_ref = [browser]
         browser_needs_reset = False
-        for idx, node in enumerate(nodes_to_verify, start=1):
+        total = len(nodes_to_verify)
+
+        async def _verify_node(idx: int, node: dict) -> tuple:
             node_id = str(node["id"])
-            if progress_callback:
-                progress_callback("Compiling Evidence", f"Verifying {idx}/{len(nodes_to_verify)}: {node['text'][:50]}...")
-            verification_results[node_id] = await node_verification(
-                idx, node, nodes_to_verify, browser_needs_reset,
-                browser, llm, use_browser_verification
-            )
+            async with sem:
+                if progress_callback:
+                    progress_callback("Compiling Evidence", f"Verifying {idx}/{total}: {node['text'][:50]}...")
+                result = await node_verification(
+                    idx, node, nodes_to_verify, browser_needs_reset,
+                    browser_ref[0], llm, use_browser_verification,
+                    browser_lock=browser_lock, browser_ref=browser_ref
+                )
+                return node_id, result
+
+        results = await asyncio.gather(
+            *[_verify_node(idx, node) for idx, node in enumerate(nodes_to_verify, start=1)]
+        )
+        for node_id, result in results:
+            verification_results[node_id] = result
 
         # Run verification pipeline for scoring
         if progress_callback:

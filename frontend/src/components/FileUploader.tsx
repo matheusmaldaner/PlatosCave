@@ -173,7 +173,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload, onUrlSubmit }
                     <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl animate-dissolve-up">
                         analyze research papers
                     </h1>
-                    <p className="mx-auto max-w-2xl text-base font-light leading-relaxed text-gray-600 sm:text-lg animate-dissolve-up-delayed">
+                    <p className="mx-auto max-w-3xl whitespace-nowrap text-sm font-light leading-relaxed text-gray-600 sm:text-base animate-dissolve-up-delayed">
                         search by name, paste a URL, or upload a PDF to verify a research paper's integrity
                     </p>
                 </div>

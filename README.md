@@ -3,10 +3,9 @@
 
 *A human-centered agentic system for validating research papers*
 
-[![1st Place](https://img.shields.io/badge/1st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
-[![arXiv](https://img.shields.io/badge/arXiv-2603.23526-b31b1b.svg)](https://arxiv.org/abs/2603.23526)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-platoscave.matheus.wiki-blue)](https://platoscave.matheus.wiki/)
-[![YouTube](https://img.shields.io/badge/Demo%20Video-red?logo=youtube)](https://www.youtube.com/watch?v=wvmJdUhuj4s)
+[![1st Place](https://img.shields.io/badge/⭐%201st%20Place-UF%20AI%20Days%20GatorHack-yellow)](https://www.hackathonparty.com/hackathons/26/projects/355)
+[![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/)
+![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-orange)
 
 </div>
 
@@ -102,9 +101,26 @@ cd backend
 docker compose -f docker-compose.browser.yaml up --build remote-browser
 ```
 
-Once all three services are running, open `http://localhost:8000`.
- 
-## Citation
+Once you have all three separate terminals running, you can access the application at `http://localhost:8000`
+
+
+<hr style="border: 0.5px solid #e5e5e5; margin: 20px 0;">
+
+## 🔢 Scoring Mathematics Located [Here](https://github.com/matheusmaldaner/PlatosCave/blob/main/graph_app/README.md)
+
+---
+
+## 📜 License
+
+**Copyright © 2025 Matheus Kunzler Maldaner. All Rights Reserved.**
+
+This project is licensed under the **Plato's Cave Research and Academic Use License**.
+
+### 📄 Full License
+
+See [LICENSE.md](./LICENSE.md) for complete terms and conditions.
+
+### 📚 Citation
 
 If you use this software in academic research, please cite:
 
