@@ -32,13 +32,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 BROWSER_COMPOSE_FILE = Path(__file__).parent / 'docker-compose.browser.yaml'
 
-# Separate internal (for health checks) and public (for client access) URLs
-# Internal URLs: used by server.py to check Docker container health
-BROWSER_CDP_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_CDP_INTERNAL_URL', 'http://localhost:9322')
+# Separate internal (for server-side operations) and public (for client access) URLs
+# Internal URLs: used by server.py for all CDP operations (health checks, tab management, etc.)
+BROWSER_CDP_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_CDP_INTERNAL_URL', 'http://localhost:9222')
 BROWSER_NOVNC_INTERNAL_URL = os.environ.get('REMOTE_BROWSER_NOVNC_INTERNAL_URL', 'http://localhost:7900')
 
-# Public URLs: sent to frontend and used by main.py to connect
-BROWSER_CDP_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_CDP_PUBLIC_URL', 'http://localhost:9322')
+# Public URLs: sent to frontend for browser viewer and passed to main.py for WebSocket connections
+BROWSER_CDP_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_CDP_PUBLIC_URL', 'http://localhost:9222')
 BROWSER_NOVNC_PUBLIC_URL = os.environ.get('REMOTE_BROWSER_NOVNC_PUBLIC_URL', 'http://localhost:7900/vnc.html?autoconnect=1&resize=scale')
 
 # Construct health check URLs from internal bases
@@ -64,10 +64,13 @@ def build_ws_url(base_http_url: str, ws_path: str) -> Optional[str]:
         return None
     parsed_base = urlparse(base_http_url)
     hostname = parsed_base.hostname or "localhost"
-    port = parsed_base.port or 9322
+    port = parsed_base.port or 9222
     ws_scheme = "wss" if parsed_base.scheme == "https" else "ws"
     ws_netloc = f"{hostname}:{port}"
-    return urlunparse((ws_scheme, ws_netloc, ws_path, "", "", ""))
+    # Prefix ws_path with the base URL's path (e.g. /cdp) so the proxy can route it
+    base_path = parsed_base.path.rstrip('/')
+    full_path = f"{base_path}{ws_path}" if base_path else ws_path
+    return urlunparse((ws_scheme, ws_netloc, full_path, "", "", ""))
 
 # Global dictionary to track running processes per session
 # session_id -> process object
@@ -171,7 +174,7 @@ def close_all_browser_tabs() -> bool:
     print("[SERVER DEBUG] ========== CLOSING ALL BROWSER TABS ==========", flush=True)
     try:
         # Get list of all pages/tabs
-        list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
+        list_url = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/list"
         print(f"[SERVER DEBUG] Fetching tab list from: {list_url}", flush=True)
 
         req = urllib_request.Request(list_url, headers=CDP_HTTP_HEADERS)
@@ -188,7 +191,7 @@ def close_all_browser_tabs() -> bool:
                 tab_url = tab.get('url', 'unknown')
                 print(f"[SERVER DEBUG] Closing tab {tab_id}: {tab_url[:80]}", flush=True)
 
-                close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
+                close_url = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/close/{tab_id}"
                 try:
                     close_req = urllib_request.Request(close_url, headers=CDP_HTTP_HEADERS)
                     with urllib_request.urlopen(close_req, timeout=5) as close_response:
@@ -217,9 +220,9 @@ def close_all_nonblanks(non_blank_tabs) -> None:
         tab_url = tab.get('url', '')
         print(f"[SERVER DEBUG] Closing non-blank tab {tab_id}: {tab_url[:60]}", flush=True)
 
-        close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
+        close_url = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/close/{tab_id}"
         try:
-            req = urllib_request.Request(close_url, method='GET')
+            req = urllib_request.Request(close_url, method='GET', headers=CDP_HTTP_HEADERS)
             with urllib_request.urlopen(req, timeout=2) as close_response:
                 print(f"[SERVER DEBUG] ✓ Closed non-blank tab {tab_id}", flush=True)
         except Exception as e:
@@ -231,9 +234,9 @@ def keep_single_blank_tab(blank_tabs) -> None:
         tabs_to_close = blank_tabs[1:]  # Keep first, close rest
         for tab in tabs_to_close:
             tab_id = tab.get('id')
-            close_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/close/{tab_id}"
+            close_url = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/close/{tab_id}"
             try:
-                req = urllib_request.Request(close_url, method='GET')
+                req = urllib_request.Request(close_url, method='GET', headers=CDP_HTTP_HEADERS)
                 with urllib_request.urlopen(req, timeout=2) as close_response:
                     print(f"[SERVER DEBUG] ✓ Closed extra blank tab {tab_id}", flush=True)
             except Exception as e:
@@ -256,7 +259,7 @@ def reset_browser_session() -> bool:
     for attempt in range(max_attempts):
         try:
             # Get list of all pages/tabs with timeout
-            list_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/list"
+            list_url = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/list"
             print(f"[SERVER DEBUG] Fetching tab list from: {list_url} (attempt {attempt + 1}/{max_attempts})", flush=True)
 
             req = urllib_request.Request(list_url, headers=CDP_HTTP_HEADERS)
@@ -282,7 +285,7 @@ def reset_browser_session() -> bool:
                 print(f"[SERVER DEBUG] No blank tabs found, creating one...", flush=True)
                 time.sleep(0.2)  # Brief pause
 
-                new_tab_url = f"{BROWSER_CDP_PUBLIC_URL.rstrip('/')}/json/new"
+                new_tab_url = f"{BROWSER_CDP_INTERNAL_URL.rstrip('/')}/json/new"
                 req = urllib_request.Request(new_tab_url, method='PUT', headers=CDP_HTTP_HEADERS)
                 with urllib_request.urlopen(req, timeout=3) as response:
                     if 200 <= response.status < 300:

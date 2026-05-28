@@ -94,7 +94,10 @@ def send_browser_address() -> None:
         parsed_public = urlparse(cdp_url)
         parsed_ws = urlparse(cdp_ws)
         ws_scheme = "wss" if parsed_public.scheme == "https" else "ws"
-        public_ws = urlunparse((ws_scheme, parsed_public.netloc, parsed_ws.path, "", "", ""))
+        # Prefix ws_path with the public CDP path (e.g. /cdp) so the proxy can route it
+        base_path = parsed_public.path.rstrip('/')
+        full_path = f"{base_path}{parsed_ws.path}" if base_path else parsed_ws.path
+        public_ws = urlunparse((ws_scheme, parsed_public.netloc, full_path, "", "", ""))
     else:
         public_ws = cdp_ws
 
